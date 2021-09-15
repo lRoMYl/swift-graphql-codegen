@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/r.cheah/Repos/dh-graphql-codegen-ios/DHGraphQLCodegenSwift.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
