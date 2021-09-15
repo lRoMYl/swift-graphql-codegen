@@ -1,0 +1,753 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F829186926E9A8E9005E3471 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829186826E9A8E9005E3471 /* main.swift */; };
+		F829187326E9AB5A005E3471 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = F829187226E9AB5A005E3471 /* ArgumentParser */; };
+		F829187726E9AEC0005E3471 /* ScalarMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829187626E9AEC0005E3471 /* ScalarMap.swift */; };
+		F829187C26E9AF39005E3471 /* GraphQLCodegen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829187B26E9AF39005E3471 /* GraphQLCodegen.swift */; };
+		F829188126E9B45E005E3471 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829188026E9B45E005E3471 /* Schema.swift */; };
+		F829188426E9B497005E3471 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829188326E9B497005E3471 /* Value.swift */; };
+		F829188726E9B49E005E3471 /* TypeRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829188626E9B49E005E3471 /* TypeRef.swift */; };
+		F829188A26E9B4A7005E3471 /* TypeRef+Inverted.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829188926E9B4A7005E3471 /* TypeRef+Inverted.swift */; };
+		F829188D26E9B55D005E3471 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829188C26E9B55D005E3471 /* Type.swift */; };
+		F829189726E9D966005E3471 /* IntrospectionQueryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829189626E9D966005E3471 /* IntrospectionQueryResponse.swift */; };
+		F829189C26E9DDB9005E3471 /* EnumSpecificationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829189B26E9DDB9005E3471 /* EnumSpecificationGenerator.swift */; };
+		F82918A126E9DE3A005E3471 /* String+Case.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82918A026E9DE3A005E3471 /* String+Case.swift */; };
+		F82918A426E9DE5C005E3471 /* String+Lines.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82918A326E9DE5C005E3471 /* String+Lines.swift */; };
+		F82918A726E9DE73005E3471 /* String+Normalize.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82918A626E9DE73005E3471 /* String+Normalize.swift */; };
+		F82918AA26E9DF57005E3471 /* String+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82918A926E9DF57005E3471 /* String+Format.swift */; };
+		F8CB415626E9E1F1004F3653 /* SwiftFormat in Frameworks */ = {isa = PBXBuildFile; productRef = F8CB415526E9E1F1004F3653 /* SwiftFormat */; };
+		F8CB415926E9E359004F3653 /* ObjectSpecificationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB415826E9E359004F3653 /* ObjectSpecificationGenerator.swift */; };
+		F8CB416226E9E3B0004F3653 /* TypeRef+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB416126E9E3B0004F3653 /* TypeRef+Type.swift */; };
+		F8CB416926E9E406004F3653 /* Structure.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB416826E9E406004F3653 /* Structure.swift */; };
+		F8CB416F26E9E457004F3653 /* Collection+UniqueBy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB416E26E9E457004F3653 /* Collection+UniqueBy.swift */; };
+		F8CB41EC26EC8C7F004F3653 /* ResponseParametersGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB41EB26EC8C7E004F3653 /* ResponseParametersGenerator.swift */; };
+		F8CB421726EF6069004F3653 /* GraphQLSpecificationGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB421626EF6069004F3653 /* GraphQLSpecificationGenerating.swift */; };
+		F8CB421B26EF620C004F3653 /* BaseSpecificationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB421A26EF620C004F3653 /* BaseSpecificationGenerator.swift */; };
+		F8CB422A26EF7358004F3653 /* Structure+ObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB422926EF7358004F3653 /* Structure+ObjectType.swift */; };
+		F8CB429826F1C646004F3653 /* CodegenLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CB428F26F1C646004F3653 /* CodegenLib.framework */; };
+		F8CB429D26F1C646004F3653 /* CodegenLibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CB429C26F1C646004F3653 /* CodegenLibTests.swift */; };
+		F8CB429F26F1C646004F3653 /* CodegenLib.h in Headers */ = {isa = PBXBuildFile; fileRef = F8CB429126F1C646004F3653 /* CodegenLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F8CB42B126F1C754004F3653 /* CodegenLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CB428F26F1C646004F3653 /* CodegenLib.framework */; };
+		F8CB42B226F1C754004F3653 /* CodegenLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8CB428F26F1C646004F3653 /* CodegenLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F8CB429926F1C646004F3653 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F829185D26E9A8E9005E3471 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8CB428E26F1C646004F3653;
+			remoteInfo = CodegenLib;
+		};
+		F8CB42B326F1C754004F3653 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F829185D26E9A8E9005E3471 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8CB428E26F1C646004F3653;
+			remoteInfo = CodegenLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F829186326E9A8E9005E3471 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		F8CB42B526F1C754004F3653 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F8CB42B226F1C754004F3653 /* CodegenLib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F829186526E9A8E9005E3471 /* DHGraphQLCodegenSwift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DHGraphQLCodegenSwift; sourceTree = BUILT_PRODUCTS_DIR; };
+		F829186826E9A8E9005E3471 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F829187626E9AEC0005E3471 /* ScalarMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalarMap.swift; sourceTree = "<group>"; };
+		F829187B26E9AF39005E3471 /* GraphQLCodegen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCodegen.swift; sourceTree = "<group>"; };
+		F829188026E9B45E005E3471 /* Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		F829188326E9B497005E3471 /* Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		F829188626E9B49E005E3471 /* TypeRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeRef.swift; sourceTree = "<group>"; };
+		F829188926E9B4A7005E3471 /* TypeRef+Inverted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TypeRef+Inverted.swift"; sourceTree = "<group>"; };
+		F829188C26E9B55D005E3471 /* Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
+		F829189626E9D966005E3471 /* IntrospectionQueryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrospectionQueryResponse.swift; sourceTree = "<group>"; };
+		F829189B26E9DDB9005E3471 /* EnumSpecificationGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumSpecificationGenerator.swift; sourceTree = "<group>"; };
+		F82918A026E9DE3A005E3471 /* String+Case.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Case.swift"; sourceTree = "<group>"; };
+		F82918A326E9DE5C005E3471 /* String+Lines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Lines.swift"; sourceTree = "<group>"; };
+		F82918A626E9DE73005E3471 /* String+Normalize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Normalize.swift"; sourceTree = "<group>"; };
+		F82918A926E9DF57005E3471 /* String+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Format.swift"; sourceTree = "<group>"; };
+		F8CB415826E9E359004F3653 /* ObjectSpecificationGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSpecificationGenerator.swift; sourceTree = "<group>"; };
+		F8CB416126E9E3B0004F3653 /* TypeRef+Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TypeRef+Type.swift"; sourceTree = "<group>"; };
+		F8CB416826E9E406004F3653 /* Structure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structure.swift; sourceTree = "<group>"; };
+		F8CB416E26E9E457004F3653 /* Collection+UniqueBy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+UniqueBy.swift"; sourceTree = "<group>"; };
+		F8CB41EB26EC8C7E004F3653 /* ResponseParametersGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseParametersGenerator.swift; sourceTree = "<group>"; };
+		F8CB421626EF6069004F3653 /* GraphQLSpecificationGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLSpecificationGenerating.swift; sourceTree = "<group>"; };
+		F8CB421A26EF620C004F3653 /* BaseSpecificationGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSpecificationGenerator.swift; sourceTree = "<group>"; };
+		F8CB422926EF7358004F3653 /* Structure+ObjectType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Structure+ObjectType.swift"; sourceTree = "<group>"; };
+		F8CB428F26F1C646004F3653 /* CodegenLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodegenLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8CB429126F1C646004F3653 /* CodegenLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CodegenLib.h; sourceTree = "<group>"; };
+		F8CB429226F1C646004F3653 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F8CB429726F1C646004F3653 /* CodegenLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodegenLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8CB429C26F1C646004F3653 /* CodegenLibTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodegenLibTests.swift; sourceTree = "<group>"; };
+		F8CB429E26F1C646004F3653 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F829186226E9A8E9005E3471 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F829187326E9AB5A005E3471 /* ArgumentParser in Frameworks */,
+				F8CB415626E9E1F1004F3653 /* SwiftFormat in Frameworks */,
+				F8CB42B126F1C754004F3653 /* CodegenLib.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CB428C26F1C646004F3653 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CB429426F1C646004F3653 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8CB429826F1C646004F3653 /* CodegenLib.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F829185C26E9A8E9005E3471 = {
+			isa = PBXGroup;
+			children = (
+				F829186726E9A8E9005E3471 /* Grapqhl Codegen */,
+				F8CB429026F1C646004F3653 /* CodegenLib */,
+				F8CB429B26F1C646004F3653 /* CodegenLibTests */,
+				F829186626E9A8E9005E3471 /* Products */,
+				F8CB42B026F1C754004F3653 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F829186626E9A8E9005E3471 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F829186526E9A8E9005E3471 /* DHGraphQLCodegenSwift */,
+				F8CB428F26F1C646004F3653 /* CodegenLib.framework */,
+				F8CB429726F1C646004F3653 /* CodegenLibTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F829186726E9A8E9005E3471 /* Grapqhl Codegen */ = {
+			isa = PBXGroup;
+			children = (
+				F829186826E9A8E9005E3471 /* main.swift */,
+			);
+			path = "Grapqhl Codegen";
+			sourceTree = "<group>";
+		};
+		F829187526E9AE9B005E3471 /* GraphQLCodegen */ = {
+			isa = PBXGroup;
+			children = (
+				F829187B26E9AF39005E3471 /* GraphQLCodegen.swift */,
+				F8CB422626EF733C004F3653 /* Models */,
+				F829189F26E9DE27005E3471 /* Extensions */,
+				F829189A26E9DDAC005E3471 /* Generators */,
+			);
+			path = GraphQLCodegen;
+			sourceTree = "<group>";
+		};
+		F829187F26E9B39C005E3471 /* GraphQLAST */ = {
+			isa = PBXGroup;
+			children = (
+				F829188026E9B45E005E3471 /* Schema.swift */,
+				F829188326E9B497005E3471 /* Value.swift */,
+				F829188C26E9B55D005E3471 /* Type.swift */,
+				F829188626E9B49E005E3471 /* TypeRef.swift */,
+				F829188926E9B4A7005E3471 /* TypeRef+Inverted.swift */,
+			);
+			path = GraphQLAST;
+			sourceTree = "<group>";
+		};
+		F829189526E9D952005E3471 /* GraphQLDownloader */ = {
+			isa = PBXGroup;
+			children = (
+				F829189626E9D966005E3471 /* IntrospectionQueryResponse.swift */,
+			);
+			path = GraphQLDownloader;
+			sourceTree = "<group>";
+		};
+		F829189A26E9DDAC005E3471 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				F8CB421626EF6069004F3653 /* GraphQLSpecificationGenerating.swift */,
+				F8CB421A26EF620C004F3653 /* BaseSpecificationGenerator.swift */,
+				F829189B26E9DDB9005E3471 /* EnumSpecificationGenerator.swift */,
+				F8CB415826E9E359004F3653 /* ObjectSpecificationGenerator.swift */,
+				F8CB41EB26EC8C7E004F3653 /* ResponseParametersGenerator.swift */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
+		F829189F26E9DE27005E3471 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F82918A026E9DE3A005E3471 /* String+Case.swift */,
+				F82918A326E9DE5C005E3471 /* String+Lines.swift */,
+				F82918A626E9DE73005E3471 /* String+Normalize.swift */,
+				F82918A926E9DF57005E3471 /* String+Format.swift */,
+				F8CB416E26E9E457004F3653 /* Collection+UniqueBy.swift */,
+				F8CB416126E9E3B0004F3653 /* TypeRef+Type.swift */,
+				F8CB422926EF7358004F3653 /* Structure+ObjectType.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F8CB422626EF733C004F3653 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F829187626E9AEC0005E3471 /* ScalarMap.swift */,
+				F8CB416826E9E406004F3653 /* Structure.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F8CB429026F1C646004F3653 /* CodegenLib */ = {
+			isa = PBXGroup;
+			children = (
+				F8CB429126F1C646004F3653 /* CodegenLib.h */,
+				F829189526E9D952005E3471 /* GraphQLDownloader */,
+				F829187F26E9B39C005E3471 /* GraphQLAST */,
+				F829187526E9AE9B005E3471 /* GraphQLCodegen */,
+				F8CB429226F1C646004F3653 /* Info.plist */,
+			);
+			path = CodegenLib;
+			sourceTree = "<group>";
+		};
+		F8CB429B26F1C646004F3653 /* CodegenLibTests */ = {
+			isa = PBXGroup;
+			children = (
+				F8CB429C26F1C646004F3653 /* CodegenLibTests.swift */,
+				F8CB429E26F1C646004F3653 /* Info.plist */,
+			);
+			path = CodegenLibTests;
+			sourceTree = "<group>";
+		};
+		F8CB42B026F1C754004F3653 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F8CB428A26F1C646004F3653 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8CB429F26F1C646004F3653 /* CodegenLib.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F829186426E9A8E9005E3471 /* DHGraphQLCodegenSwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F829186C26E9A8E9005E3471 /* Build configuration list for PBXNativeTarget "DHGraphQLCodegenSwift" */;
+			buildPhases = (
+				F829186126E9A8E9005E3471 /* Sources */,
+				F829186226E9A8E9005E3471 /* Frameworks */,
+				F829186326E9A8E9005E3471 /* CopyFiles */,
+				F8CB42B526F1C754004F3653 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8CB42B426F1C754004F3653 /* PBXTargetDependency */,
+			);
+			name = DHGraphQLCodegenSwift;
+			packageProductDependencies = (
+				F829187226E9AB5A005E3471 /* ArgumentParser */,
+				F8CB415526E9E1F1004F3653 /* SwiftFormat */,
+			);
+			productName = "Grapqhl Codegen";
+			productReference = F829186526E9A8E9005E3471 /* DHGraphQLCodegenSwift */;
+			productType = "com.apple.product-type.tool";
+		};
+		F8CB428E26F1C646004F3653 /* CodegenLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8CB42A026F1C646004F3653 /* Build configuration list for PBXNativeTarget "CodegenLib" */;
+			buildPhases = (
+				F8CB428A26F1C646004F3653 /* Headers */,
+				F8CB428B26F1C646004F3653 /* Sources */,
+				F8CB428C26F1C646004F3653 /* Frameworks */,
+				F8CB428D26F1C646004F3653 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodegenLib;
+			productName = CodegenLib;
+			productReference = F8CB428F26F1C646004F3653 /* CodegenLib.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F8CB429626F1C646004F3653 /* CodegenLibTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8CB42A326F1C646004F3653 /* Build configuration list for PBXNativeTarget "CodegenLibTests" */;
+			buildPhases = (
+				F8CB429326F1C646004F3653 /* Sources */,
+				F8CB429426F1C646004F3653 /* Frameworks */,
+				F8CB429526F1C646004F3653 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8CB429A26F1C646004F3653 /* PBXTargetDependency */,
+			);
+			name = CodegenLibTests;
+			productName = CodegenLibTests;
+			productReference = F8CB429726F1C646004F3653 /* CodegenLibTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F829185D26E9A8E9005E3471 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					F829186426E9A8E9005E3471 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					F8CB428E26F1C646004F3653 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					F8CB429626F1C646004F3653 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = F829186026E9A8E9005E3471 /* Build configuration list for PBXProject "DHGraphQLCodegenSwift" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F829185C26E9A8E9005E3471;
+			packageReferences = (
+				F829187126E9AB5A005E3471 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				F8CB415426E9E1F1004F3653 /* XCRemoteSwiftPackageReference "SwiftFormat" */,
+			);
+			productRefGroup = F829186626E9A8E9005E3471 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F829186426E9A8E9005E3471 /* DHGraphQLCodegenSwift */,
+				F8CB428E26F1C646004F3653 /* CodegenLib */,
+				F8CB429626F1C646004F3653 /* CodegenLibTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F8CB428D26F1C646004F3653 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CB429526F1C646004F3653 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F829186126E9A8E9005E3471 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F829188126E9B45E005E3471 /* Schema.swift in Sources */,
+				F829188A26E9B4A7005E3471 /* TypeRef+Inverted.swift in Sources */,
+				F82918A426E9DE5C005E3471 /* String+Lines.swift in Sources */,
+				F829187726E9AEC0005E3471 /* ScalarMap.swift in Sources */,
+				F8CB416226E9E3B0004F3653 /* TypeRef+Type.swift in Sources */,
+				F829189726E9D966005E3471 /* IntrospectionQueryResponse.swift in Sources */,
+				F8CB422A26EF7358004F3653 /* Structure+ObjectType.swift in Sources */,
+				F8CB41EC26EC8C7F004F3653 /* ResponseParametersGenerator.swift in Sources */,
+				F829188426E9B497005E3471 /* Value.swift in Sources */,
+				F82918A126E9DE3A005E3471 /* String+Case.swift in Sources */,
+				F8CB421726EF6069004F3653 /* GraphQLSpecificationGenerating.swift in Sources */,
+				F82918AA26E9DF57005E3471 /* String+Format.swift in Sources */,
+				F829188726E9B49E005E3471 /* TypeRef.swift in Sources */,
+				F829187C26E9AF39005E3471 /* GraphQLCodegen.swift in Sources */,
+				F8CB415926E9E359004F3653 /* ObjectSpecificationGenerator.swift in Sources */,
+				F8CB421B26EF620C004F3653 /* BaseSpecificationGenerator.swift in Sources */,
+				F829186926E9A8E9005E3471 /* main.swift in Sources */,
+				F829189C26E9DDB9005E3471 /* EnumSpecificationGenerator.swift in Sources */,
+				F829188D26E9B55D005E3471 /* Type.swift in Sources */,
+				F8CB416926E9E406004F3653 /* Structure.swift in Sources */,
+				F82918A726E9DE73005E3471 /* String+Normalize.swift in Sources */,
+				F8CB416F26E9E457004F3653 /* Collection+UniqueBy.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CB428B26F1C646004F3653 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CB429326F1C646004F3653 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8CB429D26F1C646004F3653 /* CodegenLibTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F8CB429A26F1C646004F3653 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8CB428E26F1C646004F3653 /* CodegenLib */;
+			targetProxy = F8CB429926F1C646004F3653 /* PBXContainerItemProxy */;
+		};
+		F8CB42B426F1C754004F3653 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8CB428E26F1C646004F3653 /* CodegenLib */;
+			targetProxy = F8CB42B326F1C754004F3653 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F829186A26E9A8E9005E3471 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F829186B26E9A8E9005E3471 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F829186D26E9A8E9005E3471 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F829186E26E9A8E9005E3471 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F8CB42A126F1C646004F3653 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CodegenLib/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.deliveryhero.graphql-codegen-ios.CodegenLib";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		F8CB42A226F1C646004F3653 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CodegenLib/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.deliveryhero.graphql-codegen-ios.CodegenLib";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F8CB42A426F1C646004F3653 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = CodegenLibTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.deliveryhero.graphql-codegen-ios.CodegenLibTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F8CB42A526F1C646004F3653 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = CodegenLibTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.deliveryhero.graphql-codegen-ios.CodegenLibTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F829186026E9A8E9005E3471 /* Build configuration list for PBXProject "DHGraphQLCodegenSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F829186A26E9A8E9005E3471 /* Debug */,
+				F829186B26E9A8E9005E3471 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F829186C26E9A8E9005E3471 /* Build configuration list for PBXNativeTarget "DHGraphQLCodegenSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F829186D26E9A8E9005E3471 /* Debug */,
+				F829186E26E9A8E9005E3471 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8CB42A026F1C646004F3653 /* Build configuration list for PBXNativeTarget "CodegenLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8CB42A126F1C646004F3653 /* Debug */,
+				F8CB42A226F1C646004F3653 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8CB42A326F1C646004F3653 /* Build configuration list for PBXNativeTarget "CodegenLibTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8CB42A426F1C646004F3653 /* Debug */,
+				F8CB42A526F1C646004F3653 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F829187126E9AB5A005E3471 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
+		F8CB415426E9E1F1004F3653 /* XCRemoteSwiftPackageReference "SwiftFormat" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nicklockwood/SwiftFormat";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.48.11;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F829187226E9AB5A005E3471 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F829187126E9AB5A005E3471 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		F8CB415526E9E1F1004F3653 /* SwiftFormat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CB415426E9E1F1004F3653 /* XCRemoteSwiftPackageReference "SwiftFormat" */;
+			productName = SwiftFormat;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F829185D26E9A8E9005E3471 /* Project object */;
+}
