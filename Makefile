@@ -1,4 +1,4 @@
-TOOL_NAME = homebrew-test-brew-cli
+TOOL_NAME = DHGraphQLCodegenSwift
 FORMULA_NAME = dh-graphql-codegen-ios-test
 VERSION = $(shell git describe --abbrev=0 --tags)
 
