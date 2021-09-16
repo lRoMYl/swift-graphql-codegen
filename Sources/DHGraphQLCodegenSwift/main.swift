@@ -10,6 +10,11 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegen
 
+GraphQLCodegenCLI.main()
+//
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema.json"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Repos/iOSTutorial/RocketReserver/schema.json"])
+
 struct GraphQLCodegenCLI: ParsableCommand {
   @Argument(help: "Location of the introspection file")
   var schemaPath: String
@@ -45,8 +50,3 @@ private struct IntrospectionQueryResponse: Decodable, Equatable {
     case schema = "__schema"
   }
 }
-
-//
-
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema.json"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Repos/iOSTutorial/RocketReserver/schema.json"])
