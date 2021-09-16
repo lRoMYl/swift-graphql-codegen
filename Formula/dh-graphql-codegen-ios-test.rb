@@ -13,7 +13,8 @@ class DhGraphqlCodegenIosTest < Formula
     xcodebuild "-arch", Hardware::CPU.arch,
         "-project", "DHGraphQLCodegenSwift.xcodeproj",
         "-scheme", "DHGraphQLCodegenSwift",
-        "-configuration", "Release"
+        "-configuration", "Release",
+        "-resolvePackageDependencies"
     bin.install "build/Release/DHGraphQLCodegenSwift"
   end
 end
