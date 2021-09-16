@@ -1,7 +1,7 @@
 import XCTest
 
-import commandlinetoolTests
+import DHGraphQLCodegenSwiftTests
 
 var tests = [XCTestCaseEntry]()
-tests += commandlinetoolTests.allTests()
+tests += DHGraphQLCodegenSwiftTests.allTests()
 XCTMain(tests)

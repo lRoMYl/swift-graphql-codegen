@@ -24,14 +24,13 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST"],
       path: "Sources/GraphQLCodegen"),
     .target(
-      name: "commandlinetool",
+      name: "DHGraphQLCodegenSwift",
       dependencies: [
         "GraphQLCodegen",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]
-    ),
+      ]),
     .testTarget(
-      name: "commandlinetoolTests",
-      dependencies: ["commandlinetool"]),
+      name: "DHGraphQLCodegenSwiftTests",
+      dependencies: ["DHGraphQLCodegenSwift"]),
   ]
 )
