@@ -7,7 +7,7 @@ INSTALL_PATH = $(PREFIX)/bin/$(TOOL_NAME)
 SHARE_PATH = $(PREFIX)/share/$(TOOL_NAME)
 BUILD_PATH = .build/release/$(TOOL_NAME)
 CURRENT_PATH = $(PWD)
-REPO = https://github.com/lRoMYl/$(TOOL_NAME)
+REPO = https://github.com/lromyl/$(TOOL_NAME)
 RELEASE_TAR = $(REPO)/archive/$(VERSION).tar.gz
 SHA = $(shell curl -L -s $(RELEASE_TAR) | shasum -a 256 | sed 's/ .*//')
 
