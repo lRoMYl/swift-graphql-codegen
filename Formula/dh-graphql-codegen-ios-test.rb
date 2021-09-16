@@ -10,11 +10,6 @@ class DhGraphqlCodegenIosTest < Formula
   depends_on :macos
 
   def install
-    xcodebuild "-arch", Hardware::CPU.arch,
-        "-project", "DHGraphQLCodegenSwift.xcodeproj",
-        "-scheme", "DHGraphQLCodegenSwift",
-        "-configuration", "Release",
-        "-resolvePackageDependencies"
-    bin.install "build/Release/DHGraphQLCodegenSwift"
+    system "make", "install", "PREFIX=#{prefix}"
   end
 end
