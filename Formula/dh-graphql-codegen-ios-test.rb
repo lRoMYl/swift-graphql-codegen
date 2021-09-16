@@ -10,6 +10,6 @@ class DhGraphqlCodegenIosTest < Formula
   depends_on :macos
 
   def install
-    system "make", "install", "PREFIX=#{prefix}"
+    system "make", "PREFIX=#{prefix}"
   end
 end
