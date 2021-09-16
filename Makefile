@@ -1,4 +1,4 @@
-TOOL_NAME = DHGraphQLCodegenSwift
+TOOL_NAME = dh-graphql-codegen-ios
 FORMULA_NAME = dh-graphql-codegen-ios-test
 VERSION = $(shell git describe --abbrev=0 --tags)
 
