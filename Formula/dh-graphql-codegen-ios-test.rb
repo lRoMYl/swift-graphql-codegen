@@ -6,16 +6,14 @@ class DhGraphqlCodegenIosTest < Formula
   head "https://github.com/lRoMYl/test-brew-cli.git"
   version "0.1.0"
 
-  depends_on :xcode
+  depends_on :xcode => :build
   depends_on :macos
 
   def install
     xcodebuild "-arch", Hardware::CPU.arch,
         "-project", "DHGraphQLCodegenSwift.xcodeproj",
         "-scheme", "DHGraphQLCodegenSwift",
-        "-configuration", "Release",
-        "CODE_SIGN_IDENTITY=",
-        "SYMROOT=build", "OBJROOT=build"
+        "-configuration", "Release"
     bin.install "build/Release/DHGraphQLCodegenSwift"
   end
 end
