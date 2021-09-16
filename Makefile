@@ -28,5 +28,5 @@ update_brew:
 	sed -i '' 's|\(url ".*/archive/\)\(.*\)\(.tar\)|\1$(VERSION)\3|' Formula/$(FORMULA_NAME).rb
 	sed -i '' 's|\(sha256 "\)\(.*\)\("\)|\1$(SHA)\3|' Formula/$(FORMULA_NAME).rb
 
-	git add .
+	git add Formula/*
 	git commit -m "Update brew to $(VERSION)"
