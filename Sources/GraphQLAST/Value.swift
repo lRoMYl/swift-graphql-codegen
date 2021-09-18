@@ -15,6 +15,22 @@ public struct Field: Decodable, Equatable {
   public let type: OutputTypeRef
   public let isDeprecated: Bool
   public let deprecationReason: String?
+
+  public init(
+    name: String,
+    description: String?,
+    args: [InputValue],
+    type: OutputTypeRef,
+    isDeprecated: Bool,
+    deprecationReason: String?
+  ) {
+    self.name = name
+    self.description = description
+    self.args = args
+    self.type = type
+    self.isDeprecated = isDeprecated
+    self.deprecationReason = deprecationReason
+  }
 }
 
 /// Represents a GraphQL type that may be used as an input value.

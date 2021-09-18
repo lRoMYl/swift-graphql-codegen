@@ -10,7 +10,7 @@
 import XCTest
 
 final class EnumSpecificationGeneratorTests: XCTestCase {
-  func testGenerateEnumSpecification() throws {
+  func testGeneratedCode() throws {
     let discountEnumType = EnumType(
       name: "DiscountType",
       description: "Djini discount type",
