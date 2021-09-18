@@ -33,5 +33,9 @@ let package = Package(
     .testTarget(
       name: "DHGraphQLCodegenSwiftTests",
       dependencies: ["DHGraphQLCodegenSwift"]),
+    .testTarget(
+      name: "GraphQLCodegenTests",
+      dependencies: ["GraphQLCodegen"]
+    )
   ]
 )

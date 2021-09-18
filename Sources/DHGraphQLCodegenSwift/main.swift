@@ -10,21 +10,23 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegen
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 //
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema.json"])
+GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema.json"])
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Repos/iOSTutorial/RocketReserver/schema.json"])
 
 struct GraphQLCodegenCLI: ParsableCommand {
   @Argument(help: "Location of the introspection file")
   var schemaPath: String
 
+//  @Option(help: "Location of the output file")
+//  var outputPath: String
+
   static var configuration = CommandConfiguration(
     commandName: "dh-graphql-codegen-ios"
   )
 
   func run() throws {
-    // To be rewritten to use relative path in final version
     guard let jsonData = try String(contentsOfFile: schemaPath).data(using: .utf8) else {
       throw GraphQLCodegenCLIError.invalidSchemaPath
     }
