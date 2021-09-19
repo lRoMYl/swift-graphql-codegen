@@ -19,7 +19,7 @@ enum RequestParameterError: Error, LocalizedError {
 
 struct RequestParameterGenerator: GraphQLSpecificationGenerating {
   private let classType = "GraphQLRequestParameter"
-  private let className = "RequestParameter"
+  private let classPrefix = "RequestParameter"
 
   private let scalarMap: ScalarMap
   private let selectionsGenerator: RequestParameterSelectionsGenerator
@@ -39,7 +39,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     }.lines
 
     return """
-    // MARK: - \(className)
+    // MARK: - \(classType)
 
     \(responseParameters)
     """
@@ -127,7 +127,7 @@ private extension RequestParameterGenerator {
     let requestParameterPrefix = operation.requestParameterPrefix
     let fieldName = field.name.pascalCase
 
-    return "\(requestParameterPrefix)\(fieldName)\(className)"
+    return "\(requestParameterPrefix)\(fieldName)\(classPrefix)"
   }
 }
 

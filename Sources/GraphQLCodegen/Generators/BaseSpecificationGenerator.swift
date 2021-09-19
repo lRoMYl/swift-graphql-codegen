@@ -21,7 +21,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
 
     // MARK: - Interfaces
 
-    protocol GraphQLRequestParameters: Encodable {
+    protocol GraphQLRequestParameter: Encodable {
       associatedtype Selections: GraphQLSelections
 
       var requestType: GraphQLRequestType { get }
@@ -43,7 +43,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
 
     private let requestParametersEncoder = JSONEncoder()
 
-    struct GraphQLRequest<RequestParameters: GraphQLRequestParameters>: Encodable {
+    struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
       let parameters: RequestParameters
 
       enum CodingKeys: String, CodingKey {
