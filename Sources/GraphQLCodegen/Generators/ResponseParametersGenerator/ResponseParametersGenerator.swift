@@ -19,70 +19,66 @@ enum ResponseParametersError: Error, LocalizedError {
 
 struct ResponseParametersGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap
+  private let selectionsGenerator: ResponseParametersSelectionsGenerator
+  private let codingKeysGenerator: ResponseParametersCodingKeysGenerator
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
+    self.selectionsGenerator = ResponseParametersSelectionsGenerator(
+      scalarMap: scalarMap
+    )
+    self.codingKeysGenerator = ResponseParametersCodingKeysGenerator()
   }
 
   func declaration(schema: Schema) throws -> String {
-    """
+    let responseParameters = try schema.operations.map {
+      try operation($0, objects: schema.objects, scalarMap: scalarMap).lines
+    }.lines
+
+    return """
     // MARK: - RequestParameters
 
-    \(
-      try schema.operations.map {
-        try operation($0, objects: schema.objects, scalarMap: scalarMap)
-      }.lines
-    )
+    \(responseParameters)
     """
   }
 }
 
 private extension ResponseParametersGenerator {
-  func operation(_ operation: GraphQLAST.Operation, objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
-    let text: String
+  func operation(_ operation: GraphQLAST.Operation, objects: [ObjectType], scalarMap: ScalarMap) throws -> [String] {
+    let returnObject = try operation.returnObject()
+    let operationTypeName = operation.type.name.lowercased()
+    let requestParameterPrefix = operation.requestParameterPrefix
 
-    switch operation {
-    case let .query(object),
-         let .mutation(object):
-      text = try operation.declaration(
-        object: object,
-        objects: objects,
-        scalarMap: scalarMap
-      ).lines
-    case .subscription:
-      text = ""
-      assertionFailure("Not implemented")
+    let result = try returnObject.fields.map {
+      try responseParameterDeclaration(
+        operationTypeName: operationTypeName,
+        requestParameterPrefix: requestParameterPrefix,
+        objectMap: objects,
+        field: $0
+      )
     }
 
-    return text
+    return result
   }
-}
 
-// MARK: - Operation
+  func responseParameterDeclaration(
+    operationTypeName: String,
+    requestParameterPrefix: String,
+    objectMap: [ObjectType],
+    field: Field
+  ) throws -> String {
+    let fieldName = field.name.pascalCase
+    let reqeuestParametersName = "\(requestParameterPrefix)\(fieldName)RequestParameters"
 
-private extension GraphQLAST.Operation {
-  func declaration(
-    object: ObjectType,
-    objects: [ObjectType],
-    scalarMap: ScalarMap
-  ) throws -> [String] {
-    let operationTypeName = type.name.lowercased()
+    let operationVariables = field.operationVariables
+    let operationArguments = try field.operationArguments()
+    let argumentVariables = try field.argumentVariables(scalarMap: scalarMap)
 
-    return try object.fields.compactMap {
-      let fieldName = $0.name.pascalCase
+    let selections = try selectionsGenerator.declaration(operationField: field, objects: objectMap)
 
-      let operationVariables = $0.operationVariables
-      let operationArguments = try $0.operationArguments()
-      let argumentVariables = try $0.argumentVariables(scalarMap: scalarMap)
+    let codingKeys = try codingKeysGenerator.declaration(field: field)
 
-      let codingKeys = try $0.codingKeys()
-      let namePrefix = structNamePrefix
-
-      let selections = try selectionDeclaration(field: $0, objects: objects, scalarMap: scalarMap)
-
-      let reqeuestParametersName = "\(namePrefix)\(fieldName)RequestParameters"
-
-      return """
+    return """
       // MARK: - \(reqeuestParametersName)
 
       struct \(reqeuestParametersName): GraphQLRequestParameters {
@@ -91,7 +87,7 @@ private extension GraphQLAST.Operation {
         ) {
         \(
           """
-          \($0.name)(
+          \(field.name)(
           \(operationArguments)
           ) {
             ...\(fieldName)Fragment
@@ -117,66 +113,28 @@ private extension GraphQLAST.Operation {
 
         let requestType: GraphQLRequestType = .\(operationTypeName)
 
-        // MARK: - Selections
-
         \(selections)
-
-        // MARK: - CodingKeys
 
         \(codingKeys)
       }
       """
-    }
   }
+}
 
-  func selectionDeclaration(field: Field, objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
-    guard
-      let returnObjectType = objects.first(where: { $0.name == field.type.namedType.name })
-    else {
-      throw ResponseParametersError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
+// MARK: - Operation
+
+private extension GraphQLAST.Operation {
+  func returnObject() throws -> ObjectType {
+    switch self {
+    case let .query(object), let .mutation(object):
+      return object
+    case .subscription:
+      throw ResponseParametersError.notImplemented(context: "Subscription is not implemented yet")
     }
-
-    let allFields = returnObjectType.allFields(objects: objects)
-
-    var dictionary = [String:String]()
-
-    // Add base selection for the current operation
-    try field.selectionDeclaration(objects: objects, dictionary: &dictionary)
-
-    // Add sub-selection for all object in the current operation recursively
-    try allFields.forEach { field in
-      try field.selectionDeclaration(objects: objects, dictionary: &dictionary)
-    }
-
-    let sortedDictionary = Array(dictionary).sorted(by: <)
-
-    let code = """
-    let selections: Selections
-
-    struct Selections: GraphQLSelections {
-    \(sortedDictionary.map { $0.value }.lines )
-
-      func declaration() -> String {
-        \"\"\"
-        \(
-          sortedDictionary.map {
-            """
-            fragment \($0.key)Fragment on \($0.key) {\\(\($0.key.camelCase)Selections.reduce(into: "") { $0 += "\\n  \\($1.rawValue)" })
-            }\n
-            """
-          }.lines
-        )
-        \"\"\"
-      }
-    }
-    """
-    let formattedCode = try code.format()
-
-    return formattedCode
   }
 
   /// Custom name prefix to prevent collision for the same operation object for Query, Mutation and Subscription
-  var structNamePrefix: String {
+  var requestParameterPrefix: String {
     switch self {
     case .query:
       return ""
@@ -298,14 +256,6 @@ private extension Field {
     }.lines
   }
 
-  func codingKeys() throws -> String {
-    """
-    private enum CodingKeys: String, CodingKey {
-      \(try args.compactMap { try $0.codingKeysDeclaration() }.lines)
-    }
-    """
-  }
-
   func argumentVariables(scalarMap: ScalarMap) throws -> String {
     try args.compactMap { try $0.argumentVariableDeclaration(scalarMap: scalarMap) }.lines
   }
@@ -314,26 +264,12 @@ private extension Field {
 // MARK: - InputValue
 
 private extension InputValue {
-  var docs: String {
-    if let description = self.description {
-      return "/// \(description)"
-    }
-    return ""
-  }
-
   func argumentVariableDeclaration(scalarMap: ScalarMap) throws -> String {
     let typeName = try type.scalarType(scalarMap: scalarMap)
 
     return """
     \(docs)
     let \(name.camelCase): \(typeName)
-    """
-  }
-
-  func codingKeysDeclaration() throws -> String {
-    return """
-    \(docs)
-    case \(name.camelCase) = \"\(name)\"
     """
   }
 }

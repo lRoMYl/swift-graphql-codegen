@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-final class ObjectFieldSpecificationGenerator {
+struct ObjectFieldSpecificationGenerator {
   private let scalarMap: ScalarMap
 
   init(scalarMap: ScalarMap) {

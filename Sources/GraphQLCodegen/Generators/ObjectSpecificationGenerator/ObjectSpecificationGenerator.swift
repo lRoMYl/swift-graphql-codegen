@@ -34,7 +34,6 @@ struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
 }
 
 private extension ObjectType {
-  /// Declares (i.e. creates) the object itself.
   func declaration(
     objects: [ObjectType],
     scalarMap: ScalarMap,
