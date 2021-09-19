@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAST
 
-enum ResponseParametersError: Error, LocalizedError {
+enum RequestParameterError: Error, LocalizedError {
   case missingReturnType(context: String)
   case notImplemented(context: String)
 
@@ -17,17 +17,20 @@ enum ResponseParametersError: Error, LocalizedError {
   }
 }
 
-struct ResponseParametersGenerator: GraphQLSpecificationGenerating {
+struct RequestParameterGenerator: GraphQLSpecificationGenerating {
+  private let classType = "GraphQLRequestParameter"
+  private let className = "RequestParameter"
+
   private let scalarMap: ScalarMap
-  private let selectionsGenerator: ResponseParametersSelectionsGenerator
-  private let codingKeysGenerator: ResponseParametersCodingKeysGenerator
+  private let selectionsGenerator: RequestParameterSelectionsGenerator
+  private let codingKeysGenerator: RequestParameterCodingKeysGenerator
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
-    self.selectionsGenerator = ResponseParametersSelectionsGenerator(
+    self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap
     )
-    self.codingKeysGenerator = ResponseParametersCodingKeysGenerator()
+    self.codingKeysGenerator = RequestParameterCodingKeysGenerator()
   }
 
   func declaration(schema: Schema) throws -> String {
@@ -36,39 +39,39 @@ struct ResponseParametersGenerator: GraphQLSpecificationGenerating {
     }.lines
 
     return """
-    // MARK: - RequestParameters
+    // MARK: - \(className)
 
     \(responseParameters)
     """
   }
 }
 
-private extension ResponseParametersGenerator {
+private extension RequestParameterGenerator {
   func operation(_ operation: GraphQLAST.Operation, objects: [ObjectType], scalarMap: ScalarMap) throws -> [String] {
     let returnObject = try operation.returnObject()
     let operationTypeName = operation.type.name.lowercased()
-    let requestParameterPrefix = operation.requestParameterPrefix
 
-    let result = try returnObject.fields.map {
-      try responseParameterDeclaration(
+    let result: [String] = try returnObject.fields.map { field in
+      let requestParameterName = self.requestParameterName(operation: operation, field: field)
+
+      return try requestParameterDeclaration(
         operationTypeName: operationTypeName,
-        requestParameterPrefix: requestParameterPrefix,
+        requestParameterName: requestParameterName,
         objectMap: objects,
-        field: $0
+        field: field
       )
     }
 
     return result
   }
 
-  func responseParameterDeclaration(
+  func requestParameterDeclaration(
     operationTypeName: String,
-    requestParameterPrefix: String,
+    requestParameterName: String,
     objectMap: [ObjectType],
     field: Field
   ) throws -> String {
     let fieldName = field.name.pascalCase
-    let reqeuestParametersName = "\(requestParameterPrefix)\(fieldName)RequestParameters"
 
     let operationVariables = field.operationVariables
     let operationArguments = try field.operationArguments()
@@ -79,9 +82,9 @@ private extension ResponseParametersGenerator {
     let codingKeys = try codingKeysGenerator.declaration(field: field)
 
     return """
-      // MARK: - \(reqeuestParametersName)
+      // MARK: - \(requestParameterName)
 
-      struct \(reqeuestParametersName): GraphQLRequestParameters {
+      struct \(requestParameterName): \(classType) {
         private let operationDefinitionFormat: String = \"\"\"
         \(operationTypeName) (\n\(operationVariables)
         ) {
@@ -119,6 +122,13 @@ private extension ResponseParametersGenerator {
       }
       """
   }
+
+  func requestParameterName(operation: GraphQLAST.Operation, field: Field) -> String {
+    let requestParameterPrefix = operation.requestParameterPrefix
+    let fieldName = field.name.pascalCase
+
+    return "\(requestParameterPrefix)\(fieldName)\(className)"
+  }
 }
 
 // MARK: - Operation
@@ -129,7 +139,7 @@ private extension GraphQLAST.Operation {
     case let .query(object), let .mutation(object):
       return object
     case .subscription:
-      throw ResponseParametersError.notImplemented(context: "Subscription is not implemented yet")
+      throw RequestParameterError.notImplemented(context: "Subscription is not implemented yet")
     }
   }
 
@@ -204,19 +214,13 @@ private extension Field {
   }
 
   func argumentVariables(scalarMap: ScalarMap) throws -> String {
-    try args.compactMap { try $0.argumentVariableDeclaration(scalarMap: scalarMap) }.lines
-  }
-}
+    try args.compactMap {
+      let typeName = try $0.type.scalarType(scalarMap: scalarMap)
 
-// MARK: - InputValue
-
-private extension InputValue {
-  func argumentVariableDeclaration(scalarMap: ScalarMap) throws -> String {
-    let typeName = try type.scalarType(scalarMap: scalarMap)
-
-    return """
-    \(docs)
-    let \(name.camelCase): \(typeName)
-    """
+      return """
+      \($0.docs)
+      let \($0.name.camelCase): \(typeName)
+      """
+    }.lines
   }
 }

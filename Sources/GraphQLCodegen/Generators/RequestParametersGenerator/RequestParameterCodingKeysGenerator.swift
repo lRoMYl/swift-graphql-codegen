@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-struct ResponseParametersCodingKeysGenerator {
+struct RequestParameterCodingKeysGenerator {
   func declaration(field: Field) throws -> String {
     """
     // MARK: - CodingKeys

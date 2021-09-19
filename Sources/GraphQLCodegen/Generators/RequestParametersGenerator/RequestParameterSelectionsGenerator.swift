@@ -10,7 +10,7 @@ import GraphQLAST
 
 private typealias FieldMap = [String: Field]
 
-enum ResponseParametersSelectionsError: Error, LocalizedError {
+enum RequsetParameterSelectionsError: Error, LocalizedError {
   case missingReturnType(context: String)
   case notImplemented(context: String)
 
@@ -19,7 +19,7 @@ enum ResponseParametersSelectionsError: Error, LocalizedError {
   }
 }
 
-struct ResponseParametersSelectionsGenerator {
+struct RequestParameterSelectionsGenerator {
   private let scalarMap: ScalarMap
 
   init(scalarMap: ScalarMap) {
@@ -30,7 +30,7 @@ struct ResponseParametersSelectionsGenerator {
     guard
       let returnObjectType = objects.first(where: { $0.name == operationField.type.namedType.name })
     else {
-      throw ResponseParametersSelectionsError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
+      throw RequsetParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
     }
 
     var dictionary = [operationField.name: operationField]
@@ -137,7 +137,7 @@ private extension Field {
       case .object:
         return "case \(name) = \"...\(name.pascalCase)Fragment\""
       case .union, .interface:
-        throw ResponseParametersSelectionsError.notImplemented(context: "Union and Interface are not implemented yet")
+        throw RequsetParameterSelectionsError.notImplemented(context: "Union and Interface are not implemented yet")
       }
     case let .nonNull(outputRef):
       return try enumCaseDeclaration(name: name, type: outputRef)
