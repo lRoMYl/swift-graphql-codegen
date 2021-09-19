@@ -5,9 +5,19 @@
 //  Created by Romy Cheah on 18/9/21.
 //
 
+import Foundation
 import GraphQLAST
 
 private typealias FieldMap = [String: Field]
+
+enum ResponseParametersSelectionsError: Error, LocalizedError {
+  case missingReturnType(context: String)
+  case notImplemented(context: String)
+
+  var errorDescription: String? {
+    "\(Self.self).\(self)"
+  }
+}
 
 struct ResponseParametersSelectionsGenerator {
   private let scalarMap: ScalarMap
@@ -20,7 +30,7 @@ struct ResponseParametersSelectionsGenerator {
     guard
       let returnObjectType = objects.first(where: { $0.name == operationField.type.namedType.name })
     else {
-      throw ResponseParametersError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
+      throw ResponseParametersSelectionsError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
     }
 
     var dictionary = [operationField.name: operationField]
@@ -127,7 +137,7 @@ private extension Field {
       case .object:
         return "case \(name) = \"...\(name.pascalCase)Fragment\""
       case .union, .interface:
-        throw ResponseParametersError.notImplemented(context: "Union and Interface are not implemented yet")
+        throw ResponseParametersSelectionsError.notImplemented(context: "Union and Interface are not implemented yet")
       }
     case let .nonNull(outputRef):
       return try enumCaseDeclaration(name: name, type: outputRef)
