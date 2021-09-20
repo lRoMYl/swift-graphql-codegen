@@ -9,6 +9,7 @@ let package = Package(
   products: [
     .library(name: "GraphQLCodegen", targets: ["GraphQLCodegen"]),
     .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
+    .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .executable(name: "dh-graphql-codegen-ios", targets: ["DHGraphQLCodegenSwift"])
   ],
   dependencies: [
@@ -28,8 +29,15 @@ let package = Package(
       name: "DHGraphQLCodegenSwift",
       dependencies: [
         "GraphQLCodegen",
+        "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]),
+    .target(
+      name: "GraphQLDownloader",
+      dependencies: [
+        "GraphQLAST"
+      ],
+      path: "Sources/GraphQLDownloader"),
     .testTarget(
       name: "DHGraphQLCodegenSwiftTests",
       dependencies: ["DHGraphQLCodegenSwift"]),

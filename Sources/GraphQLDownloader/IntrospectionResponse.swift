@@ -5,12 +5,12 @@
 //  Created by Romy Cheah on 9/9/21.
 //
 
-import Foundation
+import GraphQLAST
 
-private struct IntrospectionQueryResponse: Decodable, Equatable {
-  public let schema: Schema
+public struct IntrospectionResponse: Decodable, Equatable {
+  public let schema: SchemaResponse
 
   enum CodingKeys: String, CodingKey {
-    case schema = "__schema"
+    case schema = "data"
   }
 }
