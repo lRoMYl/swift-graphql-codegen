@@ -10,11 +10,20 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 ```
 
 ## How to use
+
+Generate graphql code from local schema.json
+- `--schema-source-type` default value is `local`, thus the file is read from local file path
 ```
-// By default, a local schema file name/path is provided to generate the code
 dh-graphql-codegen-ios "schema.json"
 
-// Fetch the schema from remote graphql repository
+// Specific path instead of relative path
+dh-graphql-codegen-ios "/User/Download/schema.json"
+```
+
+Generate graphql code from remote domain
+- Provide a remote url to fetch the schema
+- Use `remote` for `--schema-source-type` to indicate the schema needs to be fetched remotely
+```
 dh-graphql-codegen-ios "https://www.somedomain.com" --schema-source-type "remote"
 ```
 
