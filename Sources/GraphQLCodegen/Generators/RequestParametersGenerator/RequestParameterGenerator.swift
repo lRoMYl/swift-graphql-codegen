@@ -24,6 +24,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterCodingKeysGenerator
+  private let variablesGenerator: RequestParameterVariablesGenerator
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
@@ -31,6 +32,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
       scalarMap: scalarMap
     )
     self.codingKeysGenerator = RequestParameterCodingKeysGenerator()
+    self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)
   }
 
   func declaration(schema: Schema) throws -> String {
@@ -73,9 +75,9 @@ private extension RequestParameterGenerator {
   ) throws -> String {
     let fieldName = field.name.pascalCase
 
-    let operationVariables = field.operationVariables
-    let operationArguments = try field.operationArguments()
-    let argumentVariables = try field.argumentVariables(scalarMap: scalarMap)
+    let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
+    let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
+    let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
 
     let selections = try selectionsGenerator.declaration(operationField: field, objects: objectMap)
 
@@ -156,71 +158,71 @@ private extension GraphQLAST.Operation {
   }
 }
 
-// MARK: - Field
-
-private extension Field {
-  /**
-   - Operation variables is functionalities in GraphQL which allow injection of a list of variables on the root operation.
-   - Variables are marked with `$` prefix
-   - Required/mandatory field have a `!` prefix, optional field have no prefix
-   - GraphQL example syntax for variables is `($productId: String!, $isAvailable: Bool, $vendorId: String)`
-   ~~~
-   query($productId: String!, $isAvaiable: Bool, $vendorId: String) { // Here
-    product(id: $productId, isAvailable: $isAvailable) {
-      name
-    }
-    vendor(id: $vendorId) {
-      name
-    }
-   }
-   ~~~
-   */
-  var operationVariables: String {
-    args.compactMap {
-      switch $0.type {
-      case let .named(objectRef):
-        let typeName: String
-        switch objectRef {
-        case let .enum(name), let .inputObject(name), let .scalar(name):
-          typeName = name
-        }
-
-        return "    $\($0.name): \(typeName)"
-      case let .nonNull(objectRef), let .list(objectRef):
-        return "    $\($0.name): \(objectRef.argument)!"
-      }
-    }.lines
-  }
-
-  /**
-   - Operation argument is the operation variables passed from the root the selection
-   - Operation argument have `$` prefix
-   - Example of operation agument is `id: $productId, isAvailable: $isAvailable` and `id: $vendorId`
-   ~~~
-   query($productId: String!, $isAvaiable: Bool, $vendorId: String) {
-     product(id: $productId, isAvailable: $isAvailable) { // Here
-      name
-     }
-     vendor(id: $vendorId) { // Here
-      name
-     }
-   }
-   ~~~
-   */
-  func operationArguments() throws -> String {
-    args.compactMap {
-      return "    \($0.name): $\($0.name)"
-    }.lines
-  }
-
-  func argumentVariables(scalarMap: ScalarMap) throws -> String {
-    try args.compactMap {
-      let typeName = try $0.type.scalarType(scalarMap: scalarMap)
-
-      return """
-      \($0.docs)
-      let \($0.name.camelCase): \(typeName)
-      """
-    }.lines
-  }
-}
+//// MARK: - Field
+//
+//private extension Field {
+//  /**
+//   - Operation variables is functionalities in GraphQL which allow injection of a list of variables on the root operation.
+//   - Variables are marked with `$` prefix
+//   - Required/mandatory field have a `!` prefix, optional field have no prefix
+//   - GraphQL example syntax for variables is `($productId: String!, $isAvailable: Bool, $vendorId: String)`
+//   ~~~
+//   query($productId: String!, $isAvaiable: Bool, $vendorId: String) { // Here
+//    product(id: $productId, isAvailable: $isAvailable) {
+//      name
+//    }
+//    vendor(id: $vendorId) {
+//      name
+//    }
+//   }
+//   ~~~
+//   */
+//  var operationVariables: String {
+//    args.compactMap {
+//      switch $0.type {
+//      case let .named(objectRef):
+//        let typeName: String
+//        switch objectRef {
+//        case let .enum(name), let .inputObject(name), let .scalar(name):
+//          typeName = name
+//        }
+//
+//        return "    $\($0.name): \(typeName)"
+//      case let .nonNull(objectRef), let .list(objectRef):
+//        return "    $\($0.name): \(objectRef.argument)!"
+//      }
+//    }.lines
+//  }
+//
+//  /**
+//   - Operation argument is the operation variables passed from the root the selection
+//   - Operation argument have `$` prefix
+//   - Example of operation agument is `id: $productId, isAvailable: $isAvailable` and `id: $vendorId`
+//   ~~~
+//   query($productId: String!, $isAvaiable: Bool, $vendorId: String) {
+//     product(id: $productId, isAvailable: $isAvailable) { // Here
+//      name
+//     }
+//     vendor(id: $vendorId) { // Here
+//      name
+//     }
+//   }
+//   ~~~
+//   */
+//  func operationArguments() throws -> String {
+//    args.compactMap {
+//      return "    \($0.name): $\($0.name)"
+//    }.lines
+//  }
+//
+//  func argumentVariables(scalarMap: ScalarMap) throws -> String {
+//    try args.compactMap {
+//      let typeName = try $0.type.scalarType(scalarMap: scalarMap)
+//
+//      return """
+//      \($0.docs)
+//      let \($0.name.camelCase): \(typeName)
+//      """
+//    }.lines
+//  }
+//}
