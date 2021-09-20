@@ -11,8 +11,11 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 
 ## How to use
 ```
-# Atm, the first arguments are the schema full path.
-dh-graphql-codegen-ios "/Users/r.cheah/Downloads/schema.json"
+// By default, a local schema file name/path is provided to generate the code
+dh-graphql-codegen-ios "schema.json"
+
+// Fetch the schema from remote graphql repository
+dh-graphql-codegen-ios "https://www.somedomain.com" --schema-source-type "remote"
 ```
 
 Sample Query Code
