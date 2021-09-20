@@ -23,7 +23,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
 
   private let scalarMap: ScalarMap
   private let selectionsGenerator: RequestParameterSelectionsGenerator
-  private let codingKeysGenerator: RequestParameterCodingKeysGenerator
+  private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
 
   init(scalarMap: ScalarMap) {
@@ -31,7 +31,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap
     )
-    self.codingKeysGenerator = RequestParameterCodingKeysGenerator()
+    self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)
   }
 
@@ -60,6 +60,7 @@ private extension RequestParameterGenerator {
         operationTypeName: operationTypeName,
         requestParameterName: requestParameterName,
         objectMap: objects,
+        scalarMap: scalarMap,
         field: field
       )
     }
@@ -71,34 +72,41 @@ private extension RequestParameterGenerator {
     operationTypeName: String,
     requestParameterName: String,
     objectMap: [ObjectType],
+    scalarMap: ScalarMap,
     field: Field
   ) throws -> String {
-    let fieldName = field.name.pascalCase
+    let fragmentPrefix = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
     let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
+    let operationVariablesDeclaration = operationVariables.isEmpty
+      ? ""
+      : " (\n\(operationVariables)\n)"
+
     let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
+    let operationArgumentsDeclaration = operationArguments.isEmpty
+      ? ""
+      : "(\n\(operationArguments)\n)"
+
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
 
     let selections = try selectionsGenerator.declaration(operationField: field, objects: objectMap)
 
     let codingKeys = try codingKeysGenerator.declaration(field: field)
 
-    return """
+    let text = """
       // MARK: - \(requestParameterName)
 
       struct \(requestParameterName): \(classType) {
         private let operationDefinitionFormat: String = \"\"\"
-        \(operationTypeName) (\n\(operationVariables)
-        ) {
+        \(operationTypeName)\(operationVariablesDeclaration) {
         \(
           """
-          \(field.name)(
-          \(operationArguments)
-          ) {
-            ...\(fieldName)Fragment
+          \(field.name)\(operationArgumentsDeclaration) {
+            ...\(fragmentPrefix)Fragment
           }
           """
         )
+        }
 
         %1$@
         \"\"\"
@@ -123,6 +131,8 @@ private extension RequestParameterGenerator {
         \(codingKeys)
       }
       """
+
+    return text
   }
 
   func requestParameterName(operation: GraphQLAST.Operation, field: Field) -> String {
@@ -157,72 +167,3 @@ private extension GraphQLAST.Operation {
     }
   }
 }
-
-//// MARK: - Field
-//
-//private extension Field {
-//  /**
-//   - Operation variables is functionalities in GraphQL which allow injection of a list of variables on the root operation.
-//   - Variables are marked with `$` prefix
-//   - Required/mandatory field have a `!` prefix, optional field have no prefix
-//   - GraphQL example syntax for variables is `($productId: String!, $isAvailable: Bool, $vendorId: String)`
-//   ~~~
-//   query($productId: String!, $isAvaiable: Bool, $vendorId: String) { // Here
-//    product(id: $productId, isAvailable: $isAvailable) {
-//      name
-//    }
-//    vendor(id: $vendorId) {
-//      name
-//    }
-//   }
-//   ~~~
-//   */
-//  var operationVariables: String {
-//    args.compactMap {
-//      switch $0.type {
-//      case let .named(objectRef):
-//        let typeName: String
-//        switch objectRef {
-//        case let .enum(name), let .inputObject(name), let .scalar(name):
-//          typeName = name
-//        }
-//
-//        return "    $\($0.name): \(typeName)"
-//      case let .nonNull(objectRef), let .list(objectRef):
-//        return "    $\($0.name): \(objectRef.argument)!"
-//      }
-//    }.lines
-//  }
-//
-//  /**
-//   - Operation argument is the operation variables passed from the root the selection
-//   - Operation argument have `$` prefix
-//   - Example of operation agument is `id: $productId, isAvailable: $isAvailable` and `id: $vendorId`
-//   ~~~
-//   query($productId: String!, $isAvaiable: Bool, $vendorId: String) {
-//     product(id: $productId, isAvailable: $isAvailable) { // Here
-//      name
-//     }
-//     vendor(id: $vendorId) { // Here
-//      name
-//     }
-//   }
-//   ~~~
-//   */
-//  func operationArguments() throws -> String {
-//    args.compactMap {
-//      return "    \($0.name): $\($0.name)"
-//    }.lines
-//  }
-//
-//  func argumentVariables(scalarMap: ScalarMap) throws -> String {
-//    try args.compactMap {
-//      let typeName = try $0.type.scalarType(scalarMap: scalarMap)
-//
-//      return """
-//      \($0.docs)
-//      let \($0.name.camelCase): \(typeName)
-//      """
-//    }.lines
-//  }
-//}

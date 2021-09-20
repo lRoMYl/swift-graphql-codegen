@@ -11,12 +11,16 @@ import GraphQLAST
 import GraphQLCodegen
 import GraphQLDownloader
 
-GraphQLCodegenCLI.main(["https://apollo-fullstack-tutorial.herokuapp.com/", "--schema-path-source", "remote"])
-//
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema.json"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Repos/iOSTutorial/RocketReserver/schema.json"])
+GraphQLCodegenCLI.main()
 
-enum SchemaPathSource: String, ExpressibleByArgument {
+//GraphQLCodegenCLI.main(["https://apollo-fullstack-tutorial.herokuapp.com/", "--schema-source-type", "remote"])
+//GraphQLCodegenCLI.main(["https://buybutton.store/graphql", "--schema-source-type", "remote"])
+//
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema.json"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json"])
+
+enum SchemaSourceType: String, ExpressibleByArgument {
   case local
   case remote
 }
@@ -31,7 +35,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
   var schemaPath: String
 
   @Option(help: "Source of the schema path, local & remote")
-  var schemaPathSource: SchemaPathSource = .local
+  var schemaSourceType: SchemaSourceType = .local
 
 //  @Option(help: "Location of the output file")
 //  var outputPath: String
@@ -50,7 +54,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
 
 private extension GraphQLCodegenCLI {
   func fetchSchema() throws -> Schema {
-    switch schemaPathSource {
+    switch schemaSourceType {
     case .local:
       return try fetchLocalSchema()
     case .remote:
@@ -101,7 +105,14 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateCode(with schema: Schema) throws -> String {
-    let generator = GraphQLCodegen(scalarMap: [:])
+    let generator = GraphQLCodegen(
+      scalarMap: [
+        "BigDecimal": "Double",
+        "DateTime": "Double",
+        "Long": "Double",
+        "Upload": "String"
+      ]
+    )
     let generatedCode = try generator.generate(schema: schema)
 
     return generatedCode

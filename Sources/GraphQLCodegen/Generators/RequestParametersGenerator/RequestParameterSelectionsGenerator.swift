@@ -27,14 +27,47 @@ struct RequestParameterSelectionsGenerator {
   }
 
   func declaration(operationField: Field, objects: [ObjectType]) throws -> String {
+    let namedType = operationField.type.namedType
+
+    switch namedType {
+    case .object:
+      return try objectDeclaration(operationField: operationField, objects: objects)
+    case let .enum(name), let .scalar(name):
+      let code = """
+      // MARK: - Selections
+
+      let selections: Selections
+
+      struct Selections: GraphQLSelections {
+        func declaration() -> String {
+          \"\"\"
+          \(name)
+          \"\"\"
+        }
+      }
+      """
+      let formattedCode = try code.format()
+
+      return formattedCode
+    case .interface, .union:
+      throw RequestParameterSelectionsError.notImplemented(
+        context: "\(namedType) for field \(operationField.name)"
+      )
+    }
+  }
+}
+
+private extension RequestParameterSelectionsGenerator {
+  func objectDeclaration(operationField: Field, objects: [ObjectType]) throws -> String {
     guard
       let returnObjectType = objects.first(where: { $0.name == operationField.type.namedType.name })
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
     }
 
-    var dictionary = [operationField.name: operationField]
-    dictionary.merge(try returnObjectType.allNestedObjectField(objects: objects)) { (_, new) in new }
+    let operationFieldScalarType = try operationField.type.namedType.scalarType(scalarMap: scalarMap)
+    var dictionary = [operationFieldScalarType: operationField]
+    dictionary.merge(try returnObjectType.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
 
     let sortedDictionary = Array(dictionary).sorted(by: { $0.key < $1.key })
 
@@ -44,14 +77,14 @@ struct RequestParameterSelectionsGenerator {
     let selections: Selections
 
     struct Selections: GraphQLSelections {
-    \(try sortedDictionary.map { try $0.value.selectionDeclaration(objects: objects) }.lines )
+    \(try sortedDictionary.map { try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap) }.lines )
 
       func declaration() -> String {
         \"\"\"
         \(
           sortedDictionary.map {
             """
-            fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.reduce(into: "") { $0 += "\\n  \\($1.rawValue)" })
+            fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)
             }\n
             """
           }.lines
@@ -67,7 +100,7 @@ struct RequestParameterSelectionsGenerator {
 }
 
 private extension Field {
-  func allNestedObjectField(objects: [ObjectType]) throws -> FieldMap {
+  func allNestedObjectField(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     guard
       let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
     else {
@@ -78,7 +111,8 @@ private extension Field {
 
     switch returnObjectType.kind {
     case .object:
-      fieldMap[name] = self
+      let scalarType = try self.type.namedType.scalarType(scalarMap: scalarMap)
+      fieldMap[scalarType] = self
     case .enumeration, .inputObject, .interface, .scalar, .union:
       break
     }
@@ -88,20 +122,21 @@ private extension Field {
       case let .named(outputRef):
         switch outputRef {
         case .object:
-          fieldMap[$0.name] = $0
+          let scalarType = try outputRef.scalarType(scalarMap: scalarMap)
+          fieldMap[scalarType] = $0
         case .enum, .interface, .scalar, .union:
           break
         }
       case .list, .nonNull:
-        fieldMap.merge(try $0.allNestedObjectField(objects: objects)) { (_, new) in new }
+        fieldMap.merge(try $0.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
       }
     }
 
     return fieldMap
   }
 
-  func selectionDeclaration(objects: [ObjectType]) throws -> String {
-    let returnName = type.namedType.name
+  func selectionDeclaration(objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
+    let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
     guard
       let returnObjectType = objects.first(where: { $0.name == returnName })
@@ -146,9 +181,9 @@ private extension Field {
 }
 
 private extension ObjectType {
-  func allNestedObjectField(objects: [ObjectType]) throws -> FieldMap {
+  func allNestedObjectField(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let allFields = self.allFields(objects: objects)
-    let fieldMaps = try allFields.map { try $0.allNestedObjectField(objects: objects) }
+    let fieldMaps = try allFields.map { try $0.allNestedObjectField(objects: objects, scalarMap: scalarMap) }
     let result = fieldMaps.reduce(into: FieldMap()) { result, fieldMap in
       result.merge(fieldMap) { (_, new) in new }
     }

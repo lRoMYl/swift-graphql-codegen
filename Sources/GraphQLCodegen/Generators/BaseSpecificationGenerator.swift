@@ -29,7 +29,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       var operationDefinition: String { get }
     }
 
-    protocol GraphQLSelection: RawRepresentable, Hashable where RawValue == String {}
+    protocol GraphQLSelection: RawRepresentable, Hashable, CaseIterable where RawValue == String {}
     protocol GraphQLSelections {
       func declaration() -> String
     }
@@ -61,7 +61,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        let parametersData = try requestParametersEncoder.encode(parameters)
+        let parametersData = (try? requestParametersEncoder.encode(parameters)) ?? Data()
         let parametersString = String(data: parametersData, encoding: .utf8) ?? ""
         try container.encode(parametersString, forKey: .parameters)
 
@@ -72,6 +72,17 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           try container.encode(operationDefinition, forKey: .query)
         case .mutation:
           try container.encode(operationDefinition, forKey: .mutation)
+        }
+      }
+    }
+
+    // MARK: - Extension
+    fileprivate extension Collection where Element: GraphQLSelection {
+      var declaration: String {
+        if count == 0 {
+          return Element.allCases.reduce(into: "") { $0 += \"\\n  \\($1.rawValue)\" }
+        } else {
+          return reduce(into: "") { $0 += \"\\n  \\($1.rawValue)\" }
         }
       }
     }

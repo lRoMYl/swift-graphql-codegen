@@ -7,15 +7,25 @@
 
 import GraphQLAST
 
-struct RequestParameterCodingKeysGenerator {
+struct RequestParameterEncodableGenerator {
   func declaration(field: Field) throws -> String {
-    """
-    // MARK: - CodingKeys
+    field.args.count == 0
+      ? emptyEncoder()
+      : try codingKeys(with: field)
+  }
+}
 
+private extension RequestParameterEncodableGenerator {
+  func codingKeys(with field: Field) throws -> String {
+    """
     private enum CodingKeys: String, CodingKey {
       \(try field.args.compactMap { try $0.codingKeysDeclaration() }.lines)
     }
     """
+  }
+
+  func emptyEncoder() -> String {
+    "func encode(to _: Encoder) throws {}"
   }
 }
 
