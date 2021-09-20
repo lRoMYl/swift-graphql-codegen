@@ -37,6 +37,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
     enum GraphQLRequestType {
       case query
       case mutation
+      case subscription
     }
 
     protocol GraphQLNetworkModel: Codable {}
@@ -50,6 +51,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
         case parameters = "variables"
         case query
         case mutation
+        case subscription
       }
 
       init(
@@ -63,7 +65,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
 
         let parametersData = (try? requestParametersEncoder.encode(parameters)) ?? Data()
         let parametersString = String(data: parametersData, encoding: .utf8) ?? ""
-        try container.encode(parametersString, forKey: .parameters)
+        try container.encode(parametersString.isEmpty ? "null" : parametersString, forKey: .parameters)
 
         let operationDefinition = parameters.operationDefinition
 
@@ -72,6 +74,8 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           try container.encode(operationDefinition, forKey: .query)
         case .mutation:
           try container.encode(operationDefinition, forKey: .mutation)
+        case .subscription:
+          try container.encode(operationDefinition, forKey: .subscription)
         }
       }
     }

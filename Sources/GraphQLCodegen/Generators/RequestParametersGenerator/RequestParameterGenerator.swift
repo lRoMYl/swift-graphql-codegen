@@ -25,6 +25,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
+  private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
@@ -33,6 +34,10 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)
+    self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
+      scalarMap: scalarMap,
+      variablesGenerator: variablesGenerator
+    )
   }
 
   func declaration(schema: Schema) throws -> String {
@@ -75,17 +80,7 @@ private extension RequestParameterGenerator {
     scalarMap: ScalarMap,
     field: Field
   ) throws -> String {
-    let fragmentPrefix = try field.type.namedType.scalarType(scalarMap: scalarMap)
-
-    let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
-    let operationVariablesDeclaration = operationVariables.isEmpty
-      ? ""
-      : " (\n\(operationVariables)\n)"
-
-    let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
-    let operationArgumentsDeclaration = operationArguments.isEmpty
-      ? ""
-      : "(\n\(operationArguments)\n)"
+    let operationDefinition = try operationDefinitionGenerator.declaration(operationTypeName: operationTypeName, field: field)
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
 
@@ -97,34 +92,13 @@ private extension RequestParameterGenerator {
       // MARK: - \(requestParameterName)
 
       struct \(requestParameterName): \(classType) {
-        private let operationDefinitionFormat: String = \"\"\"
-        \(operationTypeName)\(operationVariablesDeclaration) {
-        \(
-          """
-          \(field.name)\(operationArgumentsDeclaration) {
-            ...\(fragmentPrefix)Fragment
-          }
-          """
-        )
-        }
-
-        %1$@
-        \"\"\"
-
-        var operationDefinition: String {
-          String(
-            format: operationDefinitionFormat,
-            selections.declaration()
-          )
-        }
-
-        // MARK: - Arguments
-
-        \(argumentVariables)
-
         // MARK: - Request Type
 
         let requestType: GraphQLRequestType = .\(operationTypeName)
+
+        \(operationDefinition)
+
+        \(argumentVariables)
 
         \(selections)
 
@@ -150,8 +124,9 @@ private extension GraphQLAST.Operation {
     switch self {
     case let .query(object), let .mutation(object):
       return object
-    case .subscription:
-      throw RequestParameterError.notImplemented(context: "Subscription is not implemented yet")
+    case let .subscription(object):
+      print("Warning, subscription is not implemented yet")
+      return object
     }
   }
 

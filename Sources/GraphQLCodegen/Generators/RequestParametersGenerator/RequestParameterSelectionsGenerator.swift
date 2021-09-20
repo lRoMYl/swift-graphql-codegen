@@ -32,23 +32,18 @@ struct RequestParameterSelectionsGenerator {
     switch namedType {
     case .object:
       return try objectDeclaration(operationField: operationField, objects: objects)
-    case let .enum(name), let .scalar(name):
-      let code = """
+    case .enum, .scalar:
+      return """
       // MARK: - Selections
 
       let selections: Selections
 
       struct Selections: GraphQLSelections {
         func declaration() -> String {
-          \"\"\"
-          \(name)
-          \"\"\"
+          \"\"
         }
       }
       """
-      let formattedCode = try code.format()
-
-      return formattedCode
     case .interface, .union:
       throw RequestParameterSelectionsError.notImplemented(
         context: "\(namedType) for field \(operationField.name)"
@@ -145,7 +140,13 @@ private extension Field {
     }
 
     let allFields = returnObjectType.allFields(objects: objects)
-    let fieldsEnum = try allFields.map { try $0.enumCaseDeclaration(name: $0.name, type: $0.type) }.lines
+    let fieldsEnum = try allFields.map {
+      try $0.enumCaseDeclaration(
+        name: $0.name,
+        type: $0.type,
+        scalarMap: scalarMap
+      )
+    }.lines
 
     let selectionVariableName = "\(returnName.camelCase)Selections"
     let selectionEnumName = "\(returnName.pascalCase)Selection"
@@ -161,21 +162,25 @@ private extension Field {
     return result
   }
 
-  func enumCaseDeclaration(name: String, type: OutputTypeRef) throws -> String {
+  func enumCaseDeclaration(name: String, type: OutputTypeRef, scalarMap: ScalarMap) throws -> String {
     switch type {
-    case let .list(outputRef):
-      return try enumCaseDeclaration(name: name, type: outputRef)
+    case let .list(outputRef), let .nonNull(outputRef):
+      return try enumCaseDeclaration(name: name, type: outputRef, scalarMap: scalarMap)
     case let .named(objectRef):
       switch objectRef {
       case .scalar, .enum:
         return "case \(name) = \"\(name)\""
       case .object:
-        return "case \(name) = \"...\(name.pascalCase)Fragment\""
+        return """
+        case \(name) = \"\"\"
+        \(name) {
+          ...\(try objectRef.scalarType(scalarMap: scalarMap))Fragment
+        }
+        \"\"\"
+        """
       case .union, .interface:
         throw RequestParameterSelectionsError.notImplemented(context: "Union and Interface are not implemented yet")
       }
-    case let .nonNull(outputRef):
-      return try enumCaseDeclaration(name: name, type: outputRef)
     }
   }
 }

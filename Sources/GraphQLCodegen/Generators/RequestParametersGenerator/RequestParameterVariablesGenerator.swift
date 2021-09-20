@@ -73,7 +73,7 @@ struct RequestParameterVariablesGenerator {
    - Swift argument variables
    */
   func argumentVariablesDeclaration(with field: Field) throws -> String {
-    try field.args.compactMap {
+    let argumentVariables = try field.args.compactMap {
       let typeName = try $0.type.scalarType(scalarMap: scalarMap)
 
       return """
@@ -81,5 +81,10 @@ struct RequestParameterVariablesGenerator {
       let \($0.name.camelCase): \(typeName)
       """
     }.lines
+
+    return """
+    // MARK: - Arguments
+    \(argumentVariables)
+    """
   }
 }
