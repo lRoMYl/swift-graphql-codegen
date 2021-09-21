@@ -1,5 +1,7 @@
 # DHGraphQLCodegeSwift
 
+Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
+
 Supports GraphQL Native Feature
 - [x] Object
 - [x] InputObject
@@ -13,6 +15,8 @@ Supports GraphQL Native Feature
 - [x] Introspection
 
 Support DH Custom Feature
+- [x] SPM
+- [x] Brew
 - [x] Local schema
 - [x] Remote schema, download using introspection query
 - [ ] Remote schema authorization headers
