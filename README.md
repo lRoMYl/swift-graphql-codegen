@@ -1,5 +1,16 @@
 # DHGraphQLCodegeSwift
 
+Supports
+- [x] Object
+- [x] InputObject
+- [x] Enum
+- [ ] Interface
+- [ ] Union
+- [ ] Enumeration
+- [x] Query
+- [x] Mutation
+- [ ] Subscription
+
 ## Installation
 ```
 brew tap lromyl/tap
