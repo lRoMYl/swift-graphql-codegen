@@ -18,6 +18,7 @@ extension String {
     // Todo: Read configurtion from .swiftformat
     var formatOptions = FormatOptions.default
     formatOptions.indent = "  "
+    formatOptions.trailingCommas = false
 
     let formatted = try SwiftFormat.format(trimmed, options: formatOptions)
     return formatted

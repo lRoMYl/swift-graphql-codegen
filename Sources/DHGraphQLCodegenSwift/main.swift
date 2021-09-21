@@ -15,6 +15,7 @@ GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(["https://apollo-fullstack-tutorial.herokuapp.com/", "--schema-source-type", "remote"])
 //GraphQLCodegenCLI.main(["https://buybutton.store/graphql", "--schema-source-type", "remote"])
+//GraphQLCodegenCLI.main(["https://sg-st.fd-api.com/groceries-product-service/query", "--schema-source-type", "remote"])
 //
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema.json"])
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json"])

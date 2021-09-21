@@ -33,17 +33,7 @@ struct RequestParameterSelectionsGenerator {
     case .object:
       return try objectDeclaration(operationField: operationField, objects: objects)
     case .enum, .scalar:
-      return """
-      // MARK: - Selections
-
-      let selections: Selections
-
-      struct Selections: GraphQLSelections {
-        func declaration() -> String {
-          \"\"
-        }
-      }
-      """
+      return emptyDeclaration(operationField: operationField)
     case .interface, .union:
       throw RequestParameterSelectionsError.notImplemented(
         context: "\(namedType) for field \(operationField.name)"
@@ -52,7 +42,7 @@ struct RequestParameterSelectionsGenerator {
   }
 }
 
-private extension RequestParameterSelectionsGenerator {
+extension RequestParameterSelectionsGenerator {
   func objectDeclaration(operationField: Field, objects: [ObjectType]) throws -> String {
     guard
       let returnObjectType = objects.first(where: { $0.name == operationField.type.namedType.name })
@@ -61,10 +51,15 @@ private extension RequestParameterSelectionsGenerator {
     }
 
     let operationFieldScalarType = try operationField.type.namedType.scalarType(scalarMap: scalarMap)
-    var dictionary = [operationFieldScalarType: operationField]
-    dictionary.merge(try returnObjectType.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
+    var fieldMap: FieldMap = [operationFieldScalarType: operationField]
+    fieldMap.merge(try returnObjectType.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
 
-    let sortedDictionary = Array(dictionary).sorted(by: { $0.key < $1.key })
+    // Sort field map to ensure the generated code sequence is always consistent
+    let sortedFieldMap = Array(fieldMap).sorted(by: { $0.key < $1.key })
+
+    let selectionDeclarations = try sortedFieldMap.selectionDeclarations(objects: objects, scalarMap: scalarMap)
+    let selectionFragmentMap = sortedFieldMap.selectionFragmentMap
+    let selectionMap = sortedFieldMap.selectionMap
 
     let code = """
     // MARK: - Selections
@@ -72,25 +67,34 @@ private extension RequestParameterSelectionsGenerator {
     let selections: Selections
 
     struct Selections: GraphQLSelections {
-    \(try sortedDictionary.map { try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap) }.lines )
+      \(selectionDeclarations)
 
       func declaration() -> String {
-        \"\"\"
-        \(
-          sortedDictionary.map {
-            """
-            fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)
-            }\n
-            """
-          }.lines
-        )
-        \"\"\"
+        \(selectionFragmentMap)
+
+        \(selectionMap)
+
+        return declaration(selectionMap: selectionMap, rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment")
       }
     }
     """
     let formattedCode = try code.format()
 
     return formattedCode
+  }
+
+  func emptyDeclaration(operationField: Field) -> String {
+    """
+    // MARK: - Selections
+
+    let selections: Selections
+
+    struct Selections: GraphQLSelections {
+      func declaration() -> String {
+        \"\"
+      }
+    }
+    """
   }
 }
 
@@ -194,5 +198,42 @@ private extension ObjectType {
     }
 
     return result
+  }
+}
+
+private extension Collection where Element == FieldMap.Element {
+  func selectionDeclarations(objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
+    try map {
+      try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap)
+    }.lines
+  }
+
+  var selectionFragmentMap: String {
+    map {
+      """
+      let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
+      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)
+      }
+      \"\"\"\n
+      """
+    }.lines
+  }
+
+  var selectionMap: String {
+    let selectionMapValues = enumerated().map { (index, element) -> String in
+      var text = "\"\(element.key.pascalCase)Fragment\": \(element.key.camelCase)SelectionsDeclaration"
+
+      if index < count - 1 {
+        text.append(",")
+      }
+
+      return text
+    }.lines
+
+    return """
+    let selectionMap = [
+      \(selectionMapValues)
+    ]
+    """
   }
 }
