@@ -17,9 +17,10 @@ GraphQLCodegenCLI.main()
 //GraphQLCodegenCLI.main(["https://buybutton.store/graphql", "--schema-source-type", "remote"])
 //GraphQLCodegenCLI.main(["https://sg-st.fd-api.com/groceries-product-service/query", "--schema-source-type", "remote"])
 //
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema.json"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema-obj-input.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
+//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
 
 enum SchemaSourceType: String, ExpressibleByArgument {
   case local
@@ -38,8 +39,8 @@ struct GraphQLCodegenCLI: ParsableCommand {
   @Option(help: "Source of the schema path, local & remote")
   var schemaSourceType: SchemaSourceType = .local
 
-//  @Option(help: "Location of the output file")
-//  var outputPath: String
+  @Option(help: "Location and name of the output file")
+  var output: String = "GraphQLSpec.swift"
 
   static var configuration = CommandConfiguration(
     commandName: "dh-graphql-codegen-ios"
@@ -49,7 +50,8 @@ struct GraphQLCodegenCLI: ParsableCommand {
     let schema = try fetchSchema()
     let generatedCode = try generateCode(with: schema)
 
-    print(generatedCode)
+    let generatedCodeData = generatedCode.data(using: .utf8)
+    FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
   }
 }
 
@@ -87,7 +89,7 @@ private extension GraphQLCodegenCLI {
       request: IntroSpectionRequest(),
       url: url,
       headers: [:]
-    ) { responseResult in
+    ) { responseResult, data in
       result = responseResult
 
       semaphore.signal()

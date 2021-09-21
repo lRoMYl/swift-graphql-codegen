@@ -21,6 +21,7 @@ public struct GraphQLCodegen {
       BaseSpecificationGenerator(),
       EnumSpecificationGenerator(scalarMap: self.scalarMap),
       ObjectSpecificationGenerator(scalarMap: self.scalarMap),
+      InputObjectSpecificationGenerator(scalarMap: self.scalarMap),
       RequestParameterGenerator(scalarMap: self.scalarMap)
     ]
   }

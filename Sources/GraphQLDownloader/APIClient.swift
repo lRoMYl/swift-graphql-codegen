@@ -22,7 +22,7 @@ public final class APIClient {
     request: IntroSpectionRequest,
     url: URL,
     headers: [String: String],
-    _ completion: @escaping (Result<Schema, Error>) -> ()
+    _ completion: @escaping (Result<Schema, Error>, Data?) -> ()
   ) {
     var urlRequest = URLRequest(url: url)
 
@@ -36,26 +36,26 @@ public final class APIClient {
         urlRequest.setValue($1, forHTTPHeaderField: $0)
       }
     } catch {
-      completion(.failure(error))
+      completion(.failure(error), nil)
     }
 
     URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, error in
       guard error == nil else {
-        completion(.failure(error!))
+        completion(.failure(error!), nil)
         return
       }
 
       guard let data = data else {
-        completion(.failure(APIClientError.emptyData))
+        completion(.failure(APIClientError.emptyData), nil)
         return
       }
 
       do {
         let schemaResponse = try self.decoder.decode(IntrospectionResponse.self, from: data)
 
-        completion(.success(schemaResponse.schema.schema))
+        completion(.success(schemaResponse.schema.schema), data)
       } catch {
-        completion(.failure(error))
+        completion(.failure(error), nil)
       }
     }
     .resume()

@@ -16,12 +16,11 @@ struct ObjectFieldSpecificationGenerator {
 
   func variableDeclaration(field: Field) throws -> String {
     let type = try field.type.namedType.scalarType(scalarMap: scalarMap)
-    let wrappedType = field.type.type(for: type)
 
     return """
     \(field.docs)
     \(field.availability)
-    let \(field.name.camelCase): \(wrappedType)
+    let \(field.name.camelCase): \(type)
     """
   }
 
