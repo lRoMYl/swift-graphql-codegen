@@ -1,6 +1,6 @@
 # DHGraphQLCodegeSwift
 
-Supports
+Supports GraphQL Native Feature
 - [x] Object
 - [x] InputObject
 - [x] Enum
@@ -10,6 +10,15 @@ Supports
 - [x] Query
 - [x] Mutation
 - [ ] Subscription
+- [x] Introspection
+
+Support DH Custom Feature
+- [x] Local schema
+- [x] Remote schema, download using introspection query
+- [ ] Remote schema authorization headers
+- [ ] Remote schema MD5 cache
+- [ ] Scalar Map extension
+- [ ] Custom field whitelisting
 
 ## Installation
 ```
