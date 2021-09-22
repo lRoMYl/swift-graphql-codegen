@@ -36,4 +36,13 @@ extension ObjectType {
 
     return selectionItemMap.selectable.contains(field.name)
   }
+
+  func allSelectableFields(objects: [ObjectType], selectionMap: SelectionMap?) -> [Field] {
+    allFields(objects: objects).filter { field in
+      let isRequired = self.isRequired(field: field, selectionMap: selectionMap)
+      let isSelectable = self.isSelectable(field: field, selectionMap: selectionMap)
+
+      return isRequired || isSelectable
+    }
+  }
 }

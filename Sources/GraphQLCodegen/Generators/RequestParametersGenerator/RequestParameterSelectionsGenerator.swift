@@ -21,9 +21,11 @@ enum RequestParameterSelectionsError: Error, LocalizedError {
 
 struct RequestParameterSelectionsGenerator {
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
   }
 
   func declaration(operationField: Field, objects: [ObjectType]) throws -> String {
@@ -57,9 +59,13 @@ extension RequestParameterSelectionsGenerator {
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = Array(fieldMap).sorted(by: { $0.key < $1.key })
 
-    let selectionDeclarations = try sortedFieldMap.selectionDeclarations(objects: objects, scalarMap: scalarMap)
+    let selectionDeclarations = try sortedFieldMap.selectionDeclarations(
+      objects: objects,
+      scalarMap: scalarMap,
+      selectionMap: selectionMap
+    )
     let selectionFragmentMap = sortedFieldMap.selectionFragmentMap
-    let selectionMap = sortedFieldMap.selectionMap
+    let selectionDeclarationMap = sortedFieldMap.selectionDeclarationMap
 
     let code = """
     // MARK: - Selections
@@ -72,9 +78,9 @@ extension RequestParameterSelectionsGenerator {
       func declaration() -> String {
         \(selectionFragmentMap)
 
-        \(selectionMap)
+        \(selectionDeclarationMap)
 
-        return declaration(selectionMap: selectionMap, rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment")
+        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment")
       }
     }
     """
@@ -134,7 +140,7 @@ private extension Field {
     return fieldMap
   }
 
-  func selectionDeclaration(objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
+  func selectionDeclaration(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
     guard
@@ -143,7 +149,7 @@ private extension Field {
       return ""
     }
 
-    let allFields = returnObjectType.allFields(objects: objects)
+    let allFields = returnObjectType.allSelectableFields(objects: objects, selectionMap: selectionMap)
     let fieldsEnum = try allFields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
@@ -202,9 +208,9 @@ private extension ObjectType {
 }
 
 private extension Collection where Element == FieldMap.Element {
-  func selectionDeclarations(objects: [ObjectType], scalarMap: ScalarMap) throws -> String {
+  func selectionDeclarations(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> String {
     try map {
-      try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap)
+      try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap, selectionMap: selectionMap)
     }.lines
   }
 
@@ -219,8 +225,8 @@ private extension Collection where Element == FieldMap.Element {
     }.lines
   }
 
-  var selectionMap: String {
-    let selectionMapValues = enumerated().map { (index, element) -> String in
+  var selectionDeclarationMap: String {
+    let selectionDeclarationMapValues = enumerated().map { (index, element) -> String in
       var text = "\"\(element.key.pascalCase)Fragment\": \(element.key.camelCase)SelectionsDeclaration"
 
       if index < count - 1 {
@@ -231,8 +237,8 @@ private extension Collection where Element == FieldMap.Element {
     }.lines
 
     return """
-    let selectionMap = [
-      \(selectionMapValues)
+    let selectionDeclarationMap = [
+      \(selectionDeclarationMapValues)
     ]
     """
   }

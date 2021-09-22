@@ -43,8 +43,15 @@ struct ObjectFieldSpecificationGenerator {
     }
   }
 
-  func codingKeyDeclaration(field: Field) -> String {
-    "case \(field.name.camelCase) = \"\(field.name)\""
+  func codingKeyDeclaration(object: ObjectType, field: Field) -> String {
+    let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
+    let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
+
+    if isRequired || isSelectable {
+      return "case \(field.name.camelCase) = \"\(field.name)\""
+    } else {
+      return ""
+    }
   }
 }
 

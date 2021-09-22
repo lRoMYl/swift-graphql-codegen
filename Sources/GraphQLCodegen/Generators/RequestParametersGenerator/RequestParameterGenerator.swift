@@ -32,7 +32,8 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
-      scalarMap: scalarMap
+      scalarMap: scalarMap,
+      selectionMap: selectionMap
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)

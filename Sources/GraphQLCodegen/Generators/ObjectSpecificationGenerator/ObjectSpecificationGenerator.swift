@@ -49,7 +49,7 @@ private extension ObjectType {
       .map { try objectFieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
       .lines
     let fieldsCodingKey = allFields(objects: objects)
-      .map { objectFieldSpecificationGenerator.codingKeyDeclaration(field: $0) }
+      .map { objectFieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines
 
     return """

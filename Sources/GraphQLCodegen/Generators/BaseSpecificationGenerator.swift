@@ -40,8 +40,6 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       case subscription
     }
 
-    protocol GraphQLNetworkModel: Codable {}
-
     private let requestParametersEncoder = JSONEncoder()
 
     struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
@@ -92,23 +90,23 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
     }
 
     private extension GraphQLSelections {
-      func declaration(selectionMap: [String: String], rootSelectionKey: String) -> String {
+      func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
         var dictionary = [String: String]()
-        dictionary[rootSelectionKey] = selectionMap[rootSelectionKey]
+        dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
         // Initialize queue with root selection
         var queue = Array(dictionary.values)
 
-        // Remove root selection from SelectionMap to prevent circular dependency
-        var selectionMap = selectionMap
-        selectionMap.removeValue(forKey: rootSelectionKey)
+        // Remove root selection from SelectionDeclarationMap to prevent circular dependency
+        var selectionDeclarationMap = selectionDeclarationMap
+        selectionDeclarationMap.removeValue(forKey: rootSelectionKey)
 
         while !queue.isEmpty {
           let currentFragment = queue.removeFirst()
 
-          for childSelectionKey in selectionMap.keys {
+          for childSelectionKey in selectionDeclarationMap.keys {
             if currentFragment.contains("...\\(childSelectionKey)") {
-              let value = selectionMap[childSelectionKey]!
+              let value = selectionDeclarationMap[childSelectionKey]!
 
               queue.append(value)
               dictionary[childSelectionKey] = value
