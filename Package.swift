@@ -10,7 +10,7 @@ let package = Package(
     .library(name: "GraphQLCodegen", targets: ["GraphQLCodegen"]),
     .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
     .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
-    .executable(name: "dh-graphql-codegen-ios", targets: ["DHGraphQLCodegenSwift"])
+    .executable(name: "dh-graphql-codegen-ios", targets: ["DHGraphQLCodegenCLI"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),
@@ -26,7 +26,7 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST"],
       path: "Sources/GraphQLCodegen"),
     .target(
-      name: "DHGraphQLCodegenSwift",
+      name: "DHGraphQLCodegenCLI",
       dependencies: [
         "GraphQLCodegen",
         "GraphQLDownloader",
@@ -39,8 +39,8 @@ let package = Package(
       ],
       path: "Sources/GraphQLDownloader"),
     .testTarget(
-      name: "DHGraphQLCodegenSwiftTests",
-      dependencies: ["DHGraphQLCodegenSwift"]),
+      name: "DHGraphQLCodegenCLITests",
+      dependencies: ["DHGraphQLCodegenCLI"]),
     .testTarget(
       name: "GraphQLCodegenTests",
       dependencies: ["GraphQLCodegen"]

@@ -48,7 +48,7 @@ private extension ObjectType {
       .lines
 
     return """
-    struct \(name): Codable {
+    struct \(name): Decodable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys

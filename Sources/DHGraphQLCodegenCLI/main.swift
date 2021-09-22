@@ -22,7 +22,7 @@ GraphQLCodegenCLI.main()
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
 
-enum SchemaSourceType: String, ExpressibleByArgument {
+enum SchemaSource: String, ExpressibleByArgument {
   case local
   case remote
 }
@@ -33,13 +33,28 @@ enum GraphQLCodegenCLIError: Error {
 }
 
 struct GraphQLCodegenCLI: ParsableCommand {
-  @Argument(help: "Location of the introspection file")
+  @Argument(
+    help: """
+    Location of the introspection file, it can be local or remote path.
+    e.g.
+    - local path: "/User/Download/schema.json"
+    - remote path: "https://www.somedomain.com"
+    """
+  )
   var schemaPath: String
 
-  @Option(help: "Source of the schema path, local & remote")
-  var schemaSourceType: SchemaSourceType = .local
+  @Option(help: "Source of the schema path, \"local\" or \"remote\"")
+  var schemaSource: SchemaSource = .local
 
-  @Option(help: "Location and name of the output file")
+  @Option(
+    help: """
+    Location and name of the output file
+    - If not path is given, it will generate the output in the current directory
+    - If a path is given, it will generate the output with the given directory
+    e.g.
+    - relative path: "GraphQLSpec.swift", will generate the file in the current directory
+    - given path: "/Users/Download/GraphQLSpec.swift", will generate the file in the given "/User/Download" directory
+    """)
   var output: String = "GraphQLSpec.swift"
 
   static var configuration = CommandConfiguration(
@@ -57,7 +72,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
 
 private extension GraphQLCodegenCLI {
   func fetchSchema() throws -> Schema {
-    switch schemaSourceType {
+    switch schemaSource {
     case .local:
       return try fetchLocalSchema()
     case .remote:
