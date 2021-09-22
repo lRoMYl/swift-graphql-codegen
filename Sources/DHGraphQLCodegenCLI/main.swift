@@ -146,7 +146,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateCode(schema: Schema, config: Config) throws -> String {
-    let generator = GraphQLCodegen(
+    let generator = try GraphQLCodegen(
       scalarMap: config.scalarMap,
       selectionMap: config.selectionMap
     )

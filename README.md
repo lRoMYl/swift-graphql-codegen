@@ -21,8 +21,8 @@ Support DH Custom Feature
 - [x] Remote schema, download using introspection query
 - [ ] Remote schema authorization headers
 - [ ] Remote schema MD5 cache
-- [ ] Scalar Map extension
-- [ ] Custom field whitelisting
+- [x] Scalar Map extension
+- [x] Custom field whitelisting
 
 ## Installation
 ```
