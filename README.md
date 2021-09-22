@@ -121,18 +121,18 @@ extension GraphQLRequest: BodyParameters {
 
 ```JSON
 {
-	"scalarMap": {
-		  "BigDecimal": "Double",
-      "DateTime": "Double",
-      "Long": "Double",
-      "Upload": "String"
-    },
-    "selectionMap": {
-    	"Discount": {
-    		"required": ["type"],
-    		"selectable": []
-    	}
+  "scalarMap": {
+    "BigDecimal": "Double",
+    "DateTime": "Double",
+    "Long": "Double",
+    "Upload": "String"
+  },
+  "selectionMap": {
+    "Discount": {
+      "required": ["type"],
+      "selectable": []
     }
+  }
 }
 ```
 
