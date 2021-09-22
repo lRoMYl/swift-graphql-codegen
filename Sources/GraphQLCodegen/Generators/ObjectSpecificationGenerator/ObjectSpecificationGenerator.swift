@@ -55,10 +55,12 @@ private extension Structure {
     fieldSpecificationGenerator: FieldSpecificationGenerator
   ) throws -> String {
     let name = self.name.pascalCase
-    let fieldsVariable = try fields
+    let sortedFields = fields.sorted(by: { $0.name < $1.name })
+
+    let fieldsVariable = try sortedFields
       .map { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
       .lines
-    let fieldsCodingKey = fields
+    let fieldsCodingKey = sortedFields
       .map { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines
 

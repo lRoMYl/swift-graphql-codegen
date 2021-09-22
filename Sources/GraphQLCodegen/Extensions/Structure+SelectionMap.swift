@@ -43,6 +43,6 @@ extension Structure {
       let isSelectable = self.isSelectable(field: field, selectionMap: selectionMap)
 
       return isRequired || isSelectable
-    }
+    }.sorted(by: { $0.name < $1.name })
   }
 }
