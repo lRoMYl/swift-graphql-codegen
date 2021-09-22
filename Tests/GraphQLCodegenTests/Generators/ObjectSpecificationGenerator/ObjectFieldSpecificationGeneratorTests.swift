@@ -10,7 +10,10 @@
 import XCTest
 
 final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
-  private let defaultGenerator = ObjectFieldSpecificationGenerator(scalarMap: ScalarMap.default)
+  private let defaultGenerator = ObjectFieldSpecificationGenerator(
+    scalarMap: ScalarMap.default,
+    selectionMap: nil
+  )
 
   func testScalar() throws {
     let field = Field(
@@ -22,8 +25,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    // Declaration
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expectation = try """
     let id: String
     """.format()
@@ -41,7 +43,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expectation = try """
     let id: String?
     """.format()
@@ -59,7 +61,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let discount: Discount
     """.format()
@@ -77,7 +79,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let discount: Discount?
     """.format()
@@ -95,7 +97,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let campaignSource: CampaignSource
     """.format()
@@ -113,7 +115,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let campaignSource: CampaignSource?
     """.format()
@@ -131,7 +133,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let benefits: [String]
     """.format()
@@ -149,7 +151,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let benefits: [String]?
     """.format()
@@ -167,7 +169,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let benefits: [String?]
     """.format()
@@ -185,7 +187,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.variableDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     let benefits: [String?]?
     """.format()
@@ -203,7 +205,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.codingKeyDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     case benefits = "benefits"
     """.format()
@@ -221,11 +223,28 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try defaultGenerator.codingKeyDeclaration(field: field).format()
+    let declaration = try self.declaration(field: field)
     let expecation = try """
     case benefits = "Benefits"
     """.format()
 
     XCTAssertEqual(declaration, expecation)
+  }
+}
+
+private extension ObjectFieldSpecificationGeneratorTests {
+  func declaration(objectName: String = "object name", field: Field) throws -> String {
+    let object = ObjectType(
+      kind: .object,
+      name: objectName,
+      description: nil,
+      fields: [field],
+      interfaces: []
+    )
+
+    return try defaultGenerator.variableDeclaration(
+      object: object,
+      field: field
+    ).format()
   }
 }

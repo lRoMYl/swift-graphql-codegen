@@ -42,7 +42,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let generator = ObjectSpecificationGenerator(scalarMap: ScalarMap.default)
+    let generator = ObjectSpecificationGenerator(scalarMap: ScalarMap.default, selectionMap: nil)
     let declaration = try generator.declaration(schema: schema).format()
 
     let expected = try """

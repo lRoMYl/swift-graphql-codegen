@@ -22,13 +22,15 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
   private let classPrefix = "RequestParameter"
 
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
   private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap
     )

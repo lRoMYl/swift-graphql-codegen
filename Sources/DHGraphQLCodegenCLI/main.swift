@@ -11,13 +11,19 @@ import GraphQLAST
 import GraphQLCodegen
 import GraphQLDownloader
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(["https://apollo-fullstack-tutorial.herokuapp.com/", "--schema-source-type", "remote"])
 //GraphQLCodegenCLI.main(["https://buybutton.store/graphql", "--schema-source-type", "remote"])
 //GraphQLCodegenCLI.main(["https://sg-st.fd-api.com/groceries-product-service/query", "--schema-source-type", "remote"])
 //
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
+GraphQLCodegenCLI.main(
+  [
+    "/Users/r.cheah/Downloads/schema/schema.json",
+    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+  ]
+)
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema-obj-input.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
 //GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
@@ -29,6 +35,7 @@ enum SchemaSource: String, ExpressibleByArgument {
 
 enum GraphQLCodegenCLIError: Error {
   case invalidSchemaPath
+  case invalidConfigPath
   case fetchSchemaTimeout
 }
 
@@ -57,13 +64,17 @@ struct GraphQLCodegenCLI: ParsableCommand {
     """)
   var output: String = "GraphQLSpec.swift"
 
+  @Option(help: "Location of the config json file")
+  var configPath: String?
+
   static var configuration = CommandConfiguration(
     commandName: "dh-graphql-codegen-ios"
   )
 
   func run() throws {
     let schema = try fetchSchema()
-    let generatedCode = try generateCode(with: schema)
+    let config = try fetchConfig()
+    let generatedCode = try generateCode(schema: schema, config: config)
 
     let generatedCodeData = generatedCode.data(using: .utf8)
     FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
@@ -122,14 +133,22 @@ private extension GraphQLCodegenCLI {
     }
   }
 
-  func generateCode(with schema: Schema) throws -> String {
+  func fetchConfig() throws -> Config {
+    guard
+      let configPath = configPath,
+      let jsonData = try String(contentsOfFile: configPath).data(using: .utf8) else {
+      throw GraphQLCodegenCLIError.invalidConfigPath
+    }
+
+    let config = try JSONDecoder().decode(Config.self, from: jsonData)
+
+    return config
+  }
+
+  func generateCode(schema: Schema, config: Config) throws -> String {
     let generator = GraphQLCodegen(
-      scalarMap: [
-        "BigDecimal": "Double",
-        "DateTime": "Double",
-        "Long": "Double",
-        "Upload": "String"
-      ]
+      scalarMap: config.scalarMap,
+      selectionMap: config.selectionMap
     )
     let generatedCode = try generator.generate(schema: schema)
 

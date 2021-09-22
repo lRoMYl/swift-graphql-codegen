@@ -9,20 +9,22 @@ import GraphQLAST
 
 public struct GraphQLCodegen {
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
   private let generators: [GraphQLSpecificationGenerating]
 
-  public init(scalarMap: ScalarMap) {
+  public init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = ScalarMap.default.merging(
       scalarMap,
       uniquingKeysWith: { (_, new) in new }
     )
+    self.selectionMap = selectionMap
 
     self.generators = [
       BaseSpecificationGenerator(),
       EnumSpecificationGenerator(scalarMap: self.scalarMap),
-      ObjectSpecificationGenerator(scalarMap: self.scalarMap),
+      ObjectSpecificationGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
       InputObjectSpecificationGenerator(scalarMap: self.scalarMap),
-      RequestParameterGenerator(scalarMap: self.scalarMap)
+      RequestParameterGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap)
     ]
   }
 

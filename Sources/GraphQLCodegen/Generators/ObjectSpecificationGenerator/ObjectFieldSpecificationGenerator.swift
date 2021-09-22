@@ -9,19 +9,38 @@ import GraphQLAST
 
 struct ObjectFieldSpecificationGenerator {
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
   }
 
-  func variableDeclaration(field: Field) throws -> String {
-    let type = try field.type.namedType.scalarType(scalarMap: scalarMap)
+  func variableDeclaration(object: ObjectType, field: Field) throws -> String {
+    let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
+    let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
-    return """
-    \(field.docs)
-    \(field.availability)
-    let \(field.name.camelCase): \(type)
-    """
+    if isRequired || isSelectable {
+      let type: String
+      if isRequired {
+        type = try field.type.namedType.scalarType(scalarMap: scalarMap)
+      } else {
+        var scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+        if !scalarType.contains("?") {
+          scalarType.append("?")
+        }
+
+        type = scalarType
+      }
+
+      return """
+      \(field.docs)
+      \(field.availability)
+      let \(field.name.camelCase): \(type)
+      """
+    } else {
+      return ""
+    }
   }
 
   func codingKeyDeclaration(field: Field) -> String {

@@ -9,11 +9,16 @@ import GraphQLAST
 
 struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
   private let objectFieldSpecificationGenerator: ObjectFieldSpecificationGenerator
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
-    self.objectFieldSpecificationGenerator = ObjectFieldSpecificationGenerator(scalarMap: scalarMap)
+    self.selectionMap = selectionMap
+    self.objectFieldSpecificationGenerator = ObjectFieldSpecificationGenerator(
+      scalarMap: scalarMap,
+      selectionMap: selectionMap
+    )
   }
 
   func declaration(schema: Schema) throws -> String {
@@ -41,7 +46,7 @@ private extension ObjectType {
   ) throws -> String {
     let name = self.name.pascalCase
     let fieldsVariable = try allFields(objects: objects)
-      .map { try objectFieldSpecificationGenerator.variableDeclaration(field: $0) }
+      .map { try objectFieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
       .lines
     let fieldsCodingKey = allFields(objects: objects)
       .map { objectFieldSpecificationGenerator.codingKeyDeclaration(field: $0) }
