@@ -74,7 +74,7 @@ public struct InterfaceType: NamedTypeProtocol, Decodable, Equatable {
   public let description: String?
 
   public let fields: [Field]
-  public let interfaces: [InterfaceTypeRef]
+  public let interfaces: [InterfaceTypeRef]?
   public let possibleTypes: [ObjectTypeRef]
 }
 

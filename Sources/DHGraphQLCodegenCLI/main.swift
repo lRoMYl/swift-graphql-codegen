@@ -24,9 +24,27 @@ GraphQLCodegenCLI.main(
     "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
   ]
 )
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/schema-obj-input.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/bigcommerce-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
-//GraphQLCodegenCLI.main(["/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json", "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"])
+//GraphQLCodegenCLI.main(
+//  [
+//    "/Users/r.cheah/Downloads/schema/schema-interface-obj-input.json",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "/Users/r.cheah/Downloads/schema/bigcommerce-schema.json",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
 
 enum SchemaSource: String, ExpressibleByArgument {
   case local
@@ -133,10 +151,10 @@ private extension GraphQLCodegenCLI {
     }
   }
 
-  func fetchConfig() throws -> Config {
-    guard
-      let configPath = configPath,
-      let jsonData = try String(contentsOfFile: configPath).data(using: .utf8) else {
+  func fetchConfig() throws -> Config? {
+    guard let configPath = configPath else { return nil }
+
+    guard let jsonData = try String(contentsOfFile: configPath).data(using: .utf8) else {
       throw GraphQLCodegenCLIError.invalidConfigPath
     }
 
@@ -145,10 +163,10 @@ private extension GraphQLCodegenCLI {
     return config
   }
 
-  func generateCode(schema: Schema, config: Config) throws -> String {
+  func generateCode(schema: Schema, config: Config?) throws -> String {
     let generator = try GraphQLCodegen(
-      scalarMap: config.scalarMap,
-      selectionMap: config.selectionMap
+      scalarMap: config?.scalarMap,
+      selectionMap: config?.selectionMap
     )
     let generatedCode = try generator.generate(schema: schema)
 

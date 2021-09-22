@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-struct ObjectFieldSpecificationGenerator {
+struct FieldSpecificationGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
 
@@ -16,7 +16,7 @@ struct ObjectFieldSpecificationGenerator {
     self.selectionMap = selectionMap
   }
 
-  func variableDeclaration(object: ObjectType, field: Field) throws -> String {
+  func variableDeclaration(object: Structure, field: Field) throws -> String {
     let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
@@ -43,7 +43,7 @@ struct ObjectFieldSpecificationGenerator {
     }
   }
 
-  func codingKeyDeclaration(object: ObjectType, field: Field) -> String {
+  func codingKeyDeclaration(object: Structure, field: Field) -> String {
     let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 

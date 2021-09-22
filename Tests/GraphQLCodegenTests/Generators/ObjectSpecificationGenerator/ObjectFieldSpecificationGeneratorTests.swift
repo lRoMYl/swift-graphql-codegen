@@ -10,7 +10,7 @@
 import XCTest
 
 final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
-  private let defaultGenerator = ObjectFieldSpecificationGenerator(
+  private let defaultGenerator = FieldSpecificationGenerator(
     scalarMap: ScalarMap.default,
     selectionMap: nil
   )

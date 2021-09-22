@@ -45,7 +45,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
 
   func declaration(schema: Schema) throws -> String {
     let responseParameters = try schema.operations.map {
-      try operation($0, objects: schema.objects, scalarMap: scalarMap).lines
+      try operation($0, objects: schema.objects, interfaces: schema.interfaces, scalarMap: scalarMap).lines
     }.lines
 
     return """
@@ -57,7 +57,12 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
 }
 
 private extension RequestParameterGenerator {
-  func operation(_ operation: GraphQLAST.Operation, objects: [ObjectType], scalarMap: ScalarMap) throws -> [String] {
+  func operation(
+    _ operation: GraphQLAST.Operation,
+    objects: [ObjectType],
+    interfaces: [InterfaceType],
+    scalarMap: ScalarMap
+  ) throws -> [String] {
     let returnObject = try operation.returnObject()
     let operationTypeName = operation.type.name.lowercased()
 
@@ -68,6 +73,7 @@ private extension RequestParameterGenerator {
         operationTypeName: operationTypeName,
         requestParameterName: requestParameterName,
         objectMap: objects,
+        interfaceMap: interfaces,
         scalarMap: scalarMap,
         field: field
       )
@@ -80,6 +86,7 @@ private extension RequestParameterGenerator {
     operationTypeName: String,
     requestParameterName: String,
     objectMap: [ObjectType],
+    interfaceMap: [InterfaceType],
     scalarMap: ScalarMap,
     field: Field
   ) throws -> String {
@@ -87,7 +94,11 @@ private extension RequestParameterGenerator {
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
 
-    let selections = try selectionsGenerator.declaration(operationField: field, objects: objectMap)
+    let selections = try selectionsGenerator.declaration(
+      field: field,
+      objects: objectMap,
+      interfaces: interfaceMap
+    )
 
     let codingKeys = try codingKeysGenerator.declaration(field: field)
 

@@ -10,12 +10,12 @@ import GraphQLAST
 struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
-  private let objectFieldSpecificationGenerator: ObjectFieldSpecificationGenerator
+  private let fieldSpecificationGenerator: FieldSpecificationGenerator
 
   init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
-    self.objectFieldSpecificationGenerator = ObjectFieldSpecificationGenerator(
+    self.fieldSpecificationGenerator = FieldSpecificationGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap
     )
@@ -30,7 +30,17 @@ struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
         try $0.declaration(
           objects: schema.objects,
           scalarMap: scalarMap,
-          objectFieldSpecificationGenerator: objectFieldSpecificationGenerator
+          fieldSpecificationGenerator: fieldSpecificationGenerator
+        )
+      }.lines
+    )
+
+    \(
+      try schema.interfaces.compactMap {
+        try $0.declaration(
+          objects: schema.objects,
+          scalarMap: scalarMap,
+          fieldSpecificationGenerator: fieldSpecificationGenerator
         )
       }.lines
     )
@@ -38,18 +48,18 @@ struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   }
 }
 
-private extension ObjectType {
+private extension Structure {
   func declaration(
     objects: [ObjectType],
     scalarMap: ScalarMap,
-    objectFieldSpecificationGenerator: ObjectFieldSpecificationGenerator
+    fieldSpecificationGenerator: FieldSpecificationGenerator
   ) throws -> String {
     let name = self.name.pascalCase
-    let fieldsVariable = try allFields(objects: objects)
-      .map { try objectFieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
+    let fieldsVariable = try fields
+      .map { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
       .lines
-    let fieldsCodingKey = allFields(objects: objects)
-      .map { objectFieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
+    let fieldsCodingKey = fields
+      .map { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines
 
     return """

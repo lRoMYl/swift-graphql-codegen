@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAST
 
-extension ObjectType {
+extension Structure {
   func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {
     // By default, if selection map is nil all field is treated as required
     guard let selectionMap = selectionMap else {
@@ -38,7 +38,7 @@ extension ObjectType {
   }
 
   func allSelectableFields(objects: [ObjectType], selectionMap: SelectionMap?) -> [Field] {
-    allFields(objects: objects).filter { field in
+    fields.filter { field in
       let isRequired = self.isRequired(field: field, selectionMap: selectionMap)
       let isSelectable = self.isSelectable(field: field, selectionMap: selectionMap)
 

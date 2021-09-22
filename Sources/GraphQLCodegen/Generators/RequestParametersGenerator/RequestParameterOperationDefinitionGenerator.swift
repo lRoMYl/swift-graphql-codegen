@@ -64,7 +64,9 @@ private extension Field {
       return false
     case .object:
       return true
-    case .interface, .union:
+    case .interface:
+      return true
+    case .union:
       print("\(Self.self) Interface/Union not implemented")
       return false
     }

@@ -28,44 +28,100 @@ struct RequestParameterSelectionsGenerator {
     self.selectionMap = selectionMap
   }
 
-  func declaration(operationField: Field, objects: [ObjectType]) throws -> String {
-    let namedType = operationField.type.namedType
+  func declaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
+    let namedType = field.type.namedType
 
     switch namedType {
     case .object:
-      return try objectDeclaration(operationField: operationField, objects: objects)
+      return try objectDeclaration(field: field, objects: objects, interfaces: interfaces)
     case .enum, .scalar:
-      return emptyDeclaration(operationField: operationField)
-    case .interface, .union:
+      return emptyDeclaration(field: field)
+    case .interface:
+      return try interfaceDeclaration(field: field, objects: objects, interfaces: interfaces)
+    case .union:
       throw RequestParameterSelectionsError.notImplemented(
-        context: "\(namedType) for field \(operationField.name)"
+        context: "\(namedType) for field \(field.name)"
       )
     }
   }
 }
 
 extension RequestParameterSelectionsGenerator {
-  func objectDeclaration(operationField: Field, objects: [ObjectType]) throws -> String {
+  func objectDeclaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
     guard
-      let returnObjectType = objects.first(where: { $0.name == operationField.type.namedType.name })
+      let returnObjectType = objects.first(where: { $0.name == field.type.namedType.name })
     else {
-      throw RequestParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(operationField.name)")
+      throw RequestParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
     }
 
-    let operationFieldScalarType = try operationField.type.namedType.scalarType(scalarMap: scalarMap)
-    var fieldMap: FieldMap = [operationFieldScalarType: operationField]
-    fieldMap.merge(try returnObjectType.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
+    let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+    var fieldMap: FieldMap = [fieldScalarType: field]
+    fieldMap.merge(try returnObjectType.nestedFields(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
 
     // Sort field map to ensure the generated code sequence is always consistent
-    let sortedFieldMap = Array(fieldMap).sorted(by: { $0.key < $1.key })
+    let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
 
-    let selectionDeclarations = try sortedFieldMap.selectionDeclarations(
+    return try structureDeclaration(
+      field: field,
+      fieldMaps: sortedFieldMap,
       objects: objects,
+      interfaces: interfaces
+    )
+  }
+
+  func interfaceDeclaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
+    guard
+      let returnInterfaceType = interfaces.first(where: { $0.name == field.type.namedType.name })
+    else {
+      throw RequestParameterSelectionsError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
+    }
+
+    let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+    var fieldMap: FieldMap = [fieldScalarType: field]
+    fieldMap.merge(try returnInterfaceType.allNestedFields(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
+
+    // Sort field map to ensure the generated code sequence is always consistent
+    let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
+
+    return try structureDeclaration(
+      field: field,
+      fieldMaps: sortedFieldMap,
+      objects: objects,
+      interfaces: interfaces
+    )
+  }
+
+  func emptyDeclaration(field: Field) -> String {
+    """
+    // MARK: - Selections
+
+    let selections: Selections
+
+    struct Selections: GraphQLSelections {
+      func declaration() -> String {
+        \"\"
+      }
+    }
+    """
+  }
+
+  private func structureDeclaration(
+    field: Field,
+    fieldMaps: [FieldMap.Element],
+    objects: [ObjectType],
+    interfaces: [InterfaceType]
+  ) throws -> String {
+    let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+
+    let selectionDeclarations = try fieldMaps.selectionDeclarations(
+      objects: objects,
+      interfaces: interfaces,
       scalarMap: scalarMap,
       selectionMap: selectionMap
     )
-    let selectionFragmentMap = sortedFieldMap.selectionFragmentMap
-    let selectionDeclarationMap = sortedFieldMap.selectionDeclarationMap
+
+    let selectionFragmentMap = fieldMaps.selectionFragmentMap
+    let selectionDeclarationMap = fieldMaps.selectionDeclarationMap
 
     let code = """
     // MARK: - Selections
@@ -88,69 +144,23 @@ extension RequestParameterSelectionsGenerator {
 
     return formattedCode
   }
-
-  func emptyDeclaration(operationField: Field) -> String {
-    """
-    // MARK: - Selections
-
-    let selections: Selections
-
-    struct Selections: GraphQLSelections {
-      func declaration() -> String {
-        \"\"
-      }
-    }
-    """
-  }
 }
 
 private extension Field {
-  func allNestedObjectField(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
-    guard
-      let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
-    else {
-      return [:]
-    }
-
-    var fieldMap = FieldMap()
-
-    switch returnObjectType.kind {
-    case .object:
-      let scalarType = try self.type.namedType.scalarType(scalarMap: scalarMap)
-      fieldMap[scalarType] = self
-    case .enumeration, .inputObject, .interface, .scalar, .union:
-      break
-    }
-
-    try returnObjectType.allFields(objects: objects).filter { $0.name == self.name }.forEach {
-      switch $0.type {
-      case let .named(outputRef):
-        switch outputRef {
-        case .object:
-          let scalarType = try outputRef.scalarType(scalarMap: scalarMap)
-          fieldMap[scalarType] = $0
-        case .enum, .interface, .scalar, .union:
-          break
-        }
-      case .list, .nonNull:
-        fieldMap.merge(try $0.allNestedObjectField(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
-      }
-    }
-
-    return fieldMap
-  }
-
-  func selectionDeclaration(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> String {
+  func selectionDeclaration(
+    objects: [ObjectType],
+    interfaces: [InterfaceType],
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?
+  ) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
     guard
-      let returnObjectType = objects.first(where: { $0.name == returnName })
-    else {
-      return ""
-    }
+      let returnType = try structure(objects: objects, interfaces: interfaces, scalarMap: scalarMap)
+    else { return "" }
 
-    let allFields = returnObjectType.allSelectableFields(objects: objects, selectionMap: selectionMap)
-    let fieldsEnum = try allFields.map {
+    let fields = returnType.allSelectableFields(objects: objects, selectionMap: selectionMap)
+    let fieldsEnum = try fields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
         type: $0.type,
@@ -180,7 +190,7 @@ private extension Field {
       switch objectRef {
       case .scalar, .enum:
         return "case \(name) = \"\(name)\""
-      case .object:
+      case .object, .interface:
         return """
         case \(name) = \"\"\"
         \(name) {
@@ -188,29 +198,48 @@ private extension Field {
         }
         \"\"\"
         """
-      case .union, .interface:
-        throw RequestParameterSelectionsError.notImplemented(context: "Union and Interface are not implemented yet")
+      case .union:
+        throw RequestParameterSelectionsError.notImplemented(context: "Union is not implemented yet")
       }
     }
   }
 }
 
 private extension ObjectType {
-  func allNestedObjectField(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
-    let allFields = self.allFields(objects: objects)
-    let fieldMaps = try allFields.map { try $0.allNestedObjectField(objects: objects, scalarMap: scalarMap) }
-    let result = fieldMaps.reduce(into: FieldMap()) { result, fieldMap in
-      result.merge(fieldMap) { (_, new) in new }
-    }
+  func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
+    let fieldMap = try self.fields.flatMap {
+      try $0.allNestedFields(objects: objects, scalarMap: scalarMap)
+    }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 
-    return result
+    return fieldMap
   }
 }
 
+private extension InterfaceType {
+  func allNestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
+    let fieldMap = try self.fields.flatMap {
+      try $0.allNestedFields(objects: objects, scalarMap: scalarMap)
+    }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
+
+    return fieldMap
+  }
+}
+
+
 private extension Collection where Element == FieldMap.Element {
-  func selectionDeclarations(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> String {
+  func selectionDeclarations(
+    objects: [ObjectType],
+    interfaces: [InterfaceType],
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?
+  ) throws -> String {
     try map {
-      try $0.value.selectionDeclaration(objects: objects, scalarMap: scalarMap, selectionMap: selectionMap)
+      try $0.value.selectionDeclaration(
+        objects: objects,
+        interfaces: interfaces,
+        scalarMap: scalarMap,
+        selectionMap: selectionMap
+      )
     }.lines
   }
 
