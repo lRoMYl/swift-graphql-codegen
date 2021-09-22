@@ -12,11 +12,11 @@ public struct GraphQLCodegen {
   private let selectionMap: SelectionMap?
   private let generators: [GraphQLSpecificationGenerating]
 
-  public init(scalarMap: ScalarMap, selectionMap: SelectionMap?) throws {
+  public init(scalarMap: ScalarMap?, selectionMap: SelectionMap?) throws {
     try selectionMap?.validate()
 
     self.scalarMap = ScalarMap.default.merging(
-      scalarMap,
+      scalarMap ?? [:],
       uniquingKeysWith: { (_, new) in new }
     )
     self.selectionMap = selectionMap
