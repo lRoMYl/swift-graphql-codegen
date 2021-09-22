@@ -122,7 +122,7 @@ private extension Field {
       break
     }
 
-    try returnObjectType.allFields(objects: objects).forEach {
+    try returnObjectType.allFields(objects: objects).filter { $0.name == self.name }.forEach {
       switch $0.type {
       case let .named(outputRef):
         switch outputRef {
