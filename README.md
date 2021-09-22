@@ -1,5 +1,29 @@
 # DHGraphQLCodegeSwift
 
+Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
+
+Supports GraphQL Native Feature
+- [x] Object
+- [x] InputObject
+- [x] Enum
+- [ ] Interface
+- [ ] Union
+- [ ] Enumeration
+- [x] Query
+- [x] Mutation
+- [ ] Subscription
+- [x] Introspection
+
+Support DH Custom Feature
+- [x] SPM
+- [x] Brew
+- [x] Local schema
+- [x] Remote schema, download using introspection query
+- [ ] Remote schema authorization headers
+- [ ] Remote schema MD5 cache
+- [ ] Scalar Map extension
+- [ ] Custom field whitelisting
+
 ## Installation
 ```
 brew tap lromyl/tap
@@ -13,11 +37,12 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 
 Generate graphql code from local schema.json
 - `--schema-source-type` default value is `local`, thus the file is read from local file path
+- By default, it will generate GraphQLSpec.swift file in the current directory
 ```
 dh-graphql-codegen-ios "schema.json"
 
 // Specific path instead of relative path
-dh-graphql-codegen-ios "/User/Download/schema.json"
+dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swift"
 ```
 
 Generate graphql code from remote domain
