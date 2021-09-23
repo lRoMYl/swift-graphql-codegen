@@ -11,19 +11,37 @@ import GraphQLAST
 import GraphQLCodegen
 import GraphQLDownloader
 
-//GraphQLCodegenCLI.main()
+GraphQLCodegenCLI.main()
 
-//GraphQLCodegenCLI.main(["https://apollo-fullstack-tutorial.herokuapp.com/", "--schema-source-type", "remote"])
-//GraphQLCodegenCLI.main(["https://buybutton.store/graphql", "--schema-source-type", "remote"])
-//GraphQLCodegenCLI.main(["https://sg-st.fd-api.com/groceries-product-service/query", "--schema-source-type", "remote"])
+//GraphQLCodegenCLI.main(
+//  [
+//    "https://apollo-fullstack-tutorial.herokuapp.com/",
+//    "--schema-source", "remote",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "https://buybutton.store/graphql",
+//    "--schema-source", "remote",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "https://sg-st.fd-api.com/groceries-product-service/query",
+//    "--schema-source", "remote",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+//  ]
+//)
 //
-GraphQLCodegenCLI.main(
-  [
-    "/Users/r.cheah/Downloads/schema/schema.json",
-    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-  ]
-)
+//GraphQLCodegenCLI.main(
+//  [
+//    "/Users/r.cheah/Downloads/schema/schema.json",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
 //GraphQLCodegenCLI.main(
 //  [
 //    "/Users/r.cheah/Downloads/schema/schema-interface-obj-input.json",
