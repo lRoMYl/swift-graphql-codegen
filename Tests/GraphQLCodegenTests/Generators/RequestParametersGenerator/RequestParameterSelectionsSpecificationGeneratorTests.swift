@@ -23,14 +23,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let url = NSURL.fileURL(
-      withPath: Bundle.module.path(
-        forResource: "CampaignSelectionsTestSchema",
-        ofType: "json"
-      )!
-    )
-    let data = try Data(contentsOf: url)
-    let schema = try JSONDecoder().decode(SchemaResponse.self, from: data).schema
+    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
 
     let declaration = try generator.declaration(
       field: campaignRequestField,

@@ -20,9 +20,9 @@ final class FieldNestedFieldsTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let schema = try SchemaHelper.schema(schemaName: "CampaignSelectionsTestSchema")
+    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
 
-    let allNestedFields = try campaignRequestField.allNestedFields(
+    let allNestedFields = try campaignRequestField.nestedFields(
       objects: schema.objects, scalarMap: ScalarMap.default, excluded: []
     )
 
@@ -39,9 +39,9 @@ final class FieldNestedFieldsTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let schema = try SchemaHelper.schema(schemaName: "CampaignSelectionsTestSchema")
+    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
 
-    let allNestedFields = try campaignRequestField.allNestedFields(
+    let allNestedFields = try campaignRequestField.nestedFields(
       objects: schema.objects, scalarMap: ScalarMap.default, excluded: []
     )
 

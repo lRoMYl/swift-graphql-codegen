@@ -8,7 +8,7 @@
 import GraphQLAST
 
 extension Field {
-  func allNestedFields(
+  func nestedFields(
     objects: [ObjectType],
     scalarMap: ScalarMap,
     excluded: [Field]
@@ -41,7 +41,7 @@ extension Field {
         }
       case .list, .nonNull:
         fields.append(
-          contentsOf: try $0.allNestedFields(
+          contentsOf: try $0.nestedFields(
             objects: objects,
             scalarMap: scalarMap,
             excluded: excluded + fields

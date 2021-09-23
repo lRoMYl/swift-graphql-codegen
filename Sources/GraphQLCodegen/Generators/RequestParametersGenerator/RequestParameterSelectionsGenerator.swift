@@ -163,7 +163,7 @@ private extension Field {
       let returnType = try structure(objects: objects, interfaces: interfaces, scalarMap: scalarMap)
     else { return "" }
 
-    let fields = returnType.allSelectableFields(objects: objects, selectionMap: selectionMap)
+    let fields = returnType.selectableFields(objects: objects, selectionMap: selectionMap)
     let fieldsEnum = try fields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
@@ -214,7 +214,7 @@ private extension Field {
 private extension ObjectType {
   func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let fieldMap = try self.fields.flatMap {
-      try $0.allNestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
+      try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 
     return fieldMap
@@ -226,7 +226,7 @@ private extension ObjectType {
 private extension InterfaceType {
   func allNestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let fieldMap = try self.fields.flatMap {
-      try $0.allNestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
+      try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 
     return fieldMap
