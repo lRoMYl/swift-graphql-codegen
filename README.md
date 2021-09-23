@@ -115,11 +115,15 @@ extension GraphQLRequest: BodyParameters {
 ```
 
 ### Sample Config File
+- apiHeaders define the custom headers to be used for downloading the schema, this is useful to provide authorization headers for authentication
 - scalarMap defines the custom mapping for Scalar type to native Swift type, code generation will fail if no mapping is found for custom scalar type
 - selectionMap defines custom field whitelisting for selections, overrides the schema specification to only query the fields required by client use case
 
 ```JSON
 {
+  "apiHeaders": {
+    "authorization": "aasd8uioj213+="
+  },
   "scalarMap": {
     "BigDecimal": "Double",
     "DateTime": "Double",
