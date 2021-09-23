@@ -7,10 +7,9 @@ Code implementation is created based on [swift-graphl AST](https://github.com/ma
 Supports GraphQL Native Feature
 - [x] Object
 - [x] InputObject
-- [x] Enum
+- [x] Enum / Enumeration
 - [x] Interface
 - [ ] Union
-- [ ] Enumeration
 - [x] Query
 - [x] Mutation
 - [ ] Subscription
