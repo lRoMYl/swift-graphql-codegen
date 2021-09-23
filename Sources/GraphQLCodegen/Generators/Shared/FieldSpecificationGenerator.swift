@@ -23,7 +23,8 @@ struct FieldSpecificationGenerator {
     if isRequired || isSelectable {
       let type: String
       if isRequired {
-        type = try field.type.namedType.scalarType(scalarMap: scalarMap)
+        let scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+        type = field.type.type(for: scalarType)
       } else {
         var scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
         if !scalarType.contains("?") {

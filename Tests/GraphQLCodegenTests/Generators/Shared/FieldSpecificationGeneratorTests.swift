@@ -9,7 +9,7 @@
 @testable import GraphQLCodegen
 import XCTest
 
-final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
+final class FieldSpecificationGeneratorTests: XCTestCase {
   private let defaultGenerator = FieldSpecificationGenerator(
     scalarMap: ScalarMap.default,
     selectionMap: nil
@@ -205,7 +205,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
+    let declaration = try self.codingKeyDeclaration(field: field)
     let expecation = try """
     case benefits = "benefits"
     """.format()
@@ -223,7 +223,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
+    let declaration = try self.codingKeyDeclaration(field: field)
     let expecation = try """
     case benefits = "Benefits"
     """.format()
@@ -232,7 +232,7 @@ final class ObjectFieldSpecificationGeneratorTests: XCTestCase {
   }
 }
 
-private extension ObjectFieldSpecificationGeneratorTests {
+private extension FieldSpecificationGeneratorTests {
   func declaration(objectName: String = "object name", field: Field) throws -> String {
     let object = ObjectType(
       kind: .object,
@@ -243,6 +243,24 @@ private extension ObjectFieldSpecificationGeneratorTests {
     )
 
     return try defaultGenerator.variableDeclaration(
+      object: object,
+      field: field
+    ).format()
+  }
+
+  func codingKeyDeclaration(
+    objectName: String = "object name",
+    field: Field
+  ) throws -> String {
+    let object = ObjectType(
+      kind: .object,
+      name: objectName,
+      description: nil,
+      fields: [field],
+      interfaces: []
+    )
+
+    return try defaultGenerator.codingKeyDeclaration(
       object: object,
       field: field
     ).format()
