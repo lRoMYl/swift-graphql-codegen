@@ -9,6 +9,7 @@ import Foundation
 import GraphQLCodegen
 
 struct Config: Decodable {
+  let apiHeaders: [String: String]?
   let scalarMap: ScalarMap?
   let selectionMap: SelectionMap?
 }

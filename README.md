@@ -20,7 +20,7 @@ Support DH Custom Feature
 - [x] Brew
 - [x] Local schema
 - [x] Remote schema, download using introspection query
-- [ ] Remote schema authorization headers
+- [x] Remote schema authorization headers
 - [ ] Remote schema MD5 cache
 - [x] Scalar Map extension
 - [x] Custom field whitelisting

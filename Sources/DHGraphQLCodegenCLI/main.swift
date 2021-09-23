@@ -90,8 +90,8 @@ struct GraphQLCodegenCLI: ParsableCommand {
   )
 
   func run() throws {
-    let schema = try fetchSchema()
     let config = try fetchConfig()
+    let schema = try fetchSchema(with: config)
     let generatedCode = try generateCode(schema: schema, config: config)
 
     let generatedCodeData = generatedCode.data(using: .utf8)
@@ -100,12 +100,12 @@ struct GraphQLCodegenCLI: ParsableCommand {
 }
 
 private extension GraphQLCodegenCLI {
-  func fetchSchema() throws -> Schema {
+  func fetchSchema(with config: Config?) throws -> Schema {
     switch schemaSource {
     case .local:
       return try fetchLocalSchema()
     case .remote:
-      return try fetchRemoteSchema()
+      return try fetchRemoteSchema(apiHeaders: config?.apiHeaders)
     }
   }
 
@@ -120,7 +120,7 @@ private extension GraphQLCodegenCLI {
     return schema
   }
 
-  func fetchRemoteSchema() throws -> Schema {
+  func fetchRemoteSchema(apiHeaders: [String: String]?) throws -> Schema {
     let semaphore = DispatchSemaphore(value: 0)
 
     guard let url = URL(string: schemaPath) else {
@@ -132,7 +132,7 @@ private extension GraphQLCodegenCLI {
     APIClient().fetchIntrospection(
       request: IntroSpectionRequest(),
       url: url,
-      headers: [:]
+      headers: apiHeaders ?? [:]
     ) { responseResult, data in
       result = responseResult
 
