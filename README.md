@@ -38,7 +38,7 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 
 ### CLI Codegen Syntax
 **Generate graphql code from local schema.json**
-- `--schema-source-type` default value is `local`, thus the file is read from local file path
+- `--schema-source` default value is `local`, thus the file is read from local file path
 - By default, it will generate GraphQLSpec.swift file in the current directory
 ```
 dh-graphql-codegen-ios "schema.json"
@@ -49,9 +49,9 @@ dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swif
 
 **Generate graphql code from remote domain**
 - Provide a remote url to fetch the schema
-- Use `remote` for `--schema-source-type` to indicate the schema needs to be fetched remotely
+- Use `remote` for `--schema-source` to indicate the schema needs to be fetched remotely
 ```
-dh-graphql-codegen-ios "https://www.somedomain.com" --schema-source-type "remote"
+dh-graphql-codegen-ios "https://www.somedomain.com" --schema-source "remote"
 ```
 
 **Providing custom config**
