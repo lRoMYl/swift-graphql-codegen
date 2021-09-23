@@ -24,7 +24,7 @@ extension Field {
       break
     }
 
-    try returnObjectType.fields.filter { $0.name == self.name }.forEach {
+    try returnObjectType.fields.filter { $0.name != self.name }.forEach {
       switch $0.type {
       case let .named(outputRef):
         switch outputRef {

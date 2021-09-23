@@ -48,7 +48,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - Objects
 
-    struct Discount: Codable {
+    struct Discount: Decodable {
       let type: DiscountType
 
       let value: Double

@@ -19,31 +19,36 @@ let package = Package(
   targets: [
     .target(
       name: "GraphQLAST",
-      dependencies: [],
-      path: "Sources/GraphQLAST"),
+      dependencies: []
+    ),
     .target(
       name: "GraphQLCodegen",
-      dependencies: ["SwiftFormat", "GraphQLAST"],
-      path: "Sources/GraphQLCodegen"),
+      dependencies: ["SwiftFormat", "GraphQLAST"]
+    ),
     .target(
       name: "DHGraphQLCodegenCLI",
       dependencies: [
         "GraphQLCodegen",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]),
+      ]
+    ),
     .target(
       name: "GraphQLDownloader",
       dependencies: [
         "GraphQLAST"
-      ],
-      path: "Sources/GraphQLDownloader"),
+      ]
+    ),
     .testTarget(
       name: "DHGraphQLCodegenCLITests",
-      dependencies: ["DHGraphQLCodegenCLI"]),
+      dependencies: ["DHGraphQLCodegenCLI"]
+    ),
     .testTarget(
       name: "GraphQLCodegenTests",
-      dependencies: ["GraphQLCodegen"]
+      dependencies: ["GraphQLCodegen", "GraphQLDownloader"],
+      resources: [
+        .process("Resources")
+      ]
     )
   ]
 )

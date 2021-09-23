@@ -1,0 +1,147 @@
+//
+//  File.swift
+//  
+//
+//  Created by Romy Cheah on 23/9/21.
+//
+
+@testable import GraphQLAST
+@testable import GraphQLCodegen
+@testable import GraphQLDownloader
+import XCTest
+
+final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
+  func testDeclaration() throws {
+    let generator = RequestParameterSelectionsGenerator(scalarMap: [:], selectionMap: nil)
+
+    let campaignRequestField = Field(
+      name: "campaigns",
+      description: nil,
+      args: [],
+      type: .named(.object("Campaigns")),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
+
+    let url = NSURL.fileURL(
+      withPath: Bundle.module.path(
+        forResource: "CampaignSelectionsTestSchema",
+        ofType: "json"
+      )!
+    )
+    let data = try Data(contentsOf: url)
+    let schema = try JSONDecoder().decode(SchemaResponse.self, from: data).schema
+
+    let declaration = try generator.declaration(
+      field: campaignRequestField,
+      objects: schema.objects,
+      interfaces: schema.interfaces
+    ).format()
+
+    let expected = try #"""
+    // MARK: - Selections
+
+    let selections: Selections
+
+    struct Selections: GraphQLSelections {
+      let campaignAttributeSelections: Set<CampaignAttributeSelection>
+
+      enum CampaignAttributeSelection: String, GraphQLSelection {
+        case autoApplied
+        case benefits
+        case campaignType
+        case description
+        case discount = """
+        discount {
+          ...DiscountFragment
+        }
+        """
+        case id
+        case name
+        case redemptionLimit
+        case source
+      }
+
+      let campaignsSelections: Set<CampaignsSelection>
+
+      enum CampaignsSelection: String, GraphQLSelection {
+        case campaignAttributes = """
+        campaignAttributes {
+          ...CampaignAttributeFragment
+        }
+        """
+        case productDeals = """
+        productDeals {
+          ...ProductDealFragment
+        }
+        """
+      }
+
+      let dealSelections: Set<DealSelection>
+
+      enum DealSelection: String, GraphQLSelection {
+        case campaignID
+        case discountTag
+        case triggerQuantity
+      }
+
+      let discountSelections: Set<DiscountSelection>
+
+      enum DiscountSelection: String, GraphQLSelection {
+        case type
+        case value
+      }
+
+      let productDealSelections: Set<ProductDealSelection>
+
+      enum ProductDealSelection: String, GraphQLSelection {
+        case deals = """
+        deals {
+          ...DealFragment
+        }
+        """
+        case productID
+      }
+
+      func declaration() -> String {
+        let campaignAttributeSelectionsDeclaration = """
+        fragment CampaignAttributeFragment on CampaignAttribute {\(campaignAttributeSelections.declaration)
+        }
+        """
+
+        let campaignsSelectionsDeclaration = """
+        fragment CampaignsFragment on Campaigns {\(campaignsSelections.declaration)
+        }
+        """
+
+        let dealSelectionsDeclaration = """
+        fragment DealFragment on Deal {\(dealSelections.declaration)
+        }
+        """
+
+        let discountSelectionsDeclaration = """
+        fragment DiscountFragment on Discount {\(discountSelections.declaration)
+        }
+        """
+
+        let productDealSelectionsDeclaration = """
+        fragment ProductDealFragment on ProductDeal {\(productDealSelections.declaration)
+        }
+        """
+
+        let selectionDeclarationMap = [
+          "CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
+          "CampaignsFragment": campaignsSelectionsDeclaration,
+          "DealFragment": dealSelectionsDeclaration,
+          "DiscountFragment": discountSelectionsDeclaration,
+          "ProductDealFragment": productDealSelectionsDeclaration
+        ]
+
+        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
+      }
+    }
+    """#.format()
+
+    XCTAssertEqual(declaration, expected)
+  }
+}
