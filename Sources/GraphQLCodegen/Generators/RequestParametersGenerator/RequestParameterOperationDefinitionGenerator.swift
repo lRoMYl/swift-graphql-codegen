@@ -25,7 +25,7 @@ struct RequestParameterOperationDefinitionGenerator {
     let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
     let operationVariablesDeclaration = operationVariables.isEmpty
       ? ""
-      : " (\n\(operationVariables)\n)"
+      : "(\n\(operationVariables)\n)"
 
     let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
     let operationArgumentsDeclaration = operationArguments.isEmpty

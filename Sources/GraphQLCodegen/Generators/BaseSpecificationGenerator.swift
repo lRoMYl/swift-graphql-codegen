@@ -40,8 +40,6 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       case subscription
     }
 
-    private let requestParametersEncoder = JSONEncoder()
-
     struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
       let parameters: RequestParameters
 
@@ -61,9 +59,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        let parametersData = (try? requestParametersEncoder.encode(parameters)) ?? Data()
-        let parametersString = String(data: parametersData, encoding: .utf8) ?? ""
-        try container.encode(parametersString.isEmpty ? "null" : parametersString, forKey: .parameters)
+        try container.encode(parameters, forKey: .parameters)
 
         let operationDefinition = parameters.operationDefinition
 

@@ -41,9 +41,9 @@ struct RequestParameterVariablesGenerator {
           typeName = name
         }
 
-        return "    $\($0.name): \(typeName)"
+        return "  $\($0.name): \(typeName)"
       case let .nonNull(objectRef), let .list(objectRef):
-        return "    $\($0.name): \(objectRef.argument)!"
+        return "  $\($0.name): \(objectRef.argument)!"
       }
     }.lines
   }
