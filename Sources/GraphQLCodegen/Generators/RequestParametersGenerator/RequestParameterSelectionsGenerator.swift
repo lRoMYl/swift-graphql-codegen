@@ -46,6 +46,8 @@ struct RequestParameterSelectionsGenerator {
   }
 }
 
+// MARK: - RequestParameterSelectionsGenerator
+
 extension RequestParameterSelectionsGenerator {
   func objectDeclaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
     guard
@@ -146,6 +148,8 @@ extension RequestParameterSelectionsGenerator {
   }
 }
 
+// MARK: - Field
+
 private extension Field {
   func selectionDeclaration(
     objects: [ObjectType],
@@ -205,6 +209,8 @@ private extension Field {
   }
 }
 
+// MARK: - ObjectType
+
 private extension ObjectType {
   func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let fieldMap = try self.fields.flatMap {
@@ -214,6 +220,8 @@ private extension ObjectType {
     return fieldMap
   }
 }
+
+// MARK: - InterfaceType
 
 private extension InterfaceType {
   func allNestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
@@ -225,6 +233,7 @@ private extension InterfaceType {
   }
 }
 
+// MARK: - Collection
 
 private extension Collection where Element == FieldMap.Element {
   func selectionDeclarations(

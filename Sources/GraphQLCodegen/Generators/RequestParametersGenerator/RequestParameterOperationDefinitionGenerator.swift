@@ -57,6 +57,8 @@ struct RequestParameterOperationDefinitionGenerator {
   }
 }
 
+// MARK: - Field
+
 private extension Field {
   var isFragment: Bool {
     switch self.type.namedType {

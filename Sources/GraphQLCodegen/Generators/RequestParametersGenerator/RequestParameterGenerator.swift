@@ -56,6 +56,8 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
   }
 }
 
+// MARK: - RequestParameterGenerator
+
 private extension RequestParameterGenerator {
   func operation(
     _ operation: GraphQLAST.Operation,

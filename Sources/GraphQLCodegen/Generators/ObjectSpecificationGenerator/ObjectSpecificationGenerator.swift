@@ -48,6 +48,8 @@ struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   }
 }
 
+// MARK: - Structure
+
 private extension Structure {
   func declaration(
     objects: [ObjectType],

@@ -55,6 +55,8 @@ struct FieldSpecificationGenerator {
   }
 }
 
+// MARK: - Field
+
 private extension Field {
   var docs: String {
     if let description = self.description {

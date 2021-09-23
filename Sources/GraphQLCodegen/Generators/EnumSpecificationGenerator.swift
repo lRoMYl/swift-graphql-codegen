@@ -23,6 +23,8 @@ struct EnumSpecificationGenerator: GraphQLSpecificationGenerating {
   }
 }
 
+// MARK: - EnumType
+
 private extension EnumType {
   /// Represents the enum structure.
   var declaration: String {
@@ -34,17 +36,14 @@ private extension EnumType {
     """
   }
 
-  private var docs: String {
-    "/// \(description ?? name)"
-  }
-
   /// Represents possible enum cases.
-  private var values: String {
+  var values: String {
     enumValues.map { $0.declaration }.joined(separator: "\n")
   }
 }
 
 // MARK: - EnumValue
+
 private extension EnumValue {
   /// Returns an enum case definition.
   var declaration: String {
@@ -55,11 +54,7 @@ private extension EnumValue {
     """
   }
 
-  private var docs: String {
-    description.map { "/// \($0)" } ?? ""
-  }
-
-  private var availability: String {
+  var availability: String {
     if isDeprecated {
       let message = deprecationReason ?? ""
       return "@available(*, deprecated, message: \"\(message)\")"

@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-// MARK: - TypeReft
+// MARK: - TypeRef
 
 extension TypeRef {
   /// Returns a wrapped instance of a given type respecting the reference.

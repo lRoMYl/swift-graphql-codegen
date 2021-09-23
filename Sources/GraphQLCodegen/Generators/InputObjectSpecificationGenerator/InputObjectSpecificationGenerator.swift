@@ -32,6 +32,8 @@ struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   }
 }
 
+// MARK: - InputObjectType
+
 private extension InputObjectType {
   func declaration(
     scalarMap: ScalarMap,

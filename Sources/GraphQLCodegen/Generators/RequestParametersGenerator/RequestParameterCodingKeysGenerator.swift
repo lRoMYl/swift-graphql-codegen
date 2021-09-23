@@ -15,6 +15,8 @@ struct RequestParameterEncodableGenerator {
   }
 }
 
+// MARK: - RequestParameterEncodableGenerator
+
 private extension RequestParameterEncodableGenerator {
   func codingKeys(with field: Field) throws -> String {
     """
