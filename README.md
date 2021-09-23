@@ -123,7 +123,7 @@ extension GraphQLRequest: BodyParameters {
 {
   "apiHeaders": {
     "authorization": "aasd8uioj213+="
-  }
+  },
   "scalarMap": {
     "BigDecimal": "Double",
     "DateTime": "Double",
