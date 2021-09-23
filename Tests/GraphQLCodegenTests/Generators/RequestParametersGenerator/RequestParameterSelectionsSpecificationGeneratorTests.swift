@@ -11,7 +11,7 @@
 import XCTest
 
 final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
-  func testDeclaration() throws {
+  func testCampaignsDeclaration() throws {
     let generator = RequestParameterSelectionsGenerator(scalarMap: [:], selectionMap: nil)
 
     let campaignRequestField = Field(
@@ -131,6 +131,57 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
         ]
 
         return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
+      }
+    }
+    """#.format()
+
+    XCTAssertEqual(declaration, expected)
+  }
+
+  func testObjectFieldDeclaration() throws {
+    let generator = RequestParameterSelectionsGenerator(scalarMap: [:], selectionMap: nil)
+
+    let campaignRequestField = Field(
+      name: "discount",
+      description: nil,
+      args: [],
+      type: .named(.object("Discount")),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
+
+    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
+
+    let declaration = try generator.objectDeclaration(
+      field: campaignRequestField,
+      objects: schema.objects,
+      interfaces: schema.interfaces
+    )
+
+    let expected = try #"""
+    // MARK: - Selections
+
+    let selections: Selections
+
+    struct Selections: GraphQLSelections {
+      let discountSelections: Set<DiscountSelection>
+
+      enum DiscountSelection: String, GraphQLSelection {
+        case type
+        case value
+      }
+
+      func declaration() -> String {
+        let discountSelectionsDeclaration = """
+        fragment DiscountFragment on Discount {\(discountSelections.declaration)
+        }
+        """
+
+        let selectionDeclarationMap = [
+          "DiscountFragment": discountSelectionsDeclaration
+        ]
+
+        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "DiscountFragment")
       }
     }
     """#.format()
