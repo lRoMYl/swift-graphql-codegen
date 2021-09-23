@@ -214,7 +214,7 @@ private extension Field {
 private extension ObjectType {
   func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let fieldMap = try self.fields.flatMap {
-      try $0.allNestedFields(objects: objects, scalarMap: scalarMap)
+      try $0.allNestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 
     return fieldMap
@@ -226,7 +226,7 @@ private extension ObjectType {
 private extension InterfaceType {
   func allNestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
     let fieldMap = try self.fields.flatMap {
-      try $0.allNestedFields(objects: objects, scalarMap: scalarMap)
+      try $0.allNestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 
     return fieldMap
