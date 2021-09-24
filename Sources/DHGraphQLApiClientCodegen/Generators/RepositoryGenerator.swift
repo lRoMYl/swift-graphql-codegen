@@ -28,14 +28,7 @@ struct RepositoryGenerator: Generating {
 
   func code(schema: Schema) throws -> String {
     """
-    // @generated
-    // Do not edit this generated file
-    // swiftlint:disable all
-
-    import ApiClient
-    import RxSwift
-
-    \(try self.protocolDeclaration(operations: schema.operations))
+    \(try self.protocolCode(with: schema.operations))
 
     // MARK: - \(namespace)Repositoring
 
@@ -48,54 +41,16 @@ struct RepositoryGenerator: Generating {
         self.scheduler = scheduler
       }
 
-      \(try schema.operations.map { try declaration(operation: $0).lines }.lines)
+      \(try schema.operations.map { try funcCode(with: $0).lines }.lines)
 
-      \(try schema.operations.map { try executeDeclaration(operation: $0) }.lines)
+      \(try schema.operations.map { try executeCode(with: $0) }.lines)
     }
-
-    enum \(namespace)Resource: ResourceParameters {
-      case campaigns(request: GraphQLRequest<\(namespace).CampaignsRequestParameter>)
-
-      func bodyFormat() -> HttpBodyFormat {
-        .JSON
-      }
-
-      func httpMethod() -> RequestHttpMethod {
-        .post
-      }
-
-      func servicePath() -> String {
-        "query"
-      }
-
-      func headers() -> [String: String]? {
-        [:]
-      }
-
-      func timeoutInterval() -> TimeInterval? {
-        nil
-      }
-
-      func preventRetry() -> Bool {
-        true
-      }
-
-      func bodyParameters() -> Any? {
-        switch self {
-        case let .campaigns(request):
-          let bodyParameters = request.bodyParameters()
-          return bodyParameters
-        }
-      }
-    }
-
-    \(try schema.operations.map { try wrappedValue(operation: $0) }.lines)
     """
   }
 }
 
 private extension Field {
-  func funcDeclaration(namespaceExtension: String) throws -> String {
+  func funcSignatureCode(namespaceExtension: String) throws -> String {
     """
     func \(name.camelCase)(
       with request: GraphQLRequest<\(namespaceExtension)\(name.pascalCase)RequestParameter>
@@ -105,13 +60,13 @@ private extension Field {
 }
 
 extension RepositoryGenerator {
-  func protocolDeclaration(operation: GraphQLAST.Operation) throws -> String {
+  func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
     let funcDeclarations: [String]
 
     switch operation {
     case let .query(objectType):
       funcDeclarations = try objectType.fields.map {
-        try $0.funcDeclaration(namespaceExtension: namespaceExtension)
+        try $0.funcSignatureCode(namespaceExtension: namespaceExtension)
       }
     case let .mutation(objectType):
       funcDeclarations = []
@@ -124,27 +79,29 @@ extension RepositoryGenerator {
     return funcDeclarations.lines
   }
 
-  func protocolDeclaration(operations: [GraphQLAST.Operation]) throws -> String {
+  func protocolCode(with operations: [GraphQLAST.Operation]) throws -> String {
     return """
     protocol \(namespace)Repositoring {
       \(
         try operations.map {
-          try protocolDeclaration(operation: $0)
+          try protocolCode(with: $0)
         }.lines
       )
     }
     """
   }
 
-  func declaration(operation: GraphQLAST.Operation) throws -> [String] {
+  func funcCode(with operation: GraphQLAST.Operation) throws -> [String] {
+    let operationName = operation.type.name.pascalCase
+
     switch operation {
     case let .query(objectType):
       return try objectType.fields.map {
         """
-        \(try $0.funcDeclaration(namespaceExtension: namespaceExtension)) {
+        \(try $0.funcSignatureCode(namespaceExtension: namespaceExtension)) {
           let resource = \(namespace)Resource.campaigns(request: request)
 
-          return executeGraphQLQuery(resource: resource)
+          return executeGraphQL\(operationName)(resource: resource)
         }
         """
       }
@@ -159,8 +116,8 @@ extension RepositoryGenerator {
 
   /// Executation for operation type is generated only if its defined in the schema
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
-  func executeDeclaration(operation: GraphQLAST.Operation) throws -> String {
-    let operationName: String = operation.type.name.pascalCase
+  func executeCode(with operation: GraphQLAST.Operation) throws -> String {
+    let operationName = operation.type.name.pascalCase
 
     return """
     func executeGraphQL\(operationName)<T>(
@@ -178,30 +135,6 @@ extension RepositoryGenerator {
           )
         }
         .subscribeOn(scheduler)
-    }
-    """
-  }
-
-  func wrappedValue(operation: GraphQLAST.Operation) throws -> String {
-    let operationName: String = operation.type.name.pascalCase
-    let cases = operation.type.fields.map {
-      """
-      case is \(namespaceExtension)\($0.name.pascalCase).Type:
-        return data.\($0.name.camelCase) as? ReturnType
-      """
-    }.lines
-
-    return """
-    // MARK: - GraphQLResponse+\(operationName)WrappedValue
-
-    extension GraphQLResponse where OperationType == \(namespaceExtension)\(operationName) {
-      var wrappedValue: ReturnType? {
-        switch ReturnType.self {
-        \(cases)
-        default:
-          return nil
-        }
-      }
     }
     """
   }

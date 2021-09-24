@@ -77,6 +77,8 @@ public extension String {
 
   // Returns the string camelCased.
   var camelCase: String {
+    guard count > 0 else { return self }
+    
     let pascal = pascalCase
     return pascal[pascal.startIndex].lowercased() + pascal.dropFirst()
   }

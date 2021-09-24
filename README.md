@@ -16,8 +16,8 @@ Supports GraphQL Native Feature
 - [x] Introspection
 
 Support DH Custom Feature
-- [x] SPM
-- [x] Brew
+- [x] SPM package
+- [x] Brew package
 - [x] Local schema
 - [x] Remote schema, download using introspection query
 - [x] Remote schema authorization headers

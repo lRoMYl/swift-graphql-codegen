@@ -11,10 +11,12 @@ import SwiftFormat
 public struct DHGraphQLApiClientCodegen {
   private let generators: [Generating]
 
-  public init() throws {
+  public init(namespace: String = "GraphQLSpec") throws {
     self.generators = [
-      BaseGenerator(),
-      RepositoryGenerator(namespace: "")
+      HeaderGenerator(),
+      RepositoryGenerator(namespace: namespace),
+      ResourceParametersGenerator(namespace: namespace),
+      GraphQLResponseWrappedValueGenerator(namespace: namespace)
     ]
   }
 
