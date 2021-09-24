@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-public struct GraphQLCodegen {
+public struct GraphQLSwiftCodegen {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let generators: [GraphQLSpecificationGenerating]
@@ -38,6 +38,6 @@ public struct GraphQLCodegen {
   }
 }
 
-enum GraphQLCodegenError: Error {
+enum GraphQLSwiftCodegenError: Error {
   case unknownScalar(name: String)
 }

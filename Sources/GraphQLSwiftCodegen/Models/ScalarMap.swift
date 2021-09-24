@@ -12,7 +12,7 @@ public typealias ScalarMap = [String: String]
 extension ScalarMap {
   func scalar(_ name: String) throws -> String {
     guard let scalarType = self[name] else {
-      throw GraphQLCodegenError.unknownScalar(name: name)
+      throw GraphQLSwiftCodegenError.unknownScalar(name: name)
     }
 
     return scalarType

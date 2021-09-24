@@ -7,7 +7,9 @@ let package = Package(
   name: "dh-graphql-codegen-ios",
   platforms: [.macOS(.v10_15)],
   products: [
-    .library(name: "GraphQLCodegen", targets: ["GraphQLCodegen"]),
+    .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
+    .library(name: "GraphQLSwiftCodegen", targets: ["GraphQLSwiftCodegen"]),
+    .library(name: "DHGraphQLApiClientCodegen", targets: ["DHGraphQLApiClientCodegen"]),
     .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
     .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .executable(name: "dh-graphql-codegen-ios", targets: ["DHGraphQLCodegenCLI"])
@@ -22,13 +24,22 @@ let package = Package(
       dependencies: []
     ),
     .target(
-      name: "GraphQLCodegen",
-      dependencies: ["SwiftFormat", "GraphQLAST"]
+      name: "GraphQLCodegenUtil",
+      dependencies: ["SwiftFormat"]
+    ),
+    .target(
+      name: "GraphQLSwiftCodegen",
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenUtil"]
+    ),
+    .target(
+      name: "DHGraphQLApiClientCodegen",
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenUtil"]
     ),
     .target(
       name: "DHGraphQLCodegenCLI",
       dependencies: [
-        "GraphQLCodegen",
+        "GraphQLSwiftCodegen",
+        "DHGraphQLApiClientCodegen",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
@@ -44,8 +55,8 @@ let package = Package(
       dependencies: ["DHGraphQLCodegenCLI"]
     ),
     .testTarget(
-      name: "GraphQLCodegenTests",
-      dependencies: ["GraphQLCodegen", "GraphQLDownloader"],
+      name: "GraphQLSwiftCodegenTests",
+      dependencies: ["GraphQLSwiftCodegen", "GraphQLDownloader"],
       resources: [
         .process("Resources")
       ]

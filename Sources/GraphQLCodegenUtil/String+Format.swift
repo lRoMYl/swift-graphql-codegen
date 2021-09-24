@@ -8,7 +8,7 @@
 import SwiftFormat
 import Foundation
 
-extension String {
+public extension String {
   /// Formats the given Swift source code.
   func format() throws -> String {
     let trimmed = trimmingCharacters(

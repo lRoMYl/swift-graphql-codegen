@@ -5,6 +5,7 @@
 //  Created by Romy Cheah on 21/9/21.
 //
 
+import GraphQLCodegenUtil
 import GraphQLAST
 
 struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {

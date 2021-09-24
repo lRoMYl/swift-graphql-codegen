@@ -7,12 +7,14 @@
 
 import GraphQLAST
 
+/// This code potentially be moved to PD-Kami
+
 struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
   init() {
   }
 
   func declaration(schema: Schema) throws -> String {
-    """
+    #"""
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
@@ -34,11 +36,15 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       func declaration() -> String
     }
 
+    // MARK: - Enum
+
     enum GraphQLRequestType {
       case query
       case mutation
       case subscription
     }
+
+    // MARK: GraphQLRequest
 
     struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
       let parameters: RequestParameters
@@ -74,18 +80,31 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       }
     }
 
-    // MARK: - Extension
-    fileprivate extension Collection where Element: GraphQLSelection {
+    // MARK: - GraphQLResponse
+
+    struct GraphQLResponse<OperationType: Codable, ReturnType: Codable>: Codable {
+      let data: OperationType
+
+      enum CodingKeys: String, CodingKey {
+        case data
+      }
+    }
+
+    // MARK: - GraphQLSelection+Declaration
+
+    extension Collection where Element: GraphQLSelection {
       var declaration: String {
         if count == 0 {
-          return Element.allCases.reduce(into: "") { $0 += \"\\n  \\($1.rawValue)\" }
+          return Element.allCases.reduce(into: "") { $0 += "\n  \($1.rawValue)" }
         } else {
-          return reduce(into: "") { $0 += \"\\n  \\($1.rawValue)\" }
+          return reduce(into: "") { $0 += "\n  \($1.rawValue)" }
         }
       }
     }
 
-    private extension GraphQLSelections {
+    // MARK: - GraphQLSelections+Declaration
+
+    extension GraphQLSelections {
       func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
         var dictionary = [String: String]()
         dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
@@ -101,7 +120,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           let currentFragment = queue.removeFirst()
 
           for childSelectionKey in selectionDeclarationMap.keys {
-            if currentFragment.contains("...\\(childSelectionKey)") {
+            if currentFragment.contains("...\(childSelectionKey)") {
               let value = selectionDeclarationMap[childSelectionKey]!
 
               queue.append(value)
@@ -110,9 +129,24 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           }
         }
 
-        return dictionary.values.joined(separator: "\\n")
+        return dictionary.values.joined(separator: "\n")
       }
     }
-    """
+
+    // MARK: - GraphQLRequest+BodyParameters
+
+    extension GraphQLRequest: BodyParameters {
+      func bodyParameters() -> [String: Any] {
+        guard
+          let data = try? JSONEncoder().encode(self)
+        else { return [:] }
+
+        return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
+          .flatMap {
+            $0 as? [String: Any]
+          } ?? [:]
+      }
+    }
+    """#
   }
 }

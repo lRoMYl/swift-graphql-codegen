@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import GraphQLCodegen
+import GraphQLSwiftCodegen
 
 struct Config: Decodable {
   let apiHeaders: [String: String]?

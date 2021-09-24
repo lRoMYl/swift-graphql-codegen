@@ -7,11 +7,12 @@
 
 import ArgumentParser
 import Foundation
+import DHGraphQLApiClientCodegen
 import GraphQLAST
-import GraphQLCodegen
+import GraphQLSwiftCodegen
 import GraphQLDownloader
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(
 //  [
@@ -27,13 +28,13 @@ GraphQLCodegenCLI.main()
 //    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
 //  ]
 //)
-//GraphQLCodegenCLI.main(
-//  [
-//    "https://sg-st.fd-api.com/groceries-product-service/query",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
-//  ]
-//)
+GraphQLCodegenCLI.main(
+  [
+    "https://sg-st.fd-api.com/groceries-product-service/query",
+    "--schema-source", "remote",
+    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+  ]
+)
 //
 //GraphQLCodegenCLI.main(
 //  [
@@ -110,9 +111,10 @@ struct GraphQLCodegenCLI: ParsableCommand {
   func run() throws {
     let config = try fetchConfig()
     let schema = try fetchSchema(with: config)
-    let generatedCode = try generateCode(schema: schema, config: config)
+    let generatedCode = try generateSwiftCode(schema: schema, config: config)
 
     let generatedCodeData = generatedCode.data(using: .utf8)
+    print(try generateApiClientCode(schema: schema))
     FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
   }
 }
@@ -181,11 +183,18 @@ private extension GraphQLCodegenCLI {
     return config
   }
 
-  func generateCode(schema: Schema, config: Config?) throws -> String {
-    let generator = try GraphQLCodegen(
+  func generateSwiftCode(schema: Schema, config: Config?) throws -> String {
+    let generator = try GraphQLSwiftCodegen(
       scalarMap: config?.scalarMap,
       selectionMap: config?.selectionMap
     )
+    let generatedCode = try generator.generate(schema: schema)
+
+    return generatedCode
+  }
+
+  func generateApiClientCode(schema: Schema) throws -> String {
+    let generator = try DHGraphQLApiClientCodegen()
     let generatedCode = try generator.generate(schema: schema)
 
     return generatedCode
