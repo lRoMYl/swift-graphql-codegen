@@ -10,8 +10,9 @@ import GraphQLAST
 extension InputValue {
   var docs: String {
     if let description = self.description {
-      return "/// \(description)"
+      return description.isEmpty ? "" : "/// \(description)"
     }
+
     return ""
   }
 }

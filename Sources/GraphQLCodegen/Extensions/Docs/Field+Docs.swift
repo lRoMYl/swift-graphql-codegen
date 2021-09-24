@@ -2,14 +2,17 @@
 //  File.swift
 //  
 //
-//  Created by Romy Cheah on 23/9/21.
+//  Created by Romy Cheah on 24/9/21.
 //
 
 import GraphQLAST
 
-extension EnumValue {
+extension Field {
   var docs: String {
-    description.map { $0.isEmpty ? "" : "/// \($0)" } ?? ""
+    if let description = self.description {
+      return description.isEmpty ? "" : "/// \(description)"
+    }
+    return ""
   }
 
   var availability: String {

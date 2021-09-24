@@ -66,8 +66,10 @@ private extension Structure {
       .map { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines
 
+    // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
+    // with Decodable conformance
     return """
-    struct \(name): Decodable {
+    struct \(name): Codable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys

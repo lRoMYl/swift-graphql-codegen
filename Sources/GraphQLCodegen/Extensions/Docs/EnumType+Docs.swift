@@ -9,6 +9,8 @@ import GraphQLAST
 
 extension EnumType {
   var docs: String {
-    "/// \(description ?? name)"
+    let text = description ?? name
+
+    return text.isEmpty ? "" : "/// \(text)"
   }
 }

@@ -55,22 +55,3 @@ struct FieldSpecificationGenerator {
     }
   }
 }
-
-// MARK: - Field
-
-private extension Field {
-  var docs: String {
-    if let description = self.description {
-      return "/// \(description)"
-    }
-    return ""
-  }
-
-  var availability: String {
-    if isDeprecated {
-      let message = deprecationReason ?? ""
-      return "@available(*, deprecated, message: \"\(message)\")"
-    }
-    return ""
-  }
-}

@@ -53,12 +53,4 @@ private extension EnumValue {
     case \(name.camelCase.normalize) = "\(name)"
     """
   }
-
-  var availability: String {
-    if isDeprecated {
-      let message = deprecationReason ?? ""
-      return "@available(*, deprecated, message: \"\(message)\")"
-    }
-    return ""
-  }
 }
