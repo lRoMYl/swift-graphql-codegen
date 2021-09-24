@@ -20,10 +20,12 @@ enum RepositoryGeneratorError: Error, LocalizedError {
 struct RepositoryGenerator: Generating {
   private let namespace: String
   private let namespaceExtension: String
+  private let entityNameMap: EntityNameMap
 
-  init(namespace: String = "") {
+  init(namespace: String = "", entityNameMap: EntityNameMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+    self.entityNameMap = entityNameMap
   }
 
   func code(schema: Schema) throws -> String {
@@ -49,16 +51,6 @@ struct RepositoryGenerator: Generating {
   }
 }
 
-private extension Field {
-  func funcSignatureCode(namespaceExtension: String) throws -> String {
-    """
-    func \(name.camelCase)(
-      with request: GraphQLRequest<\(namespaceExtension)\(name.pascalCase)RequestParameter>
-    ) -> Single<ApiResponse<\(namespaceExtension)\(name.pascalCase)>>
-    """
-  }
-}
-
 extension RepositoryGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
     let funcDeclarations: [String]
@@ -66,7 +58,7 @@ extension RepositoryGenerator {
     switch operation {
     case let .query(objectType):
       funcDeclarations = try objectType.fields.map {
-        try $0.funcSignatureCode(namespaceExtension: namespaceExtension)
+        try funcSignatureCode(field: $0, operation: operation)
       }
     case let .mutation(objectType):
       funcDeclarations = []
@@ -98,7 +90,7 @@ extension RepositoryGenerator {
     case let .query(objectType):
       return try objectType.fields.map {
         """
-        \(try $0.funcSignatureCode(namespaceExtension: namespaceExtension)) {
+        \(try funcSignatureCode(field: $0, operation: operation)) {
           let resource = \(namespace)Resource.campaigns(request: request)
 
           return executeGraphQL\(operationName)(resource: resource)
@@ -114,6 +106,14 @@ extension RepositoryGenerator {
     }
   }
 
+  func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
+    """
+    func \(field.name.camelCase)(
+      with request: \(entityNameMap.request)<\(namespaceExtension)\(field.requestParameterName(with: operation))>
+    ) -> Single<ApiResponse<\(namespaceExtension)\(field.name.pascalCase)>>
+    """
+  }
+
   /// Executation for operation type is generated only if its defined in the schema
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
@@ -123,10 +123,10 @@ extension RepositoryGenerator {
     func executeGraphQL\(operationName)<T>(
       resource: ResourceParameters
     ) -> Single<ApiClient.ApiResponse<T>> where T: Codable {
-      let graphQLRequest: Single<ApiResponse<GraphQLResponse<\(namespaceExtension)\(operationName), T>>> = restClient
+      let request: Single<ApiResponse<GraphQLResponse<\(namespaceExtension)\(operationName), T>>> = restClient
         .executeRequest(resource: resource)
 
-      return graphQLRequest
+      return request
         .map { apiResponse in
           return ApiResponse(
             data: apiResponse.data?.wrappedValue,

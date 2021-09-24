@@ -10,12 +10,15 @@ import SwiftFormat
 
 public struct DHGraphQLApiClientCodegen {
   private let generators: [Generating]
+  private let entityNameMap: EntityNameMap
 
-  public init(namespace: String = "GraphQLSpec") throws {
+  public init(namespace: String, entityNameMap: EntityNameMap?) throws {
+    self.entityNameMap = entityNameMap ?? .default
+
     self.generators = [
       HeaderGenerator(),
-      RepositoryGenerator(namespace: namespace),
-      ResourceParametersGenerator(namespace: namespace),
+      RepositoryGenerator(namespace: namespace, entityNameMap: self.entityNameMap),
+      ResourceParametersGenerator(namespace: namespace, entityNameMap: self.entityNameMap),
       GraphQLResponseWrappedValueGenerator(namespace: namespace)
     ]
   }

@@ -194,7 +194,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateApiClientCode(schema: Schema) throws -> String {
-    let generator = try DHGraphQLApiClientCodegen()
+    let generator = try DHGraphQLApiClientCodegen(namespace: "GraphQLSpec", entityNameMap: nil)
     let generatedCode = try generator.generate(schema: schema)
 
     return generatedCode
