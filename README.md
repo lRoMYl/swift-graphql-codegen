@@ -24,6 +24,8 @@ Support DH Custom Feature
 - [ ] Remote schema MD5 cache
 - [x] Scalar Map extension
 - [x] Custom field whitelisting
+- [ ] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
+- [ ] APIClient
 
 ## Installation
 ```
