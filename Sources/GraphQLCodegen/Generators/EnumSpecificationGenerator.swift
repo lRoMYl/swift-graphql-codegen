@@ -30,15 +30,94 @@ private extension EnumType {
   var declaration: String {
     """
     \(docs)
-    enum \(name.pascalCase): String, CaseIterable, Codable {
-    \(values)
+    enum \(name.pascalCase): RawRepresentable, CaseIterable, Codable {
+      typealias RawValue = String
+
+      \(valueDeclaration)
+
+      \(initializerDeclaration)
+
+      \(rawValueDeclaration)
+
+      \(equatableDeclaration)
+
+      \(allCasesDeclaration)
     }
     """
   }
 
   /// Represents possible enum cases.
-  var values: String {
-    enumValues.map { $0.declaration }.joined(separator: "\n")
+  var valueDeclaration: String {
+    """
+    \(
+      enumValues.map {
+        $0.declaration
+      }.joined(separator: "\n")
+    )
+
+    /// Auto generated constant for unknown enum values
+    case _unknown(RawValue)
+    """
+  }
+
+  var initializerDeclaration: String {
+    """
+    public init?(rawValue: RawValue) {
+      switch rawValue {
+        \(
+          enumValues.map {
+            "case \"\($0.name)\": self = .\($0.name.camelCase)"
+          }.lines
+        )
+        default: self = ._unknown(rawValue)
+      }
+    }
+    """
+  }
+
+  var rawValueDeclaration: String {
+    """
+    public var rawValue: RawValue {
+      switch self {
+      \(
+        enumValues.map {
+          "case .\($0.name.camelCase): return \"\($0.name)\""
+        }.lines
+      )
+        case let ._unknown(value): return value
+      }
+    }
+    """
+  }
+
+  var equatableDeclaration: String {
+    """
+    static func == (lhs: \(name.pascalCase), rhs: \(name.pascalCase)) -> Bool {
+      switch (lhs, rhs) {
+        \(
+          enumValues.map {
+            "case (.\($0.name.camelCase), .\($0.name.camelCase)): return true"
+          }.lines
+        )
+        case (let ._unknown(lhsValue), let ._unknown(rhsValue)): return lhsValue == rhsValue
+        default: return false
+      }
+    }
+    """
+  }
+
+  var allCasesDeclaration: String {
+    """
+    static var allCases: [\(name.pascalCase)] {
+      return [
+        \(
+          enumValues.map {
+            ".\($0.name.camelCase)"
+          }.joined(separator: ",\n")
+        )
+      ]
+    }
+    """
   }
 }
 
@@ -50,7 +129,7 @@ private extension EnumValue {
     """
     \(docs)
     \(availability)
-    case \(name.camelCase.normalize) = "\(name)"
+    case \(name.camelCase.normalize)
     """
   }
 }
