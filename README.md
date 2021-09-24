@@ -53,7 +53,7 @@ dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swif
 - Provide a remote url to fetch the schema
 - Use `remote` for `--schema-source` to indicate the schema needs to be fetched remotely
 ```
-dh-graphql-codegen-ios "https://www.somedomain.com" --schema-source "remote"
+dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote"
 ```
 
 **Providing custom config**
@@ -86,37 +86,6 @@ graphQLClient.get(productRequest)
   .subscribe(...)
 ```
 
-### Sample Resource Class
-- Below is the gist of how a GraphQLResource implementing PD-Kami wouldw works, the final structure and code generation itself will be done at later stage.
-```
-// To be added, just pass in the Encodable GraphQLRequest to APIClient with POST method
-enum GraphQLResource: ResourceParameters
-  case request(GraphQLRequest)
-  case update(GraphQLRequest)
-
-  func bodyFormat() -> HttpBodyFormat {
-    .URLFormData
-  }
-  
-  func httpMethod() -> RequestHttpMethod {
-    .post
-  }
-  
-  func bodyParameters() -> Any? {
-    switch self {
-    case let .graphQL(parameters):
-      return parameters.bodyParameters()
-    }
-  }
-}
-
-extension GraphQLRequest: BodyParameters {
-  func bodyParameters() -> [String: Any] {
-    asDictionary ?? [:]
-  }
-}
-```
-
 ### Sample Config File
 - A JSON file that can be passed into the CLI using `--config-path` 
 - apiHeaders define the custom headers to be used for downloading the schema, this is useful to provide authorization headers for authentication
@@ -142,6 +111,38 @@ extension GraphQLRequest: BodyParameters {
   }
 }
 ```
+Example schema
+```
+dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --output "GroceriesGraphQLSpec.swift"`
+```
 
-Example schema.json
-Ping me `@romy cheah` in slack for now and I'll share the schema file to you while the logic to generate the schema remotely is being built upon
+### Sample Resource Class
+- Below is the gist of how a GraphQLResource implementing PD-Kami would works, the final structure and code generation itself will be done at later stage.
+```
+// To be added, just pass in the Encodable GraphQLRequest to APIClient with POST method
+enum GraphQLResource: ResourceParameters
+case request(GraphQLRequest)
+case update(GraphQLRequest)
+
+func bodyFormat() -> HttpBodyFormat {
+.URLFormData
+}
+
+func httpMethod() -> RequestHttpMethod {
+.post
+}
+
+func bodyParameters() -> Any? {
+switch self {
+case let .graphQL(parameters):
+return parameters.bodyParameters()
+}
+}
+}
+
+extension GraphQLRequest: BodyParameters {
+func bodyParameters() -> [String: Any] {
+asDictionary ?? [:]
+}
+}
+```
