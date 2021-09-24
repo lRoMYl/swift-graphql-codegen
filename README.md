@@ -26,6 +26,7 @@ Support DH Custom Feature
 - [x] Custom field whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [ ] APIClient
+- [ ] Namespace option to resolve name collision
 
 ## Installation
 ```
