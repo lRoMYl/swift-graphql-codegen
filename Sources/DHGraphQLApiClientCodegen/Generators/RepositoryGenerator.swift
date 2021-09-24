@@ -91,7 +91,7 @@ extension RepositoryGenerator {
       return try objectType.fields.map {
         """
         \(try funcSignatureCode(field: $0, operation: operation)) {
-          let resource = \(namespace)Resource.campaigns(request: request)
+          let resource = \(namespace)ResourceParameters.campaigns(request: request)
 
           return executeGraphQL\(operationName)(resource: resource)
         }
@@ -107,10 +107,12 @@ extension RepositoryGenerator {
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    """
+    let responseDataText = namespaceExtension + field.name.pascalCase
+
+    return """
     func \(field.name.camelCase)(
       with request: \(entityNameMap.request)<\(namespaceExtension)\(field.requestParameterName(with: operation))>
-    ) -> Single<ApiResponse<\(namespaceExtension)\(field.name.pascalCase)>>
+    ) -> \(responseGenericCode(text: responseDataText))
     """
   }
 
@@ -118,12 +120,13 @@ extension RepositoryGenerator {
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName = operation.type.name.pascalCase
+    let responseDataText = "GraphQLResponse<\(namespaceExtension)\(operationName), T>"
 
     return """
     func executeGraphQL\(operationName)<T>(
       resource: ResourceParameters
-    ) -> Single<ApiClient.ApiResponse<T>> where T: Codable {
-      let request: Single<ApiResponse<GraphQLResponse<\(namespaceExtension)\(operationName), T>>> = restClient
+    ) -> \(responseGenericCode(text: "T")) where T: Codable {
+      let request: \(responseGenericCode(text: responseDataText)) = restClient
         .executeRequest(resource: resource)
 
       return request
@@ -137,5 +140,9 @@ extension RepositoryGenerator {
         .subscribeOn(scheduler)
     }
     """
+  }
+
+  func responseGenericCode(text: String) -> String {
+    "Single<ApiResponse<\(text)>>"
   }
 }

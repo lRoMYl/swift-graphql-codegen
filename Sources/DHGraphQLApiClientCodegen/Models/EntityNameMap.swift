@@ -8,6 +8,10 @@
 import Foundation
 
 public struct EntityNameMap: Decodable {
+  /**
+   Entity name for GraphQL request wrapper
+   - default value:  GraphQLRequest
+   */
   let request: String
 }
 

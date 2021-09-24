@@ -31,7 +31,7 @@ struct ResourceParametersGenerator: Generating {
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
     """
-    enum \(namespace)Resource: ResourceParameters {
+    enum \(namespace)ResourceParameters: ResourceParameters {
       \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
 
       func bodyFormat() -> HttpBodyFormat {
