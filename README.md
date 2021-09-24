@@ -87,6 +87,7 @@ graphQLClient.get(productRequest)
 ```
 
 ### Sample Resource Class
+- Below is the gist of how a GraphQLResource implementing PD-Kami wouldw works, the final structure and code generation itself will be done at later stage.
 ```
 // To be added, just pass in the Encodable GraphQLRequest to APIClient with POST method
 enum GraphQLResource: ResourceParameters
@@ -117,6 +118,7 @@ extension GraphQLRequest: BodyParameters {
 ```
 
 ### Sample Config File
+- A JSON file that can be passed into the CLI using `--config-path` 
 - apiHeaders define the custom headers to be used for downloading the schema, this is useful to provide authorization headers for authentication
 - scalarMap defines the custom mapping for Scalar type to native Swift type, code generation will fail if no mapping is found for custom scalar type
 - selectionMap defines custom field whitelisting for selections, overrides the schema specification to only query the fields required by client use case
