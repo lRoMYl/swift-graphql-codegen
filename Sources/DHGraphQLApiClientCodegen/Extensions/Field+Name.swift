@@ -13,9 +13,13 @@ extension Field {
 
     return enumPrefix.isEmpty ? name.camelCase : "\(enumPrefix)\(name.pascalCase)"
   }
-}
 
-extension Field {
+  func funcName(with operation: GraphQLAST.Operation) -> String {
+    let enumPrefix = operation.enumNamePrefix.camelCase
+
+    return enumPrefix.isEmpty ? name.camelCase : "\(enumPrefix)\(name.pascalCase)"
+  }
+
   func requestParameterName(with operation: GraphQLAST.Operation) -> String {
     let enumPrefix = operation.enumNamePrefix.pascalCase
     let typeName = self.type.namedType.name.pascalCase

@@ -69,7 +69,7 @@ private extension RequestParameterGenerator {
     let operationTypeName = operation.type.name.lowercased()
 
     let result: [String] = try returnObject.fields.map { field in
-      let requestParameterName = self.requestParameterName(operation: operation, field: field)
+      let requestParameterName = field.requestParameterName(with: operation)
 
       return try requestParameterDeclaration(
         operationTypeName: operationTypeName,
@@ -124,13 +124,6 @@ private extension RequestParameterGenerator {
 
     return text
   }
-
-  func requestParameterName(operation: GraphQLAST.Operation, field: Field) -> String {
-    let requestParameterPrefix = operation.requestParameterPrefix
-    let fieldName = field.name.pascalCase
-
-    return "\(requestParameterPrefix)\(fieldName)\(classPrefix)"
-  }
 }
 
 // MARK: - Operation
@@ -143,18 +136,6 @@ private extension GraphQLAST.Operation {
     case let .subscription(object):
       print("Warning, subscription is not implemented yet")
       return object
-    }
-  }
-
-  /// Custom name prefix to prevent collision for the same operation object for Query, Mutation and Subscription
-  var requestParameterPrefix: String {
-    switch self {
-    case .query:
-      return ""
-    case .mutation:
-      return "Update"
-    case .subscription:
-      return "Subscribe"
     }
   }
 }

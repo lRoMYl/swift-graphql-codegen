@@ -45,6 +45,10 @@ struct RepositoryGenerator: Generating {
 
       \(try schema.operations.map { try funcCode(with: $0).lines }.lines)
 
+
+    }
+
+    private extension \(namespace)Repository {
       \(try schema.operations.map { try executeCode(with: $0) }.lines)
     }
     """
@@ -56,12 +60,10 @@ extension RepositoryGenerator {
     let funcDeclarations: [String]
 
     switch operation {
-    case let .query(objectType):
+    case let .query(objectType), let .mutation(objectType):
       funcDeclarations = try objectType.fields.map {
         try funcSignatureCode(field: $0, operation: operation)
       }
-    case let .mutation(objectType):
-      funcDeclarations = []
     case .subscription:
       throw RepositoryGeneratorError.notImplemented(
         context: "Subscription is not implemented"
@@ -87,18 +89,16 @@ extension RepositoryGenerator {
     let operationName = operation.type.name.pascalCase
 
     switch operation {
-    case let .query(objectType):
+    case let .query(objectType), let .mutation(objectType):
       return try objectType.fields.map {
         """
         \(try funcSignatureCode(field: $0, operation: operation)) {
-          let resource = \(namespace)ResourceParameters.campaigns(request: request)
+          let resource = \(namespace)ResourceParameters.\($0.enumName(with: operation))(request: request)
 
           return executeGraphQL\(operationName)(resource: resource)
         }
         """
       }
-    case let .mutation(objectType):
-      return []
     case .subscription:
       throw RepositoryGeneratorError.notImplemented(
         context: "Subscription is not implemented"
@@ -110,7 +110,7 @@ extension RepositoryGenerator {
     let responseDataText = namespaceExtension + field.name.pascalCase
 
     return """
-    func \(field.name.camelCase)(
+    func \(field.funcName(with: operation))(
       with request: \(entityNameMap.request)<\(namespaceExtension)\(field.requestParameterName(with: operation))>
     ) -> \(responseGenericCode(text: responseDataText))
     """
