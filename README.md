@@ -26,7 +26,8 @@ Support DH Custom Feature
 - [x] Custom field whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
-- [x] APIClient
+- [x] DH flavor APIClient
+- [ ] Provide service dependency injection for DH flavor APIClient, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
 - [ ] Split base class generation with `action` option, this would allow integration with different GraphQL microservice providers without duplicated base class
 
 ## Installation
@@ -90,12 +91,15 @@ graphQLClient.get(productRequest)
 
 ### Sample Config File
 - A JSON file that can be passed into the CLI using `--config-path` 
-- apiHeaders define the custom headers to be used for downloading the schema, this is useful to provide authorization headers for authentication
-- scalarMap defines the custom mapping for Scalar type to native Swift type, code generation will fail if no mapping is found for custom scalar type
-- selectionMap defines custom field whitelisting for selections, overrides the schema specification to only query the fields required by client use case
+- `namespace` define the optional namespace used for all codegenerated code, this is helpful to avoid naming collision as func/class name is defined from the schema which might conflict with existing code
+- `apiHeaders` define the custom headers to be used for downloading the schema, this is useful to provide authorization headers for authentication
+- `scalarMap` defines the custom mapping for Scalar type to native Swift type, code generation will fail if no mapping is found for custom scalar type
+- `selectionMap` defines custom field whitelisting for selections, overrides the schema specification to only query the fields required by client use case
+- `entityNameMap` allows overriding of shared entity name used across all the codegeneration logic instead of manually modification in the code
 
 ```JSON
 {
+  "namespace": "Groceries",
   "apiHeaders": {
     "authorization": "aasd8uioj213+="
   },
@@ -110,41 +114,13 @@ graphQLClient.get(productRequest)
       "required": ["type"],
       "selectable": []
     }
+  },
+  "entityNameMap": {
+    "request": "CustomRequestEntityName"
   }
 }
 ```
 Example schema
 ```
 dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --output "GroceriesGraphQLSpec.swift"`
-```
-
-### Sample Resource Class
-- Below is the gist of how a GraphQLResource implementing PD-Kami would works, the final structure and code generation itself will be done at later stage.
-```
-// To be added, just pass in the Encodable GraphQLRequest to APIClient with POST method
-enum GraphQLResource: ResourceParameters
-case request(GraphQLRequest)
-case update(GraphQLRequest)
-
-func bodyFormat() -> HttpBodyFormat {
-.URLFormData
-}
-
-func httpMethod() -> RequestHttpMethod {
-.post
-}
-
-func bodyParameters() -> Any? {
-switch self {
-case let .graphQL(parameters):
-return parameters.bodyParameters()
-}
-}
-}
-
-extension GraphQLRequest: BodyParameters {
-func bodyParameters() -> [String: Any] {
-asDictionary ?? [:]
-}
-}
 ```

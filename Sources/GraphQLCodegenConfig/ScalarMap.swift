@@ -28,7 +28,7 @@ public extension ScalarMap {
 }
 
 public extension ScalarMap {
-  static var `default`: ScalarMap {
+  static let `default`: ScalarMap = {
     [
       "ID": "String",
       "String": "String",
@@ -36,5 +36,5 @@ public extension ScalarMap {
       "Boolean": "Bool",
       "Float": "Double"
     ]
-  }
+  }()
 }
