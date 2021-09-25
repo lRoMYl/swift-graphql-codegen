@@ -8,7 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct FieldSpecificationGenerator {
+struct FieldCodeGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
 

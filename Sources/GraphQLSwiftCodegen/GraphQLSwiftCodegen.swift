@@ -13,7 +13,7 @@ public struct GraphQLSwiftCodegen {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let generators: [GraphQLSpecificationGenerating]
+  private let generators: [GraphQLCodeGenerating]
 
   public init(
     namespace: String?,
@@ -32,10 +32,10 @@ public struct GraphQLSwiftCodegen {
     self.entityNameMap = entityNameMap ?? EntityNameMap.default
 
     self.generators = [
-      BaseSpecificationGenerator(entityNameMap: self.entityNameMap),
-      EnumSpecificationGenerator(scalarMap: self.scalarMap),
-      ObjectSpecificationGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
-      InputObjectSpecificationGenerator(scalarMap: self.scalarMap),
+      HeaderCodeGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
+      EnumCodeGenerator(scalarMap: self.scalarMap),
+      ObjectCodeGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
+      InputObjectCodeGenerator(scalarMap: self.scalarMap),
       RequestParameterGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
@@ -45,7 +45,8 @@ public struct GraphQLSwiftCodegen {
   }
 
   public func generate(schema: Schema) throws -> String {
-    let code = try generators.map { try $0.declaration(schema: schema) }.lines
+    var code = try generators.map { try $0.code(schema: schema) }.lines
+    code.append("}")
 
     let source = try code.format()
     return source

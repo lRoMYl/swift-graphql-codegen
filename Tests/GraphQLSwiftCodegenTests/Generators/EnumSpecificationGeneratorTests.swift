@@ -6,7 +6,7 @@
 //
 
 @testable import GraphQLAST
-@testable import GraphQLCodegen
+@testable import GraphQLSwiftCodegen
 import XCTest
 
 final class EnumSpecificationGeneratorTests: XCTestCase {
@@ -51,23 +51,93 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let generator = EnumSpecificationGenerator(scalarMap: [:])
-    let declaration = try generator.declaration(schema: schema).format()
+    let generator = EnumCodeGenerator(scalarMap: [:])
+    let declaration = try generator.code(schema: schema).format()
 
     let expected = try """
     // MARK: - Enums
 
     /// Djini discount type
-    enum DiscountType: String, CaseIterable, Codable {
-      case free = "FREE"
+    enum DiscountType: RawRepresentable, CaseIterable, Codable {
+      typealias RawValue = String
+
+      case free
       /// Absolute price discount
       @available(*, deprecated, message: "Deprecated")
-      case absolute = "ABSOLUTE"
+      case absolute
+
+      /// Auto generated constant for unknown enum values
+      case _unknown(RawValue)
+
+      public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "FREE": self = .free
+        case "ABSOLUTE": self = .absolute
+        default: self = ._unknown(rawValue)
+        }
+      }
+
+      public var rawValue: RawValue {
+        switch self {
+        case .free: return "FREE"
+        case .absolute: return "ABSOLUTE"
+        case let ._unknown(value): return value
+        }
+      }
+
+      static func == (lhs: DiscountType, rhs: DiscountType) -> Bool {
+        switch (lhs, rhs) {
+        case (.free, .free): return true
+        case (.absolute, .absolute): return true
+        case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+        default: return false
+        }
+      }
+
+      static var allCases: [DiscountType] {
+        return [
+          .free,
+          .absolute
+        ]
+      }
     }
 
     /// CampaignSource
-    enum CampaignSource: String, CaseIterable, Codable {
-      case djini = "DJINI"
+    enum CampaignSource: RawRepresentable, CaseIterable, Codable {
+      typealias RawValue = String
+
+      case djini
+
+      /// Auto generated constant for unknown enum values
+      case _unknown(RawValue)
+
+      public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "DJINI": self = .djini
+        default: self = ._unknown(rawValue)
+        }
+      }
+
+      public var rawValue: RawValue {
+        switch self {
+        case .djini: return "DJINI"
+        case let ._unknown(value): return value
+        }
+      }
+
+      static func == (lhs: CampaignSource, rhs: CampaignSource) -> Bool {
+        switch (lhs, rhs) {
+        case (.djini, .djini): return true
+        case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+        default: return false
+        }
+      }
+
+      static var allCases: [CampaignSource] {
+        return [
+          .djini
+        ]
+      }
     }
     """.format()
 

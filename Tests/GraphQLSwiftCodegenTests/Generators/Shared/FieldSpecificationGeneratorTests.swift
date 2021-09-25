@@ -6,11 +6,12 @@
 //
 
 @testable import GraphQLAST
-@testable import GraphQLCodegen
+@testable import GraphQLCodegenConfig
+@testable import GraphQLSwiftCodegen
 import XCTest
 
 final class FieldSpecificationGeneratorTests: XCTestCase {
-  private let defaultGenerator = FieldSpecificationGenerator(
+  private let defaultGenerator = FieldCodeGenerator(
     scalarMap: ScalarMap.default,
     selectionMap: nil
   )

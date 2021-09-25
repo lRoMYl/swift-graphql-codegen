@@ -8,21 +8,21 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct ObjectSpecificationGenerator: GraphQLSpecificationGenerating {
+struct ObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
-  private let fieldSpecificationGenerator: FieldSpecificationGenerator
+  private let fieldSpecificationGenerator: FieldCodeGenerator
 
   init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
-    self.fieldSpecificationGenerator = FieldSpecificationGenerator(
+    self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap
     )
   }
 
-  func declaration(schema: Schema) throws -> String {
+  func code(schema: Schema) throws -> String {
     """
     // MARK: - Objects
 
@@ -55,7 +55,7 @@ private extension Structure {
   func declaration(
     objects: [ObjectType],
     scalarMap: ScalarMap,
-    fieldSpecificationGenerator: FieldSpecificationGenerator
+    fieldSpecificationGenerator: FieldCodeGenerator
   ) throws -> String {
     let name = self.name.pascalCase
     let sortedFields = fields.sorted(by: { $0.name < $1.name })

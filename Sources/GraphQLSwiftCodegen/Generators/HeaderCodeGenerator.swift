@@ -10,15 +10,29 @@ import GraphQLCodegenConfig
 
 /// This code potentially be moved to PD-Kami
 
-struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
+struct HeaderCodeGenerator: GraphQLCodeGenerating {
+  private let namespace: String
   private let entityNameMap: EntityNameMap
 
-  init(entityNameMap: EntityNameMap) {
+  init(namespace: String, entityNameMap: EntityNameMap) {
+    self.namespace = namespace
     self.entityNameMap = entityNameMap
   }
 
-  func declaration(schema: Schema) throws -> String {
-    """
+  func code(schema: Schema) throws -> String {
+    let namespaceCode: String
+
+    if namespace.isEmpty {
+      namespaceCode = ""
+    } else {
+      namespaceCode = """
+      enum \(namespace) {}
+
+      extensions \(namespace) {
+      """
+    }
+
+    return """
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
@@ -151,6 +165,8 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           } ?? [:]
       }
     }
+
+    \(namespaceCode)
     """
   }
 }

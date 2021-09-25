@@ -18,7 +18,7 @@ enum RequestParameterError: Error, LocalizedError {
   }
 }
 
-struct RequestParameterGenerator: GraphQLSpecificationGenerating {
+struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityName: String
   private let entityPrefix = "RequestParameter"
 
@@ -50,7 +50,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     self.entityName = entityNameMap.requestParameter
   }
 
-  func declaration(schema: Schema) throws -> String {
+  func code(schema: Schema) throws -> String {
     let responseParameters = try schema.operations.map {
       try operation($0, objects: schema.objects, interfaces: schema.interfaces, scalarMap: scalarMap).lines
     }.lines

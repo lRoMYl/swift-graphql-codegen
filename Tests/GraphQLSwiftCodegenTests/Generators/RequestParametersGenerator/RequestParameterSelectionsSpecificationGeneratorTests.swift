@@ -6,13 +6,18 @@
 //
 
 @testable import GraphQLAST
-@testable import GraphQLCodegen
+@testable import GraphQLCodegenConfig
+@testable import GraphQLSwiftCodegen
 @testable import GraphQLDownloader
 import XCTest
 
 final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
   func testCampaignsDeclaration() throws {
-    let generator = RequestParameterSelectionsGenerator(scalarMap: [:], selectionMap: nil)
+    let generator = RequestParameterSelectionsGenerator(
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
+      entityNameMap: EntityNameMap.default
+    )
 
     let campaignRequestField = Field(
       name: "campaigns",
@@ -139,7 +144,11 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
   }
 
   func testObjectFieldDeclaration() throws {
-    let generator = RequestParameterSelectionsGenerator(scalarMap: [:], selectionMap: nil)
+    let generator = RequestParameterSelectionsGenerator(
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
+      entityNameMap: EntityNameMap.default
+    )
 
     let campaignRequestField = Field(
       name: "discount",

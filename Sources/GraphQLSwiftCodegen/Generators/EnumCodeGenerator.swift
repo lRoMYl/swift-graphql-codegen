@@ -8,14 +8,14 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct EnumSpecificationGenerator: GraphQLSpecificationGenerating {
+struct EnumCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
   }
 
-  func declaration(schema: Schema) throws -> String {
+  func code(schema: Schema) throws -> String {
     """
     // MARK: - Enums
 

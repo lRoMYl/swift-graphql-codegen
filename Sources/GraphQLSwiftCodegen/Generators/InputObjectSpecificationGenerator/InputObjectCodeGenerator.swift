@@ -9,16 +9,16 @@ import GraphQLCodegenUtil
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {
+struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
-  private let objectFieldSpecificationGenerator: InputObjectFieldSpecificationGenerator
+  private let objectFieldCodeGenerator: InputObjectFieldCodeGenerator
 
   init(scalarMap: ScalarMap) {
     self.scalarMap = scalarMap
-    self.objectFieldSpecificationGenerator = InputObjectFieldSpecificationGenerator(scalarMap: scalarMap)
+    self.objectFieldCodeGenerator = InputObjectFieldCodeGenerator(scalarMap: scalarMap)
   }
 
-  func declaration(schema: Schema) throws -> String {
+  func code(schema: Schema) throws -> String {
     """
     // MARK: - Input Objects
 
@@ -26,7 +26,7 @@ struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {
       try schema.inputObjects.compactMap {
         try $0.declaration(
           scalarMap: scalarMap,
-          objectFieldSpecificationGenerator: objectFieldSpecificationGenerator
+          objectFieldSpecificationGenerator: objectFieldCodeGenerator
         )
       }.lines
     )
@@ -39,7 +39,7 @@ struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {
 private extension InputObjectType {
   func declaration(
     scalarMap: ScalarMap,
-    objectFieldSpecificationGenerator: InputObjectFieldSpecificationGenerator
+    objectFieldSpecificationGenerator: InputObjectFieldCodeGenerator
   ) throws -> String {
     let name = self.name.pascalCase
 

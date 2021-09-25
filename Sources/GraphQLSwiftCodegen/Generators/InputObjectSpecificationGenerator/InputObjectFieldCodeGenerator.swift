@@ -8,7 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct InputObjectFieldSpecificationGenerator {
+struct InputObjectFieldCodeGenerator {
   private let scalarMap: ScalarMap
 
   init(scalarMap: ScalarMap) {

@@ -7,6 +7,6 @@
 
 import GraphQLAST
 
-protocol GraphQLSpecificationGenerating {
-  func declaration(schema: Schema) throws -> String
+protocol GraphQLCodeGenerating {
+  func code(schema: Schema) throws -> String
 }
