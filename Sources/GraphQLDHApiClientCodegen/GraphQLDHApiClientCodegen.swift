@@ -24,7 +24,7 @@ public struct GraphQLDHApiClientCodegen {
       HeaderGenerator(),
       RepositoryGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
       ResourceParametersGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
-      GraphQLResponseWrappedValueGenerator(namespace: self.namespace)
+      GraphQLResponseWrappedValueGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap)
     ]
   }
 

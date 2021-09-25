@@ -105,7 +105,7 @@ extension RepositoryGenerator {
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName = operation.type.name.pascalCase
-    let responseDataText = "GraphQLResponse<\(namespaceExtension)\(operationName), T>"
+    let responseDataText = "\(entityNameMap.response)<\(namespaceExtension)\(operationName), T>"
 
     return """
     func executeGraphQL\(operationName)<T>(

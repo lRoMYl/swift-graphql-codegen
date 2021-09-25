@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Shared antity name mapping convention across generators
 public struct EntityNameMap: Decodable {
   /**
    Entity name for GraphQL request wrapper

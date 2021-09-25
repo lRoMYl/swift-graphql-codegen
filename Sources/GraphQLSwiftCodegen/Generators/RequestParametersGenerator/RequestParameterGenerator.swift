@@ -117,7 +117,7 @@ private extension RequestParameterGenerator {
       struct \(requestParameterName): \(entityName) {
         // MARK: - Request Type
 
-        let requestType: GraphQLRequestType = .\(operationTypeName)
+        let requestType: \(entityNameMap.requestType) = .\(operationTypeName)
 
         \(operationDefinition)
 

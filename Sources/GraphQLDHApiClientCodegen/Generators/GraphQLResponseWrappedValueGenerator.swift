@@ -7,15 +7,22 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
 struct GraphQLResponseWrappedValueGenerator: Generating {
   private let namespace: String
   private let namespaceExtension: String
+  private let responseEntityName: String
 
-  init(namespace: String = "") {
+  private let entityNameMap: EntityNameMap
+
+  init(namespace: String = "", entityNameMap: EntityNameMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+    self.entityNameMap = entityNameMap
+
+    self.responseEntityName = entityNameMap.response
   }
 
   func code(schema: Schema) throws -> String {
@@ -36,9 +43,9 @@ extension GraphQLResponseWrappedValueGenerator {
     }.lines
 
     return """
-    // MARK: - GraphQLResponse+\(operationName)WrappedValue
+    // MARK: - \(responseEntityName)+\(operationName)WrappedValue
 
-    extension GraphQLResponse where OperationType == \(namespaceExtension)\(operationName) {
+    extension \(responseEntityName) where OperationType == \(namespaceExtension)\(operationName) {
       var wrappedValue: ReturnType? {
         switch ReturnType.self {
         \(cases)
