@@ -12,9 +12,15 @@ public struct GraphQLSwiftCodegen {
   private let namespace: String
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
+  private let entityNameMap: EntityNameMap
   private let generators: [GraphQLSpecificationGenerating]
 
-  public init(namespace: String?, scalarMap: ScalarMap?, selectionMap: SelectionMap?) throws {
+  public init(
+    namespace: String?,
+    scalarMap: ScalarMap?,
+    selectionMap: SelectionMap?,
+    entityNameMap: EntityNameMap?
+  ) throws {
     try selectionMap?.validate()
 
     self.namespace = namespace ?? ""
@@ -23,13 +29,18 @@ public struct GraphQLSwiftCodegen {
       uniquingKeysWith: { (_, new) in new }
     )
     self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap ?? EntityNameMap.default
 
     self.generators = [
-      BaseSpecificationGenerator(),
+      BaseSpecificationGenerator(entityNameMap: self.entityNameMap),
       EnumSpecificationGenerator(scalarMap: self.scalarMap),
       ObjectSpecificationGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
       InputObjectSpecificationGenerator(scalarMap: self.scalarMap),
-      RequestParameterGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap)
+      RequestParameterGenerator(
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap,
+        entityNameMap: self.entityNameMap
+      )
     ]
   }
 

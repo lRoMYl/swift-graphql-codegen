@@ -19,22 +19,25 @@ enum RequestParameterError: Error, LocalizedError {
 }
 
 struct RequestParameterGenerator: GraphQLSpecificationGenerating {
-  private let classType = "GraphQLRequestParameter"
-  private let classPrefix = "RequestParameter"
+  private let entityName: String
+  private let entityPrefix = "RequestParameter"
 
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
+  private let entityNameMap: EntityNameMap
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
   private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap,
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      entityNameMap: entityNameMap
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)
@@ -42,6 +45,9 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
       scalarMap: scalarMap,
       variablesGenerator: variablesGenerator
     )
+
+    // Initialize entity name variable
+    self.entityName = entityNameMap.requestParameter
   }
 
   func declaration(schema: Schema) throws -> String {
@@ -50,7 +56,7 @@ struct RequestParameterGenerator: GraphQLSpecificationGenerating {
     }.lines
 
     return """
-    // MARK: - \(classType)
+    // MARK: - \(entityName)
 
     \(responseParameters)
     """
@@ -108,7 +114,7 @@ private extension RequestParameterGenerator {
     let text = """
       // MARK: - \(requestParameterName)
 
-      struct \(requestParameterName): \(classType) {
+      struct \(requestParameterName): \(entityName) {
         // MARK: - Request Type
 
         let requestType: GraphQLRequestType = .\(operationTypeName)

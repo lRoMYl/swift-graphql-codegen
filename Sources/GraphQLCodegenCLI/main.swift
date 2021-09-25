@@ -42,14 +42,16 @@ GraphQLCodegenCLI.main(
   [
     "/Users/r.cheah/Desktop/schema.json",
     "--action", "graphqlspec",
-    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
   ]
 )
 GraphQLCodegenCLI.main(
   [
     "/Users/r.cheah/Desktop/schema.json",
     "--action", "dhapiclient",
-    "--output", "/Users/r.cheah/Desktop/ApiClient.swift"
+    "--output", "/Users/r.cheah/Desktop/ApiClient.swift",
+    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
   ]
 )
 //
@@ -248,7 +250,8 @@ private extension GraphQLCodegenCLI {
     let generator = try GraphQLSwiftCodegen(
       namespace: config?.namespace,
       scalarMap: config?.scalarMap,
-      selectionMap: config?.selectionMap
+      selectionMap: config?.selectionMap,
+      entityNameMap: config?.entityNameMap
     )
     let generatedCode = try generator.generate(schema: schema)
 

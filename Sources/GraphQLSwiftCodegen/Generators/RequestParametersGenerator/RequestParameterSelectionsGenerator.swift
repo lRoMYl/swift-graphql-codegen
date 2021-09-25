@@ -23,10 +23,12 @@ enum RequestParameterSelectionsError: Error, LocalizedError {
 struct RequestParameterSelectionsGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
+  private let entityNameMap: EntityNameMap
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap
   }
 
   func declaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
@@ -100,7 +102,7 @@ extension RequestParameterSelectionsGenerator {
 
     let selections: Selections
 
-    struct Selections: GraphQLSelections {
+    struct Selections: \(entityNameMap.selections) {
       func declaration() -> String {
         \"\"
       }
@@ -120,7 +122,8 @@ extension RequestParameterSelectionsGenerator {
       objects: objects,
       interfaces: interfaces,
       scalarMap: scalarMap,
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      entityNameMap: entityNameMap
     )
 
     let selectionFragmentMap = fieldMaps.selectionFragmentMap
@@ -131,7 +134,7 @@ extension RequestParameterSelectionsGenerator {
 
     let selections: Selections
 
-    struct Selections: GraphQLSelections {
+    struct Selections: \(entityNameMap.selections) {
       \(selectionDeclarations)
 
       func declaration() -> String {
@@ -156,7 +159,8 @@ private extension Field {
     objects: [ObjectType],
     interfaces: [InterfaceType],
     scalarMap: ScalarMap,
-    selectionMap: SelectionMap?
+    selectionMap: SelectionMap?,
+    entityNameMap: EntityNameMap
   ) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
@@ -179,7 +183,7 @@ private extension Field {
     let result = """
     let \(selectionVariableName): Set<\(selectionEnumName)>
 
-    enum \(selectionEnumName): String, GraphQLSelection {
+    enum \(selectionEnumName): String, \(entityNameMap.selection) {
       \(fieldsEnum)
     }
     """
@@ -241,14 +245,16 @@ private extension Collection where Element == FieldMap.Element {
     objects: [ObjectType],
     interfaces: [InterfaceType],
     scalarMap: ScalarMap,
-    selectionMap: SelectionMap?
+    selectionMap: SelectionMap?,
+    entityNameMap: EntityNameMap
   ) throws -> String {
     try map {
       try $0.value.selectionDeclaration(
         objects: objects,
         interfaces: interfaces,
         scalarMap: scalarMap,
-        selectionMap: selectionMap
+        selectionMap: selectionMap,
+        entityNameMap: entityNameMap
       )
     }.lines
   }

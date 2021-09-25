@@ -6,15 +6,19 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 /// This code potentially be moved to PD-Kami
 
 struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
-  init() {
+  private let entityNameMap: EntityNameMap
+
+  init(entityNameMap: EntityNameMap) {
+    self.entityNameMap = entityNameMap
   }
 
   func declaration(schema: Schema) throws -> String {
-    #"""
+    """
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
@@ -23,30 +27,30 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
 
     // MARK: - Interfaces
 
-    protocol GraphQLRequestParameter: Encodable {
-      associatedtype Selections: GraphQLSelections
+    protocol \(entityNameMap.requestParameter): Encodable {
+      associatedtype Selections: \(entityNameMap.selections)
 
-      var requestType: GraphQLRequestType { get }
+      var requestType: \(entityNameMap.requestType) { get }
       var selections: Selections { get }
       var operationDefinition: String { get }
     }
 
-    protocol GraphQLSelection: RawRepresentable, Hashable, CaseIterable where RawValue == String {}
-    protocol GraphQLSelections {
+    protocol \(entityNameMap.selection): RawRepresentable, Hashable, CaseIterable where RawValue == String {}
+    protocol \(entityNameMap.selections) {
       func declaration() -> String
     }
 
     // MARK: - Enum
 
-    enum GraphQLRequestType {
+    enum \(entityNameMap.requestType) {
       case query
       case mutation
       case subscription
     }
 
-    // MARK: GraphQLRequest
+    // MARK: \(entityNameMap.request)
 
-    struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
+    struct \(entityNameMap.request)<RequestParameters: \(entityNameMap.requestParameter)>: Encodable {
       let parameters: RequestParameters
 
       enum CodingKeys: String, CodingKey {
@@ -80,9 +84,9 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       }
     }
 
-    // MARK: - GraphQLResponse
+    // MARK: - \(entityNameMap.response)
 
-    struct GraphQLResponse<OperationType: Codable, ReturnType: Codable>: Codable {
+    struct \(entityNameMap.response)<OperationType: Codable, ReturnType: Codable>: Codable {
       let data: OperationType
 
       enum CodingKeys: String, CodingKey {
@@ -90,21 +94,21 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       }
     }
 
-    // MARK: - GraphQLSelection+Declaration
+    // MARK: - \(entityNameMap.selection)+Declaration
 
-    extension Collection where Element: GraphQLSelection {
+    extension Collection where Element: \(entityNameMap.selection) {
       var declaration: String {
         if count == 0 {
-          return Element.allCases.reduce(into: "") { $0 += "\n  \($1.rawValue)" }
+          return Element.allCases.reduce(into: "") { $0 += "\n  \\($1.rawValue)" }
         } else {
-          return reduce(into: "") { $0 += "\n  \($1.rawValue)" }
+          return reduce(into: "") { $0 += "\n  \\($1.rawValue)" }
         }
       }
     }
 
-    // MARK: - GraphQLSelections+Declaration
+    // MARK: - \(entityNameMap.selections)+Declaration
 
-    extension GraphQLSelections {
+    extension \(entityNameMap.selections) {
       func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
         var dictionary = [String: String]()
         dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
@@ -120,7 +124,7 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           let currentFragment = queue.removeFirst()
 
           for childSelectionKey in selectionDeclarationMap.keys {
-            if currentFragment.contains("...\(childSelectionKey)") {
+            if currentFragment.contains("...\\(childSelectionKey)") {
               let value = selectionDeclarationMap[childSelectionKey]!
 
               queue.append(value)
@@ -133,9 +137,9 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
       }
     }
 
-    // MARK: - GraphQLRequest+BodyParameters
+    // MARK: - \(entityNameMap.request)+BodyParameters
 
-    extension GraphQLRequest: BodyParameters {
+    extension \(entityNameMap.request): BodyParameters {
       func bodyParameters() -> [String: Any] {
         guard
           let data = try? JSONEncoder().encode(self)
@@ -147,6 +151,6 @@ struct BaseSpecificationGenerator: GraphQLSpecificationGenerating {
           } ?? [:]
       }
     }
-    """#
+    """
   }
 }
