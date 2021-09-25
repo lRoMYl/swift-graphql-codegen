@@ -57,17 +57,8 @@ struct RepositoryGenerator: Generating {
 
 extension RepositoryGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
-    let funcDeclarations: [String]
-
-    switch operation {
-    case let .query(objectType), let .mutation(objectType):
-      funcDeclarations = try objectType.fields.map {
-        try funcSignatureCode(field: $0, operation: operation)
-      }
-    case .subscription:
-      throw RepositoryGeneratorError.notImplemented(
-        context: "Subscription is not implemented"
-      )
+    let funcDeclarations: [String] = try operation.type.fields.map {
+      try funcSignatureCode(field: $0, operation: operation)
     }
 
     return funcDeclarations.lines
@@ -88,21 +79,14 @@ extension RepositoryGenerator {
   func funcCode(with operation: GraphQLAST.Operation) throws -> [String] {
     let operationName = operation.type.name.pascalCase
 
-    switch operation {
-    case let .query(objectType), let .mutation(objectType):
-      return try objectType.fields.map {
-        """
-        \(try funcSignatureCode(field: $0, operation: operation)) {
-          let resource = \(namespace)ResourceParameters.\($0.enumName(with: operation))(request: request)
+    return try operation.type.fields.map {
+      """
+      \(try funcSignatureCode(field: $0, operation: operation)) {
+        let resource = \(namespace)ResourceParameters.\($0.enumName(with: operation))(request: request)
 
-          return executeGraphQL\(operationName)(resource: resource)
-        }
-        """
+        return executeGraphQL\(operationName)(resource: resource)
       }
-    case .subscription:
-      throw RepositoryGeneratorError.notImplemented(
-        context: "Subscription is not implemented"
-      )
+      """
     }
   }
 
