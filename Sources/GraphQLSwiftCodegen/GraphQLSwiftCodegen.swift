@@ -5,8 +5,20 @@
 //  Created by Romy Cheah on 9/9/21.
 //
 
+import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+
+enum GraphQLSwiftCodegenError: Error, LocalizedError {
+  case formatError(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .formatError(context):
+      return "\(Self.self): \(context)"
+    }
+  }
+}
 
 public struct GraphQLSwiftCodegen {
   private let namespace: String
@@ -48,7 +60,19 @@ public struct GraphQLSwiftCodegen {
   public func generate(schema: Schema) throws -> String {
     let code = try generators.map { try $0.code(schema: schema) }.lines
 
-    let source = try code.format()
+    let source: String
+    do {
+      source = try code.format()
+    } catch {
+      throw GraphQLSwiftCodegenError
+      .formatError(
+        context: """
+          \(error)
+          Raw text:
+          \(code)
+          """
+      )
+    }
     return source
   }
 }

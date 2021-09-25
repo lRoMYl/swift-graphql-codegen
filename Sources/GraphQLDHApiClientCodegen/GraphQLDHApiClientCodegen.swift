@@ -5,9 +5,21 @@
 //  Created by Romy Cheah on 24/9/21.
 //
 
+import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import SwiftFormat
+
+enum GraphQLDHApiClientCodegenError: Error, LocalizedError {
+  case formatError(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .formatError(context):
+      return "\(Self.self).formatError: \(context)"
+    }
+  }
+}
 
 public struct GraphQLDHApiClientCodegen {
   private let namespace: String
@@ -31,7 +43,21 @@ public struct GraphQLDHApiClientCodegen {
   public func generate(schema: Schema) throws -> String {
     let code = try generators.map { try $0.code(schema: schema) }.lines
 
-    let source = try code.format()
+    let source: String
+
+    do {
+      source = try code.format()
+    } catch {
+      throw GraphQLDHApiClientCodegenError
+        .formatError(
+          context: """
+          \(error)
+          Raw text:
+          \(code)
+          """
+        )
+    }
+
     return source
   }
 }
