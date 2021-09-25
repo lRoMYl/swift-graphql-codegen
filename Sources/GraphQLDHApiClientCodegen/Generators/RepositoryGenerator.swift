@@ -23,7 +23,7 @@ struct RepositoryGenerator: Generating {
   private let namespaceExtension: String
   private let entityNameMap: EntityNameMap
 
-  init(namespace: String = "", entityNameMap: EntityNameMap) {
+  init(namespace: String, entityNameMap: EntityNameMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
     self.entityNameMap = entityNameMap
@@ -80,15 +80,18 @@ extension RepositoryGenerator {
   func funcCode(with operation: GraphQLAST.Operation) throws -> [String] {
     let operationName = operation.type.name.pascalCase
 
-    return try operation.type.fields.map {
+    let codes = try operation.type.fields.map {
       """
       \(try funcSignatureCode(field: $0, operation: operation)) {
-        let resource = \(namespace)ResourceParameters.\($0.enumName(with: operation))(request: request)
+        let resource = \(namespace)ResourceParameters
+          .\($0.enumName(with: operation))(parameters: parameters)
 
         return executeGraphQL\(operationName)(resource: resource)
       }
       """
     }
+
+    return codes
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
@@ -96,7 +99,7 @@ extension RepositoryGenerator {
 
     return """
     func \(field.funcName(with: operation))(
-      with request: \(entityNameMap.request)<\(namespaceExtension)\(field.requestParameterName(with: operation))>
+      with parameters: \(namespaceExtension)\(field.requestParameterName(with: operation))
     ) -> \(responseGenericCode(text: responseDataText))
     """
   }

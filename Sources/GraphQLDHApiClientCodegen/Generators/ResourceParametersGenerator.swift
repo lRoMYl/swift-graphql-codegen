@@ -65,9 +65,9 @@ struct ResourceParametersGenerator: Generating {
         }
       }
 
-      private func bodyParameters<T>(request: \(entityNameMap.request)<T>) -> [String: Any] where T: Encodable {
+      private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequestParameter {
         guard
-          let data = try? JSONEncoder().encode(request)
+          let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters))
         else { return [:]  }
 
         return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
@@ -87,7 +87,7 @@ extension ResourceParametersGenerator {
       let requestParameterName = field.requestParameterName(with: operation)
 
       return """
-      case \(enumName)(request: \(entityNameMap.request)<\(namespace).\(requestParameterName)>)
+      case \(enumName)(parameters: \(namespace).\(requestParameterName))
       """
     }
 
@@ -99,8 +99,8 @@ extension ResourceParametersGenerator {
       let enumName = field.enumName(with: operation)
 
       return """
-      case let .\(enumName)(request):
-        return bodyParameters(request: request)
+      case let .\(enumName)(parameters):
+        return bodyParameters(parameters: parameters)
       """
     }
 

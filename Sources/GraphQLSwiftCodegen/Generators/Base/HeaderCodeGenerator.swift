@@ -28,7 +28,7 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
       namespaceCode = """
       enum \(namespace) {}
 
-      extensions \(namespace) {
+      extension \(namespace) {
       """
     }
 
@@ -74,9 +74,7 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
         case subscription
       }
 
-      init(
-        parameters: RequestParameters
-      ) throws {
+      init(parameters: RequestParameters) {
         self.parameters = parameters
       }
 
