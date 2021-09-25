@@ -9,7 +9,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import SwiftFormat
 
-public struct DHGraphQLApiClientCodegen {
+public struct GraphQLDHApiClientCodegen {
   private let generators: [Generating]
   private let entityNameMap: EntityNameMap
 

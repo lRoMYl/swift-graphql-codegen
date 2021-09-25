@@ -1,4 +1,4 @@
-# DHGraphQLCodegeSwift
+# DHGraphQLCodegen
 
 Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
 

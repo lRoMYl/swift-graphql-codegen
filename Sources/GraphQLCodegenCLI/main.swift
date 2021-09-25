@@ -7,7 +7,7 @@
 
 import ArgumentParser
 import Foundation
-import DHGraphQLApiClientCodegen
+import GraphQLDHApiClientCodegen
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLSwiftCodegen
@@ -195,7 +195,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateApiClientCode(schema: Schema) throws -> String {
-    let generator = try DHGraphQLApiClientCodegen(namespace: "GraphQLSpec", entityNameMap: nil)
+    let generator = try GraphQLDHApiClientCodegen(namespace: "GraphQLSpec", entityNameMap: nil)
     let generatedCode = try generator.generate(schema: schema)
 
     return generatedCode

@@ -7,13 +7,13 @@ let package = Package(
   name: "dh-graphql-codegen-ios",
   platforms: [.macOS(.v10_15)],
   products: [
+    .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
+    .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .library(name: "GraphQLCodegenConfig", targets: ["GraphQLCodegenConfig"]),
     .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
     .library(name: "GraphQLSwiftCodegen", targets: ["GraphQLSwiftCodegen"]),
-    .library(name: "DHGraphQLApiClientCodegen", targets: ["DHGraphQLApiClientCodegen"]),
-    .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
-    .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
-    .executable(name: "dh-graphql-codegen-ios", targets: ["DHGraphQLCodegenCLI"])
+    .library(name: "GraphQLDHApiClientCodegen", targets: ["GraphQLDHApiClientCodegen"]),
+    .executable(name: "dh-graphql-codegen-ios", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),
@@ -37,14 +37,14 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
-      name: "DHGraphQLApiClientCodegen",
+      name: "GraphQLDHApiClientCodegen",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
-      name: "DHGraphQLCodegenCLI",
+      name: "GraphQLCodegenCLI",
       dependencies: [
         "GraphQLSwiftCodegen",
-        "DHGraphQLApiClientCodegen",
+        "GraphQLDHApiClientCodegen",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
@@ -56,8 +56,8 @@ let package = Package(
       ]
     ),
     .testTarget(
-      name: "DHGraphQLCodegenCLITests",
-      dependencies: ["DHGraphQLCodegenCLI"]
+      name: "GraphQLCodegenCLITests",
+      dependencies: ["GraphQLCodegenCLI"]
     ),
     .testTarget(
       name: "GraphQLSwiftCodegenTests",
