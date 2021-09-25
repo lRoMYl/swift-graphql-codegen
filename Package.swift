@@ -11,8 +11,9 @@ let package = Package(
     .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .library(name: "GraphQLCodegenConfig", targets: ["GraphQLCodegenConfig"]),
     .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
-    .library(name: "GraphQLCodegenSwift", targets: ["GraphQLCodegenSwift"]),
-    .library(name: "GraphQLCodegenDHRepository", targets: ["GraphQLCodegenDHRepository"]),
+    .library(name: "GraphQLCodegenSpecSwift", targets: ["GraphQLCodegenSpecSwift"]),
+    .library(name: "GraphQLCodegenEntitySwift", targets: ["GraphQLCodegenEntitySwift"]),
+    .library(name: "GraphQLCodegenDHRepositorySwift", targets: ["GraphQLCodegenDHRepositorySwift"]),
     .executable(name: "dh-graphql-codegen-ios", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
@@ -33,18 +34,23 @@ let package = Package(
       dependencies: ["SwiftFormat"]
     ),
     .target(
-      name: "GraphQLCodegenSwift",
+      name: "GraphQLCodegenEntitySwift",
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig"]
+    ),
+    .target(
+      name: "GraphQLCodegenSpecSwift",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
-      name: "GraphQLCodegenDHRepository",
+      name: "GraphQLCodegenDHRepositorySwift",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
       name: "GraphQLCodegenCLI",
       dependencies: [
-        "GraphQLCodegenSwift",
-        "GraphQLCodegenDHRepository",
+        "GraphQLCodegenSpecSwift",
+        "GraphQLCodegenDHRepositorySwift",
+        "GraphQLCodegenEntitySwift",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
@@ -60,8 +66,8 @@ let package = Package(
       dependencies: ["GraphQLCodegenCLI"]
     ),
     .testTarget(
-      name: "GraphQLCodegenSwiftTests",
-      dependencies: ["GraphQLCodegenSwift", "GraphQLDownloader"],
+      name: "GraphQLCodegenSpecSwiftTests",
+      dependencies: ["GraphQLCodegenSpecSwift", "GraphQLDownloader"],
       resources: [
         .process("Resources")
       ]

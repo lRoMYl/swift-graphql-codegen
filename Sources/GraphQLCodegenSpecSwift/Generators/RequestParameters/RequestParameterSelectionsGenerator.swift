@@ -14,9 +14,15 @@ private typealias FieldMap = [String: Field]
 enum RequestParameterSelectionsError: Error, LocalizedError {
   case missingReturnType(context: String)
   case notImplemented(context: String)
+  case formatError(context: String)
 
   var errorDescription: String? {
-    "\(Self.self).\(self)"
+    switch self {
+    case let .formatError(context):
+      return "\(Self.self).formatError: \(context)"
+    default:
+      return "\(Self.self).\(self)"
+    }
   }
 }
 
@@ -146,7 +152,20 @@ extension RequestParameterSelectionsGenerator {
       }
     }
     """
-    let formattedCode = try code.format()
+    let formattedCode: String
+
+    do {
+      formattedCode = try code.format()
+    } catch {
+      throw RequestParameterSelectionsError
+        .formatError(
+          context: """
+            \(error)
+            Raw text:
+            \(code)
+            """
+        )
+    }
 
     return formattedCode
   }

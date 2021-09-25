@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import SwiftFormat
 
-enum GraphQLDHApiClientCodegenError: Error, LocalizedError {
+enum GraphQLCodegenDHRepositorySwiftError: Error, LocalizedError {
   case formatError(context: String)
 
   var errorDescription: String? {
@@ -21,7 +21,7 @@ enum GraphQLDHApiClientCodegenError: Error, LocalizedError {
   }
 }
 
-public struct GraphQLDHApiClientCodegen {
+public struct GraphQLCodegenDHRepositorySwift {
   private let namespace: String
   private let entityNameMap: EntityNameMap
 
@@ -43,21 +43,21 @@ public struct GraphQLDHApiClientCodegen {
   public func generate(schema: Schema) throws -> String {
     let code = try generators.map { try $0.code(schema: schema) }.lines
 
-    let source: String
+    let formattedCode: String
 
     do {
-      source = try code.format()
+      formattedCode = try code.format()
     } catch {
-      throw GraphQLDHApiClientCodegenError
+      throw GraphQLCodegenDHRepositorySwiftError
         .formatError(
           context: """
-          \(error)
-          Raw text:
-          \(code)
-          """
+            \(error)
+            Raw text:
+            \(code)
+            """
         )
     }
 
-    return source
+    return formattedCode
   }
 }

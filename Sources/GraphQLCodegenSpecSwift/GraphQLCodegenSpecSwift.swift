@@ -9,7 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 
-enum GraphQLSwiftCodegenError: Error, LocalizedError {
+enum GraphQLCodegenSpecSwiftError: Error, LocalizedError {
   case formatError(context: String)
 
   var errorDescription: String? {
@@ -20,7 +20,7 @@ enum GraphQLSwiftCodegenError: Error, LocalizedError {
   }
 }
 
-public struct GraphQLSwiftCodegen {
+public struct GraphQLCodegenSpecSwift {
   private let namespace: String
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
@@ -60,19 +60,19 @@ public struct GraphQLSwiftCodegen {
   public func generate(schema: Schema) throws -> String {
     let code = try generators.map { try $0.code(schema: schema) }.lines
 
-    let source: String
+    let formattedCode: String
     do {
-      source = try code.format()
+      formattedCode = try code.format()
     } catch {
-      throw GraphQLSwiftCodegenError
-      .formatError(
-        context: """
-          \(error)
-          Raw text:
-          \(code)
-          """
-      )
+      throw GraphQLCodegenSpecSwiftError
+        .formatError(
+          context: """
+            \(error)
+            Raw text:
+            \(code)
+            """
+        )
     }
-    return source
+    return formattedCode
   }
 }

@@ -7,10 +7,11 @@
 
 import ArgumentParser
 import Foundation
-import GraphQLCodegenDHRepository
 import GraphQLAST
 import GraphQLCodegenConfig
-import GraphQLCodegenSwift
+import GraphQLCodegenDHRepositorySwift
+import GraphQLCodegenEntitySwift
+import GraphQLCodegenSpecSwift
 import GraphQLDownloader
 
 //GraphQLCodegenCLI.main()
@@ -258,7 +259,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateSwiftCode(schema: Schema, config: Config?) throws -> String {
-    let generator = try GraphQLSwiftCodegen(
+    let generator = try GraphQLCodegenSpecSwift(
       namespace: config?.namespace,
       scalarMap: config?.scalarMap,
       selectionMap: config?.selectionMap,
@@ -270,7 +271,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func generateApiClientCode(schema: Schema, config: Config?) throws -> String {
-    let generator = try GraphQLDHApiClientCodegen(
+    let generator = try GraphQLCodegenDHRepositorySwift(
       namespace: config?.namespace,
       entityNameMap: config?.entityNameMap
     )
