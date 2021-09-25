@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 public struct GraphQLSwiftCodegen {
   private let scalarMap: ScalarMap
@@ -36,8 +37,4 @@ public struct GraphQLSwiftCodegen {
     let source = try code.format()
     return source
   }
-}
-
-enum GraphQLSwiftCodegenError: Error {
-  case unknownScalar(name: String)
 }

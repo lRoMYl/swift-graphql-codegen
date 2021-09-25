@@ -18,21 +18,21 @@ import Foundation
  */
 public typealias SelectionMap = [String: SelectionItemMap]
 
-enum SelectionMapError: Error, LocalizedError {
+public enum SelectionMapError: Error, LocalizedError {
   case duplicateKey(context: String)
 
-  var errorDescription: String? {
+  public var errorDescription: String? {
     "\(Self.self).\(self)"
   }
 }
 
 /// SelectionItemMap is only applicable to graphql kind "OBJECT"
 public struct SelectionItemMap: Decodable {
-  let required: Set<String>
-  let selectable: Set<String>
+  public let required: Set<String>
+  public let selectable: Set<String>
 }
 
-extension SelectionMap {
+public extension SelectionMap {
   func validate() throws {
     for (key, value) in self {
       let intersectedKeys = value.required.intersection(value.selectable)

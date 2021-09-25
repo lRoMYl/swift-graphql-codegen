@@ -9,6 +9,7 @@ import ArgumentParser
 import Foundation
 import DHGraphQLApiClientCodegen
 import GraphQLAST
+import GraphQLCodegenConfig
 import GraphQLSwiftCodegen
 import GraphQLDownloader
 

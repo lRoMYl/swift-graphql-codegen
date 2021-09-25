@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 
 extension Structure {
   func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {

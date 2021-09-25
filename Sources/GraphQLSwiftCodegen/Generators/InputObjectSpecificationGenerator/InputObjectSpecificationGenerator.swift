@@ -7,6 +7,7 @@
 
 import GraphQLCodegenUtil
 import GraphQLAST
+import GraphQLCodegenConfig
 
 struct InputObjectSpecificationGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap

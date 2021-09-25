@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 import SwiftFormat
 
 public struct DHGraphQLApiClientCodegen {

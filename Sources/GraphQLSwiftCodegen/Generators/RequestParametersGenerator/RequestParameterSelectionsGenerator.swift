@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 
 private typealias FieldMap = [String: Field]
 

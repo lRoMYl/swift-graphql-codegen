@@ -7,19 +7,27 @@
 
 import Foundation
 
+public enum ScalarMapError: Error, LocalizedError {
+  case unknownScalar(name: String)
+
+  public var errorDescription: String? {
+    "\(Self.self).\(self)"
+  }
+}
+
 public typealias ScalarMap = [String: String]
 
-extension ScalarMap {
+public extension ScalarMap {
   func scalar(_ name: String) throws -> String {
     guard let scalarType = self[name] else {
-      throw GraphQLSwiftCodegenError.unknownScalar(name: name)
+      throw ScalarMapError.unknownScalar(name: name)
     }
 
     return scalarType
   }
 }
 
-extension ScalarMap {
+public extension ScalarMap {
   static var `default`: ScalarMap {
     [
       "ID": "String",

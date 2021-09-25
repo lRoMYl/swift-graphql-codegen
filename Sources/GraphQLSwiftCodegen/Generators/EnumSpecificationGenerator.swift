@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 struct EnumSpecificationGenerator: GraphQLSpecificationGenerating {
   private let scalarMap: ScalarMap

@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 struct InputObjectFieldSpecificationGenerator {
   private let scalarMap: ScalarMap

@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
 enum ResourceGeneratorError: Error, LocalizedError {

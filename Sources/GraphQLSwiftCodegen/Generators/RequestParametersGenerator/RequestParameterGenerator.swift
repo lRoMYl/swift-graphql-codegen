@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 
 enum RequestParameterError: Error, LocalizedError {
   case missingReturnType(context: String)

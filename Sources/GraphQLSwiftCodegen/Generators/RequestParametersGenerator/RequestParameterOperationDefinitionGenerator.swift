@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 
 struct RequestParameterOperationDefinitionGenerator {
   private let scalarMap: ScalarMap
