@@ -7,10 +7,10 @@
 
 import ArgumentParser
 import Foundation
-import GraphQLDHRepositoryCodegen
+import GraphQLCodegenDHRepository
 import GraphQLAST
 import GraphQLCodegenConfig
-import GraphQLSwiftCodegen
+import GraphQLCodegenSwift
 import GraphQLDownloader
 
 //GraphQLCodegenCLI.main()
