@@ -43,7 +43,8 @@ GraphQLCodegenCLI.main(
     "/Users/r.cheah/Desktop/schema.json",
     "--action", "graphqlspec",
     "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+    "--config-path", "/Users/r.cheah/Downloads/schema/config.json",
+    "--verbose"
   ]
 )
 GraphQLCodegenCLI.main(
@@ -147,6 +148,9 @@ struct GraphQLCodegenCLI: ParsableCommand {
   @Option(help: "Location of the config json file")
   var configPath: String?
 
+  @Flag(help: "Show extra logging for debugging purposes")
+  private var verbose: Bool = false
+
   static var configuration = CommandConfiguration(
     commandName: "dh-graphql-codegen-ios"
   )
@@ -241,7 +245,15 @@ private extension GraphQLCodegenCLI {
       throw GraphQLCodegenCLIError.invalidConfigPath
     }
 
-    let config = try JSONDecoder().decode(Config.self, from: jsonData)
+    var config: Config?
+
+    do {
+      config = try JSONDecoder().decode(Config.self, from: jsonData)
+    } catch {
+      if verbose {
+        print("[Warning] Discarding config, --config-path was given but serialization failed: \(error)")
+      }
+    }
 
     return config
   }
