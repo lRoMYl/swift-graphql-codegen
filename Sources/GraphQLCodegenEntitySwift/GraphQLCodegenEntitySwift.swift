@@ -11,10 +11,10 @@ import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 import SwiftFormat
 
-enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
+public enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
   case formatError(context: String)
 
-  var errorDescription: String? {
+  public var errorDescription: String? {
     switch self {
     case let .formatError(context):
       return "\(Self.self): \(context)"
@@ -22,11 +22,11 @@ enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
   }
 }
 
-struct GraphQLCodegenEntitySwift {
+public struct GraphQLCodegenEntitySwift {
   private let entityNameMap: EntityNameMap
 
-  init(entityNameMap: EntityNameMap) {
-    self.entityNameMap = entityNameMap
+  public init(entityNameMap: EntityNameMap?) {
+    self.entityNameMap = entityNameMap ?? EntityNameMap.default
   }
 
   public func code(schema: Schema) throws -> String {

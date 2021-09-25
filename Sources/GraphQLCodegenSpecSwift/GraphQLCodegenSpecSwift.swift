@@ -57,7 +57,7 @@ public struct GraphQLCodegenSpecSwift {
     ]
   }
 
-  public func generate(schema: Schema) throws -> String {
+  public func code(schema: Schema) throws -> String {
     let code = try generators.map { try $0.code(schema: schema) }.lines
 
     let formattedCode: String

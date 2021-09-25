@@ -7,8 +7,6 @@
 
 import GraphQLAST
 
-/// This code potentially be moved to PD-Kami
-
 struct FooterCodeGenerator: GraphQLCodeGenerating {
   private let namespace: String
 
