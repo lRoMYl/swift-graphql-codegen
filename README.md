@@ -12,7 +12,7 @@ Supports GraphQL Native Feature
 - [ ] Union
 - [x] Query
 - [x] Mutation
-- [ ] Subscription
+- [x] Subscription; Partial support, request/response/respository/resource are generated but DH ApiClient doesn't have native support for WebSocket yet
 - [x] Introspection
 
 Support DH Custom Feature
@@ -21,11 +21,12 @@ Support DH Custom Feature
 - [x] Local schema
 - [x] Remote schema, download using introspection query
 - [x] Remote schema authorization headers
-- [ ] Remote schema MD5 cache
+- [x] Remote schema cache
 - [x] Scalar Map extension
 - [x] Custom field whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
-- [ ] APIClient
+- [x] Support for optional namespace to avoid naming collision
+- [x] APIClient
 - [ ] Split base class generation with `action` option, this would allow integration with different GraphQL microservice providers without duplicated base class
 
 ## Installation

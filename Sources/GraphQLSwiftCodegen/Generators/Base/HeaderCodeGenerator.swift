@@ -113,9 +113,9 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
     extension Collection where Element: \(entityNameMap.selection) {
       var declaration: String {
         if count == 0 {
-          return Element.allCases.reduce(into: "") { $0 += "\n  \\($1.rawValue)" }
+          return Element.allCases.reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
         } else {
-          return reduce(into: "") { $0 += "\n  \\($1.rawValue)" }
+          return reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
         }
       }
     }
@@ -147,7 +147,7 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
           }
         }
 
-        return dictionary.values.joined(separator: "\n")
+        return dictionary.values.joined(separator: "\\n")
       }
     }
 

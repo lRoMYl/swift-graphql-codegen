@@ -40,13 +40,13 @@ public struct GraphQLSwiftCodegen {
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap
-      )
+      ),
+      FooterCodeGenerator(namespace: self.namespace)
     ]
   }
 
   public func generate(schema: Schema) throws -> String {
-    var code = try generators.map { try $0.code(schema: schema) }.lines
-    code.append("}")
+    let code = try generators.map { try $0.code(schema: schema) }.lines
 
     let source = try code.format()
     return source
