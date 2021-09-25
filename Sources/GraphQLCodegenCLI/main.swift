@@ -7,7 +7,7 @@
 
 import ArgumentParser
 import Foundation
-import GraphQLDHApiClientCodegen
+import GraphQLDHRepositoryCodegen
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLSwiftCodegen
@@ -43,8 +43,7 @@ GraphQLCodegenCLI.main(
     "/Users/r.cheah/Desktop/schema.json",
     "--action", "graphqlspec",
     "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-    "--config-path", "/Users/r.cheah/Downloads/schema/config.json",
-    "--verbose"
+    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
   ]
 )
 GraphQLCodegenCLI.main(

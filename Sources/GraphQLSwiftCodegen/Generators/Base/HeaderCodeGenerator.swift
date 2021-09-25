@@ -149,21 +149,6 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
       }
     }
 
-    // MARK: - \(entityNameMap.request)+BodyParameters
-
-    extension \(entityNameMap.request): BodyParameters {
-      func bodyParameters() -> [String: Any] {
-        guard
-          let data = try? JSONEncoder().encode(self)
-        else { return [:] }
-
-        return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-          .flatMap {
-            $0 as? [String: Any]
-          } ?? [:]
-      }
-    }
-
     \(namespaceCode)
     """
   }

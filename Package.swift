@@ -12,7 +12,7 @@ let package = Package(
     .library(name: "GraphQLCodegenConfig", targets: ["GraphQLCodegenConfig"]),
     .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
     .library(name: "GraphQLSwiftCodegen", targets: ["GraphQLSwiftCodegen"]),
-    .library(name: "GraphQLDHApiClientCodegen", targets: ["GraphQLDHApiClientCodegen"]),
+    .library(name: "GraphQLDHRepositoryCodegen", targets: ["GraphQLDHRepositoryCodegen"]),
     .executable(name: "dh-graphql-codegen-ios", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
@@ -37,14 +37,14 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
-      name: "GraphQLDHApiClientCodegen",
+      name: "GraphQLDHRepositoryCodegen",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
       name: "GraphQLCodegenCLI",
       dependencies: [
         "GraphQLSwiftCodegen",
-        "GraphQLDHApiClientCodegen",
+        "GraphQLDHRepositoryCodegen",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
