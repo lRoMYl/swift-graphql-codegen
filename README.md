@@ -26,6 +26,7 @@ Support DH Custom Feature
 - [x] Custom field whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [ ] APIClient
+- [ ] Split base class generation with `action` option, this would allow integration with different GraphQL microservice providers without duplicated base class
 
 ## Installation
 ```

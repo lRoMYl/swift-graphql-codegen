@@ -9,13 +9,15 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 public struct GraphQLSwiftCodegen {
+  private let namespace: String
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let generators: [GraphQLSpecificationGenerating]
 
-  public init(scalarMap: ScalarMap?, selectionMap: SelectionMap?) throws {
+  public init(namespace: String?, scalarMap: ScalarMap?, selectionMap: SelectionMap?) throws {
     try selectionMap?.validate()
 
+    self.namespace = namespace ?? ""
     self.scalarMap = ScalarMap.default.merging(
       scalarMap ?? [:],
       uniquingKeysWith: { (_, new) in new }

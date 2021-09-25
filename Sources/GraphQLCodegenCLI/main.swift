@@ -29,11 +29,27 @@ import GraphQLDownloader
 //    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
 //  ]
 //)
+
 GraphQLCodegenCLI.main(
   [
     "https://sg-st.fd-api.com/groceries-product-service/query",
+    "--action", "ast",
     "--schema-source", "remote",
+    "--output", "/Users/r.cheah/Desktop/schema.json"
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    "/Users/r.cheah/Desktop/schema.json",
+    "--action", "graphqlspec",
     "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    "/Users/r.cheah/Desktop/schema.json",
+    "--action", "dhapiclient",
+    "--output", "/Users/r.cheah/Desktop/ApiClient.swift"
   ]
 )
 //
@@ -71,8 +87,20 @@ enum SchemaSource: String, ExpressibleByArgument {
   case remote
 }
 
+enum CodegenAction: String, ExpressibleByArgument {
+  case dhApiClient = "dhapiclient"
+  case graphQLSpec = "graphqlspec"
+  /**
+   Abstract Syntax Tree (AST, Introspection), this is the nested object json created from Schema Definition Language
+   - `--schema-source` is ignored when `ast` action option is provided
+   - Only remote url is supported when `ast` action option is provided
+   */
+  case ast = "ast"
+}
+
 enum GraphQLCodegenCLIError: Error {
   case invalidSchemaPath
+  case invalidSchema
   case invalidConfigPath
   case fetchSchemaTimeout
 }
@@ -84,9 +112,21 @@ struct GraphQLCodegenCLI: ParsableCommand {
     e.g.
     - local path: "/User/Download/schema.json"
     - remote path: "https://www.somedomain.com"
+
+    - Introspection/AST/JSON format generated from vendor console differ from one another.
+    - Atm, only the AST generated from Apollo and this code generator is supported.
     """
   )
   var schemaPath: String
+
+  @Option(
+    help: """
+    Define the codegeneration action
+    - dhapiclient: Generate ApiClient specific to DH specification
+    - graphqlspec: Generate GraphQL specification
+    - ast: Generate Abstract Syntax Tree from the graphql schema url, local schema source is not supported
+    """)
+  var action: CodegenAction
 
   @Option(help: "Source of the schema path, \"local\" or \"remote\"")
   var schemaSource: SchemaSource = .local
@@ -111,11 +151,22 @@ struct GraphQLCodegenCLI: ParsableCommand {
 
   func run() throws {
     let config = try fetchConfig()
-    let schema = try fetchSchema(with: config)
-    let generatedCode = try generateSwiftCode(schema: schema, config: config)
+    let generatedCode: String
+    let generatedCodeData: Data?
 
-    let generatedCodeData = generatedCode.data(using: .utf8)
-    print(try generateApiClientCode(schema: schema))
+    switch action {
+    case .dhApiClient:
+      let schema = try fetchSchema(with: config)
+      generatedCode = try generateApiClientCode(schema: schema, config: config)
+      generatedCodeData = generatedCode.data(using: .utf8)
+    case .graphQLSpec:
+      let schema = try fetchSchema(with: config)
+      generatedCode = try generateSwiftCode(schema: schema, config: config)
+      generatedCodeData = generatedCode.data(using: .utf8)
+    case .ast:
+      generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.apiHeaders).1
+    }
+
     FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
   }
 }
@@ -126,7 +177,7 @@ private extension GraphQLCodegenCLI {
     case .local:
       return try fetchLocalSchema()
     case .remote:
-      return try fetchRemoteSchema(apiHeaders: config?.apiHeaders)
+      return try fetchRemoteSchema(apiHeaders: config?.apiHeaders).0
     }
   }
 
@@ -135,13 +186,20 @@ private extension GraphQLCodegenCLI {
       throw GraphQLCodegenCLIError.invalidSchemaPath
     }
 
-    let schemaResponse = try JSONDecoder().decode(SchemaResponse.self, from: jsonData)
-    let schema = schemaResponse.schema
+    let schema: Schema
+
+    if let introspectionResponse = try? JSONDecoder().decode(IntrospectionResponse.self, from: jsonData) {
+      schema = introspectionResponse.schema.schema
+    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: jsonData)  {
+      schema = response.schema
+    } else {
+      throw GraphQLCodegenCLIError.invalidSchema
+    }
 
     return schema
   }
 
-  func fetchRemoteSchema(apiHeaders: [String: String]?) throws -> Schema {
+  func fetchRemoteSchema(apiHeaders: [String: String]?) throws -> (Schema, Data) {
     let semaphore = DispatchSemaphore(value: 0)
 
     guard let url = URL(string: schemaPath) else {
@@ -149,25 +207,27 @@ private extension GraphQLCodegenCLI {
     }
 
     var result: Result<Schema, Error>?
+    var data: Data?
 
     APIClient().fetchIntrospection(
       request: IntroSpectionRequest(),
       url: url,
       headers: apiHeaders ?? [:]
-    ) { responseResult, data in
+    ) { responseResult, responseData in
       result = responseResult
+      data = responseData
 
       semaphore.signal()
     }
 
     _ = semaphore.wait(wallTimeout: .distantFuture)
 
-    switch result {
-    case let .success(schema):
-      return schema
-    case let .failure(error):
+    switch (result, data) {
+    case let (.success(schema), .some(data)):
+      return (schema, data)
+    case let (.failure(error), _):
       throw error
-    case .none:
+    default:
       throw GraphQLCodegenCLIError.fetchSchemaTimeout
     }
   }
@@ -186,6 +246,7 @@ private extension GraphQLCodegenCLI {
 
   func generateSwiftCode(schema: Schema, config: Config?) throws -> String {
     let generator = try GraphQLSwiftCodegen(
+      namespace: config?.namespace,
       scalarMap: config?.scalarMap,
       selectionMap: config?.selectionMap
     )
@@ -194,8 +255,11 @@ private extension GraphQLCodegenCLI {
     return generatedCode
   }
 
-  func generateApiClientCode(schema: Schema) throws -> String {
-    let generator = try GraphQLDHApiClientCodegen(namespace: "GraphQLSpec", entityNameMap: nil)
+  func generateApiClientCode(schema: Schema, config: Config?) throws -> String {
+    let generator = try GraphQLDHApiClientCodegen(
+      namespace: config?.namespace,
+      entityNameMap: config?.entityNameMap
+    )
     let generatedCode = try generator.generate(schema: schema)
 
     return generatedCode

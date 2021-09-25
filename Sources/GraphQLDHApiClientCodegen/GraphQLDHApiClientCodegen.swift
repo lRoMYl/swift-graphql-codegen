@@ -10,17 +10,21 @@ import GraphQLCodegenConfig
 import SwiftFormat
 
 public struct GraphQLDHApiClientCodegen {
-  private let generators: [Generating]
+  private let namespace: String
   private let entityNameMap: EntityNameMap
 
-  public init(namespace: String, entityNameMap: EntityNameMap?) throws {
+  /// Generators
+  private let generators: [Generating]
+
+  public init(namespace: String?, entityNameMap: EntityNameMap?) throws {
+    self.namespace = namespace ?? ""
     self.entityNameMap = entityNameMap ?? .default
 
     self.generators = [
       HeaderGenerator(),
-      RepositoryGenerator(namespace: namespace, entityNameMap: self.entityNameMap),
-      ResourceParametersGenerator(namespace: namespace, entityNameMap: self.entityNameMap),
-      GraphQLResponseWrappedValueGenerator(namespace: namespace)
+      RepositoryGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
+      ResourceParametersGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
+      GraphQLResponseWrappedValueGenerator(namespace: self.namespace)
     ]
   }
 
