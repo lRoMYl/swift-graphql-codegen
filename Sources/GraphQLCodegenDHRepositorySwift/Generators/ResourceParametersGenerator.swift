@@ -32,7 +32,7 @@ struct ResourceParametersGenerator: Generating {
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
     """
-    enum \(namespace)ResourceParameters: ResourceParameters {
+    enum \(entityNameMap.resourceParametersName(namespace: namespace)): ResourceParameters {
       \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
 
       func bodyFormat() -> HttpBodyFormat {
@@ -87,7 +87,7 @@ extension ResourceParametersGenerator {
       let requestParameterName = field.requestParameterName(with: operation)
 
       return """
-      case \(enumName)(parameters: \(namespace).\(requestParameterName))
+      case \(enumName)(parameters: \(namespaceExtension)\(requestParameterName))
       """
     }
 

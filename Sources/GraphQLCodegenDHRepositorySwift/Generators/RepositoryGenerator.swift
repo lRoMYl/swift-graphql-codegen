@@ -83,7 +83,7 @@ extension RepositoryGenerator {
     let codes = try operation.type.fields.map {
       """
       \(try funcSignatureCode(field: $0, operation: operation)) {
-        let resource = \(namespace)ResourceParameters
+        let resource = \(entityNameMap.resourceParametersName(namespace: namespace))
           .\($0.enumName(with: operation))(parameters: parameters)
 
         return executeGraphQL\(operationName)(resource: resource)
