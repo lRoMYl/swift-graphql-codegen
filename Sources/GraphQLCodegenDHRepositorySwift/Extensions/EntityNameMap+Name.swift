@@ -9,6 +9,7 @@ import GraphQLCodegenConfig
 
 extension EntityNameMap {
   func resourceParametersName(namespace: String) -> String {
+    // Prefix cannot be empty due to name collision with ApiClient.ResourceParameters
     let prefix = namespace.isEmpty ? "Default" : namespace
 
     return "\(prefix)ResourceParameters"

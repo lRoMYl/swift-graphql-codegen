@@ -32,6 +32,9 @@ struct ResourceParametersGenerator: Generating {
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
     """
+
+    // MARK: - \(entityNameMap.resourceParametersName(namespace: namespace))
+
     enum \(entityNameMap.resourceParametersName(namespace: namespace)): ResourceParameters {
       \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
 
