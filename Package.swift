@@ -35,7 +35,7 @@ let package = Package(
     ),
     .target(
       name: "GraphQLCodegenEntitySwift",
-      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig"]
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
       name: "GraphQLCodegenSpecSwift",
