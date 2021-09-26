@@ -1,4 +1,5 @@
 install:
+	carthage bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
 	brew tap lromyl/tap
 	brew install dh-graphql-codegen-ios
 
