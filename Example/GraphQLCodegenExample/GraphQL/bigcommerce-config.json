@@ -1,0 +1,9 @@
+{
+	"namespace": "BigCommerceGraphQL",
+	"scalarMap": {
+		"BigDecimal": "Double",
+        "DateTime": "Double",
+        "Long": "Double",
+        "Upload": "String"
+    }
+}

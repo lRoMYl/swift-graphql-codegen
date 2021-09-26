@@ -1,0 +1,462 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */; };
+		F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235926FCAC9F00A594B2 /* ContentView.swift */; };
+		F8D3235C26FCACA000A594B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D3235B26FCACA000A594B2 /* Assets.xcassets */; };
+		F8D3235F26FCACA000A594B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D3235E26FCACA000A594B2 /* Preview Assets.xcassets */; };
+		F8D3236926FCACF800A594B2 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236826FCACF800A594B2 /* Alamofire.framework */; };
+		F8D3236A26FCACF800A594B2 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236826FCACF800A594B2 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F8D3236D26FCACFB00A594B2 /* ApiClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236C26FCACFB00A594B2 /* ApiClient.framework */; };
+		F8D3236E26FCACFB00A594B2 /* ApiClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236C26FCACFB00A594B2 /* ApiClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F8D3237026FCACFE00A594B2 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236F26FCACFE00A594B2 /* RxSwift.framework */; };
+		F8D3237126FCACFE00A594B2 /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236F26FCACFE00A594B2 /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */; };
+		F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323A826FF9CA800A594B2 /* GraphQLEntity.swift */; };
+		F8D323B4270032D600A594B2 /* GroceriesGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */; };
+		F8D323B62700333A00A594B2 /* GroceriesGraphQLRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */; };
+		F8D323B927003DA200A594B2 /* BigCommerceGraphQLRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B727003DA100A594B2 /* BigCommerceGraphQLRepository.swift */; };
+		F8D323BA27003DA200A594B2 /* BigCommerceGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B827003DA200A594B2 /* BigCommerceGraphQLSpec.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F8D3236B26FCACF800A594B2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F8D3236E26FCACFB00A594B2 /* ApiClient.framework in Embed Frameworks */,
+				F8D3236A26FCACF800A594B2 /* Alamofire.framework in Embed Frameworks */,
+				F8D3237126FCACFE00A594B2 /* RxSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphQLCodegenExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCodegenExampleApp.swift; sourceTree = "<group>"; };
+		F8D3235926FCAC9F00A594B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F8D3235B26FCACA000A594B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F8D3235E26FCACA000A594B2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F8D3236026FCACA000A594B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F8D3236826FCACF800A594B2 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		F8D3236C26FCACFB00A594B2 /* ApiClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApiClient.framework; path = Carthage/Build/iOS/ApiClient.framework; sourceTree = "<group>"; };
+		F8D3236F26FCACFE00A594B2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesWebService.swift; sourceTree = "<group>"; };
+		F8D323A826FF9CA800A594B2 /* GraphQLEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntity.swift; sourceTree = "<group>"; };
+		F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLSpec.swift; sourceTree = "<group>"; };
+		F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLRepository.swift; sourceTree = "<group>"; };
+		F8D323B727003DA100A594B2 /* BigCommerceGraphQLRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigCommerceGraphQLRepository.swift; sourceTree = "<group>"; };
+		F8D323B827003DA200A594B2 /* BigCommerceGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigCommerceGraphQLSpec.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F8D3235126FCAC9F00A594B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8D3236D26FCACFB00A594B2 /* ApiClient.framework in Frameworks */,
+				F8D3236926FCACF800A594B2 /* Alamofire.framework in Frameworks */,
+				F8D3237026FCACFE00A594B2 /* RxSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F8D3234B26FCAC9F00A594B2 = {
+			isa = PBXGroup;
+			children = (
+				F8D3235626FCAC9F00A594B2 /* GraphQLCodegenExample */,
+				F8D3235526FCAC9F00A594B2 /* Products */,
+				F8D3236726FCACF800A594B2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F8D3235526FCAC9F00A594B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F8D3235626FCAC9F00A594B2 /* GraphQLCodegenExample */ = {
+			isa = PBXGroup;
+			children = (
+				F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */,
+				F8D323AF2700326D00A594B2 /* Groceries */,
+				F8D323A826FF9CA800A594B2 /* GraphQLEntity.swift */,
+				F8D323B02700328000A594B2 /* BigCommerce */,
+				F8D3235926FCAC9F00A594B2 /* ContentView.swift */,
+				F8D3235B26FCACA000A594B2 /* Assets.xcassets */,
+				F8D3236026FCACA000A594B2 /* Info.plist */,
+				F8D3235D26FCACA000A594B2 /* Preview Content */,
+			);
+			path = GraphQLCodegenExample;
+			sourceTree = "<group>";
+		};
+		F8D3235D26FCACA000A594B2 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F8D3235E26FCACA000A594B2 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F8D3236726FCACF800A594B2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8D3236F26FCACFE00A594B2 /* RxSwift.framework */,
+				F8D3236C26FCACFB00A594B2 /* ApiClient.framework */,
+				F8D3236826FCACF800A594B2 /* Alamofire.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F8D323AF2700326D00A594B2 /* Groceries */ = {
+			isa = PBXGroup;
+			children = (
+				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
+				F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */,
+				F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */,
+			);
+			path = Groceries;
+			sourceTree = "<group>";
+		};
+		F8D323B02700328000A594B2 /* BigCommerce */ = {
+			isa = PBXGroup;
+			children = (
+				F8D323B727003DA100A594B2 /* BigCommerceGraphQLRepository.swift */,
+				F8D323B827003DA200A594B2 /* BigCommerceGraphQLSpec.swift */,
+			);
+			path = BigCommerce;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F8D3235326FCAC9F00A594B2 /* GraphQLCodegenExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8D3236326FCACA000A594B2 /* Build configuration list for PBXNativeTarget "GraphQLCodegenExample" */;
+			buildPhases = (
+				F885BCE32700667D00DEDDA2 /* GroceriesGraphQL */,
+				F885BCE22700667100DEDDA2 /* BigCommerceGraphQL */,
+				F8D3235026FCAC9F00A594B2 /* Sources */,
+				F8D3235126FCAC9F00A594B2 /* Frameworks */,
+				F8D3235226FCAC9F00A594B2 /* Resources */,
+				F8D3236B26FCACF800A594B2 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GraphQLCodegenExample;
+			productName = GraphQLCodegenExample;
+			productReference = F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F8D3234C26FCAC9F00A594B2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					F8D3235326FCAC9F00A594B2 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = F8D3234F26FCAC9F00A594B2 /* Build configuration list for PBXProject "GraphQLCodegenExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F8D3234B26FCAC9F00A594B2;
+			productRefGroup = F8D3235526FCAC9F00A594B2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F8D3235326FCAC9F00A594B2 /* GraphQLCodegenExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F8D3235226FCAC9F00A594B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8D3235F26FCACA000A594B2 /* Preview Assets.xcassets in Resources */,
+				F8D3235C26FCACA000A594B2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F885BCE22700667100DEDDA2 /* BigCommerceGraphQL */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = BigCommerceGraphQL;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make codegen-bigcommerce\n";
+		};
+		F885BCE32700667D00DEDDA2 /* GroceriesGraphQL */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = GroceriesGraphQL;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make codegen-groceries\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F8D3235026FCAC9F00A594B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8D323B62700333A00A594B2 /* GroceriesGraphQLRepository.swift in Sources */,
+				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,
+				F8D323B4270032D600A594B2 /* GroceriesGraphQLSpec.swift in Sources */,
+				F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */,
+				F8D323B927003DA200A594B2 /* BigCommerceGraphQLRepository.swift in Sources */,
+				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
+				F8D323BA27003DA200A594B2 /* BigCommerceGraphQLSpec.swift in Sources */,
+				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F8D3236126FCACA000A594B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F8D3236226FCACA000A594B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F8D3236426FCACA000A594B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"GraphQLCodegenExample/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GraphQLCodegenExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deliveryhero.GraphQLCodegenExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
+			};
+			name = Debug;
+		};
+		F8D3236526FCACA000A594B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"GraphQLCodegenExample/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GraphQLCodegenExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deliveryhero.GraphQLCodegenExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F8D3234F26FCAC9F00A594B2 /* Build configuration list for PBXProject "GraphQLCodegenExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8D3236126FCACA000A594B2 /* Debug */,
+				F8D3236226FCACA000A594B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8D3236326FCACA000A594B2 /* Build configuration list for PBXNativeTarget "GraphQLCodegenExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8D3236426FCACA000A594B2 /* Debug */,
+				F8D3236526FCACA000A594B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F8D3234C26FCAC9F00A594B2 /* Project object */;
+}
