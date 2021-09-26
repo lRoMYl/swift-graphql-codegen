@@ -18,20 +18,6 @@ GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(
 //  [
-//    "https://apollo-fullstack-tutorial.herokuapp.com/",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "https://buybutton.store/graphql",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
 //    "https://sg-st.fd-api.com/groceries-product-service/query",
 //    "--action", "introspection",
 //    "--schema-source", "remote",
@@ -50,8 +36,31 @@ GraphQLCodegenCLI.main()
 //  [
 //    "/Users/r.cheah/Desktop/schema.json",
 //    "--action", "specification",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
+//    "--output", "/Users/r.cheah/Desktop/GroceriesGraphQLSpec.swift",
 //    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "/Users/r.cheah/Desktop/schema.json",
+//    "--action", "dh-repository",
+//    "--output", "/Users/r.cheah/Desktop/GroceriesGraphQLRepository.swift",
+//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
+//  ]
+//)
+
+//GraphQLCodegenCLI.main(
+//  [
+//    "https://apollo-fullstack-tutorial.herokuapp.com/",
+//    "--schema-source", "remote",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
+//  ]
+//)
+//GraphQLCodegenCLI.main(
+//  [
+//    "https://buybutton.store/graphql",
+//    "--schema-source", "remote",
+//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
 //  ]
 //)
 //GraphQLCodegenCLI.main(
@@ -62,7 +71,6 @@ GraphQLCodegenCLI.main()
 //    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
 //  ]
 //)
-//
 //GraphQLCodegenCLI.main(
 //  [
 //    "/Users/r.cheah/Downloads/schema/schema.json",

@@ -57,7 +57,6 @@ private extension Structure {
     scalarMap: ScalarMap,
     fieldSpecificationGenerator: FieldCodeGenerator
   ) throws -> String {
-    let name = self.name.pascalCase
     let sortedFields = fields.sorted(by: { $0.name < $1.name })
 
     let fieldsVariable = try sortedFields
@@ -70,7 +69,7 @@ private extension Structure {
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
-    struct \(name): Codable {
+    struct \(objectName): Codable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys

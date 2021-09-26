@@ -18,7 +18,8 @@ struct RequestParameterOperationDefinitionGenerator {
     self.variablesGenerator = variablesGenerator
   }
 
-  func declaration(operationTypeName: String, field: Field) throws -> String {
+  func declaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
+    let operationName = operation.type.name.lowercased()
     let selection = field.isFragment
       ? " {\n...\(try field.type.namedType.scalarType(scalarMap: scalarMap))Fragment\n}"
       : ""
@@ -37,7 +38,7 @@ struct RequestParameterOperationDefinitionGenerator {
     // MARK: - Operation Defintion
 
     private let operationDefinitionFormat: String = \"\"\"
-    \(operationTypeName)\(operationVariablesDeclaration) {
+    \(operationName)\(operationVariablesDeclaration) {
       \(
         """
         \(field.name)\(operationArgumentsDeclaration)\(selection)

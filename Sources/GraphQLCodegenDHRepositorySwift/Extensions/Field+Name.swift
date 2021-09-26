@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 extension Field {
   func enumName(with operation: GraphQLAST.Operation) -> String {
@@ -15,15 +16,14 @@ extension Field {
   }
 
   func funcName(with operation: GraphQLAST.Operation) -> String {
-    let enumPrefix = operation.enumNamePrefix.camelCase
-
-    return enumPrefix.isEmpty ? name.camelCase : "\(enumPrefix)\(name.pascalCase)"
+    return name.camelCase
   }
 
-  func requestParameterName(with operation: GraphQLAST.Operation) -> String {
-    let enumPrefix = operation.enumNamePrefix.pascalCase
-    let typeName = self.type.namedType.name.pascalCase
+  /// Includes Operation.requestEntityObjectName extension in the name
+  func requestEntityObjectParameterName(operation: GraphQLAST.Operation, entityNameMap: EntityNameMap) -> String {
+    let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap).pascalCase
+    let typeName = type.namedType.name.pascalCase
 
-    return enumPrefix + typeName + "RequestParameter"
+    return prefix + "." + typeName + "RequestParameter"
   }
 }

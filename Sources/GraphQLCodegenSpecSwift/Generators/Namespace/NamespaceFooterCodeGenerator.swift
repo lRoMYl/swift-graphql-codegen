@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-struct FooterCodeGenerator: GraphQLCodeGenerating {
+struct NamespaceFooterCodeGenerator: GraphQLCodeGenerating {
   private let namespace: String
 
   init(namespace: String) {

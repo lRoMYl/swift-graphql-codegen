@@ -87,10 +87,11 @@ extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
     let enumCases = operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
-      let requestParameterName = field.requestParameterName(with: operation)
+      let requestParameterName = namespaceExtension +
+        field.requestEntityObjectParameterName(operation: operation, entityNameMap: entityNameMap)
 
       return """
-      case \(enumName)(parameters: \(namespaceExtension)\(requestParameterName))
+      case \(enumName)(parameters: \(requestParameterName))
       """
     }
 

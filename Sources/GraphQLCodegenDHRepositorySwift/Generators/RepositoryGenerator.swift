@@ -96,10 +96,12 @@ extension RepositoryGenerator {
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
     let responseDataText = namespaceExtension + field.type.namedType.name.pascalCase
+    let parametersName = namespaceExtension
+      + field.requestEntityObjectParameterName(operation: operation, entityNameMap: entityNameMap)
 
     return """
     func \(field.funcName(with: operation))(
-      with parameters: \(namespaceExtension)\(field.requestParameterName(with: operation))
+      with parameters: \(parametersName)
     ) -> \(responseGenericCode(text: responseDataText))
     """
   }

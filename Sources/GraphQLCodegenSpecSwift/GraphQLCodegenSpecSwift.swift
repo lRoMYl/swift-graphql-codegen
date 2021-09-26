@@ -34,6 +34,7 @@ public struct GraphQLCodegenSpecSwift {
     entityNameMap: EntityNameMap?
   ) throws {
     try selectionMap?.validate()
+    try entityNameMap?.validate()
 
     self.namespace = namespace ?? ""
     self.scalarMap = ScalarMap.default.merging(
@@ -44,16 +45,18 @@ public struct GraphQLCodegenSpecSwift {
     self.entityNameMap = entityNameMap ?? EntityNameMap.default
 
     self.generators = [
-      HeaderCodeGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
+      NamespaceHeaderCodeGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
       EnumCodeGenerator(scalarMap: self.scalarMap),
       ObjectCodeGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
       InputObjectCodeGenerator(scalarMap: self.scalarMap),
+      NamespaceFooterCodeGenerator(namespace: self.namespace),
+      // Codes that need to be generated out of the namespace code
       RequestParameterGenerator(
+        namespace: self.namespace,
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap
-      ),
-      FooterCodeGenerator(namespace: self.namespace)
+      )
     ]
   }
 

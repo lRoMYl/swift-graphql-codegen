@@ -8,7 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct HeaderCodeGenerator: GraphQLCodeGenerating {
+struct NamespaceHeaderCodeGenerator: GraphQLCodeGenerating {
   private let namespace: String
   private let entityNameMap: EntityNameMap
 

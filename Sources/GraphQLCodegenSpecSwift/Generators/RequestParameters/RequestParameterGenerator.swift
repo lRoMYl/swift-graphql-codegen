@@ -21,6 +21,8 @@ enum RequestParameterError: Error, LocalizedError {
 struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityName: String
   private let entityPrefix = "RequestParameter"
+  private let namespace: String
+  private let namespaceExtension: String
 
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
@@ -30,7 +32,9 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let variablesGenerator: RequestParameterVariablesGenerator
   private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
+  init(namespace: String, scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
+    self.namespace = namespace
+    self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
@@ -52,7 +56,15 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let responseParameters = try schema.operations.map {
-      try operation($0, objects: schema.objects, interfaces: schema.interfaces, scalarMap: scalarMap).lines
+      let requestEntityObjectName = $0.requestEntityObjectName(entityNameMap: entityNameMap)
+
+      return """
+      \(namespaceCode(operation: $0))
+      // MARK: - \(requestEntityObjectName)
+      extension \(namespaceExtension)\(requestEntityObjectName) {
+        \(try operation($0, objects: schema.objects, interfaces: schema.interfaces).lines)
+      }
+      """
     }.lines
 
     return """
@@ -66,24 +78,33 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 // MARK: - RequestParameterGenerator
 
 private extension RequestParameterGenerator {
+  func namespaceCode(operation: GraphQLAST.Operation) -> String {
+    let requestEntityObjectName = operation.requestEntityObjectName(entityNameMap: entityNameMap)
+    let header = namespace.isEmpty ? "" : "extension \(namespace) {"
+    let footer = namespace.isEmpty ? "" : "}"
+
+    return """
+    \(header)
+    enum \(requestEntityObjectName) {}
+    \(footer)
+    """
+  }
+
   func operation(
     _ operation: GraphQLAST.Operation,
     objects: [ObjectType],
-    interfaces: [InterfaceType],
-    scalarMap: ScalarMap
+    interfaces: [InterfaceType]
   ) throws -> [String] {
     let returnObject = try operation.returnObject()
-    let operationTypeName = operation.type.name.lowercased()
 
     let result: [String] = try returnObject.fields.map { field in
-      let requestParameterName = field.requestParameterName(with: operation)
 
       return try requestParameterDeclaration(
-        operationTypeName: operationTypeName,
-        requestParameterName: requestParameterName,
+        operation: operation,
         objectMap: objects,
         interfaceMap: interfaces,
         scalarMap: scalarMap,
+        entityNameMap: entityNameMap,
         field: field
       )
     }
@@ -92,14 +113,19 @@ private extension RequestParameterGenerator {
   }
 
   func requestParameterDeclaration(
-    operationTypeName: String,
-    requestParameterName: String,
+    operation: GraphQLAST.Operation,
     objectMap: [ObjectType],
     interfaceMap: [InterfaceType],
     scalarMap: ScalarMap,
+    entityNameMap: EntityNameMap,
     field: Field
   ) throws -> String {
-    let operationDefinition = try operationDefinitionGenerator.declaration(operationTypeName: operationTypeName, field: field)
+    let requestParameterName = field.requestParameterName(operation: operation)
+
+    let operationDefinition = try operationDefinitionGenerator.declaration(
+      operation: operation,
+      field: field
+    )
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
 
@@ -115,9 +141,9 @@ private extension RequestParameterGenerator {
       // MARK: - \(requestParameterName)
 
       struct \(requestParameterName): \(entityName) {
-        // MARK: - Request Type
+        // MARK: - \(entityNameMap.requestType)
 
-        let requestType: \(entityNameMap.requestType) = .\(operationTypeName)
+        let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
 
         \(operationDefinition)
 
