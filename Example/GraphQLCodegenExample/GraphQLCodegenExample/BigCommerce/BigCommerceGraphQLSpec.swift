@@ -7414,6 +7414,108 @@ extension BigCommerceGraphQL.QueryParameter {
         """
       }
 
+      init(
+        aggregatedInventorySelections: Set<AggregatedInventorySelection> = [],
+        authorSelections: Set<AuthorSelection> = [],
+        brandSelections: Set<BrandSelection> = [],
+        brandConnectionSelections: Set<BrandConnectionSelection> = [],
+        breadcrumbConnectionSelections: Set<BreadcrumbConnectionSelection> = [],
+        categoryConnectionSelections: Set<CategoryConnectionSelection> = [],
+        categoryTreeItemSelections: Set<CategoryTreeItemSelection> = [],
+        contactFieldSelections: Set<ContactFieldSelection> = [],
+        contentSelections: Set<ContentSelection> = [],
+        currencySelections: Set<CurrencySelection> = [],
+        currencyConnectionSelections: Set<CurrencyConnectionSelection> = [],
+        currencyDisplaySelections: Set<CurrencyDisplaySelection> = [],
+        currencyEdgeSelections: Set<CurrencyEdgeSelection> = [],
+        customFieldConnectionSelections: Set<CustomFieldConnectionSelection> = [],
+        dateTimeExtendedSelections: Set<DateTimeExtendedSelection> = [],
+        displayFieldSelections: Set<DisplayFieldSelection> = [],
+        imageSelections: Set<ImageSelection> = [],
+        imageConnectionSelections: Set<ImageConnectionSelection> = [],
+        logoFieldSelections: Set<LogoFieldSelection> = [],
+        measurementSelections: Set<MeasurementSelection> = [],
+        metafieldConnectionSelections: Set<MetafieldConnectionSelection> = [],
+        metafieldEdgeSelections: Set<MetafieldEdgeSelection> = [],
+        metafieldsSelections: Set<MetafieldsSelection> = [],
+        optionConnectionSelections: Set<OptionConnectionSelection> = [],
+        optionValueConnectionSelections: Set<OptionValueConnectionSelection> = [],
+        pageInfoSelections: Set<PageInfoSelection> = [],
+        priceRangesSelections: Set<PriceRangesSelection> = [],
+        pricesSelections: Set<PricesSelection> = [],
+        productSelections: Set<ProductSelection> = [],
+        productConnectionSelections: Set<ProductConnectionSelection> = [],
+        productInventorySelections: Set<ProductInventorySelection> = [],
+        productOptionConnectionSelections: Set<ProductOptionConnectionSelection> = [],
+        regionSelections: Set<RegionSelection> = [],
+        relatedProductsConnectionSelections: Set<RelatedProductsConnectionSelection> = [],
+        renderedRegionsByPageTypeSelections: Set<RenderedRegionsByPageTypeSelection> = [],
+        reviewSelections: Set<ReviewSelection> = [],
+        reviewConnectionSelections: Set<ReviewConnectionSelection> = [],
+        reviewEdgeSelections: Set<ReviewEdgeSelection> = [],
+        reviewsSelections: Set<ReviewsSelection> = [],
+        routeSelections: Set<RouteSelection> = [],
+        searchSelections: Set<SearchSelection> = [],
+        searchProductsSelections: Set<SearchProductsSelection> = [],
+        searchQueriesSelections: Set<SearchQueriesSelection> = [],
+        seoDetailsSelections: Set<SeoDetailsSelection> = [],
+        settingsSelections: Set<SettingsSelection> = [],
+        siteSelections: Set<SiteSelection> = [],
+        taxDisplaySettingsSelections: Set<TaxDisplaySettingsSelection> = [],
+        urlFieldSelections: Set<UrlFieldSelection> = [],
+        variantConnectionSelections: Set<VariantConnectionSelection> = []
+      ) {
+        self.aggregatedInventorySelections = aggregatedInventorySelections
+        self.authorSelections = authorSelections
+        self.brandSelections = brandSelections
+        self.brandConnectionSelections = brandConnectionSelections
+        self.breadcrumbConnectionSelections = breadcrumbConnectionSelections
+        self.categoryConnectionSelections = categoryConnectionSelections
+        self.categoryTreeItemSelections = categoryTreeItemSelections
+        self.contactFieldSelections = contactFieldSelections
+        self.contentSelections = contentSelections
+        self.currencySelections = currencySelections
+        self.currencyConnectionSelections = currencyConnectionSelections
+        self.currencyDisplaySelections = currencyDisplaySelections
+        self.currencyEdgeSelections = currencyEdgeSelections
+        self.customFieldConnectionSelections = customFieldConnectionSelections
+        self.dateTimeExtendedSelections = dateTimeExtendedSelections
+        self.displayFieldSelections = displayFieldSelections
+        self.imageSelections = imageSelections
+        self.imageConnectionSelections = imageConnectionSelections
+        self.logoFieldSelections = logoFieldSelections
+        self.measurementSelections = measurementSelections
+        self.metafieldConnectionSelections = metafieldConnectionSelections
+        self.metafieldEdgeSelections = metafieldEdgeSelections
+        self.metafieldsSelections = metafieldsSelections
+        self.optionConnectionSelections = optionConnectionSelections
+        self.optionValueConnectionSelections = optionValueConnectionSelections
+        self.pageInfoSelections = pageInfoSelections
+        self.priceRangesSelections = priceRangesSelections
+        self.pricesSelections = pricesSelections
+        self.productSelections = productSelections
+        self.productConnectionSelections = productConnectionSelections
+        self.productInventorySelections = productInventorySelections
+        self.productOptionConnectionSelections = productOptionConnectionSelections
+        self.regionSelections = regionSelections
+        self.relatedProductsConnectionSelections = relatedProductsConnectionSelections
+        self.renderedRegionsByPageTypeSelections = renderedRegionsByPageTypeSelections
+        self.reviewSelections = reviewSelections
+        self.reviewConnectionSelections = reviewConnectionSelections
+        self.reviewEdgeSelections = reviewEdgeSelections
+        self.reviewsSelections = reviewsSelections
+        self.routeSelections = routeSelections
+        self.searchSelections = searchSelections
+        self.searchProductsSelections = searchProductsSelections
+        self.searchQueriesSelections = searchQueriesSelections
+        self.seoDetailsSelections = seoDetailsSelections
+        self.settingsSelections = settingsSelections
+        self.siteSelections = siteSelections
+        self.taxDisplaySettingsSelections = taxDisplaySettingsSelections
+        self.urlFieldSelections = urlFieldSelections
+        self.variantConnectionSelections = variantConnectionSelections
+      }
+
       func declaration() -> String {
         let aggregatedInventorySelectionsDeclaration = """
         fragment AggregatedInventoryFragment on AggregatedInventory {\(aggregatedInventorySelections.declaration)
@@ -7717,6 +7819,12 @@ extension BigCommerceGraphQL.QueryParameter {
     }
 
     func encode(to _: Encoder) throws {}
+
+    init(
+      selections: Selections = .init()
+    ) {
+      self.selections = selections
+    }
   }
 
   // MARK: - CustomerRequestParameter
@@ -7803,6 +7911,18 @@ extension BigCommerceGraphQL.QueryParameter {
         case value
       }
 
+      init(
+        customerSelections: Set<CustomerSelection> = [],
+        customerAttributeSelections: Set<CustomerAttributeSelection> = [],
+        customerAttributesSelections: Set<CustomerAttributesSelection> = [],
+        moneySelections: Set<MoneySelection> = []
+      ) {
+        self.customerSelections = customerSelections
+        self.customerAttributeSelections = customerAttributeSelections
+        self.customerAttributesSelections = customerAttributesSelections
+        self.moneySelections = moneySelections
+      }
+
       func declaration() -> String {
         let customerSelectionsDeclaration = """
         fragment CustomerFragment on Customer {\(customerSelections.declaration)
@@ -7836,6 +7956,12 @@ extension BigCommerceGraphQL.QueryParameter {
     }
 
     func encode(to _: Encoder) throws {}
+
+    init(
+      selections: Selections = .init()
+    ) {
+      self.selections = selections
+    }
   }
 
   // MARK: - NodeRequestParameter
@@ -7884,6 +8010,12 @@ extension BigCommerceGraphQL.QueryParameter {
         case id
       }
 
+      init(
+        nodeSelections: Set<NodeSelection> = []
+      ) {
+        self.nodeSelections = nodeSelections
+      }
+
       func declaration() -> String {
         let nodeSelectionsDeclaration = """
         fragment NodeFragment on Node {\(nodeSelections.declaration)
@@ -7901,6 +8033,14 @@ extension BigCommerceGraphQL.QueryParameter {
     private enum CodingKeys: String, CodingKey {
       /// The ID of an object
       case id
+    }
+
+    init(
+      id: String,
+      selections: Selections = .init()
+    ) {
+      self.id = id
+      self.selections = selections
     }
   }
 
@@ -8006,6 +8146,22 @@ extension BigCommerceGraphQL.QueryParameter {
         case startCursor
       }
 
+      init(
+        distanceSelections: Set<DistanceSelection> = [],
+        inventorySelections: Set<InventorySelection> = [],
+        inventoryByLocationsSelections: Set<InventoryByLocationsSelection> = [],
+        locationConnectionSelections: Set<LocationConnectionSelection> = [],
+        locationEdgeSelections: Set<LocationEdgeSelection> = [],
+        pageInfoSelections: Set<PageInfoSelection> = []
+      ) {
+        self.distanceSelections = distanceSelections
+        self.inventorySelections = inventorySelections
+        self.inventoryByLocationsSelections = inventoryByLocationsSelections
+        self.locationConnectionSelections = locationConnectionSelections
+        self.locationEdgeSelections = locationEdgeSelections
+        self.pageInfoSelections = pageInfoSelections
+      }
+
       func declaration() -> String {
         let distanceSelectionsDeclaration = """
         fragment DistanceFragment on Distance {\(distanceSelections.declaration)
@@ -8051,6 +8207,12 @@ extension BigCommerceGraphQL.QueryParameter {
     }
 
     func encode(to _: Encoder) throws {}
+
+    init(
+      selections: Selections = .init()
+    ) {
+      self.selections = selections
+    }
   }
 }
 
@@ -8166,6 +8328,20 @@ extension BigCommerceGraphQL.MutationParameter {
         case value
       }
 
+      init(
+        customerSelections: Set<CustomerSelection> = [],
+        customerAttributeSelections: Set<CustomerAttributeSelection> = [],
+        customerAttributesSelections: Set<CustomerAttributesSelection> = [],
+        loginResultSelections: Set<LoginResultSelection> = [],
+        moneySelections: Set<MoneySelection> = []
+      ) {
+        self.customerSelections = customerSelections
+        self.customerAttributeSelections = customerAttributeSelections
+        self.customerAttributesSelections = customerAttributesSelections
+        self.loginResultSelections = loginResultSelections
+        self.moneySelections = moneySelections
+      }
+
       func declaration() -> String {
         let customerSelectionsDeclaration = """
         fragment CustomerFragment on Customer {\(customerSelections.declaration)
@@ -8209,6 +8385,16 @@ extension BigCommerceGraphQL.MutationParameter {
 
       case password
     }
+
+    init(
+      email: String,
+      password: String,
+      selections: Selections = .init()
+    ) {
+      self.email = email
+      self.password = password
+      self.selections = selections
+    }
   }
 
   // MARK: - LogoutResultRequestParameter
@@ -8250,6 +8436,12 @@ extension BigCommerceGraphQL.MutationParameter {
         case result
       }
 
+      init(
+        logoutResultSelections: Set<LogoutResultSelection> = []
+      ) {
+        self.logoutResultSelections = logoutResultSelections
+      }
+
       func declaration() -> String {
         let logoutResultSelectionsDeclaration = """
         fragment LogoutResultFragment on LogoutResult {\(logoutResultSelections.declaration)
@@ -8265,5 +8457,11 @@ extension BigCommerceGraphQL.MutationParameter {
     }
 
     func encode(to _: Encoder) throws {}
+
+    init(
+      selections: Selections = .init()
+    ) {
+      self.selections = selections
+    }
   }
 }

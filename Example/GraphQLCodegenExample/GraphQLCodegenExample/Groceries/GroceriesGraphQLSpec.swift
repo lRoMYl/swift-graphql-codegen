@@ -401,6 +401,20 @@ extension QueryParameter {
         case productID
       }
 
+      init(
+        benefitSelections: Set<BenefitSelection> = [],
+        campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
+        campaignsSelections: Set<CampaignsSelection> = [],
+        dealSelections: Set<DealSelection> = [],
+        productDealSelections: Set<ProductDealSelection> = []
+      ) {
+        self.benefitSelections = benefitSelections
+        self.campaignAttributeSelections = campaignAttributeSelections
+        self.campaignsSelections = campaignsSelections
+        self.dealSelections = dealSelections
+        self.productDealSelections = productDealSelections
+      }
+
       func declaration() -> String {
         let benefitSelectionsDeclaration = """
         fragment BenefitFragment on Benefit {\(benefitSelections.declaration)
@@ -453,6 +467,26 @@ extension QueryParameter {
       case apikY = "APIKey"
 
       case discoClientId = "DiscoClientID"
+    }
+
+    init(
+      vendorId: String,
+      globalEntityId: String,
+      locale: String,
+      languageId: String,
+      languageCode: String,
+      apikY: String,
+      discoClientId: String,
+      selections: Selections = .init()
+    ) {
+      self.vendorId = vendorId
+      self.globalEntityId = globalEntityId
+      self.locale = locale
+      self.languageId = languageId
+      self.languageCode = languageCode
+      self.apikY = apikY
+      self.discoClientId = discoClientId
+      self.selections = selections
     }
   }
 }

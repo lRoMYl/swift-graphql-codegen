@@ -41,14 +41,7 @@ extension GraphQLCodegenExampleApp {
       languageId: "1",
       languageCode: "en",
       apikY: "iQis4oC8Y4DxHiO5",
-      discoClientId: "iOS",
-      selections: .init(
-        benefitSelections: [],
-        campaignAttributeSelections: [],
-        campaignsSelections: [],
-        dealSelections: [],
-        productDealSelections: []
-      )
+      discoClientId: "iOS"
     )
 
     groceriesRepository
