@@ -20,7 +20,11 @@ struct RequestParameterInitializerGenerator {
       try "\($0.name.camelCase): \($0.type.scalarType(scalarMap: scalarMap))"
     }
     .joined(separator: ",\n")
-    arguments.append(",\nselections: Selections = .init()")
+
+    if arguments.count > 0 {
+      arguments.append(",\n")
+    }
+    arguments.append("selections: Selections = .init()")
 
     var assignments = field.args.map {
       let argumentName = $0.name.camelCase
