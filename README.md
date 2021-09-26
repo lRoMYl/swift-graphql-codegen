@@ -1,5 +1,23 @@
 # DHGraphQLCodegen
 
+Swift type-safe GraphQL query builder
+- No knowledge in GraphQL is required to use the query builder, as the GraphQL specification is just a struct with Codable conformance
+- All permutation are generated up-front with type safety are generated as GraphQL specification (struct/class)
+- GraphQL specificaiton doesn't have external dependencies as it only uses build-in Swift type
+- Network layer agnostic, generated GraphQL specification doesn't require specific network layer implementation. You can use it with either URLSession, Alamofire & any other library
+- Example App include with DH flavor networking layer
+
+Usage example without writing a single line of GraphQL query
+```
+let parameter = QueryParameter.VendorRequestParameter(
+  name: "vendor name", // Argument1 is code-generated
+  country: .sg,  // Argument2 is code-generated
+  selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
+)
+
+networkLibrary.fetch(with: parameter) { ... }
+```
+
 Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
 
 ## Roadmap
@@ -26,9 +44,8 @@ Support DH Custom Feature
 - [x] Custom field whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
-- [x] DH flavor APIClient
-- [ ] Provide service dependency injection for DH flavor APIClient, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
-- [ ] Split base class generation with `action` option, this would allow integration with different GraphQL microservice providers without duplicated base class
+- [x] DH flavor Repository
+- [ ] Provide service dependency injection for DH flavor Repository, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
 
 ## Installation
 ```
@@ -44,9 +61,8 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 ### CLI Codegen Syntax
 **Generate graphql code from local schema.json**
 - `--schema-source` default value is `local`, thus the file is read from local file path
-- By default, it will generate GraphQLSpec.swift file in the current directory
 ```
-dh-graphql-codegen-ios "schema.json"
+dh-graphql-codegen-ios "schema.json" --action "specification" --output "name.swift"
 
 // Specific path instead of relative path
 dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swift"
@@ -56,37 +72,39 @@ dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swif
 - Provide a remote url to fetch the schema
 - Use `remote` for `--schema-source` to indicate the schema needs to be fetched remotely
 ```
-dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote"
+dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --output "name.swift"
 ```
 
 **Providing custom config**
 - Use `--config-path` to provide the location of config file
 - Look at Sample Config file for more info 
 ```
-dh-graphql-codegen-ios "schema.json" --config-path "config.json"
+dh-graphql-codegen-ios "schema.json" --config-path "config.json" --output "name.swift"
 ```
 
 ### Sample Query Code
 ```
 // Product Query
-let productRequest = try! GraphQLRequest(
-  parameters: CampaignAttributeRequestParameter(
-    vendorId: "test vendor id",
-    globalEntityId: "global entity id",
-    locale: "locale",
-    languageId: nil,
-    languageCode: "language code optional",
-    apikY: "api key",
-    discoClientId: "client id",
-    selections: .init(
-      campaignAttributeSelections: [.id, .discount, .benefits],
-      discountSelections: [.type, .value]
-    )
+let parameters = QueryParameter.CampaignsRequestParameter(
+  vendorId: "x1yy",
+  globalEntityId: "FP_SG",
+  locale: "en_SG",
+  languageId: "1",
+  languageCode: "en",
+  apikY: "iQis4oC8Y4DxHiO5",
+  discoClientId: "iOS",
+  selections: .init(
+    benefitSelections: [],
+    campaignAttributeSelections: [],
+    campaignsSelections: [],
+    dealSelections: [],
+    productDealSelections: []
   )
 )
 
-graphQLClient.get(productRequest)
-  .subscribe(...)
+repository
+  .campaigns(with: parameters)
+      .subscribe(...)
 ```
 
 ### Sample Config File
@@ -120,7 +138,8 @@ graphQLClient.get(productRequest)
   }
 }
 ```
-Example schema
-```
-dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --output "GroceriesGraphQLSpec.swift"`
-```
+### Sample App
+- install all dh carthage dependencies
+- run `make install` to install dh-graphlq-codegen-ios
+- Build the example app, it will attempt to run the make script on each build phases to generate the latest GraphQL specification
+- Look at example app `Makefile` for more examples to use the dh-graphql-codegen-ios
