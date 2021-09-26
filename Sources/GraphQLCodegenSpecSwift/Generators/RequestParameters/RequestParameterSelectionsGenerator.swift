@@ -143,6 +143,8 @@ extension RequestParameterSelectionsGenerator {
     struct Selections: \(entityNameMap.selections) {
       \(selectionDeclarations)
 
+      \(try fieldMaps.memberwiseInitializerDeclaration())
+
       func declaration() -> String {
         \(selectionFragmentMap)
 
@@ -304,6 +306,24 @@ private extension Collection where Element == FieldMap.Element {
     let selectionDeclarationMap = [
       \(selectionDeclarationMapValues)
     ]
+    """
+  }
+
+  func memberwiseInitializerDeclaration() throws -> String {
+    let arguments = map {
+      "\($0.key.camelCase)Selections: Set<\($0.value.type.namedType.name)Selection> = []"
+    }.joined(separator: ",\n")
+    let assignments = map {
+      let argumentName = $0.key.camelCase
+      return "self.\(argumentName)Selections = \(argumentName)Selections"
+    }.lines
+
+    return """
+    init(
+      \(arguments)
+    ) {
+      \(assignments)
+    }
     """
   }
 }
