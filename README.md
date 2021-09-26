@@ -42,6 +42,7 @@ Support DH Custom Feature
 - [x] Remote schema cache
 - [x] Scalar Map extension
 - [x] Custom field whitelisting
+- [ ] Custom query/mutation/subscription whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
 - [x] DH flavor Repository
@@ -59,21 +60,26 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 ## How to use
 
 ### CLI Codegen Syntax
-**Generate graphql code from local schema.json**
+**Generate graphql specification from local schema.json**
 - `--schema-source` default value is `local`, thus the file is read from local file path
 ```
 dh-graphql-codegen-ios "schema.json" --action "specification" --output "name.swift"
 
 // Specific path instead of relative path
-dh-graphql-codegen-ios "/User/Download/schema.json" --output "path/filename.swift"
+dh-graphql-codegen-ios "/User/Download/schema.json" --action "specification" --output "path/filename.swift"
 ```
 
-**Generate graphql code from remote domain**
+**Generate graphql specification from remote domain**
 - Provide a remote url to fetch the schema
 - Use `remote` for `--schema-source` to indicate the schema needs to be fetched remotely
 ```
-dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --output "name.swift"
+dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --action "specification" --output "name.swift"
 ```
+There are 4 actions in total, `introspection`, `entity`, `specification`, and `dh-repository`
+- `introspection` download and store the schema locally in the path provided in `--output`
+- `entity` generate the base code for all GraphQL entities, if you have multiple namespace you only need to generate the entity code once as the code is shared across all classes
+- `specification` generate the GraphQL specification code
+-  `dh-repository` generate custom dh-flavor repository code
 
 **Providing custom config**
 - Use `--config-path` to provide the location of config file
@@ -84,27 +90,13 @@ dh-graphql-codegen-ios "schema.json" --config-path "config.json" --output "name.
 
 ### Sample Query Code
 ```
-// Product Query
-let parameters = QueryParameter.CampaignsRequestParameter(
-  vendorId: "x1yy",
-  globalEntityId: "FP_SG",
-  locale: "en_SG",
-  languageId: "1",
-  languageCode: "en",
-  apikY: "iQis4oC8Y4DxHiO5",
-  discoClientId: "iOS",
-  selections: .init(
-    benefitSelections: [],
-    campaignAttributeSelections: [],
-    campaignsSelections: [],
-    dealSelections: [],
-    productDealSelections: []
-  )
+let parameter = QueryParameter.VendorRequestParameter(
+  name: "vendor name", // Argument1 is code-generated
+  country: .sg,  // Argument2 is code-generated
+  selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
 )
 
-repository
-  .campaigns(with: parameters)
-      .subscribe(...)
+networkLibrary.fetch(with: parameter) { ... }
 ```
 
 ### Sample Config File
