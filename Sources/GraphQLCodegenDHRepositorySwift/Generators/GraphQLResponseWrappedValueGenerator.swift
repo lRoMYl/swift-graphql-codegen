@@ -37,7 +37,7 @@ extension GraphQLResponseWrappedValueGenerator {
     let operationName: String = operation.type.name.pascalCase
     let cases = operation.type.fields.map {
       """
-      case is \(namespaceExtension)\($0.name.pascalCase).Type:
+      case is \(namespaceExtension)\($0.type.namedType.name.pascalCase).Type:
         return data.\($0.name.camelCase) as? ReturnType
       """
     }.lines
