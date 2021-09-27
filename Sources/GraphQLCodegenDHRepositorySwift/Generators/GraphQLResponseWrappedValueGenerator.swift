@@ -16,11 +16,13 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
   private let responseEntityName: String
 
   private let entityNameMap: EntityNameMap
+  private let scalarMap: ScalarMap
 
-  init(namespace: String = "", entityNameMap: EntityNameMap) {
+  init(namespace: String = "", entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
     self.entityNameMap = entityNameMap
+    self.scalarMap = scalarMap
 
     self.responseEntityName = entityNameMap.response
   }
@@ -35,9 +37,9 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
 extension GraphQLResponseWrappedValueGenerator {
   func wrappedValueCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName: String = operation.type.name.pascalCase
-    let cases = operation.type.fields.map {
+    let cases = try operation.type.fields.map {
       """
-      case is \(namespaceExtension)\($0.type.namedType.name.pascalCase).Type:
+      case is \(try $0.scalarName(namespace: namespace, scalarMap: scalarMap)).Type:
         return data.\($0.name.camelCase) as? ReturnType
       """
     }.lines

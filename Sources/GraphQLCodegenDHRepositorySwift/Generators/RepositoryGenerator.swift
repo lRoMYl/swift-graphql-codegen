@@ -24,12 +24,14 @@ struct RepositoryGenerator: Generating {
   private let repositoryPrefix: String
 
   private let entityNameMap: EntityNameMap
+  private let scalarMap: ScalarMap
 
-  init(namespace: String, entityNameMap: EntityNameMap) {
+  init(namespace: String, entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
     self.repositoryPrefix = entityNameMap.repositoryPrefix
     self.entityNameMap = entityNameMap
+    self.scalarMap = scalarMap
   }
 
   func code(schema: Schema) throws -> String {
@@ -62,7 +64,7 @@ struct RepositoryGenerator: Generating {
 extension RepositoryGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
     let funcDeclarations: [String] = try operation.type.fields.map {
-      try funcSignatureCode(field: $0, operation: operation)
+      try funcSignatureCode(field: $0, operation: operation, scalarMap: scalarMap)
     }
 
     return funcDeclarations.lines
@@ -85,7 +87,7 @@ extension RepositoryGenerator {
 
     let codes = try operation.type.fields.map {
       """
-      \(try funcSignatureCode(field: $0, operation: operation)) {
+      \(try funcSignatureCode(field: $0, operation: operation, scalarMap: scalarMap)) {
         let resource = \(entityNameMap.resourceParametersName(repositoryPrefix: repositoryPrefix))
           .\($0.enumName(with: operation))(parameters: parameters)
 
@@ -97,8 +99,9 @@ extension RepositoryGenerator {
     return codes
   }
 
-  func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = namespaceExtension + field.type.namedType.name.pascalCase
+  func funcSignatureCode(field: Field, operation: GraphQLAST.Operation, scalarMap: ScalarMap) throws -> String {
+    let responseDataText = try field.scalarName(namespace: namespace, scalarMap: scalarMap)
+
     let parametersName = namespaceExtension
       + field.requestEntityObjectParameterName(operation: operation, entityNameMap: entityNameMap)
 

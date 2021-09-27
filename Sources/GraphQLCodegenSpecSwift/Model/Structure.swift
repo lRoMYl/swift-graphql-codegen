@@ -8,6 +8,7 @@
 import GraphQLAST
 
 protocol Structure {
+  var kind: NamedTypeKind { get }
   var name: String { get }
   var fields: [Field] { get }
   var possibleTypes: [ObjectTypeRef] { get }

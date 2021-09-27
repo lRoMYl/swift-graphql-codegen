@@ -30,6 +30,26 @@ public enum SelectionMapError: Error, LocalizedError {
 public struct SelectionItemMap: Decodable {
   public let required: Set<String>
   public let selectable: Set<String>
+
+  enum CodingKeys: String, CodingKey {
+    case required
+    case selectable
+  }
+
+  public init(
+    required: Set<String>,
+    selectable: Set<String>
+  ) {
+    self.required = required
+    self.selectable = selectable
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    required = try container.decodeIfPresent(Set<String>.self, forKey: .required) ?? []
+    selectable = try container.decodeIfPresent(Set<String>.self, forKey: .selectable) ?? []
+  }
 }
 
 public extension SelectionMap {

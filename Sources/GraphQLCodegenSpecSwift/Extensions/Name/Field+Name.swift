@@ -10,7 +10,7 @@ import GraphQLCodegenConfig
 
 extension Field {
   func requestParameterName(operation: GraphQLAST.Operation) -> String {
-    let typeName = type.namedType.name.pascalCase
+    let typeName = name.pascalCase
 
     return typeName
   }
@@ -18,7 +18,7 @@ extension Field {
   /// Includes Operation.requestEntityObjectName extension in the name
   func requestEntityObjectParameterName(operation: GraphQLAST.Operation, entityNameMap: EntityNameMap) -> String {
     let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap).pascalCase
-    let typeName = type.namedType.name.pascalCase
+    let typeName = requestParameterName(operation: operation)
 
     return prefix + "." + typeName
   }

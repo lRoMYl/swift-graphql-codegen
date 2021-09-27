@@ -22,8 +22,19 @@ extension Field {
   /// Includes Operation.requestEntityObjectName extension in the name
   func requestEntityObjectParameterName(operation: GraphQLAST.Operation, entityNameMap: EntityNameMap) -> String {
     let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap).pascalCase
-    let typeName = type.namedType.name.pascalCase
+    let typeName = name.pascalCase
 
     return prefix + "." + typeName
+  }
+
+  func scalarName(namespace: String, scalarMap: ScalarMap) throws -> String {
+    let scalarName = try type.namedType.scalarType(scalarMap: scalarMap)
+    let namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+
+    guard !ScalarMap.swiftReservedScalarName.contains(scalarName) else {
+      return scalarName
+    }
+
+    return "\(namespaceExtension)\(scalarName)"
   }
 }

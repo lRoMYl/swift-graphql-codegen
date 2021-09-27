@@ -37,4 +37,8 @@ public extension ScalarMap {
       "Float": "Double"
     ]
   }()
+
+  static let swiftReservedScalarType: [String] = {
+    ["String", "Int", "Bool", "Double", "Float"]
+  }()
 }
