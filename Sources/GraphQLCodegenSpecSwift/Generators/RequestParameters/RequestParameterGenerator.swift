@@ -20,7 +20,6 @@ enum RequestParameterError: Error, LocalizedError {
 
 struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityName: String
-  private let entityPrefix = "RequestParameter"
   private let namespace: String
   private let namespaceExtension: String
 

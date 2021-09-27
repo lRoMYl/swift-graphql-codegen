@@ -24,6 +24,6 @@ extension Field {
     let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap).pascalCase
     let typeName = type.namedType.name.pascalCase
 
-    return prefix + "." + typeName + "RequestParameter"
+    return prefix + "." + typeName
   }
 }

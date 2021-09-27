@@ -21,11 +21,14 @@ enum RepositoryGeneratorError: Error, LocalizedError {
 struct RepositoryGenerator: Generating {
   private let namespace: String
   private let namespaceExtension: String
+  private let repositoryPrefix: String
+
   private let entityNameMap: EntityNameMap
 
   init(namespace: String, entityNameMap: EntityNameMap) {
     self.namespace = namespace
     self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+    self.repositoryPrefix = entityNameMap.repositoryPrefix
     self.entityNameMap = entityNameMap
   }
 
@@ -33,9 +36,9 @@ struct RepositoryGenerator: Generating {
     """
     \(try self.protocolCode(with: schema.operations))
 
-    // MARK: - \(namespace)Repositoring
+    // MARK: - \(repositoryPrefix)Repositoring
 
-    final class \(namespace)Repository: \(namespace)Repositoring {
+    final class \(repositoryPrefix)Repository: \(repositoryPrefix)Repositoring {
       private let restClient: RestClient
       private let scheduler: SchedulerType
 
@@ -49,7 +52,7 @@ struct RepositoryGenerator: Generating {
 
     }
 
-    private extension \(namespace)Repository {
+    private extension \(repositoryPrefix)Repository {
       \(try schema.operations.map { try executeCode(with: $0) }.lines)
     }
     """
@@ -67,7 +70,7 @@ extension RepositoryGenerator {
 
   func protocolCode(with operations: [GraphQLAST.Operation]) throws -> String {
     return """
-    protocol \(namespace)Repositoring {
+    protocol \(repositoryPrefix)Repositoring {
       \(
         try operations.map {
           try protocolCode(with: $0)

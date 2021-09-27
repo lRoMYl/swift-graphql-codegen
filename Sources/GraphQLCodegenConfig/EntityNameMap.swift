@@ -31,9 +31,11 @@ public struct EntityNameMap: Decodable {
   public let selection: String
   public let selections: String
 
-  public let queryParameter: String
-  public let mutationParameter: String
-  public let subscriptionParameter: String
+  public let queryRequestParameter: String
+  public let mutationRequestParameter: String
+  public let subscriptionRequestParameter: String
+
+  public let repositoryPrefix: String
 
   enum CodingKeys: String, CodingKey {
     case request
@@ -42,9 +44,10 @@ public struct EntityNameMap: Decodable {
     case response
     case selection
     case selections
-    case queryParameter
-    case mutationParameter
-    case subscriptionParameter
+    case queryRequestParameter
+    case mutationRequestParameter
+    case subscriptionRequestParameter
+    case repositoryPrefix
   }
 
   public init(
@@ -54,9 +57,10 @@ public struct EntityNameMap: Decodable {
     response: String,
     selection: String,
     selections: String,
-    queryParameter: String,
-    mutationParameter: String,
-    subscriptionParameter: String
+    queryRequestParameter: String,
+    mutationRequestParameter: String,
+    subscriptionRequestParameter: String,
+    repositoryPrefix: String
   ) {
     self.request = request
     self.requestType = requestType
@@ -64,9 +68,10 @@ public struct EntityNameMap: Decodable {
     self.response = response
     self.selection = selection
     self.selections = selections
-    self.queryParameter = queryParameter
-    self.mutationParameter = mutationParameter
-    self.subscriptionParameter = subscriptionParameter
+    self.queryRequestParameter = queryRequestParameter
+    self.mutationRequestParameter = mutationRequestParameter
+    self.subscriptionRequestParameter = subscriptionRequestParameter
+    self.repositoryPrefix = repositoryPrefix
   }
 
   public init(from decoder: Decoder) throws {
@@ -82,9 +87,11 @@ public struct EntityNameMap: Decodable {
     selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? defaultValue.selection
     selections = try container.decodeIfPresent(String.self, forKey: .selections) ?? defaultValue.selections
 
-    queryParameter = try container.decodeIfPresent(String.self, forKey: .queryParameter) ?? defaultValue.queryParameter
-    mutationParameter = try container.decodeIfPresent(String.self, forKey: .mutationParameter) ?? defaultValue.mutationParameter
-    subscriptionParameter = try container.decodeIfPresent(String.self, forKey: .subscriptionParameter) ?? defaultValue.subscriptionParameter
+    queryRequestParameter = try container.decodeIfPresent(String.self, forKey: .queryRequestParameter) ?? defaultValue.queryRequestParameter
+    mutationRequestParameter = try container.decodeIfPresent(String.self, forKey: .mutationRequestParameter) ?? defaultValue.mutationRequestParameter
+    subscriptionRequestParameter = try container.decodeIfPresent(String.self, forKey: .subscriptionRequestParameter) ?? defaultValue.subscriptionRequestParameter
+
+    repositoryPrefix = try container.decodeIfPresent(String.self, forKey: .repositoryPrefix) ?? defaultValue.repositoryPrefix
   }
 }
 
@@ -97,9 +104,10 @@ public extension EntityNameMap {
       response: "GraphQLResponse",
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
-      queryParameter: "QueryParameter",
-      mutationParameter: "MutationParameter",
-      subscriptionParameter: "SubscriptionParameter"
+      queryRequestParameter: "QueryRequestParameter",
+      mutationRequestParameter: "MutationRequestParameter",
+      subscriptionRequestParameter: "SubscriptionRequestParameter",
+      repositoryPrefix: "GraphQL"
     )
   }()
 }

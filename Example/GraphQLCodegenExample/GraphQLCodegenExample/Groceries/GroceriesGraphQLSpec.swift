@@ -275,14 +275,14 @@ struct Query: Codable {
 
 // MARK: - GraphQLRequestParameter
 
-enum QueryParameter {}
+enum QueryRequestParameter {}
 
-// MARK: - QueryParameter
+// MARK: - QueryRequestParameter
 
-extension QueryParameter {
-  // MARK: - CampaignsRequestParameter
+extension QueryRequestParameter {
+  // MARK: - Campaigns
 
-  struct CampaignsRequestParameter: GraphQLRequestParameter {
+  struct Campaigns: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .query

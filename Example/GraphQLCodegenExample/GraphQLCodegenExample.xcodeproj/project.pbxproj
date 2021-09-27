@@ -244,7 +244,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "make codegen-groceries\n";
+			shellScript = "# make codegen-groceries\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

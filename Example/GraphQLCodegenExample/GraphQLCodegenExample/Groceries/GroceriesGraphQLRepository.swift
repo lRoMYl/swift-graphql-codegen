@@ -6,15 +6,15 @@ import ApiClient
 import Foundation
 import RxSwift
 
-protocol Repositoring {
+protocol GraphQLRepositoring {
   func campaigns(
-    with parameters: QueryParameter.CampaignsRequestParameter
+    with parameters: QueryRequestParameter.Campaigns
   ) -> Single<ApiResponse<Campaigns>>
 }
 
-// MARK: - Repositoring
+// MARK: - GraphQLRepositoring
 
-final class Repository: Repositoring {
+final class GraphQLRepository: GraphQLRepositoring {
   private let restClient: RestClient
   private let scheduler: SchedulerType
 
@@ -24,7 +24,7 @@ final class Repository: Repositoring {
   }
 
   func campaigns(
-    with parameters: QueryParameter.CampaignsRequestParameter
+    with parameters: QueryRequestParameter.Campaigns
   ) -> Single<ApiResponse<Campaigns>> {
     let resource = DefaultResourceParameters
       .queryCampaigns(parameters: parameters)
@@ -33,7 +33,7 @@ final class Repository: Repositoring {
   }
 }
 
-private extension Repository {
+private extension GraphQLRepository {
   func executeGraphQLQuery<T>(
     resource: ResourceParameters
   ) -> Single<ApiResponse<T>> where T: Codable {
@@ -55,7 +55,7 @@ private extension Repository {
 // MARK: - DefaultResourceParameters
 
 enum DefaultResourceParameters: ResourceParameters {
-  case queryCampaigns(parameters: QueryParameter.CampaignsRequestParameter)
+  case queryCampaigns(parameters: QueryRequestParameter.Campaigns)
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON

@@ -41,6 +41,7 @@ Support DH Custom Feature
 - [x] Remote schema authorization headers
 - [x] Remote schema cache
 - [x] Scalar Map extension
+- [x] Entity Name Map, override entity naming convention using config
 - [x] Custom field whitelisting
 - [ ] Custom query/mutation/subscription whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value

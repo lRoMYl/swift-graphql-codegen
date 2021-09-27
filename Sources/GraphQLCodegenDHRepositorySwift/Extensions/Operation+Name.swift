@@ -19,9 +19,9 @@ extension GraphQLAST.Operation {
 
   func requestEntityObjectName(entityNameMap: EntityNameMap) -> String {
     switch self {
-    case .query: return entityNameMap.queryParameter
-    case .mutation: return entityNameMap.mutationParameter
-    case .subscription: return entityNameMap.subscriptionParameter
+    case .query: return entityNameMap.queryRequestParameter
+    case .mutation: return entityNameMap.mutationRequestParameter
+    case .subscription: return entityNameMap.subscriptionRequestParameter
     }
   }
 }

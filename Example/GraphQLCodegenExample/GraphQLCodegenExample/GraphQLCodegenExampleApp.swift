@@ -12,13 +12,13 @@ import SwiftUI
 @main
 struct GraphQLCodegenExampleApp: App {
   private let disposeBag = DisposeBag()
-  private let groceriesRepository: Repositoring = {
+  private let groceriesRepository: GraphQLRepositoring = {
     let restClient = RestClientImpl(
       webService: GroceriesWebService(),
       authProvider: nil
     )
 
-    let repository = Repository(restClient: restClient)
+    let repository = GraphQLRepository(restClient: restClient)
 
     return repository
   }()
@@ -34,7 +34,7 @@ struct GraphQLCodegenExampleApp: App {
 
 extension GraphQLCodegenExampleApp {
   func testGroceriesGraphQL() throws {
-    let parameters = QueryParameter.CampaignsRequestParameter(
+    let parameters = QueryRequestParameter.Campaigns(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
       locale: "en_SG",

@@ -12,7 +12,7 @@ extension Field {
   func requestParameterName(operation: GraphQLAST.Operation) -> String {
     let typeName = type.namedType.name.pascalCase
 
-    return typeName + "RequestParameter"
+    return typeName
   }
 
   /// Includes Operation.requestEntityObjectName extension in the name
@@ -20,6 +20,6 @@ extension Field {
     let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap).pascalCase
     let typeName = type.namedType.name.pascalCase
 
-    return prefix + "." + typeName + "RequestParameter"
+    return prefix + "." + typeName
   }
 }
