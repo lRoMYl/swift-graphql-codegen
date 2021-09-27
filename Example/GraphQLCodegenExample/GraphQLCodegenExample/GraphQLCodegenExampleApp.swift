@@ -26,6 +26,8 @@ struct GraphQLCodegenExampleApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView().onAppear() {
+        setup()
+
         try? testGroceriesGraphQL()
       }
     }
@@ -33,6 +35,11 @@ struct GraphQLCodegenExampleApp: App {
 }
 
 extension GraphQLCodegenExampleApp {
+  func setup() {
+    GraphQLResourceParametersDIContainer.shared.implementation
+      = GraphQLResourceParametersImplementation()
+  }
+
   func testGroceriesGraphQL() throws {
     let parameters = QueryRequestParameter.Campaigns(
       vendorId: "x1yy",

@@ -26,7 +26,7 @@ final class GraphQLRepository: GraphQLRepositoring {
   func campaigns(
     with parameters: QueryRequestParameter.Campaigns
   ) -> Single<ApiResponse<Campaigns>> {
-    let resource = DefaultResourceParameters
+    let resource = GraphQLResourceParameters
       .queryCampaigns(parameters: parameters)
 
     return executeGraphQLQuery(resource: resource)
@@ -52,9 +52,25 @@ private extension GraphQLRepository {
   }
 }
 
-// MARK: - DefaultResourceParameters
+// MARK: - GraphQLResourceParameters
 
-enum DefaultResourceParameters: ResourceParameters {
+protocol GraphQLResourceParametersImplementing {
+  func servicePath(with resourceParameters: GraphQLResourceParameters) -> String
+  func headers(with resourceParameters: GraphQLResourceParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: GraphQLResourceParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: GraphQLResourceParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: GraphQLResourceParameters) -> Bool
+}
+
+final class GraphQLResourceParametersDIContainer {
+  static let shared = GraphQLResourceParametersDIContainer()
+
+  var implementation: GraphQLResourceParametersImplementing?
+}
+
+enum GraphQLResourceParameters: ResourceParameters {
+  private static var diContainer = GraphQLResourceParametersDIContainer.shared
+
   case queryCampaigns(parameters: QueryRequestParameter.Campaigns)
 
   func bodyFormat() -> HttpBodyFormat {
@@ -66,19 +82,23 @@ enum DefaultResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    "query"
+    Self.diContainer.implementation?.servicePath(with: self) ?? ""
   }
 
   func headers() -> [String: String]? {
-    [:]
+    Self.diContainer.implementation?.headers(with: self) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    nil
+    Self.diContainer.implementation?.timeoutInterval(with: self) ?? nil
   }
 
   func preventRetry() -> Bool {
-    true
+    Self.diContainer.implementation?.preventRetry(with: self) ?? false
+  }
+
+  func preventAddingLanguageParameters() -> Bool {
+    Self.diContainer.implementation?.preventAddingLanguageParameters(with: self) ?? false
   }
 
   func bodyParameters() -> Any? {

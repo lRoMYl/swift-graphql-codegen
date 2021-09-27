@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */; };
 		F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */; };
 		F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235926FCAC9F00A594B2 /* ContentView.swift */; };
 		F8D3235C26FCACA000A594B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D3235B26FCACA000A594B2 /* Assets.xcassets */; };
@@ -42,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultResourceParametersImplementation.swift; sourceTree = "<group>"; };
 		F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphQLCodegenExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCodegenExampleApp.swift; sourceTree = "<group>"; };
 		F8D3235926FCAC9F00A594B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
 				F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */,
 				F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */,
+				F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */,
 			);
 			path = Groceries;
 			sourceTree = "<group>";
@@ -244,7 +247,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# make codegen-groceries\n";
+			shellScript = "make codegen-groceries\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -260,6 +263,7 @@
 				F8D323B927003DA200A594B2 /* BigCommerceGraphQLRepository.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
 				F8D323BA27003DA200A594B2 /* BigCommerceGraphQLSpec.swift in Sources */,
+				F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */,
 				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
