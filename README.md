@@ -47,7 +47,7 @@ Support DH Custom Feature
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
 - [x] DH flavor Repository
-- [ ] Provide service dependency injection for DH flavor Repository, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
+- [x] Provide service dependency injection for DH flavor Repository, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
 
 ## Installation
 ```
