@@ -8,22 +8,22 @@ import RxSwift
 
 protocol BigCommerceGraphQLRepositoring {
   func site(
-    with parameters: BigCommerceGraphQL.QueryParameter.SiteRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Site
   ) -> Single<ApiResponse<BigCommerceGraphQL.Site>>
   func customer(
-    with parameters: BigCommerceGraphQL.QueryParameter.CustomerRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Customer
   ) -> Single<ApiResponse<BigCommerceGraphQL.Customer>>
   func node(
-    with parameters: BigCommerceGraphQL.QueryParameter.NodeRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Node
   ) -> Single<ApiResponse<BigCommerceGraphQL.Node>>
   func inventory(
-    with parameters: BigCommerceGraphQL.QueryParameter.InventoryRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Inventory
   ) -> Single<ApiResponse<BigCommerceGraphQL.Inventory>>
   func login(
-    with parameters: BigCommerceGraphQL.MutationParameter.LoginResultRequestParameter
+    with parameters: BigCommerceGraphQL.MutationRequestParameter.LoginResult
   ) -> Single<ApiResponse<BigCommerceGraphQL.LoginResult>>
   func logout(
-    with parameters: BigCommerceGraphQL.MutationParameter.LogoutResultRequestParameter
+    with parameters: BigCommerceGraphQL.MutationRequestParameter.LogoutResult
   ) -> Single<ApiResponse<BigCommerceGraphQL.LogoutResult>>
 }
 
@@ -39,7 +39,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func site(
-    with parameters: BigCommerceGraphQL.QueryParameter.SiteRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Site
   ) -> Single<ApiResponse<BigCommerceGraphQL.Site>> {
     let resource = BigCommerceGraphQLResourceParameters
       .querySite(parameters: parameters)
@@ -48,7 +48,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func customer(
-    with parameters: BigCommerceGraphQL.QueryParameter.CustomerRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Customer
   ) -> Single<ApiResponse<BigCommerceGraphQL.Customer>> {
     let resource = BigCommerceGraphQLResourceParameters
       .queryCustomer(parameters: parameters)
@@ -57,7 +57,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func node(
-    with parameters: BigCommerceGraphQL.QueryParameter.NodeRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Node
   ) -> Single<ApiResponse<BigCommerceGraphQL.Node>> {
     let resource = BigCommerceGraphQLResourceParameters
       .queryNode(parameters: parameters)
@@ -66,7 +66,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func inventory(
-    with parameters: BigCommerceGraphQL.QueryParameter.InventoryRequestParameter
+    with parameters: BigCommerceGraphQL.QueryRequestParameter.Inventory
   ) -> Single<ApiResponse<BigCommerceGraphQL.Inventory>> {
     let resource = BigCommerceGraphQLResourceParameters
       .queryInventory(parameters: parameters)
@@ -75,7 +75,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func login(
-    with parameters: BigCommerceGraphQL.MutationParameter.LoginResultRequestParameter
+    with parameters: BigCommerceGraphQL.MutationRequestParameter.LoginResult
   ) -> Single<ApiResponse<BigCommerceGraphQL.LoginResult>> {
     let resource = BigCommerceGraphQLResourceParameters
       .updateLogin(parameters: parameters)
@@ -84,7 +84,7 @@ final class BigCommerceGraphQLRepository: BigCommerceGraphQLRepositoring {
   }
 
   func logout(
-    with parameters: BigCommerceGraphQL.MutationParameter.LogoutResultRequestParameter
+    with parameters: BigCommerceGraphQL.MutationRequestParameter.LogoutResult
   ) -> Single<ApiResponse<BigCommerceGraphQL.LogoutResult>> {
     let resource = BigCommerceGraphQLResourceParameters
       .updateLogout(parameters: parameters)
@@ -131,13 +131,29 @@ private extension BigCommerceGraphQLRepository {
 
 // MARK: - BigCommerceGraphQLResourceParameters
 
+protocol BigCommerceGraphQLResourceParametersImplementing {
+  func servicePath(with resourceParameters: BigCommerceGraphQLResourceParameters) -> String
+  func headers(with resourceParameters: BigCommerceGraphQLResourceParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: BigCommerceGraphQLResourceParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: BigCommerceGraphQLResourceParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: BigCommerceGraphQLResourceParameters) -> Bool
+}
+
+final class BigCommerceGraphQLResourceParametersDIContainer {
+  static let shared = BigCommerceGraphQLResourceParametersDIContainer()
+
+  var implementation: BigCommerceGraphQLResourceParametersImplementing?
+}
+
 enum BigCommerceGraphQLResourceParameters: ResourceParameters {
-  case querySite(parameters: BigCommerceGraphQL.QueryParameter.SiteRequestParameter)
-  case queryCustomer(parameters: BigCommerceGraphQL.QueryParameter.CustomerRequestParameter)
-  case queryNode(parameters: BigCommerceGraphQL.QueryParameter.NodeRequestParameter)
-  case queryInventory(parameters: BigCommerceGraphQL.QueryParameter.InventoryRequestParameter)
-  case updateLogin(parameters: BigCommerceGraphQL.MutationParameter.LoginResultRequestParameter)
-  case updateLogout(parameters: BigCommerceGraphQL.MutationParameter.LogoutResultRequestParameter)
+  private static var diContainer = BigCommerceGraphQLResourceParametersDIContainer.shared
+
+  case querySite(parameters: BigCommerceGraphQL.QueryRequestParameter.Site)
+  case queryCustomer(parameters: BigCommerceGraphQL.QueryRequestParameter.Customer)
+  case queryNode(parameters: BigCommerceGraphQL.QueryRequestParameter.Node)
+  case queryInventory(parameters: BigCommerceGraphQL.QueryRequestParameter.Inventory)
+  case updateLogin(parameters: BigCommerceGraphQL.MutationRequestParameter.LoginResult)
+  case updateLogout(parameters: BigCommerceGraphQL.MutationRequestParameter.LogoutResult)
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON
@@ -148,19 +164,23 @@ enum BigCommerceGraphQLResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    "query"
+    Self.diContainer.implementation?.servicePath(with: self) ?? ""
   }
 
   func headers() -> [String: String]? {
-    [:]
+    Self.diContainer.implementation?.headers(with: self) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    nil
+    Self.diContainer.implementation?.timeoutInterval(with: self) ?? nil
   }
 
   func preventRetry() -> Bool {
-    true
+    Self.diContainer.implementation?.preventRetry(with: self) ?? false
+  }
+
+  func preventAddingLanguageParameters() -> Bool {
+    Self.diContainer.implementation?.preventAddingLanguageParameters(with: self) ?? false
   }
 
   func bodyParameters() -> Any? {

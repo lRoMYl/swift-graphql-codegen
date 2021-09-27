@@ -5,5 +5,8 @@
         "DateTime": "Double",
         "Long": "Double",
         "Upload": "String"
+    },
+    "entityNameMap": {
+        "repositoryPrefix": "BigCommerceGraphQL"
     }
 }

@@ -6535,15 +6535,15 @@ extension BigCommerceGraphQL {
 // MARK: - GraphQLRequestParameter
 
 extension BigCommerceGraphQL {
-  enum QueryParameter {}
+  enum QueryRequestParameter {}
 }
 
-// MARK: - QueryParameter
+// MARK: - QueryRequestParameter
 
-extension BigCommerceGraphQL.QueryParameter {
-  // MARK: - SiteRequestParameter
+extension BigCommerceGraphQL.QueryRequestParameter {
+  // MARK: - Site
 
-  struct SiteRequestParameter: GraphQLRequestParameter {
+  struct Site: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .query
@@ -7827,9 +7827,9 @@ extension BigCommerceGraphQL.QueryParameter {
     }
   }
 
-  // MARK: - CustomerRequestParameter
+  // MARK: - Customer
 
-  struct CustomerRequestParameter: GraphQLRequestParameter {
+  struct Customer: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .query
@@ -7964,9 +7964,9 @@ extension BigCommerceGraphQL.QueryParameter {
     }
   }
 
-  // MARK: - NodeRequestParameter
+  // MARK: - Node
 
-  struct NodeRequestParameter: GraphQLRequestParameter {
+  struct Node: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .query
@@ -8044,9 +8044,9 @@ extension BigCommerceGraphQL.QueryParameter {
     }
   }
 
-  // MARK: - InventoryRequestParameter
+  // MARK: - Inventory
 
-  struct InventoryRequestParameter: GraphQLRequestParameter {
+  struct Inventory: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .query
@@ -8217,15 +8217,15 @@ extension BigCommerceGraphQL.QueryParameter {
 }
 
 extension BigCommerceGraphQL {
-  enum MutationParameter {}
+  enum MutationRequestParameter {}
 }
 
-// MARK: - MutationParameter
+// MARK: - MutationRequestParameter
 
-extension BigCommerceGraphQL.MutationParameter {
-  // MARK: - LoginResultRequestParameter
+extension BigCommerceGraphQL.MutationRequestParameter {
+  // MARK: - LoginResult
 
-  struct LoginResultRequestParameter: GraphQLRequestParameter {
+  struct LoginResult: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .mutation
@@ -8397,9 +8397,9 @@ extension BigCommerceGraphQL.MutationParameter {
     }
   }
 
-  // MARK: - LogoutResultRequestParameter
+  // MARK: - LogoutResult
 
-  struct LogoutResultRequestParameter: GraphQLRequestParameter {
+  struct LogoutResult: GraphQLRequestParameter {
     // MARK: - GraphQLRequestType
 
     let requestType: GraphQLRequestType = .mutation
