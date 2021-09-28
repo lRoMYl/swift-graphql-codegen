@@ -73,13 +73,19 @@ struct RequestParameterVariablesGenerator {
   /**
    - Swift argument variables
    */
-  func argumentVariablesDeclaration(with field: Field) throws -> String {
+  func argumentVariablesDeclaration(namespace: String, field: Field) throws -> String {
+    let namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+
+
     let argumentVariables = try field.args.compactMap {
       let typeName = try $0.type.scalarType(scalarMap: scalarMap)
+      let prefix = ScalarMap.swiftReservedScalarType.contains(typeName)
+        ? ""
+        : namespaceExtension
 
       return """
       \($0.docs)
-      let \($0.name.camelCase): \(typeName)
+      let \($0.name.camelCase): \(prefix + typeName)
       """
     }.lines
 

@@ -49,7 +49,10 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       scalarMap: scalarMap,
       variablesGenerator: variablesGenerator
     )
-    self.initializerGenerator = RequestParameterInitializerGenerator(scalarMap: scalarMap)
+    self.initializerGenerator = RequestParameterInitializerGenerator(
+      namespace: namespace,
+      scalarMap: scalarMap
+    )
 
     // Initialize entity name variable
     self.entityName = entityNameMap.requestParameter
@@ -128,7 +131,10 @@ private extension RequestParameterGenerator {
       field: field
     )
 
-    let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(with: field)
+    let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(
+      namespace: namespace,
+      field: field
+    )
 
     let selections = try selectionsGenerator.declaration(
       field: field,
