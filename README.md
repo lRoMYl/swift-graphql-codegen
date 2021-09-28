@@ -26,7 +26,7 @@ Supports GraphQL Native Feature
 - [x] Object
 - [x] InputObject
 - [x] Enum / Enumeration
-- [x] Interface
+- [ ] Interface
 - [ ] Union
 - [x] Query
 - [x] Mutation
