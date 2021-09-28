@@ -24,9 +24,9 @@ extension InvertedInputTypeRef {
       case let .scalar(scalar):
         return try scalarMap.scalar(scalar)
       case let .enum(enm):
-        return "\(enm.pascalCase)\(entityNameMap.enums)"
+        return "\(enm.pascalCase)\(entityNameMap.`enum`)"
       case let .inputObject(inputObject):
-        return "\(inputObject.pascalCase)\(entityNameMap.inputObjects)"
+        return "\(inputObject.pascalCase)\(entityNameMap.inputObject)"
       }
     case let .list(subref):
       return "[\(try subref.type(scalarMap: scalarMap, entityNameMap: entityNameMap))]"

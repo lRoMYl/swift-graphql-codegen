@@ -22,6 +22,8 @@ public enum EntityNameMapError: Error, LocalizedError {
 
 /// Shared antity name mapping convention across generators
 public struct EntityNameMap: Decodable {
+  // MARK: - Custom GraphQL Entities
+
   public let request: String
   public let requestType: String
   public let requestParameter: String
@@ -31,17 +33,25 @@ public struct EntityNameMap: Decodable {
   public let selection: String
   public let selections: String
 
-  public let queries: String
-  public let mutations: String
-  public let subscriptions: String
+  // MARK: - GraphQL Operation Type Entities
 
-  public let objects: String
-  public let inputObjects: String
-  public let interfaces: String
-  public let unions: String
-  public let enums: String
+  public let query: String
+  public let mutation: String
+  public let subscription: String
+
+  // MARK: - GraphQL Primitive Type Entities
+
+  public let object: String
+  public let inputObject: String
+  public let interface: String
+  public let union: String
+  public let `enum`: String
+
+  // MARK: - API Client Entities
 
   public let apiClientPrefix: String
+
+  // MARK: - CodingKeys
 
   enum CodingKeys: String, CodingKey {
     case request
@@ -50,16 +60,18 @@ public struct EntityNameMap: Decodable {
     case response
     case selection
     case selections
-    case queries
-    case mutations
-    case subscriptions
-    case objects
-    case inputObjects
-    case interfaces
-    case unions
-    case enums
+    case query
+    case mutation
+    case subscription
+    case object
+    case inputObject
+    case interface
+    case union
+    case `enum`
     case apiClientPrefix
   }
+
+  // MARK: - Initializers
 
   public init(
     request: String,
@@ -68,14 +80,14 @@ public struct EntityNameMap: Decodable {
     response: String,
     selection: String,
     selections: String,
-    queries: String,
-    mutations: String,
-    subscriptions: String,
-    objects: String,
-    inputObjects: String,
-    interfaces: String,
-    unions: String,
-    enums: String,
+    query: String,
+    mutation: String,
+    subscription: String,
+    object: String,
+    inputObject: String,
+    interface: String,
+    union: String,
+    enum: String,
     apiClientPrefix: String
   ) {
     self.request = request
@@ -84,14 +96,14 @@ public struct EntityNameMap: Decodable {
     self.response = response
     self.selection = selection
     self.selections = selections
-    self.queries = queries
-    self.mutations = mutations
-    self.subscriptions = subscriptions
-    self.objects = objects
-    self.inputObjects = inputObjects
-    self.interfaces = interfaces
-    self.unions = unions
-    self.enums = enums
+    self.query = query
+    self.mutation = mutation
+    self.subscription = subscription
+    self.object = object
+    self.inputObject = inputObject
+    self.interface = interface
+    self.union = union
+    self.`enum` = `enum`
     self.apiClientPrefix = apiClientPrefix
   }
 
@@ -108,19 +120,21 @@ public struct EntityNameMap: Decodable {
     selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? defaultValue.selection
     selections = try container.decodeIfPresent(String.self, forKey: .selections) ?? defaultValue.selections
 
-    queries = try container.decodeIfPresent(String.self, forKey: .queries) ?? defaultValue.queries
-    mutations = try container.decodeIfPresent(String.self, forKey: .mutations) ?? defaultValue.mutations
-    subscriptions = try container.decodeIfPresent(String.self, forKey: .subscriptions) ?? defaultValue.subscriptions
+    query = try container.decodeIfPresent(String.self, forKey: .query) ?? defaultValue.query
+    mutation = try container.decodeIfPresent(String.self, forKey: .mutation) ?? defaultValue.mutation
+    subscription = try container.decodeIfPresent(String.self, forKey: .subscription) ?? defaultValue.subscription
 
-    objects = try container.decodeIfPresent(String.self, forKey: .objects) ?? defaultValue.objects
-    inputObjects = try container.decodeIfPresent(String.self, forKey: .inputObjects) ?? defaultValue.inputObjects
-    interfaces = try container.decodeIfPresent(String.self, forKey: .interfaces) ?? defaultValue.interfaces
-    unions = try container.decodeIfPresent(String.self, forKey: .unions) ?? defaultValue.unions
-    enums = try container.decodeIfPresent(String.self, forKey: .enums) ?? defaultValue.enums
+    object = try container.decodeIfPresent(String.self, forKey: .object) ?? defaultValue.object
+    inputObject = try container.decodeIfPresent(String.self, forKey: .inputObject) ?? defaultValue.inputObject
+    interface = try container.decodeIfPresent(String.self, forKey: .interface) ?? defaultValue.interface
+    union = try container.decodeIfPresent(String.self, forKey: .union) ?? defaultValue.union
+    `enum` = try container.decodeIfPresent(String.self, forKey: .`enum`) ?? defaultValue.`enum`
 
     apiClientPrefix = try container.decodeIfPresent(String.self, forKey: .apiClientPrefix) ?? defaultValue.apiClientPrefix
   }
 }
+
+// MARK: - Default
 
 public extension EntityNameMap {
   static let `default`: EntityNameMap = {
@@ -131,18 +145,20 @@ public extension EntityNameMap {
       response: "GraphQLResponse",
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
-      queries: "Queries",
-      mutations: "Mutations",
-      subscriptions: "Subscriptions",
-      objects: "ResponseObjects",
-      inputObjects: "RequestObjects",
-      interfaces: "Interfaces",
-      unions: "Unions",
-      enums: "Enums",
+      query: "GraphQLQuery",
+      mutation: "GraphQLMutation",
+      subscription: "GraphQLSubscription",
+      object: "GraphQLObjects",
+      inputObject: "GraphQLInputObjects",
+      interface: "Interfaces",
+      union: "Unions",
+      enum: "Enum",
       apiClientPrefix: "GraphQL"
     )
   }()
 }
+
+// MARK: - Validation
 
 public extension EntityNameMap {
   func validate() throws {

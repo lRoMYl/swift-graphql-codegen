@@ -31,15 +31,15 @@ public final class DHEntityNameStrategy: EntityNamingStrategy {
     case let .scalar(refType):
       return refType.name
     case let .object(refType):
-      return refType.name + entityNameMap.objects
+      return refType.name + entityNameMap.object
     case let .interface(refType):
-      return refType.name + entityNameMap.interfaces
+      return refType.name + entityNameMap.interface
     case let .union(refType):
-      return refType.name + entityNameMap.unions
+      return refType.name + entityNameMap.union
     case let .`enum`(refType):
-      return refType.name + entityNameMap.enums
+      return refType.name + entityNameMap.`enum`
     case let .inputObject(refType):
-      return refType.name + entityNameMap.inputObjects
+      return refType.name + entityNameMap.inputObject
     }
   }
 
@@ -48,15 +48,15 @@ public final class DHEntityNameStrategy: EntityNamingStrategy {
     case .scalar:
       return namedTypeProtocol.name
     case .object:
-      return namedTypeProtocol.name + entityNameMap.objects
+      return namedTypeProtocol.name + entityNameMap.object
     case .interface:
-      return namedTypeProtocol.name + entityNameMap.interfaces
+      return namedTypeProtocol.name + entityNameMap.interface
     case .union:
-      return namedTypeProtocol.name + entityNameMap.unions
+      return namedTypeProtocol.name + entityNameMap.union
     case .enumeration:
-      return namedTypeProtocol.name + entityNameMap.enums
+      return namedTypeProtocol.name + entityNameMap.`enum`
     case .inputObject:
-      return namedTypeProtocol.name + entityNameMap.inputObjects
+      return namedTypeProtocol.name + entityNameMap.inputObject
     }
   }
 

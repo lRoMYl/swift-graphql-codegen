@@ -38,7 +38,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     return """
-    // MARK: - \(entityNameMap.interfaces)
+    // MARK: - \(entityNameMap.interface)
 
     \(
       try schema.interfaces.compactMap {

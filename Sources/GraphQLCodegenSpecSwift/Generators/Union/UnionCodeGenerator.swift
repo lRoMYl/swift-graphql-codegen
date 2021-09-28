@@ -33,7 +33,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     return """
-    // MARK: - \(entityNameMap.unions)
+    // MARK: - \(entityNameMap.union)
 
     \(
       try schema.unions.compactMap {

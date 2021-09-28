@@ -12,11 +12,11 @@ extension GraphQLAST.Operation {
   func type(entityNameMap: EntityNameMap) -> String {
     switch self {
     case .query:
-      return entityNameMap.queries
+      return entityNameMap.query
     case .mutation:
-      return entityNameMap.mutations
+      return entityNameMap.mutation
     case .subscription:
-      return entityNameMap.subscriptions
+      return entityNameMap.subscription
     }
   }
 }

@@ -22,7 +22,7 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     """
-    // MARK: - \(entityNameMap.enums)
+    // MARK: - \(entityNameMap.`enum`)
 
     \(
       try schema.enums.map {

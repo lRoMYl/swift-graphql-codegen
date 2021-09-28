@@ -38,7 +38,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     return """
-    // MARK: - \(entityNameMap.objects)
+    // MARK: - \(entityNameMap.object)
 
     \(
       try schema.objects.compactMap {

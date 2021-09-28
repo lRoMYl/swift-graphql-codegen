@@ -8,14 +8,14 @@
         "Date": "String"
     },
     "entityNameMap": {
-        "queries":          "StarWarsQueries",
-        "mutations":        "StarWarsMutations",
-        "subscriptions":    "StarWarsSubscriptions",
-        "objects":          "StarWarsObjects",
-        "inputObjects":     "StarWarsInputObjects",
-        "interfaces":       "StarWarsInterfaces",
-        "unions":           "StarWarsUnions",
-        "enums":            "StarWarsEnums",
+        "query":            "StarWarsQueries",
+        "mutation":         "StarWarsMutations",
+        "subscription":     "StarWarsSubscriptions",
+        "object":           "StarWarsObjects",
+        "inputObject":      "StarWarsInputObjects",
+        "interface":        "StarWarsInterfaces",
+        "union":            "StarWarsUnions",
+        "enum":             "StarWarsEnums",
         "apiClientPrefix":  "StarWars"
     }
 }

@@ -1,14 +1,14 @@
 {
   "namespace": "",
   "entityNameMap": {
-    "queries":          "QueryRequestParameter",
-    "mutations":        "MutationRequestParameter",
-    "subscriptions":    "SubscriptionRequestParameter",
-    "objects":          "ResponseObject",
-    "inputObjects":     "RequestObject",
-    "interfaces":       "Interface",
-    "unions":           "Union",
-    "enums":            "Enum",
+    "query":           "QueryRequestParameter",
+    "mutation":         "MutationRequestParameter",
+    "subscription":     "SubscriptionRequestParameter",
+    "object":           "ResponseObject",
+    "inputObject":      "RequestObject",
+    "interface":        "Interface",
+    "union":            "Union",
+    "enum":             "Enum",
     "apiClientPrefix":  "Groceries"
   }
 }
