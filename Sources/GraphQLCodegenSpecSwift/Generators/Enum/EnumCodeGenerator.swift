@@ -37,7 +37,7 @@ private extension EnumType {
   var declaration: String {
     """
     \(docs)
-    enum \(name.pascalCase): RawRepresentable, CaseIterable, Codable {
+    enum \(name.pascalCase): RawRepresentable, Codable {
       typealias RawValue = String
 
       \(valueDeclaration)

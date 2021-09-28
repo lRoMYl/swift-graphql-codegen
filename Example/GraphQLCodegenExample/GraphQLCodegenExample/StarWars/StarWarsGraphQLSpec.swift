@@ -10,7 +10,7 @@ enum StarWarsEnums {}
 
 extension StarWarsEnums {
   /// One of the films in the Star Wars Trilogy
-  enum Episode: RawRepresentable, CaseIterable, Codable {
+  enum Episode: RawRepresentable, Codable {
     typealias RawValue = String
 
     /// Released in 1977.
@@ -64,7 +64,7 @@ extension StarWarsEnums {
   }
 
   /// Language
-  enum Language: RawRepresentable, CaseIterable, Codable {
+  enum Language: RawRepresentable, Codable {
     typealias RawValue = String
 
     case en

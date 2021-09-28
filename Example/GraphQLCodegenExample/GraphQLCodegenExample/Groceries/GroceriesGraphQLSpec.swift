@@ -9,7 +9,7 @@ import Foundation
 enum GroceriesEnums {}
 
 extension GroceriesEnums {
-  enum CampaignSource: RawRepresentable, CaseIterable, Codable {
+  enum CampaignSource: RawRepresentable, Codable {
     typealias RawValue = String
 
     case djini
@@ -46,7 +46,7 @@ extension GroceriesEnums {
     }
   }
 
-  enum CampaignType: RawRepresentable, CaseIterable, Codable {
+  enum CampaignType: RawRepresentable, Codable {
     typealias RawValue = String
 
     case strikeThrough
@@ -101,7 +101,7 @@ extension GroceriesEnums {
     }
   }
 
-  enum DiscountType: RawRepresentable, CaseIterable, Codable {
+  enum DiscountType: RawRepresentable, Codable {
     typealias RawValue = String
 
     case free
