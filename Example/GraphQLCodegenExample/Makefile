@@ -24,7 +24,7 @@ codegen-groceries:
 	# Generate groceries GraphQL specification file from local schema
 	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLSpec.swift" --config-path $(GROCERIES_CONFIG)
 	# Generate groceries repository file from local schema
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "dh-repository" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLRepository.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "dh-repository" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLApiClient.swift" --config-path $(GROCERIES_CONFIG)
 
 codegen-starwars:
 	# For the purpose of this example, we will not need to fetch StarWars introspection from remote url
@@ -35,4 +35,4 @@ codegen-starwars:
 	# Generate groceries GraphQL specification file from local schema
 	dh-graphql-codegen-ios $(STARWARS_SCHEMA) --action "specification" --output "$(STARWARs_OUTPUT_PREFIX)GraphQLSpec.swift" --config-path $(STARWARS_CONFIG)
 	# Generate groceries repository file from local schema
-	dh-graphql-codegen-ios $(STARWARS_SCHEMA) --action "dh-repository" --output "$(STARWARs_OUTPUT_PREFIX)GraphQLRepository.swift" --config-path $(STARWARS_CONFIG)
+	dh-graphql-codegen-ios $(STARWARS_SCHEMA) --action "dh-repository" --output "$(STARWARs_OUTPUT_PREFIX)GraphQLApiClient.swift" --config-path $(STARWARS_CONFIG)
