@@ -14,7 +14,7 @@ import GraphQLCodegenEntitySwift
 import GraphQLCodegenSpecSwift
 import GraphQLDownloader
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(
 //  [
@@ -32,73 +32,48 @@ GraphQLCodegenCLI.main()
 //    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
 //  ]
 //)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Desktop/schema.json",
-//    "--action", "specification",
-//    "--output", "/Users/r.cheah/Desktop/GroceriesGraphQLSpec.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Desktop/schema.json",
-//    "--action", "dh-repository",
-//    "--output", "/Users/r.cheah/Desktop/GroceriesGraphQLRepository.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
 
-//GraphQLCodegenCLI.main(
-//  [
-//    "https://apollo-fullstack-tutorial.herokuapp.com/",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "https://buybutton.store/graphql",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Desktop/schema.json",
-//    "--action", "dh-repository",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLRepository.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Downloads/schema/schema.json",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Downloads/schema/schema-interface-obj-input.json",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Downloads/schema/bigcommerce-schema.json",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    "/Users/r.cheah/Downloads/schema/apollo-fullstack-tutorial-schema.json",
-//    "--output", "/Users/r.cheah/Desktop/GraphQLSpec.swift",
-//    "--config-path", "/Users/r.cheah/Downloads/schema/config.json"
-//  ]
-//)
+let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample"
+let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
+let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
+let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
+
+GraphQLCodegenCLI.main(
+  [
+    groceriesSchema,
+    "--action", "specification",
+    "--output", "\(examplePath)GraphQLSpec.swift",
+    "--config-path", groceriesConfig
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    groceriesSchema,
+    "--action", "dh-repository",
+    "--output", "\(examplePath)GraphQLRepository.swift",
+    "--config-path", groceriesConfig
+  ]
+)
+
+let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
+let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
+let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
+GraphQLCodegenCLI.main(
+  [
+    starwarsSchema,
+    "--action", "specification",
+    "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
+    "--config-path", starwarsConfig
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    starwarsSchema,
+    "--action", "dh-repository",
+    "--output", "\(starwarsOutputPath)GraphQLRepository.swift",
+    "--config-path", starwarsConfig
+  ]
+)
 
 enum SchemaSource: String, ExpressibleByArgument {
   case local
@@ -275,6 +250,8 @@ private extension GraphQLCodegenCLI {
     } catch {
       if verbose {
         print("[Warning] Discarding config, --config-path was given but serialization failed: \(error)")
+      } else {
+        print("[Warning] Discarding config, --config-path was given but serialization failed")
       }
     }
 
@@ -289,7 +266,6 @@ private extension GraphQLCodegenCLI {
 private extension GraphQLCodegenCLI {
   func specSwiftCode(schema: Schema, config: Config?) throws -> String {
     let generator = try GraphQLCodegenSpecSwift(
-      namespace: config?.namespace,
       scalarMap: config?.scalarMap,
       selectionMap: config?.selectionMap,
       entityNameMap: config?.entityNameMap
@@ -301,8 +277,8 @@ private extension GraphQLCodegenCLI {
 
   func repositorySwiftCode(schema: Schema, config: Config?) throws -> String {
     let generator = try GraphQLCodegenDHRepositorySwift(
-      namespace: config?.namespace,
-      entityNameMap: config?.entityNameMap
+      entityNameMap: config?.entityNameMap,
+      scalarMap: config?.scalarMap
     )
     let generatedCode = try generator.code(schema: schema)
 

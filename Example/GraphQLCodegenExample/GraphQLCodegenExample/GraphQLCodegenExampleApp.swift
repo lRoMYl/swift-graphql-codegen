@@ -41,7 +41,7 @@ extension GraphQLCodegenExampleApp {
   }
 
   func testGroceriesGraphQL() throws {
-    let parameters = QueryRequestParameter.Campaigns(
+    let parameters = GraphQLQueries.CampaignsRequestParameter(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
       locale: "en_SG",
