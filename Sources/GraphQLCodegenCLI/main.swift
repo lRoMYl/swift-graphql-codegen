@@ -42,7 +42,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "specification",
-    "--output", "\(examplePath)GraphQLSpec.swift",
+    "--output", "\(groceriesOutputPath)GraphQLSpec.swift",
     "--config-path", groceriesConfig
   ]
 )
@@ -50,7 +50,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "dh-repository",
-    "--output", "\(examplePath)GraphQLRepository.swift",
+    "--output", "\(groceriesOutputPath)GraphQLRepository.swift",
     "--config-path", groceriesConfig
   ]
 )

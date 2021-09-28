@@ -4,11 +4,11 @@
 
 import Foundation
 
-// MARK: - StarWarsGraphQLEnums
+// MARK: - StarWarsEnums
 
-enum StarWarsGraphQLEnums {}
+enum StarWarsEnums {}
 
-extension StarWarsGraphQLEnums {
+extension StarWarsEnums {
   /// One of the films in the Star Wars Trilogy
   enum Episode: RawRepresentable, CaseIterable, Codable {
     typealias RawValue = String
@@ -108,11 +108,11 @@ extension StarWarsGraphQLEnums {
   }
 }
 
-// MARK: - StarWarsGraphQLObjects
+// MARK: - StarWarsObjects
 
-enum StarWarsGraphQLObjects {}
+enum StarWarsObjects {}
 
-extension StarWarsGraphQLObjects {
+extension StarWarsObjects {
   struct Mutation: Codable {
     let mutate: Bool
 
@@ -124,7 +124,7 @@ extension StarWarsGraphQLObjects {
   }
 
   struct Droid: Codable {
-    let appearsIn: [StarWarsGraphQLEnums.Episode]
+    let appearsIn: [StarWarsEnums.Episode]
 
     let id: String
 
@@ -143,7 +143,7 @@ extension StarWarsGraphQLObjects {
   }
 
   struct Human: Codable {
-    let appearsIn: [StarWarsGraphQLEnums.Episode]
+    let appearsIn: [StarWarsEnums.Episode]
     /// The home planet of the human, or null if unknown.
 
     let homePlanet: String?
@@ -166,21 +166,21 @@ extension StarWarsGraphQLObjects {
   }
 
   struct Query: Codable {
-    let character: StarWarsGraphQLUnions.CharacterUnion?
+    let character: StarWarsUnions.CharacterUnion?
 
-    let characters: [StarWarsGraphQLInterfaces.Character]
+    let characters: [StarWarsInterfaces.Character]
 
-    let droid: StarWarsGraphQLObjects.Droid?
+    let droid: StarWarsObjects.Droid?
 
-    let droids: [StarWarsGraphQLObjects.Droid]
+    let droids: [StarWarsObjects.Droid]
 
     let greeting: String
 
-    let human: StarWarsGraphQLObjects.Human?
+    let human: StarWarsObjects.Human?
 
-    let humans: [StarWarsGraphQLObjects.Human]
+    let humans: [StarWarsObjects.Human]
 
-    let luke: StarWarsGraphQLObjects.Human?
+    let luke: StarWarsObjects.Human?
 
     let time: String
 
@@ -217,11 +217,11 @@ extension StarWarsGraphQLObjects {
 
 // MARK: - Input Objects
 
-enum StarWarsGraphQLInputObjects {}
+enum StarWarsInputObjects {}
 
-extension StarWarsGraphQLInputObjects {
+extension StarWarsInputObjects {
   struct Greeting: Codable {
-    let language: StarWarsGraphQLEnums.Language?
+    let language: StarWarsEnums.Language?
 
     let name: String
 
@@ -244,29 +244,29 @@ extension StarWarsGraphQLInputObjects {
   }
 }
 
-// MARK: - StarWarsGraphQLInterfaces
+// MARK: - StarWarsInterfaces
 
-enum StarWarsGraphQLInterfaces {}
+enum StarWarsInterfaces {}
 
-extension StarWarsGraphQLInterfaces {
+extension StarWarsInterfaces {
   struct Character: Codable {}
 }
 
-// MARK: - StarWarsGraphQLUnions
+// MARK: - StarWarsUnions
 
-enum StarWarsGraphQLUnions {}
+enum StarWarsUnions {}
 
-extension StarWarsGraphQLUnions {
+extension StarWarsUnions {
   struct CharacterUnion: Codable {}
 }
 
 // MARK: - GraphQLRequestParameter
 
-// MARK: - StarWarsGraphQLQueries
+// MARK: - StarWarsQueries
 
-enum StarWarsGraphQLQueries {}
+enum StarWarsQueries {}
 
-extension StarWarsGraphQLQueries {
+extension StarWarsQueries {
   // MARK: - HumanRequestParameter
 
   struct HumanRequestParameter: GraphQLRequestParameter {
@@ -805,7 +805,7 @@ extension StarWarsGraphQLQueries {
 
     // MARK: - Arguments
 
-    let input: StarWarsGraphQLInputObjects.Greeting?
+    let input: StarWarsInputObjects.Greeting?
 
     // MARK: - Selections
 
@@ -822,7 +822,7 @@ extension StarWarsGraphQLQueries {
     }
 
     init(
-      input: StarWarsGraphQLInputObjects.Greeting?,
+      input: StarWarsInputObjects.Greeting?,
       selections: Selections = .init()
     ) {
       self.input = input
@@ -921,11 +921,11 @@ extension StarWarsGraphQLQueries {
   }
 }
 
-// MARK: - StarWarsGraphQLMutations
+// MARK: - StarWarsMutations
 
-enum StarWarsGraphQLMutations {}
+enum StarWarsMutations {}
 
-extension StarWarsGraphQLMutations {
+extension StarWarsMutations {
   // MARK: - MutateRequestParameter
 
   struct MutateRequestParameter: GraphQLRequestParameter {
@@ -972,11 +972,11 @@ extension StarWarsGraphQLMutations {
   }
 }
 
-// MARK: - StarWarsGraphQLSubscriptions
+// MARK: - StarWarsSubscriptions
 
-enum StarWarsGraphQLSubscriptions {}
+enum StarWarsSubscriptions {}
 
-extension StarWarsGraphQLSubscriptions {
+extension StarWarsSubscriptions {
   // MARK: - NumberRequestParameter
 
   struct NumberRequestParameter: GraphQLRequestParameter {

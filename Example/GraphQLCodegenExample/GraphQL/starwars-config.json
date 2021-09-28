@@ -8,14 +8,14 @@
         "Date": "String"
     },
     "entityNameMap": {
-        "queries":          "StarWarsGraphQLQueries",
-        "mutations":        "StarWarsGraphQLMutations",
-        "subscriptions":    "StarWarsGraphQLSubscriptions",
-        "objects":          "StarWarsGraphQLObjects",
-        "inputObjects":     "StarWarsGraphQLInputObjects",
-        "interfaces":       "StarWarsGraphQLInterfaces",
-        "unions":           "StarWarsGraphQLUnions",
-        "enums":            "StarWarsGraphQLEnums",
-        "repositoryPrefix": "StarWarsGraphQL"
+        "queries":          "StarWarsQueries",
+        "mutations":        "StarWarsMutations",
+        "subscriptions":    "StarWarsSubscriptions",
+        "objects":          "StarWarsObjects",
+        "inputObjects":     "StarWarsInputObjects",
+        "interfaces":       "StarWarsInterfaces",
+        "unions":           "StarWarsUnions",
+        "enums":            "StarWarsEnums",
+        "repositoryPrefix": "StarWars"
     }
 }

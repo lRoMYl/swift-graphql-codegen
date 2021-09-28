@@ -7,24 +7,24 @@
 
 import Foundation
 
-class GraphQLResourceParametersImplementation: GraphQLResourceParametersImplementing {
-  func servicePath(with resourceParameter: GraphQLResourceParameters) -> String {
+class GraphQLResourceParametersImplementation: GroceriesResourceParametersImplementing {
+  func servicePath(with resourceParameter: GroceriesResourceParameters) -> String {
     "query"
   }
 
-  func headers(with resourceParameter: GraphQLResourceParameters) -> [String: String]? {
+  func headers(with resourceParameter: GroceriesResourceParameters) -> [String: String]? {
     nil
   }
 
-  func timeoutInterval(with resourceParameter: GraphQLResourceParameters) -> TimeInterval? {
+  func timeoutInterval(with resourceParameter: GroceriesResourceParameters) -> TimeInterval? {
     nil
   }
 
-  func preventRetry(with resourceParameter: GraphQLResourceParameters) -> Bool {
+  func preventRetry(with resourceParameter: GroceriesResourceParameters) -> Bool {
     true
   }
 
-  func preventAddingLanguageParameters(with resourceParameter: GraphQLResourceParameters) -> Bool {
+  func preventAddingLanguageParameters(with resourceParameter: GroceriesResourceParameters) -> Bool {
     false
   }
 }

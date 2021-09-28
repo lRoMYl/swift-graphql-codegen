@@ -1,3 +1,14 @@
 {
-  "namespace": ""
+  "namespace": "",
+  "entityNameMap": {
+    "queries":          "GroceriesQueries",
+    "mutations":        "GroceriesMutations",
+    "subscriptions":    "GroceriesSubscriptions",
+    "objects":          "GroceriesObjects",
+    "inputObjects":     "GroceriesInputObjects",
+    "interfaces":       "GroceriesInterfaces",
+    "unions":           "GroceriesUnions",
+    "enums":            "GroceriesEnums",
+    "repositoryPrefix": "Groceries"
+  }
 }
