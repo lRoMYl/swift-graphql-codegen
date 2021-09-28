@@ -7,7 +7,7 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
-@testable import GraphQLSwiftCodegen
+@testable import GraphQLCodegenSpecSwift
 @testable import GraphQLDownloader
 import XCTest
 
@@ -101,6 +101,20 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
         case productID
       }
 
+      init(
+        campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
+        campaignsSelections: Set<CampaignsSelection> = [],
+        dealSelections: Set<DealSelection> = [],
+        discountSelections: Set<DiscountSelection> = [],
+        productDealSelections: Set<ProductDealSelection> = []
+      ) {
+        self.campaignAttributeSelections = campaignAttributeSelections
+        self.campaignsSelections = campaignsSelections
+        self.dealSelections = dealSelections
+        self.discountSelections = discountSelections
+        self.productDealSelections = productDealSelections
+      }
+
       func declaration() -> String {
         let campaignAttributeSelectionsDeclaration = """
         fragment CampaignAttributeFragment on CampaignAttribute {\(campaignAttributeSelections.declaration)
@@ -178,6 +192,12 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       enum DiscountSelection: String, GraphQLSelection {
         case type
         case value
+      }
+
+      init(
+        discountSelections: Set<DiscountSelection> = []
+      ) {
+        self.discountSelections = discountSelections
       }
 
       func declaration() -> String {

@@ -8,28 +8,14 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct NamespaceHeaderCodeGenerator: GraphQLCodeGenerating {
-  private let namespace: String
+struct HeaderCodeGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
 
-  init(namespace: String, entityNameMap: EntityNameMap) {
-    self.namespace = namespace
+  init(entityNameMap: EntityNameMap) {
     self.entityNameMap = entityNameMap
   }
 
   func code(schema: Schema) throws -> String {
-    let namespaceCode: String
-
-    if namespace.isEmpty {
-      namespaceCode = ""
-    } else {
-      namespaceCode = """
-      enum \(namespace) {}
-
-      extension \(namespace) {
-      """
-    }
-
     return """
     // @generated
     // Do not edit this generated file
@@ -37,7 +23,6 @@ struct NamespaceHeaderCodeGenerator: GraphQLCodeGenerating {
 
     import Foundation
 
-    \(namespaceCode)
     """
   }
 }

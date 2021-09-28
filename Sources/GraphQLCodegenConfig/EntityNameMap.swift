@@ -35,6 +35,12 @@ public struct EntityNameMap: Decodable {
   public let mutations: String
   public let subscriptions: String
 
+  public let objects: String
+  public let inputObjects: String
+  public let interfaces: String
+  public let unions: String
+  public let enums: String
+
   public let repositoryPrefix: String
 
   enum CodingKeys: String, CodingKey {
@@ -47,6 +53,11 @@ public struct EntityNameMap: Decodable {
     case queries
     case mutations
     case subscriptions
+    case objects
+    case inputObjects
+    case interfaces
+    case unions
+    case enums
     case repositoryPrefix
   }
 
@@ -60,6 +71,11 @@ public struct EntityNameMap: Decodable {
     queries: String,
     mutations: String,
     subscriptions: String,
+    objects: String,
+    inputObjects: String,
+    interfaces: String,
+    unions: String,
+    enums: String,
     repositoryPrefix: String
   ) {
     self.request = request
@@ -71,6 +87,11 @@ public struct EntityNameMap: Decodable {
     self.queries = queries
     self.mutations = mutations
     self.subscriptions = subscriptions
+    self.objects = objects
+    self.inputObjects = inputObjects
+    self.interfaces = interfaces
+    self.unions = unions
+    self.enums = enums
     self.repositoryPrefix = repositoryPrefix
   }
 
@@ -91,6 +112,12 @@ public struct EntityNameMap: Decodable {
     mutations = try container.decodeIfPresent(String.self, forKey: .mutations) ?? defaultValue.mutations
     subscriptions = try container.decodeIfPresent(String.self, forKey: .subscriptions) ?? defaultValue.subscriptions
 
+    objects = try container.decodeIfPresent(String.self, forKey: .objects) ?? defaultValue.objects
+    inputObjects = try container.decodeIfPresent(String.self, forKey: .inputObjects) ?? defaultValue.inputObjects
+    interfaces = try container.decodeIfPresent(String.self, forKey: .interfaces) ?? defaultValue.interfaces
+    unions = try container.decodeIfPresent(String.self, forKey: .unions) ?? defaultValue.unions
+    enums = try container.decodeIfPresent(String.self, forKey: .enums) ?? defaultValue.enums
+
     repositoryPrefix = try container.decodeIfPresent(String.self, forKey: .repositoryPrefix) ?? defaultValue.repositoryPrefix
   }
 }
@@ -107,6 +134,11 @@ public extension EntityNameMap {
       queries: "GraphQLQueries",
       mutations: "GraphQLMutations",
       subscriptions: "GraphQLSubscriptions",
+      objects: "GraphQLObjects",
+      inputObjects: "GraphQLInputObjects",
+      interfaces: "GraphQLInterfaces",
+      unions: "GraphQLUnions",
+      enums: "GraphQLEnums",
       repositoryPrefix: "GraphQL"
     )
   }()

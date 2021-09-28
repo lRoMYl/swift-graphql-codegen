@@ -8,7 +8,6 @@
 import Foundation
 
 public struct Config: Decodable {
-  public let namespace: String?
   public let apiHeaders: [String: String]?
   public let scalarMap: ScalarMap?
   public let selectionMap: SelectionMap?

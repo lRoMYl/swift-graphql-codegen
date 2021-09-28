@@ -7,16 +7,19 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 
 struct InputObjectFieldCodeGenerator {
   private let scalarMap: ScalarMap
+  private let entityNameMap: EntityNameMap
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
+    self.entityNameMap = entityNameMap
   }
 
   func variableDeclaration(input: InputValue) throws -> String {
-    let type = try input.type.scalarType(scalarMap: scalarMap)
+    let type = try input.type.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     return """
     \(input.docs)

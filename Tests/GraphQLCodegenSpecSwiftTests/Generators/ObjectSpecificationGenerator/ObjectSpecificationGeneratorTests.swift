@@ -7,7 +7,7 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
-@testable import GraphQLSwiftCodegen
+@testable import GraphQLCodegenSpecSwift
 import XCTest
 
 final class ObjectSpecificationGeneratorTests: XCTestCase {
@@ -43,22 +43,27 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let generator = ObjectCodeGenerator(scalarMap: ScalarMap.default, selectionMap: nil)
+    let generator = ObjectCodeGenerator(scalarMap: ScalarMap.default, selectionMap: nil, entityNameMap: .default)
     let declaration = try generator.code(schema: schema).format()
 
     let expected = try """
-    // MARK: - Objects
+    // MARK: - GraphQLObjects
 
-    struct Discount: Codable {
-      let type: DiscountType
+    enum GraphQLObjects {}
 
-      let value: Double
+    extension GraphQLObjects {
 
-      // MARK: - CodingKeys
+      struct Discount: Codable {
+        let type: GraphQLObjects.DiscountType
 
-      private enum CodingKeys: String, CodingKey {
-        case type
-        case value
+        let value: Double
+
+        // MARK: - CodingKeys
+
+        private enum CodingKeys: String, CodingKey {
+          case type
+          case value
+        }
       }
     }
     """.format()

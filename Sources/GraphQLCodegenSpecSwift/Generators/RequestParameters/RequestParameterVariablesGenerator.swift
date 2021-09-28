@@ -11,9 +11,11 @@ import GraphQLCodegenConfig
 
 struct RequestParameterVariablesGenerator {
   private let scalarMap: ScalarMap
+  private let entityNameMap: EntityNameMap
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
+    self.entityNameMap = entityNameMap
   }
 
   /**
@@ -73,19 +75,13 @@ struct RequestParameterVariablesGenerator {
   /**
    - Swift argument variables
    */
-  func argumentVariablesDeclaration(namespace: String, field: Field) throws -> String {
-    let namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
-
-
+  func argumentVariablesDeclaration(field: Field) throws -> String {
     let argumentVariables = try field.args.compactMap {
-      let typeName = try $0.type.scalarType(scalarMap: scalarMap)
-      let prefix = ScalarMap.swiftReservedScalarType.contains(typeName)
-        ? ""
-        : namespaceExtension
+      let typeName = try $0.type.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
       return """
       \($0.docs)
-      let \($0.name.camelCase): \(prefix + typeName)
+      let \($0.name.camelCase): \(typeName)
       """
     }.lines
 

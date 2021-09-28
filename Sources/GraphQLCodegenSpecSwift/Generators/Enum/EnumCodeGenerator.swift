@@ -10,16 +10,22 @@ import GraphQLCodegenConfig
 
 struct EnumCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
+  private let entityNameMap: EntityNameMap
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
+    self.entityNameMap = entityNameMap
   }
 
   func code(schema: Schema) throws -> String {
     """
-    // MARK: - Enums
+    // MARK: - \(entityNameMap.enums)
 
-    \(schema.enums.map { $0.declaration }.lines)
+    enum \(entityNameMap.enums) {}
+
+    extension \(entityNameMap.enums) {
+      \(schema.enums.map { $0.declaration }.lines)
+    }
     """
   }
 }

@@ -38,7 +38,7 @@ extension Structure {
     return selectionItemMap.selectable.contains(field.name)
   }
 
-  func selectableFields(objects: [ObjectType], selectionMap: SelectionMap?) -> [Field] {
+  func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
       let isRequired = self.isRequired(field: field, selectionMap: selectionMap)
       let isSelectable = self.isSelectable(field: field, selectionMap: selectionMap)

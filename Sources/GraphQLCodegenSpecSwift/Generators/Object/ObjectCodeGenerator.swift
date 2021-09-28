@@ -11,50 +11,38 @@ import GraphQLCodegenConfig
 struct ObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
+  private let entityNameMap: EntityNameMap
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap
     self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      entityNameMap: entityNameMap
     )
   }
 
   func code(schema: Schema) throws -> String {
-    """
-    // MARK: - Objects
+    return """
+    // MARK: - \(entityNameMap.objects)
 
-    \(
-      try schema.objects.compactMap {
-        try $0.declaration(
-          objects: schema.objects,
-          scalarMap: scalarMap,
-          fieldSpecificationGenerator: fieldSpecificationGenerator
-        )
-      }.lines
-    )
+    enum \(entityNameMap.objects) {}
 
-    \(
-      try schema.interfaces.compactMap {
-        try $0.declaration(
-          objects: schema.objects,
-          scalarMap: scalarMap,
-          fieldSpecificationGenerator: fieldSpecificationGenerator
-        )
-      }.lines
-    )
+    extension \(entityNameMap.objects) {
+      \(
+        try schema.objects.compactMap {
+          try $0.declaration(
+            objects: schema.objects,
+            scalarMap: scalarMap,
+            fieldSpecificationGenerator: fieldSpecificationGenerator
+          )
+        }.lines
+      )
+    }
 
-    \(
-      // TODO
-      schema.unions.compactMap {
-        """
-        struct \($0.name): Codable {
-        }
-        """
-      }.lines
-    )
     """
   }
 }

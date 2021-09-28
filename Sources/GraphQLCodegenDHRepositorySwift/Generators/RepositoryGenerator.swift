@@ -19,16 +19,12 @@ enum RepositoryGeneratorError: Error, LocalizedError {
 }
 
 struct RepositoryGenerator: Generating {
-  private let namespace: String
-  private let namespaceExtension: String
   private let repositoryPrefix: String
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
 
-  init(namespace: String, entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
-    self.namespace = namespace
-    self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
     self.repositoryPrefix = entityNameMap.repositoryPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
@@ -64,7 +60,7 @@ struct RepositoryGenerator: Generating {
 extension RepositoryGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
     let funcDeclarations: [String] = try operation.type.fields.map {
-      try funcSignatureCode(field: $0, operation: operation, scalarMap: scalarMap)
+      try funcSignatureCode(field: $0, operation: operation)
     }
 
     return funcDeclarations.lines
@@ -87,7 +83,7 @@ extension RepositoryGenerator {
 
     let codes = try operation.type.fields.map {
       """
-      \(try funcSignatureCode(field: $0, operation: operation, scalarMap: scalarMap)) {
+      \(try funcSignatureCode(field: $0, operation: operation)) {
         let resource = \(entityNameMap.resourceParametersName(repositoryPrefix: repositoryPrefix))
           .\($0.enumName(with: operation))(parameters: parameters)
 
@@ -99,11 +95,13 @@ extension RepositoryGenerator {
     return codes
   }
 
-  func funcSignatureCode(field: Field, operation: GraphQLAST.Operation, scalarMap: ScalarMap) throws -> String {
-    let responseDataText = try field.scalarName(namespace: namespace, scalarMap: scalarMap)
+  func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
+    let responseDataText = try field.scalarName(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
-    let parametersName = namespaceExtension
-      + field.requestEntityObjectParameterName(operation: operation, entityNameMap: entityNameMap)
+    let parametersName = field.requestEntityObjectParameterName(
+      operation: operation,
+      entityNameMap: entityNameMap
+    )
 
     return """
     func \(field.funcName(with: operation))(
@@ -116,7 +114,8 @@ extension RepositoryGenerator {
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName = operation.type.name.pascalCase
-    let responseDataText = "\(entityNameMap.response)<\(namespaceExtension)\(operationName), T>"
+    let responseType = entityNameMap.objects + "." + operation.type.name.pascalCase
+    let responseDataText = "\(entityNameMap.response)<\(responseType), T>"
 
     return """
     func executeGraphQL\(operationName)<T>(

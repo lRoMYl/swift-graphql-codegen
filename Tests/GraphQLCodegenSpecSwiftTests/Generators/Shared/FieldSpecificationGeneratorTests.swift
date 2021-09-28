@@ -7,13 +7,14 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
-@testable import GraphQLSwiftCodegen
+@testable import GraphQLCodegenSpecSwift
 import XCTest
 
 final class FieldSpecificationGeneratorTests: XCTestCase {
   private let defaultGenerator = FieldCodeGenerator(
     scalarMap: ScalarMap.default,
-    selectionMap: nil
+    selectionMap: nil,
+    entityNameMap: .default
   )
 
   func testScalar() throws {
@@ -64,7 +65,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let discount: Discount
+    let discount: GraphQLObjects.Discount
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -82,7 +83,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let discount: Discount?
+    let discount: GraphQLObjects.Discount?
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -100,7 +101,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let campaignSource: CampaignSource
+    let campaignSource: GraphQLEnums.CampaignSource
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -118,7 +119,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let campaignSource: CampaignSource?
+    let campaignSource: GraphQLEnums.CampaignSource?
     """.format()
 
     XCTAssertEqual(declaration, expecation)

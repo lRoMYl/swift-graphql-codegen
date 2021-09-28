@@ -9,21 +9,17 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 struct RequestParameterInitializerGenerator {
-  private let namespace: String
-  private let namespaceExtension: String
-
   private let scalarMap: ScalarMap
+  private let entityNameMap: EntityNameMap
 
-  init(namespace: String, scalarMap: ScalarMap) {
-    self.namespace = namespace
-    self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
-
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
+    self.entityNameMap = entityNameMap
   }
 
   func declaration(field: Field) throws -> String {
     var arguments = try field.args.map {
-      try "\($0.name.camelCase): \(namespaceExtension + $0.type.scalarType(scalarMap: scalarMap))"
+      try "\($0.name.camelCase): \($0.type.type(scalarMap: scalarMap, entityNameMap: entityNameMap))"
     }
     .joined(separator: ",\n")
 

@@ -21,14 +21,12 @@ enum GraphQLCodegenSpecSwiftError: Error, LocalizedError {
 }
 
 public struct GraphQLCodegenSpecSwift {
-  private let namespace: String
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let generators: [GraphQLCodeGenerating]
 
   public init(
-    namespace: String?,
     scalarMap: ScalarMap?,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap?
@@ -36,7 +34,6 @@ public struct GraphQLCodegenSpecSwift {
     try selectionMap?.validate()
     try entityNameMap?.validate()
 
-    self.namespace = namespace ?? ""
     self.scalarMap = ScalarMap.default.merging(
       scalarMap ?? [:],
       uniquingKeysWith: { (_, new) in new }
@@ -45,14 +42,25 @@ public struct GraphQLCodegenSpecSwift {
     self.entityNameMap = entityNameMap ?? EntityNameMap.default
 
     self.generators = [
-      NamespaceHeaderCodeGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
-      EnumCodeGenerator(scalarMap: self.scalarMap),
-      ObjectCodeGenerator(scalarMap: self.scalarMap, selectionMap: self.selectionMap),
-      InputObjectCodeGenerator(scalarMap: self.scalarMap),
-      NamespaceFooterCodeGenerator(namespace: self.namespace),
-      // Codes that need to be generated out of the namespace code
+      HeaderCodeGenerator(entityNameMap: self.entityNameMap),
+      EnumCodeGenerator(scalarMap: self.scalarMap, entityNameMap: self.entityNameMap),
+      ObjectCodeGenerator(
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap,
+        entityNameMap: self.entityNameMap
+      ),
+      InputObjectCodeGenerator(scalarMap: self.scalarMap, entityNameMap: self.entityNameMap),
+      InterfaceCodeGenerator(
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap,
+        entityNameMap: self.entityNameMap
+      ),
+      UnionCodeGenerator(
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap,
+        entityNameMap: self.entityNameMap
+      ),
       RequestParameterGenerator(
-        namespace: self.namespace,
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap

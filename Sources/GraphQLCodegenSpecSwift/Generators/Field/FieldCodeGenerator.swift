@@ -7,14 +7,17 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 
 struct FieldCodeGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
+  private let entityNameMap: EntityNameMap
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap
   }
 
   func variableDeclaration(object: Structure, field: Field) throws -> String {
@@ -22,18 +25,23 @@ struct FieldCodeGenerator {
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
     if isRequired || isSelectable {
-      let type: String
-      if isRequired {
-        let scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
-        type = field.type.type(for: scalarType)
-      } else {
-        var scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
-        if !scalarType.contains("?") {
-          scalarType.append("?")
-        }
+      var type: String = try field.type.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
+//      var type: String = try field.type.namedType.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
-        type = scalarType
+      if isSelectable && !type.contains("?") {
+        type.append("?")
       }
+//      if isRequired {
+//        let scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+//        type = field.type.type(for: scalarType)
+//      } else {
+//        var scalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+//        if !scalarType.contains("?") {
+//          scalarType.append("?")
+//        }
+//
+//        type = scalarType
+//      }
 
       return """
       \(field.docs)

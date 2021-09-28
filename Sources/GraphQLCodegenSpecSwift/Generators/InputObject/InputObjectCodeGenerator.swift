@@ -11,25 +11,34 @@ import GraphQLCodegenConfig
 
 struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
+  private let entityNameMap: EntityNameMap
   private let objectFieldCodeGenerator: InputObjectFieldCodeGenerator
 
-  init(scalarMap: ScalarMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
-    self.objectFieldCodeGenerator = InputObjectFieldCodeGenerator(scalarMap: scalarMap)
+    self.entityNameMap = entityNameMap
+    self.objectFieldCodeGenerator = InputObjectFieldCodeGenerator(
+      scalarMap: scalarMap,
+      entityNameMap: entityNameMap
+    )
   }
 
   func code(schema: Schema) throws -> String {
     """
     // MARK: - Input Objects
 
-    \(
-      try schema.inputObjects.compactMap {
-        try $0.declaration(
-          scalarMap: scalarMap,
-          objectFieldSpecificationGenerator: objectFieldCodeGenerator
-        )
-      }.lines
-    )
+    enum \(entityNameMap.inputObjects) {}
+
+    extension \(entityNameMap.inputObjects) {
+      \(
+        try schema.inputObjects.compactMap {
+          try $0.declaration(
+            scalarMap: scalarMap,
+            objectFieldSpecificationGenerator: objectFieldCodeGenerator
+          )
+        }.lines
+      )
+    }
     """
   }
 }

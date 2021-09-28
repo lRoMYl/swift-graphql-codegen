@@ -7,6 +7,7 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 
 extension Field {
   func enumName(with operation: GraphQLAST.Operation) -> String {
@@ -20,21 +21,19 @@ extension Field {
   }
 
   /// Includes Operation.requestEntityObjectName extension in the name
-  func requestEntityObjectParameterName(operation: GraphQLAST.Operation, entityNameMap: EntityNameMap) -> String {
+  func requestEntityObjectParameterName(
+    operation: GraphQLAST.Operation,
+    entityNameMap: EntityNameMap
+  ) -> String {
     let prefix = operation.requestEntityObjectName(entityNameMap: entityNameMap)
     let typeName = name.pascalCase
 
     return prefix + "." + typeName + "RequestParameter"
   }
 
-  func scalarName(namespace: String, scalarMap: ScalarMap) throws -> String {
-    let scalarName = try type.namedType.scalarType(scalarMap: scalarMap)
-    let namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+  func scalarName(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
+    let scalarName = try type.namedType.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
-    guard !ScalarMap.swiftReservedScalarType.contains(scalarName) else {
-      return scalarName
-    }
-
-    return "\(namespaceExtension)\(scalarName)"
+    return "\(scalarName)"
   }
 }

@@ -22,15 +22,13 @@ enum GraphQLCodegenDHRepositorySwiftError: Error, LocalizedError {
 }
 
 public struct GraphQLCodegenDHRepositorySwift {
-  private let namespace: String
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
 
   /// Generators
   private let generators: [Generating]
 
-  public init(namespace: String?, entityNameMap: EntityNameMap?, scalarMap: ScalarMap?) throws {
-    self.namespace = namespace ?? ""
+  public init(entityNameMap: EntityNameMap?, scalarMap: ScalarMap?) throws {
     self.entityNameMap = entityNameMap ?? .default
     self.scalarMap = ScalarMap.default.merging(
       scalarMap ?? [:],
@@ -40,13 +38,11 @@ public struct GraphQLCodegenDHRepositorySwift {
     self.generators = [
       HeaderGenerator(),
       RepositoryGenerator(
-        namespace: self.namespace,
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap
       ),
-      ResourceParametersGenerator(namespace: self.namespace, entityNameMap: self.entityNameMap),
+      ResourceParametersGenerator(entityNameMap: self.entityNameMap, scalarMap: self.scalarMap),
       GraphQLResponseWrappedValueGenerator(
-        namespace: self.namespace,
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap
       )

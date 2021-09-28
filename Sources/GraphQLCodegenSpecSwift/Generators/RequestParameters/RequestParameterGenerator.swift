@@ -20,8 +20,6 @@ enum RequestParameterError: Error, LocalizedError {
 
 struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityName: String
-  private let namespace: String
-  private let namespaceExtension: String
 
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
@@ -32,9 +30,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
   private let initializerGenerator: RequestParameterInitializerGenerator
 
-  init(namespace: String, scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
-    self.namespace = namespace
-    self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
@@ -44,14 +40,17 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       entityNameMap: entityNameMap
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
-    self.variablesGenerator = RequestParameterVariablesGenerator(scalarMap: scalarMap)
+    self.variablesGenerator = RequestParameterVariablesGenerator(
+      scalarMap: scalarMap,
+      entityNameMap: entityNameMap
+    )
     self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
       scalarMap: scalarMap,
       variablesGenerator: variablesGenerator
     )
     self.initializerGenerator = RequestParameterInitializerGenerator(
-      namespace: namespace,
-      scalarMap: scalarMap
+      scalarMap: scalarMap,
+      entityNameMap: entityNameMap
     )
 
     // Initialize entity name variable
@@ -63,9 +62,11 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       let requestEntityObjectName = $0.requestEntityObjectName(entityNameMap: entityNameMap)
 
       return """
-      \(namespaceCode(operation: $0))
       // MARK: - \(requestEntityObjectName)
-      extension \(namespaceExtension)\(requestEntityObjectName) {
+
+      enum \(requestEntityObjectName) {}
+
+      extension \(requestEntityObjectName) {
         \(try operation($0, objects: schema.objects, interfaces: schema.interfaces).lines)
       }
       """
@@ -82,18 +83,6 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 // MARK: - RequestParameterGenerator
 
 private extension RequestParameterGenerator {
-  func namespaceCode(operation: GraphQLAST.Operation) -> String {
-    let requestEntityObjectName = operation.requestEntityObjectName(entityNameMap: entityNameMap)
-    let header = namespace.isEmpty ? "" : "extension \(namespace) {"
-    let footer = namespace.isEmpty ? "" : "}"
-
-    return """
-    \(header)
-    enum \(requestEntityObjectName) {}
-    \(footer)
-    """
-  }
-
   func operation(
     _ operation: GraphQLAST.Operation,
     objects: [ObjectType],
@@ -132,7 +121,6 @@ private extension RequestParameterGenerator {
     )
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(
-      namespace: namespace,
       field: field
     )
 

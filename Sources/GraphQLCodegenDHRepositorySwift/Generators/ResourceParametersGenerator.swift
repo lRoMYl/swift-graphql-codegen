@@ -19,17 +19,15 @@ enum ResourceGeneratorError: Error, LocalizedError {
 }
 
 struct ResourceParametersGenerator: Generating {
-  private let namespace: String
-  private let namespaceExtension: String
   private let repositoryPrefix: String
 
   private let entityNameMap: EntityNameMap
+  private let scalarMap: ScalarMap
 
-  init(namespace: String = "", entityNameMap: EntityNameMap) {
-    self.namespace = namespace
-    self.namespaceExtension = namespace.isEmpty ? "" : "\(namespace)."
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
     self.repositoryPrefix = entityNameMap.repositoryPrefix
     self.entityNameMap = entityNameMap
+    self.scalarMap = scalarMap
   }
 
   /// TODO: Inject headers, timeoutInterval, preventRetry
@@ -114,8 +112,10 @@ extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
     let enumCases = operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
-      let requestParameterName = namespaceExtension +
-        field.requestEntityObjectParameterName(operation: operation, entityNameMap: entityNameMap)
+      let requestParameterName = field.requestEntityObjectParameterName(
+        operation: operation,
+        entityNameMap: entityNameMap
+      )
 
       return """
       case \(enumName)(parameters: \(requestParameterName))

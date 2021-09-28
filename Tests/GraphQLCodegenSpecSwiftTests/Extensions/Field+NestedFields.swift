@@ -7,7 +7,7 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
-@testable import GraphQLSwiftCodegen
+@testable import GraphQLCodegenSpecSwift
 import XCTest
 
 final class FieldNestedFieldsTests: XCTestCase {
