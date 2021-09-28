@@ -10,7 +10,7 @@ import GraphQLCodegenConfig
 
 extension Field {
   func requestParameterName(operation: GraphQLAST.Operation) -> String {
-    let typeName = name.pascalCase
+    let typeName = name.pascalCase + "RequestParameter"
 
     return typeName
   }

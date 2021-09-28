@@ -48,9 +48,8 @@ struct RequestParameterSelectionsGenerator {
     case .interface:
       return try interfaceDeclaration(field: field, objects: objects, interfaces: interfaces)
     case .union:
-      throw RequestParameterSelectionsError.notImplemented(
-        context: "\(namedType) for field \(field.name)"
-      )
+      // TODO
+      return emptyDeclaration(field: field)
     }
   }
 }
@@ -189,7 +188,7 @@ private extension Field {
       let returnType = try structure(objects: objects, interfaces: interfaces, scalarMap: scalarMap)
     else { return "" }
 
-    let fields = returnType.selectableFields(objects: objects, selectionMap: selectionMap)
+    let fields = returnType.selectableFields(selectionMap: selectionMap)
     let fieldsEnum = try fields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
@@ -229,7 +228,8 @@ private extension Field {
         \"\"\"
         """
       case .union:
-        throw RequestParameterSelectionsError.notImplemented(context: "Union is not implemented yet")
+        // TODO
+        return ""
       }
     }
   }

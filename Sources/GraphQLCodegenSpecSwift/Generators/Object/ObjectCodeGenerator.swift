@@ -45,6 +45,16 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
         )
       }.lines
     )
+
+    \(
+      // TODO
+      schema.unions.compactMap {
+        """
+        struct \($0.name): Codable {
+        }
+        """
+      }.lines
+    )
     """
   }
 }

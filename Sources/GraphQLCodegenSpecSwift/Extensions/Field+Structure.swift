@@ -44,7 +44,8 @@ extension Field {
     case .scalar, .enum:
       return nil
     case .union:
-      throw FieldStructureError.notImplemented(context: "Union is not implemented")
+      // TODO
+      return nil
     }
 
     return structure
