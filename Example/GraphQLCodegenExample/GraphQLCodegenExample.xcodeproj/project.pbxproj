@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */; };
+		F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */; };
 		F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */; };
 		F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235926FCAC9F00A594B2 /* ContentView.swift */; };
 		F8D3235C26FCACA000A594B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D3235B26FCACA000A594B2 /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultResourceParametersImplementation.swift; sourceTree = "<group>"; };
+		F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesRepository.swift; sourceTree = "<group>"; };
 		F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphQLCodegenExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCodegenExampleApp.swift; sourceTree = "<group>"; };
 		F8D3235926FCAC9F00A594B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 		F8D323AF2700326D00A594B2 /* Groceries */ = {
 			isa = PBXGroup;
 			children = (
+				F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */,
 				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
 				F8D323B52700333A00A594B2 /* GroceriesGraphQLApiClient.swift */,
 				F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */,
@@ -259,6 +262,7 @@
 				F8D323B62700333A00A594B2 /* GroceriesGraphQLApiClient.swift in Sources */,
 				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,
 				F8D323B4270032D600A594B2 /* GroceriesGraphQLSpec.swift in Sources */,
+				F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */,
 				F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */,
 				F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
