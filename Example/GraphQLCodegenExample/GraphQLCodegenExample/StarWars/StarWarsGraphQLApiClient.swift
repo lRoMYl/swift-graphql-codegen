@@ -6,7 +6,7 @@ import ApiClient
 import Foundation
 import RxSwift
 
-protocol StarWarsRepositoring {
+protocol StarWarsApiClientImplementing {
   func human(
     with parameters: StarWarsQueries.HumanRequestParameter
   ) -> Single<ApiResponse<StarWarsObjects.Human>>
@@ -45,9 +45,9 @@ protocol StarWarsRepositoring {
   ) -> Single<ApiResponse<Int>>
 }
 
-// MARK: - StarWarsRepositoring
+// MARK: - StarWarsApiClientImplementing
 
-final class StarWarsRepository: StarWarsRepositoring {
+final class StarWarsApiClient: StarWarsApiClientImplementing {
   private let restClient: RestClient
   private let scheduler: SchedulerType
 
@@ -165,7 +165,7 @@ final class StarWarsRepository: StarWarsRepositoring {
   }
 }
 
-private extension StarWarsRepository {
+private extension StarWarsApiClient {
   func executeGraphQLQuery<T>(
     resource: ResourceParameters
   ) -> Single<ApiResponse<T>> where T: Codable {

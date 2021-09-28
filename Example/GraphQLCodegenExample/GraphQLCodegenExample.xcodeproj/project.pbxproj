@@ -21,8 +21,8 @@
 		F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */; };
 		F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323A826FF9CA800A594B2 /* GraphQLEntity.swift */; };
 		F8D323B4270032D600A594B2 /* GroceriesGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */; };
-		F8D323B62700333A00A594B2 /* GroceriesGraphQLRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */; };
-		F8D323B927003DA200A594B2 /* StarWarsGraphQLRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B727003DA100A594B2 /* StarWarsGraphQLRepository.swift */; };
+		F8D323B62700333A00A594B2 /* GroceriesGraphQLApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B52700333A00A594B2 /* GroceriesGraphQLApiClient.swift */; };
+		F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */; };
 		F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,8 +56,8 @@
 		F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesWebService.swift; sourceTree = "<group>"; };
 		F8D323A826FF9CA800A594B2 /* GraphQLEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntity.swift; sourceTree = "<group>"; };
 		F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLSpec.swift; sourceTree = "<group>"; };
-		F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLRepository.swift; sourceTree = "<group>"; };
-		F8D323B727003DA100A594B2 /* StarWarsGraphQLRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLRepository.swift; sourceTree = "<group>"; };
+		F8D323B52700333A00A594B2 /* GroceriesGraphQLApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLApiClient.swift; sourceTree = "<group>"; };
+		F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLApiClient.swift; sourceTree = "<group>"; };
 		F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -129,7 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
-				F8D323B52700333A00A594B2 /* GroceriesGraphQLRepository.swift */,
+				F8D323B52700333A00A594B2 /* GroceriesGraphQLApiClient.swift */,
 				F8D323B2270032D600A594B2 /* GroceriesGraphQLSpec.swift */,
 				F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */,
 			);
@@ -139,7 +139,7 @@
 		F8D323B02700328000A594B2 /* StarWars */ = {
 			isa = PBXGroup;
 			children = (
-				F8D323B727003DA100A594B2 /* StarWarsGraphQLRepository.swift */,
+				F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */,
 				F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */,
 			);
 			path = StarWars;
@@ -256,11 +256,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8D323B62700333A00A594B2 /* GroceriesGraphQLRepository.swift in Sources */,
+				F8D323B62700333A00A594B2 /* GroceriesGraphQLApiClient.swift in Sources */,
 				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,
 				F8D323B4270032D600A594B2 /* GroceriesGraphQLSpec.swift in Sources */,
 				F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */,
-				F8D323B927003DA200A594B2 /* StarWarsGraphQLRepository.swift in Sources */,
+				F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
 				F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */,
 				F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */,

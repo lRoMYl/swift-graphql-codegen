@@ -41,7 +41,7 @@ public struct EntityNameMap: Decodable {
   public let unions: String
   public let enums: String
 
-  public let repositoryPrefix: String
+  public let apiClientPrefix: String
 
   enum CodingKeys: String, CodingKey {
     case request
@@ -58,7 +58,7 @@ public struct EntityNameMap: Decodable {
     case interfaces
     case unions
     case enums
-    case repositoryPrefix
+    case apiClientPrefix
   }
 
   public init(
@@ -76,7 +76,7 @@ public struct EntityNameMap: Decodable {
     interfaces: String,
     unions: String,
     enums: String,
-    repositoryPrefix: String
+    apiClientPrefix: String
   ) {
     self.request = request
     self.requestType = requestType
@@ -92,7 +92,7 @@ public struct EntityNameMap: Decodable {
     self.interfaces = interfaces
     self.unions = unions
     self.enums = enums
-    self.repositoryPrefix = repositoryPrefix
+    self.apiClientPrefix = apiClientPrefix
   }
 
   public init(from decoder: Decoder) throws {
@@ -118,7 +118,7 @@ public struct EntityNameMap: Decodable {
     unions = try container.decodeIfPresent(String.self, forKey: .unions) ?? defaultValue.unions
     enums = try container.decodeIfPresent(String.self, forKey: .enums) ?? defaultValue.enums
 
-    repositoryPrefix = try container.decodeIfPresent(String.self, forKey: .repositoryPrefix) ?? defaultValue.repositoryPrefix
+    apiClientPrefix = try container.decodeIfPresent(String.self, forKey: .apiClientPrefix) ?? defaultValue.apiClientPrefix
   }
 }
 
@@ -139,7 +139,7 @@ public extension EntityNameMap {
       interfaces: "GraphQLInterfaces",
       unions: "GraphQLUnions",
       enums: "GraphQLEnums",
-      repositoryPrefix: "GraphQL"
+      apiClientPrefix: "GraphQL"
     )
   }()
 }

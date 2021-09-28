@@ -6,15 +6,15 @@ import ApiClient
 import Foundation
 import RxSwift
 
-protocol GroceriesRepositoring {
+protocol GroceriesApiClientImplementing {
   func campaigns(
     with parameters: GroceriesQueries.CampaignsRequestParameter
   ) -> Single<ApiResponse<GroceriesObjects.Campaigns>>
 }
 
-// MARK: - GroceriesRepositoring
+// MARK: - GroceriesApiClientImplementing
 
-final class GroceriesRepository: GroceriesRepositoring {
+final class GroceriesApiClient: GroceriesApiClientImplementing {
   private let restClient: RestClient
   private let scheduler: SchedulerType
 
@@ -33,7 +33,7 @@ final class GroceriesRepository: GroceriesRepositoring {
   }
 }
 
-private extension GroceriesRepository {
+private extension GroceriesApiClient {
   func executeGraphQLQuery<T>(
     resource: ResourceParameters
   ) -> Single<ApiResponse<T>> where T: Codable {

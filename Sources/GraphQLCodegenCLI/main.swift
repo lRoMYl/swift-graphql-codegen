@@ -9,7 +9,7 @@ import ArgumentParser
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
-import GraphQLCodegenDHRepositorySwift
+import GraphQLCodegenDHApiClientSwift
 import GraphQLCodegenEntitySwift
 import GraphQLCodegenSpecSwift
 import GraphQLDownloader
@@ -50,7 +50,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "dh-repository",
-    "--output", "\(groceriesOutputPath)GraphQLRepository.swift",
+    "--output", "\(groceriesOutputPath)GraphQLApiClient.swift",
     "--config-path", groceriesConfig
   ]
 )
@@ -70,7 +70,7 @@ GraphQLCodegenCLI.main(
   [
     starwarsSchema,
     "--action", "dh-repository",
-    "--output", "\(starwarsOutputPath)GraphQLRepository.swift",
+    "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
     "--config-path", starwarsConfig
   ]
 )
@@ -276,7 +276,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func repositorySwiftCode(schema: Schema, config: Config?) throws -> String {
-    let generator = try GraphQLCodegenDHRepositorySwift(
+    let generator = try GraphQLCodegenDHApiClientSwift(
       entityNameMap: config?.entityNameMap,
       scalarMap: config?.scalarMap
     )

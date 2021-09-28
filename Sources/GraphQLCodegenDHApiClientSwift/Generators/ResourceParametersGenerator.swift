@@ -19,22 +19,22 @@ enum ResourceGeneratorError: Error, LocalizedError {
 }
 
 struct ResourceParametersGenerator: Generating {
-  private let repositoryPrefix: String
+  private let apiClientPrefix: String
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
 
   init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
-    self.repositoryPrefix = entityNameMap.repositoryPrefix
+    self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
   }
 
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
-    let diContainerName = entityNameMap.resourceParametersDIContainer(repositoryPrefix: repositoryPrefix)
-    let resourceParametersName = entityNameMap.resourceParametersName(repositoryPrefix: repositoryPrefix)
-    let resourceParameterImplementing = entityNameMap.resourceParametersImplementing(repositoryPrefix: repositoryPrefix)
+    let diContainerName = entityNameMap.resourceParametersDIContainer(apiClientPrefix: apiClientPrefix)
+    let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
+    let resourceParameterImplementing = entityNameMap.resourceParametersImplementing(apiClientPrefix: apiClientPrefix)
 
     return """
 

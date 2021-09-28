@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
-enum RepositoryGeneratorError: Error, LocalizedError {
+enum ApiClientGeneratorError: Error, LocalizedError {
   case notImplemented(context: String)
 
   var errorDescription: String? {
@@ -18,14 +18,16 @@ enum RepositoryGeneratorError: Error, LocalizedError {
   }
 }
 
-struct RepositoryGenerator: Generating {
-  private let repositoryPrefix: String
+struct ApiClientGenerator: Generating {
+  private let apiClientPrefix: String
+  private let apiClientInterfacePostfix: String = "ApiClientImplementing"
+  private let apiClientPostfix: String = "ApiClient"
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
 
   init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
-    self.repositoryPrefix = entityNameMap.repositoryPrefix
+    self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
   }
@@ -34,9 +36,9 @@ struct RepositoryGenerator: Generating {
     """
     \(try self.protocolCode(with: schema.operations))
 
-    // MARK: - \(repositoryPrefix)Repositoring
+    // MARK: - \(apiClientPrefix)\(apiClientInterfacePostfix)
 
-    final class \(repositoryPrefix)Repository: \(repositoryPrefix)Repositoring {
+    final class \(apiClientPrefix)\(apiClientPostfix): \(apiClientPrefix)\(apiClientInterfacePostfix) {
       private let restClient: RestClient
       private let scheduler: SchedulerType
 
@@ -50,14 +52,14 @@ struct RepositoryGenerator: Generating {
 
     }
 
-    private extension \(repositoryPrefix)Repository {
+    private extension \(apiClientPrefix)\(apiClientPostfix) {
       \(try schema.operations.map { try executeCode(with: $0) }.lines)
     }
     """
   }
 }
 
-extension RepositoryGenerator {
+extension ApiClientGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
     let funcDeclarations: [String] = try operation.type.fields.map {
       try funcSignatureCode(field: $0, operation: operation)
@@ -68,7 +70,7 @@ extension RepositoryGenerator {
 
   func protocolCode(with operations: [GraphQLAST.Operation]) throws -> String {
     return """
-    protocol \(repositoryPrefix)Repositoring {
+    protocol \(apiClientPrefix)\(apiClientInterfacePostfix) {
       \(
         try operations.map {
           try protocolCode(with: $0)
@@ -84,7 +86,7 @@ extension RepositoryGenerator {
     let codes = try operation.type.fields.map {
       """
       \(try funcSignatureCode(field: $0, operation: operation)) {
-        let resource = \(entityNameMap.resourceParametersName(repositoryPrefix: repositoryPrefix))
+        let resource = \(entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix))
           .\($0.enumName(with: operation))(parameters: parameters)
 
         return executeGraphQL\(operationName)(resource: resource)

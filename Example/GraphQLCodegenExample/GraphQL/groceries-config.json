@@ -9,6 +9,6 @@
     "interfaces":       "GroceriesInterfaces",
     "unions":           "GroceriesUnions",
     "enums":            "GroceriesEnums",
-    "repositoryPrefix": "Groceries"
+    "apiClientPrefix": "Groceries"
   }
 }
