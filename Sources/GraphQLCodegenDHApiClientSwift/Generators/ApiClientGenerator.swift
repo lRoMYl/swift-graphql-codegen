@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
 enum ApiClientGeneratorError: Error, LocalizedError {
@@ -25,11 +26,13 @@ struct ApiClientGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
+    self.entityNameStrategy = entityNameStrategy
   }
 
   func code(schema: Schema) throws -> String {
@@ -98,7 +101,7 @@ extension ApiClientGenerator {
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = try field.scalarName(scalarMap: scalarMap, entityNameMap: entityNameMap)
+    let responseDataText = try entityNameStrategy.name(for: field.type)
 
     let parametersName = field.requestEntityObjectParameterName(
       operation: operation,

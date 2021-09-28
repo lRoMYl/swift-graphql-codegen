@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 enum RequestParameterError: Error, LocalizedError {
   case missingReturnType(context: String)
@@ -24,16 +25,25 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
+
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
   private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
   private let initializerGenerator: RequestParameterInitializerGenerator
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
+  init(
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?,
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
+
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
@@ -42,7 +52,8 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(
       scalarMap: scalarMap,
-      entityNameMap: entityNameMap
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
     self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
       scalarMap: scalarMap,
@@ -50,7 +61,8 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     )
     self.initializerGenerator = RequestParameterInitializerGenerator(
       scalarMap: scalarMap,
-      entityNameMap: entityNameMap
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
 
     // Initialize entity name variable

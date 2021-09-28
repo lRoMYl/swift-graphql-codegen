@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 import SwiftFormat
 
 enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
@@ -24,27 +25,28 @@ enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
 public struct GraphQLCodegenDHApiClientSwift {
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
+  private let entityNameStrategy: EntityNamingStrategy
 
   /// Generators
   private let generators: [Generating]
 
-  public init(entityNameMap: EntityNameMap?, scalarMap: ScalarMap?) throws {
-    self.entityNameMap = entityNameMap ?? .default
-    self.scalarMap = ScalarMap.default.merging(
-      scalarMap ?? [:],
-      uniquingKeysWith: { (_, new) in new }
-    )
+  public init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) throws {
+    self.entityNameMap = entityNameMap
+    self.scalarMap = scalarMap
+    self.entityNameStrategy = entityNameStrategy
 
     self.generators = [
       HeaderGenerator(),
       ApiClientGenerator(
         entityNameMap: self.entityNameMap,
-        scalarMap: self.scalarMap
+        scalarMap: self.scalarMap,
+        entityNameStrategy: self.entityNameStrategy
       ),
       ResourceParametersGenerator(entityNameMap: self.entityNameMap, scalarMap: self.scalarMap),
       GraphQLResponseWrappedValueGenerator(
         entityNameMap: self.entityNameMap,
-        scalarMap: self.scalarMap
+        scalarMap: self.scalarMap,
+        entityNameStrategy: self.entityNameStrategy
       )
     ]
   }

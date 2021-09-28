@@ -8,14 +8,14 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-public extension OutputTypeRef {
+extension OutputTypeRef {
   /// Returns an internal type for a given input type ref.
   func type(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
     try inverted.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
   }
 }
 
-public extension InvertedOutputTypeRef {
+extension InvertedOutputTypeRef {
   /// Returns an internal type for a given input type ref.
   func type(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
     switch self {
@@ -29,7 +29,7 @@ public extension InvertedOutputTypeRef {
   }
 }
 
-public extension OutputRef {
+extension OutputRef {
   /// Returns an internal reference to the given output type ref.
   func type(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
     switch self {

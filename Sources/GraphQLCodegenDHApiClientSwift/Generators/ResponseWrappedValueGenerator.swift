@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
 struct GraphQLResponseWrappedValueGenerator: Generating {
@@ -15,10 +16,12 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
+    self.entityNameStrategy = entityNameStrategy
 
     self.responseEntityName = entityNameMap.response
   }
@@ -35,7 +38,7 @@ extension GraphQLResponseWrappedValueGenerator {
     let operationName: String = entityNameMap.objects + "." + operation.type.name.pascalCase
     let cases = try operation.type.fields.map {
       """
-      case is \(try $0.type.namedType.type(scalarMap: scalarMap, entityNameMap: entityNameMap)).Type:
+      case is \(try entityNameStrategy.name(for: $0.type)).Type:
         return data.\($0.name.camelCase) as? ReturnType
       """
     }.lines

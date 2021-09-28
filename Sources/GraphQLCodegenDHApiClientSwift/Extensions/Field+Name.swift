@@ -31,9 +31,9 @@ extension Field {
     return prefix + "." + typeName + "RequestParameter"
   }
 
-  func scalarName(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
-    let scalarName = try type.namedType.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
-
-    return "\(scalarName)"
-  }
+//  func scalarName(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
+//    let scalarName = try type.namedType.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
+//
+//    return "\(scalarName)"
+//  }
 }

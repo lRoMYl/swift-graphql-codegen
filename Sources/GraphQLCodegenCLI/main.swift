@@ -10,6 +10,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenDHApiClientSwift
+import GraphQLCodegenNameSwift
 import GraphQLCodegenEntitySwift
 import GraphQLCodegenSpecSwift
 import GraphQLDownloader
@@ -152,16 +153,36 @@ struct GraphQLCodegenCLI: ParsableCommand {
     let config = try fetchConfig()
     let generatedCodeData: Data?
 
+    let scalarMap = self.scalarMap(config: config)
+    let entityNameMap = self.entityNameMap(config: config)
+    let selectionMap = self.selectionMap(config: config)
+
+    try selectionMap?.validate()
+    try entityNameMap.validate()
+
+    let entityNameStrategy = self.entityNameStrategy(scalarMap: scalarMap, entityNameMap: entityNameMap)
+
     switch action {
     case .introspection:
       generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.apiHeaders).1
     case .dhrepository:
       let schema = try fetchSchema(with: config)
-      let generatedCode = try repositorySwiftCode(schema: schema, config: config)
+      let generatedCode = try repositorySwiftCode(
+        schema: schema,
+        scalarMap: scalarMap,
+        entityNameMap: entityNameMap,
+        entityNameStrategy: entityNameStrategy
+      )
       generatedCodeData = generatedCode.data(using: .utf8)
     case .specification:
       let schema = try fetchSchema(with: config)
-      let generatedCode = try specSwiftCode(schema: schema, config: config)
+      let generatedCode = try specSwiftCode(
+        schema: schema,
+        scalarMap: scalarMap,
+        entityNameMap: entityNameMap,
+        selectionMap: selectionMap,
+        entityNameStrategy: entityNameStrategy
+      )
       generatedCodeData = generatedCode.data(using: .utf8)
     case .entity:
       let schema = try fetchSchema(with: config)
@@ -264,21 +285,56 @@ private extension GraphQLCodegenCLI {
 // MARK: - Generators
 
 private extension GraphQLCodegenCLI {
-  func specSwiftCode(schema: Schema, config: Config?) throws -> String {
+  func entityNameStrategy(scalarMap: ScalarMap, entityNameMap: EntityNameMap) -> EntityNamingStrategy {
+    DHEntityNameStrategy(
+      scalarMap: scalarMap,
+      entityNameMap: entityNameMap
+    )
+  }
+
+  func scalarMap(config: Config?) -> ScalarMap {
+    ScalarMap.default.merging(
+      config?.scalarMap ?? [:],
+      uniquingKeysWith: { (_, new) in new }
+    )
+  }
+
+  func selectionMap(config: Config?) -> SelectionMap? {
+    config?.selectionMap
+  }
+
+  func entityNameMap(config: Config?) -> EntityNameMap {
+    config?.entityNameMap ?? .default
+  }
+
+  func specSwiftCode(
+    schema: Schema,
+    scalarMap: ScalarMap,
+    entityNameMap: EntityNameMap,
+    selectionMap: SelectionMap?,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> String {
     let generator = try GraphQLCodegenSpecSwift(
-      scalarMap: config?.scalarMap,
-      selectionMap: config?.selectionMap,
-      entityNameMap: config?.entityNameMap
+      scalarMap: scalarMap,
+      selectionMap: selectionMap,
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
     let generatedCode = try generator.code(schema: schema)
 
     return generatedCode
   }
 
-  func repositorySwiftCode(schema: Schema, config: Config?) throws -> String {
+  func repositorySwiftCode(
+    schema: Schema,
+    scalarMap: ScalarMap,
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> String {
     let generator = try GraphQLCodegenDHApiClientSwift(
-      entityNameMap: config?.entityNameMap,
-      scalarMap: config?.scalarMap
+      entityNameMap: entityNameMap,
+      scalarMap: scalarMap,
+      entityNameStrategy: entityNameStrategy
     )
     let generatedCode = try generator.code(schema: schema)
 

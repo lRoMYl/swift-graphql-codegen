@@ -11,6 +11,7 @@ let package = Package(
     .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .library(name: "GraphQLCodegenConfig", targets: ["GraphQLCodegenConfig"]),
     .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
+    .library(name: "GraphQLCodegenNameSwift", targets: ["GraphQLCodegenNameSwift"]),
     .library(name: "GraphQLCodegenSpecSwift", targets: ["GraphQLCodegenSpecSwift"]),
     .library(name: "GraphQLCodegenEntitySwift", targets: ["GraphQLCodegenEntitySwift"]),
     .library(name: "GraphQLCodegenDHApiClientSwift", targets: ["GraphQLCodegenDHApiClientSwift"]),
@@ -34,16 +35,20 @@ let package = Package(
       dependencies: ["SwiftFormat"]
     ),
     .target(
+      name: "GraphQLCodegenNameSwift",
+      dependencies: ["GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
+    ),
+    .target(
       name: "GraphQLCodegenEntitySwift",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
       name: "GraphQLCodegenSpecSwift",
-      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
       name: "GraphQLCodegenDHApiClientSwift",
-      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
       name: "GraphQLCodegenCLI",

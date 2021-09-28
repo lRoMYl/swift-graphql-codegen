@@ -7,19 +7,22 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 struct RequestParameterInitializerGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
   }
 
   func declaration(field: Field) throws -> String {
     var arguments = try field.args.map {
-      try "\($0.name.camelCase): \($0.type.type(scalarMap: scalarMap, entityNameMap: entityNameMap))"
+      "\($0.name.camelCase): \(try entityNameStrategy.name(for: $0.type))"
     }
     .joined(separator: ",\n")
 

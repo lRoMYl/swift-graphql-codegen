@@ -7,19 +7,25 @@
 
 import GraphQLCodegenUtil
 import GraphQLAST
+import GraphQLCodegenNameSwift
 import GraphQLCodegenConfig
 
 struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
+
   private let objectFieldCodeGenerator: InputObjectFieldCodeGenerator
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
+
     self.objectFieldCodeGenerator = InputObjectFieldCodeGenerator(
       scalarMap: scalarMap,
-      entityNameMap: entityNameMap
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
   }
 

@@ -9,25 +9,25 @@ import RxSwift
 protocol StarWarsApiClientImplementing {
   func human(
     with parameters: StarWarsQueries.HumanRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>>
+  ) -> Single<ApiResponse<StarWarsObjects.Human?>>
   func droid(
     with parameters: StarWarsQueries.DroidRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Droid>>
+  ) -> Single<ApiResponse<StarWarsObjects.Droid?>>
   func character(
     with parameters: StarWarsQueries.CharacterRequestParameter
-  ) -> Single<ApiResponse<StarWarsUnions.CharacterUnion>>
+  ) -> Single<ApiResponse<StarWarsUnions.CharacterUnion?>>
   func luke(
     with parameters: StarWarsQueries.LukeRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>>
+  ) -> Single<ApiResponse<StarWarsObjects.Human?>>
   func humans(
     with parameters: StarWarsQueries.HumansRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>>
+  ) -> Single<ApiResponse<[StarWarsObjects.Human]>>
   func droids(
     with parameters: StarWarsQueries.DroidsRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Droid>>
+  ) -> Single<ApiResponse<[StarWarsObjects.Droid]>>
   func characters(
     with parameters: StarWarsQueries.CharactersRequestParameter
-  ) -> Single<ApiResponse<StarWarsInterfaces.Character>>
+  ) -> Single<ApiResponse<[StarWarsInterfaces.Character]>>
   func greeting(
     with parameters: StarWarsQueries.GreetingRequestParameter
   ) -> Single<ApiResponse<String>>
@@ -58,7 +58,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func human(
     with parameters: StarWarsQueries.HumanRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>> {
+  ) -> Single<ApiResponse<StarWarsObjects.Human?>> {
     let resource = StarWarsResourceParameters
       .queryHuman(parameters: parameters)
 
@@ -67,7 +67,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func droid(
     with parameters: StarWarsQueries.DroidRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Droid>> {
+  ) -> Single<ApiResponse<StarWarsObjects.Droid?>> {
     let resource = StarWarsResourceParameters
       .queryDroid(parameters: parameters)
 
@@ -76,7 +76,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func character(
     with parameters: StarWarsQueries.CharacterRequestParameter
-  ) -> Single<ApiResponse<StarWarsUnions.CharacterUnion>> {
+  ) -> Single<ApiResponse<StarWarsUnions.CharacterUnion?>> {
     let resource = StarWarsResourceParameters
       .queryCharacter(parameters: parameters)
 
@@ -85,7 +85,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func luke(
     with parameters: StarWarsQueries.LukeRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>> {
+  ) -> Single<ApiResponse<StarWarsObjects.Human?>> {
     let resource = StarWarsResourceParameters
       .queryLuke(parameters: parameters)
 
@@ -94,7 +94,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func humans(
     with parameters: StarWarsQueries.HumansRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Human>> {
+  ) -> Single<ApiResponse<[StarWarsObjects.Human]>> {
     let resource = StarWarsResourceParameters
       .queryHumans(parameters: parameters)
 
@@ -103,7 +103,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func droids(
     with parameters: StarWarsQueries.DroidsRequestParameter
-  ) -> Single<ApiResponse<StarWarsObjects.Droid>> {
+  ) -> Single<ApiResponse<[StarWarsObjects.Droid]>> {
     let resource = StarWarsResourceParameters
       .queryDroids(parameters: parameters)
 
@@ -112,7 +112,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
 
   func characters(
     with parameters: StarWarsQueries.CharactersRequestParameter
-  ) -> Single<ApiResponse<StarWarsInterfaces.Character>> {
+  ) -> Single<ApiResponse<[StarWarsInterfaces.Character]>> {
     let resource = StarWarsResourceParameters
       .queryCharacters(parameters: parameters)
 
@@ -324,19 +324,19 @@ enum StarWarsResourceParameters: ResourceParameters {
 extension GraphQLResponse where OperationType == StarWarsObjects.Query {
   var wrappedValue: ReturnType? {
     switch ReturnType.self {
-    case is StarWarsObjects.Human.Type:
+    case is StarWarsObjects.Human?.Type:
       return data.human as? ReturnType
-    case is StarWarsObjects.Droid.Type:
+    case is StarWarsObjects.Droid?.Type:
       return data.droid as? ReturnType
-    case is StarWarsUnions.CharacterUnion.Type:
+    case is StarWarsUnions.CharacterUnion?.Type:
       return data.character as? ReturnType
-    case is StarWarsObjects.Human.Type:
+    case is StarWarsObjects.Human?.Type:
       return data.luke as? ReturnType
-    case is StarWarsObjects.Human.Type:
+    case is [StarWarsObjects.Human].Type:
       return data.humans as? ReturnType
-    case is StarWarsObjects.Droid.Type:
+    case is [StarWarsObjects.Droid].Type:
       return data.droids as? ReturnType
-    case is StarWarsInterfaces.Character.Type:
+    case is [StarWarsInterfaces.Character].Type:
       return data.characters as? ReturnType
     case is String.Type:
       return data.greeting as? ReturnType

@@ -9,7 +9,7 @@ import RxSwift
 protocol GroceriesApiClientImplementing {
   func campaigns(
     with parameters: GroceriesQueries.CampaignsRequestParameter
-  ) -> Single<ApiResponse<GroceriesObjects.Campaigns>>
+  ) -> Single<ApiResponse<GroceriesObjects.Campaigns?>>
 }
 
 // MARK: - GroceriesApiClientImplementing
@@ -25,7 +25,7 @@ final class GroceriesApiClient: GroceriesApiClientImplementing {
 
   func campaigns(
     with parameters: GroceriesQueries.CampaignsRequestParameter
-  ) -> Single<ApiResponse<GroceriesObjects.Campaigns>> {
+  ) -> Single<ApiResponse<GroceriesObjects.Campaigns?>> {
     let resource = GroceriesResourceParameters
       .queryCampaigns(parameters: parameters)
 
@@ -125,7 +125,7 @@ enum GroceriesResourceParameters: ResourceParameters {
 extension GraphQLResponse where OperationType == GroceriesObjects.Query {
   var wrappedValue: ReturnType? {
     switch ReturnType.self {
-    case is GroceriesObjects.Campaigns.Type:
+    case is GroceriesObjects.Campaigns?.Type:
       return data.campaigns as? ReturnType
     default:
       return nil

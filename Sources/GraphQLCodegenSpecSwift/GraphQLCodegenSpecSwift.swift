@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 enum GraphQLCodegenSpecSwiftError: Error, LocalizedError {
   case formatError(context: String)
@@ -24,22 +25,20 @@ public struct GraphQLCodegenSpecSwift {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
+
   private let generators: [GraphQLCodeGenerating]
 
   public init(
-    scalarMap: ScalarMap?,
+    scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
-    entityNameMap: EntityNameMap?
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
   ) throws {
-    try selectionMap?.validate()
-    try entityNameMap?.validate()
-
-    self.scalarMap = ScalarMap.default.merging(
-      scalarMap ?? [:],
-      uniquingKeysWith: { (_, new) in new }
-    )
+    self.scalarMap = scalarMap
     self.selectionMap = selectionMap
-    self.entityNameMap = entityNameMap ?? EntityNameMap.default
+    self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
 
     self.generators = [
       HeaderCodeGenerator(entityNameMap: self.entityNameMap),
@@ -47,23 +46,31 @@ public struct GraphQLCodegenSpecSwift {
       ObjectCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
-        entityNameMap: self.entityNameMap
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
       ),
-      InputObjectCodeGenerator(scalarMap: self.scalarMap, entityNameMap: self.entityNameMap),
+      InputObjectCodeGenerator(
+        scalarMap: self.scalarMap,
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
+      ),
       InterfaceCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
-        entityNameMap: self.entityNameMap
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
       ),
       UnionCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
-        entityNameMap: self.entityNameMap
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
       ),
       RequestParameterGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
-        entityNameMap: self.entityNameMap
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
       )
     ]
   }
