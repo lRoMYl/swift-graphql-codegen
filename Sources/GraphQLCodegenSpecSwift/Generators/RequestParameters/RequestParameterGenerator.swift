@@ -76,11 +76,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       return """
       // MARK: - \(requestEntityObjectName)
 
-      enum \(requestEntityObjectName) {}
-
-      extension \(requestEntityObjectName) {
-        \(try operation($0, objects: schema.objects, interfaces: schema.interfaces).lines)
-      }
+      \(try operation($0, objects: schema.objects, interfaces: schema.interfaces).lines)
       """
     }.lines
 
@@ -103,7 +99,6 @@ private extension RequestParameterGenerator {
     let returnObject = try operation.returnObject()
 
     let result: [String] = try returnObject.fields.map { field in
-
       return try requestParameterDeclaration(
         operation: operation,
         objectMap: objects,
@@ -125,7 +120,7 @@ private extension RequestParameterGenerator {
     entityNameMap: EntityNameMap,
     field: Field
   ) throws -> String {
-    let requestParameterName = field.requestParameterName(operation: operation)
+    let requestParameterName = try entityNameStrategy.requestParameterName(for: field, with: operation)
 
     let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,

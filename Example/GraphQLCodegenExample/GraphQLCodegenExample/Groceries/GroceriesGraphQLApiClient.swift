@@ -8,8 +8,8 @@ import RxSwift
 
 protocol GroceriesApiClientImplementing {
   func campaigns(
-    with parameters: GroceriesQueries.CampaignsRequestParameter
-  ) -> Single<ApiResponse<GroceriesObjects.Campaigns?>>
+    with parameters: CampaignsQueryRequestParameter
+  ) -> Single<ApiResponse<CampaignsResponseObject?>>
 }
 
 // MARK: - GroceriesApiClientImplementing
@@ -24,8 +24,8 @@ final class GroceriesApiClient: GroceriesApiClientImplementing {
   }
 
   func campaigns(
-    with parameters: GroceriesQueries.CampaignsRequestParameter
-  ) -> Single<ApiResponse<GroceriesObjects.Campaigns?>> {
+    with parameters: CampaignsQueryRequestParameter
+  ) -> Single<ApiResponse<CampaignsResponseObject?>> {
     let resource = GroceriesResourceParameters
       .queryCampaigns(parameters: parameters)
 
@@ -37,7 +37,7 @@ private extension GroceriesApiClient {
   func executeGraphQLQuery<T>(
     resource: ResourceParameters
   ) -> Single<ApiResponse<T>> where T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<GroceriesObjects.Query, T>>> = restClient
+    let request: Single<ApiResponse<GraphQLResponse<QueryResponseObject, T>>> = restClient
       .executeRequest(resource: resource)
 
     return request
@@ -71,7 +71,7 @@ final class GroceriesResourceParametersDIContainer {
 enum GroceriesResourceParameters: ResourceParameters {
   private static var diContainer = GroceriesResourceParametersDIContainer.shared
 
-  case queryCampaigns(parameters: GroceriesQueries.CampaignsRequestParameter)
+  case queryCampaigns(parameters: CampaignsQueryRequestParameter)
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON
@@ -120,12 +120,12 @@ enum GroceriesResourceParameters: ResourceParameters {
   }
 }
 
-// MARK: - GraphQLResponse+GroceriesObjects.QueryWrappedValue
+// MARK: - GraphQLResponse+QueryResponseObjectWrappedValue
 
-extension GraphQLResponse where OperationType == GroceriesObjects.Query {
+extension GraphQLResponse where OperationType == QueryResponseObject {
   var wrappedValue: ReturnType? {
     switch ReturnType.self {
-    case is GroceriesObjects.Campaigns?.Type:
+    case is CampaignsResponseObject?.Type:
       return data.campaigns as? ReturnType
     default:
       return nil

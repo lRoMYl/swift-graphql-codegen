@@ -42,7 +42,11 @@ public struct GraphQLCodegenSpecSwift {
 
     self.generators = [
       HeaderCodeGenerator(entityNameMap: self.entityNameMap),
-      EnumCodeGenerator(scalarMap: self.scalarMap, entityNameMap: self.entityNameMap),
+      EnumCodeGenerator(
+        scalarMap: self.scalarMap,
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: self.entityNameStrategy
+      ),
       ObjectCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,

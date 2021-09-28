@@ -16,12 +16,4 @@ extension GraphQLAST.Operation {
     case .subscription: return "subscribe"
     }
   }
-
-  func requestEntityObjectName(entityNameMap: EntityNameMap) -> String {
-    switch self {
-    case .query: return entityNameMap.queries
-    case .mutation: return entityNameMap.mutations
-    case .subscription: return entityNameMap.subscriptions
-    }
-  }
 }

@@ -35,19 +35,14 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
     return """
     // MARK: - \(entityNameMap.unions)
 
-    enum \(entityNameMap.unions) {}
-
-    extension \(entityNameMap.unions) {
-      \(
-        schema.unions.compactMap {
-          """
-          struct \($0.name): Codable {
-          }
-          """
-        }.lines
-      )
-    }
-
+    \(
+      try schema.unions.compactMap {
+        """
+        struct \(try entityNameStrategy.name(for: $0)): Codable {
+        }
+        """
+      }.lines
+    )
     """
   }
 }

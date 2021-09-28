@@ -42,7 +42,11 @@ public struct GraphQLCodegenDHApiClientSwift {
         scalarMap: self.scalarMap,
         entityNameStrategy: self.entityNameStrategy
       ),
-      ResourceParametersGenerator(entityNameMap: self.entityNameMap, scalarMap: self.scalarMap),
+      ResourceParametersGenerator(
+        entityNameMap: self.entityNameMap,
+        scalarMap: self.scalarMap,
+        entityNameStrategy: entityNameStrategy
+      ),
       GraphQLResponseWrappedValueGenerator(
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,

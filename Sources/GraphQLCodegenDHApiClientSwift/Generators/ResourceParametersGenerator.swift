@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
 enum ResourceGeneratorError: Error, LocalizedError {
@@ -23,11 +24,13 @@ struct ResourceParametersGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
+    self.entityNameStrategy = entityNameStrategy
   }
 
   /// TODO: Inject headers, timeoutInterval, preventRetry
@@ -93,7 +96,7 @@ struct ResourceParametersGenerator: Generating {
         }
       }
 
-      private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequestParameter {
+      private func bodyParameters<T>(parameters: T) -> [String: Any] where T: \(entityNameMap.requestParameter) {
         guard
           let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters))
         else { return [:]  }
@@ -110,12 +113,9 @@ struct ResourceParametersGenerator: Generating {
 
 extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
-    let enumCases = operation.type.fields.map { field -> String in
+    let enumCases = try operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
-      let requestParameterName = field.requestEntityObjectParameterName(
-        operation: operation,
-        entityNameMap: entityNameMap
-      )
+      let requestParameterName = try entityNameStrategy.requestParameterName(for: field, with: operation)
 
       return """
       case \(enumName)(parameters: \(requestParameterName))

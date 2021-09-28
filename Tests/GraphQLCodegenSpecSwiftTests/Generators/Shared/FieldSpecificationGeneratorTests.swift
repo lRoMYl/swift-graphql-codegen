@@ -7,6 +7,7 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
+@testable import GraphQLCodegenNameSwift
 @testable import GraphQLCodegenSpecSwift
 import XCTest
 
@@ -14,7 +15,8 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
   private let defaultGenerator = FieldCodeGenerator(
     scalarMap: ScalarMap.default,
     selectionMap: nil,
-    entityNameMap: .default
+    entityNameMap: .default,
+    entityNameStrategy: DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
   )
 
   func testScalar() throws {

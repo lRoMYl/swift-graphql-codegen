@@ -16,6 +16,6 @@
         "interfaces":       "StarWarsInterfaces",
         "unions":           "StarWarsUnions",
         "enums":            "StarWarsEnums",
-        "apiClientPrefix": "StarWars"
+        "apiClientPrefix":  "StarWars"
     }
 }

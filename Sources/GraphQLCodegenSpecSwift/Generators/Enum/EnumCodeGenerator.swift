@@ -7,25 +7,28 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 struct EnumCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
   }
 
   func code(schema: Schema) throws -> String {
     """
     // MARK: - \(entityNameMap.enums)
 
-    enum \(entityNameMap.enums) {}
-
-    extension \(entityNameMap.enums) {
-      \(schema.enums.map { $0.declaration }.lines)
-    }
+    \(
+      try schema.enums.map {
+        try $0.declaration(entityNameStrategy: entityNameStrategy)
+      }.lines
+    )
     """
   }
 }
@@ -34,10 +37,10 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
 
 private extension EnumType {
   /// Represents the enum structure.
-  var declaration: String {
+  func declaration(entityNameStrategy: EntityNamingStrategy) throws -> String {
     """
     \(docs)
-    enum \(name.pascalCase): RawRepresentable, Codable {
+    enum \(try entityNameStrategy.name(for: self)): RawRepresentable, Codable {
       typealias RawValue = String
 
       \(valueDeclaration)
@@ -46,9 +49,7 @@ private extension EnumType {
 
       \(rawValueDeclaration)
 
-      \(equatableDeclaration)
-
-      \(allCasesDeclaration)
+      \(try equatableDeclaration(entityNamingStrategy: entityNameStrategy))
     }
     """
   }
@@ -97,9 +98,11 @@ private extension EnumType {
     """
   }
 
-  var equatableDeclaration: String {
-    """
-    static func == (lhs: \(name.pascalCase), rhs: \(name.pascalCase)) -> Bool {
+  func equatableDeclaration(entityNamingStrategy: EntityNamingStrategy) throws -> String {
+    let enumTypeName = try entityNamingStrategy.name(for: self)
+
+    return """
+    static func == (lhs: \(enumTypeName), rhs: \(enumTypeName)) -> Bool {
       switch (lhs, rhs) {
         \(
           enumValues.map {
@@ -109,20 +112,6 @@ private extension EnumType {
         case (let ._unknown(lhsValue), let ._unknown(rhsValue)): return lhsValue == rhsValue
         default: return false
       }
-    }
-    """
-  }
-
-  var allCasesDeclaration: String {
-    """
-    static var allCases: [\(name.pascalCase)] {
-      return [
-        \(
-          enumValues.map {
-            ".\($0.name.camelCase)"
-          }.joined(separator: ",\n")
-        )
-      ]
     }
     """
   }

@@ -10,4 +10,9 @@ import GraphQLAST
 public protocol EntityNamingStrategy {
   func name(for typeRef: OutputTypeRef) throws -> String
   func name(for typeRef: InputTypeRef) throws -> String
+
+  func name(for namedType: NamedType) throws -> String
+  func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
+
+  func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
 }

@@ -25,71 +25,42 @@ public final class DHEntityNameStrategy: EntityNamingStrategy {
   public func name(for typeRef: InputTypeRef) throws -> String {
     try typeRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
   }
-}
 
-private extension InputTypeRef {
-  /// Returns an internal type for a given input type ref.
-  func type(scalarMap: ScalarMap) throws -> String {
-    try inverted.type(scalarMap: scalarMap)
-  }
-}
-
-private extension InvertedInputTypeRef {
-  /// Returns an internal type for a given input type ref.
-  func type(scalarMap: ScalarMap) throws -> String {
-    switch self {
-    case let .named(named):
-      switch named {
-      case let .scalar(scalar):
-        return try scalarMap.scalar(scalar)
-      case let .enum(enm):
-        return "\(enm.pascalCase)"
-      case let .inputObject(inputObject):
-        return "\(inputObject.pascalCase)"
-      }
-    case let .list(subref):
-      return "[\(try subref.type(scalarMap: scalarMap))]"
-    case let .nullable(subref):
-      return "\(try subref.type(scalarMap: scalarMap))?"
+  public func name(for namedType: NamedType) throws -> String {
+    switch namedType {
+    case let .scalar(refType):
+      return refType.name
+    case let .object(refType):
+      return refType.name + entityNameMap.objects
+    case let .interface(refType):
+      return refType.name + entityNameMap.interfaces
+    case let .union(refType):
+      return refType.name + entityNameMap.unions
+    case let .`enum`(refType):
+      return refType.name + entityNameMap.enums
+    case let .inputObject(refType):
+      return refType.name + entityNameMap.inputObjects
     }
   }
-}
 
-private extension OutputTypeRef {
-  /// Returns an internal type for a given input type ref.
-  func type(scalarMap: ScalarMap) throws -> String {
-    try inverted.type(scalarMap: scalarMap)
-  }
-}
-
-private extension InvertedOutputTypeRef {
-  /// Returns an internal type for a given input type ref.
-  func type(scalarMap: ScalarMap) throws -> String {
-    switch self {
-    case let .named(scalar):
-      return try scalar.type(scalarMap: scalarMap)
-    case let .nullable(subRef):
-      return "\(try subRef.type(scalarMap: scalarMap))?"
-    case let .list(subRef):
-      return "[\(try subRef.type(scalarMap: scalarMap))]"
+  public func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String {
+    switch namedTypeProtocol.kind {
+    case .scalar:
+      return namedTypeProtocol.name
+    case .object:
+      return namedTypeProtocol.name + entityNameMap.objects
+    case .interface:
+      return namedTypeProtocol.name + entityNameMap.interfaces
+    case .union:
+      return namedTypeProtocol.name + entityNameMap.unions
+    case .enumeration:
+      return namedTypeProtocol.name + entityNameMap.enums
+    case .inputObject:
+      return namedTypeProtocol.name + entityNameMap.inputObjects
     }
   }
-}
 
-private extension OutputRef {
-  /// Returns an internal reference to the given output type ref.
-  func type(scalarMap: ScalarMap) throws -> String {
-    switch self {
-    case let .scalar(scalar):
-      return try scalarMap.scalar(scalar)
-    case let .enum(enm):
-      return "\(enm.pascalCase)"
-    case let .object(type):
-      return "\(type.pascalCase)"
-    case let .interface(type):
-      return "\(type.pascalCase)"
-    case let .union(type):
-      return "\(type.pascalCase)"
-    }
+  public func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
+    field.name.pascalCase + operation.type(entityNameMap: entityNameMap)
   }
 }

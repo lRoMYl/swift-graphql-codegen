@@ -35,7 +35,7 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
 
 extension GraphQLResponseWrappedValueGenerator {
   func wrappedValueCode(with operation: GraphQLAST.Operation) throws -> String {
-    let operationName: String = entityNameMap.objects + "." + operation.type.name.pascalCase
+    let operationName: String = try entityNameStrategy.name(for: operation.type)
     let cases = try operation.type.fields.map {
       """
       case is \(try entityNameStrategy.name(for: $0.type)).Type:

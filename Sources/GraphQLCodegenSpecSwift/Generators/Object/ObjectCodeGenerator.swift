@@ -40,19 +40,16 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
     return """
     // MARK: - \(entityNameMap.objects)
 
-    enum \(entityNameMap.objects) {}
-
-    extension \(entityNameMap.objects) {
-      \(
-        try schema.objects.compactMap {
-          try $0.declaration(
-            objects: schema.objects,
-            scalarMap: scalarMap,
-            fieldSpecificationGenerator: fieldSpecificationGenerator
-          )
-        }.lines
-      )
-    }
+    \(
+      try schema.objects.compactMap {
+        try $0.declaration(
+          objects: schema.objects,
+          scalarMap: scalarMap,
+          fieldSpecificationGenerator: fieldSpecificationGenerator,
+          entityNameStrategy: entityNameStrategy
+        )
+      }.lines
+    )
 
     """
   }
@@ -60,11 +57,12 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 
 // MARK: - Structure
 
-private extension Structure {
+private extension ObjectType {
   func declaration(
     objects: [ObjectType],
     scalarMap: ScalarMap,
-    fieldSpecificationGenerator: FieldCodeGenerator
+    fieldSpecificationGenerator: FieldCodeGenerator,
+    entityNameStrategy: EntityNamingStrategy
   ) throws -> String {
     let sortedFields = fields.sorted(by: { $0.name < $1.name })
 
@@ -78,7 +76,7 @@ private extension Structure {
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
-    struct \(objectName): Codable {
+    struct \(try entityNameStrategy.name(for: self)): Codable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys

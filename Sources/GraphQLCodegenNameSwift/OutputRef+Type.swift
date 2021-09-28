@@ -36,13 +36,13 @@ extension OutputRef {
     case let .scalar(scalar):
       return try scalarMap.scalar(scalar)
     case let .enum(enm):
-      return "\(entityNameMap.enums).\(enm.pascalCase)"
+      return "\(enm.pascalCase)\(entityNameMap.enums)"
     case let .object(type):
-      return "\(entityNameMap.objects).\(type.pascalCase)"
+      return "\(type.pascalCase)\(entityNameMap.objects)"
     case let .interface(type):
-      return "\(entityNameMap.interfaces).\(type.pascalCase)"
+      return "\(type.pascalCase)\(entityNameMap.interfaces)"
     case let .union(type):
-      return "\(entityNameMap.unions).\(type.pascalCase)"
+      return "\(type.pascalCase)\(entityNameMap.unions)"
     }
   }
 }

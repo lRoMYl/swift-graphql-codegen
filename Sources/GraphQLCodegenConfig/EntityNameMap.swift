@@ -131,14 +131,14 @@ public extension EntityNameMap {
       response: "GraphQLResponse",
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
-      queries: "GraphQLQueries",
-      mutations: "GraphQLMutations",
-      subscriptions: "GraphQLSubscriptions",
-      objects: "GraphQLObjects",
-      inputObjects: "GraphQLInputObjects",
-      interfaces: "GraphQLInterfaces",
-      unions: "GraphQLUnions",
-      enums: "GraphQLEnums",
+      queries: "Queries",
+      mutations: "Mutations",
+      subscriptions: "Subscriptions",
+      objects: "ResponseObjects",
+      inputObjects: "RequestObjects",
+      interfaces: "Interfaces",
+      unions: "Unions",
+      enums: "Enums",
       apiClientPrefix: "GraphQL"
     )
   }()

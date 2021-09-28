@@ -1,14 +1,14 @@
 {
   "namespace": "",
   "entityNameMap": {
-    "queries":          "GroceriesQueries",
-    "mutations":        "GroceriesMutations",
-    "subscriptions":    "GroceriesSubscriptions",
-    "objects":          "GroceriesObjects",
-    "inputObjects":     "GroceriesInputObjects",
-    "interfaces":       "GroceriesInterfaces",
-    "unions":           "GroceriesUnions",
-    "enums":            "GroceriesEnums",
-    "apiClientPrefix": "Groceries"
+    "queries":          "QueryRequestParameter",
+    "mutations":        "MutationRequestParameter",
+    "subscriptions":    "SubscriptionRequestParameter",
+    "objects":          "ResponseObject",
+    "inputObjects":     "RequestObject",
+    "interfaces":       "Interface",
+    "unions":           "Union",
+    "enums":            "Enum",
+    "apiClientPrefix":  "Groceries"
   }
 }

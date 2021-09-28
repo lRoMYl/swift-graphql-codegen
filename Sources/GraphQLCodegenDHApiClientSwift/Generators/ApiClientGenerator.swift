@@ -103,10 +103,7 @@ extension ApiClientGenerator {
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
     let responseDataText = try entityNameStrategy.name(for: field.type)
 
-    let parametersName = field.requestEntityObjectParameterName(
-      operation: operation,
-      entityNameMap: entityNameMap
-    )
+    let parametersName = try entityNameStrategy.requestParameterName(for: field, with: operation)
 
     return """
     func \(field.funcName(with: operation))(
@@ -118,8 +115,8 @@ extension ApiClientGenerator {
   /// Executation for operation type is generated only if its defined in the schema
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
-    let operationName = operation.type.name.pascalCase
-    let responseType = entityNameMap.objects + "." + operation.type.name.pascalCase
+    let operationName =  operation.type.name.pascalCase
+    let responseType = try entityNameStrategy.name(for: operation.type)
     let responseDataText = "\(entityNameMap.response)<\(responseType), T>"
 
     return """

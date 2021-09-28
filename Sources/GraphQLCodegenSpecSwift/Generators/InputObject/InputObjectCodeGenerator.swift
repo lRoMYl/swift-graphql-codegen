@@ -33,36 +33,28 @@ struct InputObjectCodeGenerator: GraphQLCodeGenerating {
     """
     // MARK: - Input Objects
 
-    enum \(entityNameMap.inputObjects) {}
-
-    extension \(entityNameMap.inputObjects) {
-      \(
-        try schema.inputObjects.compactMap {
-          try $0.declaration(
-            scalarMap: scalarMap,
-            objectFieldSpecificationGenerator: objectFieldCodeGenerator
-          )
-        }.lines
-      )
-    }
+    \(
+      try schema.inputObjects.compactMap {
+        try declaration(inputObjectType: $0)
+      }.lines
+    )
     """
   }
 }
 
 // MARK: - InputObjectType
 
-private extension InputObjectType {
+private extension InputObjectCodeGenerator {
   func declaration(
-    scalarMap: ScalarMap,
-    objectFieldSpecificationGenerator: InputObjectFieldCodeGenerator
+    inputObjectType: InputObjectType
   ) throws -> String {
-    let name = self.name.pascalCase
+    let name = try entityNameStrategy.name(for: inputObjectType)
 
-    let fieldsVariable = try inputFields
-      .map { try objectFieldSpecificationGenerator.variableDeclaration(input: $0) }
+    let fieldsVariable = try inputObjectType.inputFields
+      .map { try objectFieldCodeGenerator.variableDeclaration(input: $0) }
       .lines
-    let fieldsCodingKey = inputFields
-      .map { objectFieldSpecificationGenerator.codingKeyDeclaration(input: $0) }
+    let fieldsCodingKey = inputObjectType.inputFields
+      .map { objectFieldCodeGenerator.codingKeyDeclaration(input: $0) }
       .lines
 
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object

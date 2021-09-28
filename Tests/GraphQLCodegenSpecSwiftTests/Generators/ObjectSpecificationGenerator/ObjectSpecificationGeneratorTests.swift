@@ -7,11 +7,14 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
+@testable import GraphQLCodegenNameSwift
 @testable import GraphQLCodegenSpecSwift
 import XCTest
 
 final class ObjectSpecificationGeneratorTests: XCTestCase {
   func testGeneratedCode() throws {
+    let entityNameStrategy = DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
+
     let discountObjectType = ObjectType(
       name: "Discount",
       description: nil,
@@ -43,7 +46,11 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let generator = ObjectCodeGenerator(scalarMap: ScalarMap.default, selectionMap: nil, entityNameMap: .default)
+    let generator = ObjectCodeGenerator(
+      scalarMap: ScalarMap.default, selectionMap: nil,
+      entityNameMap: .default,
+      entityNameStrategy: entityNameStrategy
+    )
     let declaration = try generator.code(schema: schema).format()
 
     let expected = try """

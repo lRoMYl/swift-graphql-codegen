@@ -40,18 +40,14 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
     return """
     // MARK: - \(entityNameMap.interfaces)
 
-    enum \(entityNameMap.interfaces) {}
-
-    extension \(entityNameMap.interfaces) {
-      \(
-        schema.interfaces.compactMap {
-          """
-          struct \($0.name): Codable {
-          }
-          """
-        }.lines
-      )
-    }
+    \(
+      try schema.interfaces.compactMap {
+        """
+        struct \(try entityNameStrategy.name(for: $0)): Codable {
+        }
+        """
+      }.lines
+    )
 
     """
   }
