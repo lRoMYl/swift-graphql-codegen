@@ -26,6 +26,14 @@ public final class DHEntityNameStrategy: EntityNamingStrategy {
     try typeRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
   }
 
+  public func name(for typeRef: ObjectTypeRef) throws -> String {
+    try typeRef.type(entityNameMap: entityNameMap)
+  }
+
+  public func name(for outputRef: OutputRef) throws -> String {
+    try outputRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
+  }
+
   public func name(for namedType: NamedType) throws -> String {
     switch namedType {
     case let .scalar(refType):

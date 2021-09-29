@@ -10,19 +10,31 @@ import GraphQLAST
 import GraphQLDownloader
 import XCTest
 
+enum SchemaHelperError: Error {
+  case serializationError
+  case notFound(context: String)
+}
+
 final class SchemaHelper {
   static func schema(with name: String) throws -> Schema {
-    let schemaPath = Bundle.module.path(
+    let path = Bundle.module.path(
       forResource: name,
       ofType: "json"
     )
 
-    XCTAssertNotNil(schemaPath)
+    guard let schemaPath = path else {
+      throw SchemaHelperError.notFound(context: name)
+    }
 
-    let url = NSURL.fileURL(withPath: schemaPath!)
+    let url = NSURL.fileURL(withPath: schemaPath)
     let data = try Data(contentsOf: url)
-    let schema = try JSONDecoder().decode(SchemaResponse.self, from: data).schema
 
-    return schema
+    if let introspectionResponse = try? JSONDecoder().decode(IntrospectionResponse.self, from: data) {
+      return introspectionResponse.schema.schema
+    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: data)  {
+      return response.schema
+    } else {
+      throw SchemaHelperError.serializationError
+    }
   }
 }

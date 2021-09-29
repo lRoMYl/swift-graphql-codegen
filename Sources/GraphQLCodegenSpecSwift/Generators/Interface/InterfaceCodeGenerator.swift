@@ -37,13 +37,64 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
+    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
+
     return """
     // MARK: - \(entityNameMap.interface)
 
     \(
       try schema.interfaces.compactMap {
-        """
+        let possibleObjectTypes: [ObjectType] = try $0.possibleObjectTypes(
+          objectTypeMap: objectTypeMap,
+          entityNameStrategy: entityNameStrategy
+        )
+
+        return """
         struct \(try entityNameStrategy.name(for: $0)): Codable {
+          enum Object {
+            \(
+              try possibleObjectTypes.map {
+                "case \($0.name.camelCase)(\(try entityNameStrategy.name(for: $0)))"
+              }.lines
+            )
+          }
+
+          enum ObjectType: String, Decodable {
+            \(
+              possibleObjectTypes.map {
+                "case \($0.name.camelCase) = \"\($0.name)\""
+              }.lines
+            )
+          }
+
+          let __typename: ObjectType
+          let data: Object
+
+          enum CodingKeys: String, CodingKey {
+            case __typename
+            case data
+          }
+
+          init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            __typename = try container.decode(ObjectType.self, forKey: .__typename)
+
+            switch __typename {
+            \(
+              try possibleObjectTypes.map {
+                """
+                case .\($0.name.camelCase):
+                  data = .\($0.name.camelCase)(try container.decode(\(try entityNameStrategy.name(for: $0)).self, forKey: .data))
+                """
+              }.lines
+            )
+            }
+          }
+
+          func encode(to _: Encoder) throws {
+            fatalError("Not implemented")
+          }
         }
         """
       }.lines
