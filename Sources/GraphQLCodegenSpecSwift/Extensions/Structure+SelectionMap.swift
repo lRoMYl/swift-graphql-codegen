@@ -9,30 +9,29 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 
-extension Structure {
-  func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {
-    // By default, if selection map is nil all field is treated as required
-    guard let selectionMap = selectionMap else {
+extension Field {
+  var isOptional: Bool {
+    switch self.type {
+    case .nonNull:
+      return false
+    default:
       return true
     }
+  }
+}
 
-    // If selection map is present but no selectionItemMap is not found, this field is required
-    guard let selectionItemMap = selectionMap[name] else {
-      return true
+extension Structure {
+  func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {
+    guard let selectionMap = selectionMap, let selectionItemMap = selectionMap[name] else {
+      return !field.isOptional
     }
 
     return selectionItemMap.required.contains(field.name)
   }
 
   func isSelectable(field: Field, selectionMap: SelectionMap?) -> Bool {
-    // By default, if selection map is nil all field is treated as required
-    guard let selectionMap = selectionMap else {
-      return false
-    }
-
-    // If selection map is present but no selectionItemMap is found, this field is not selectable
-    guard let selectionItemMap = selectionMap[name] else {
-      return false
+    guard let selectionMap = selectionMap, let selectionItemMap = selectionMap[name] else {
+      return field.isOptional
     }
 
     return selectionItemMap.selectable.contains(field.name)
@@ -40,10 +39,15 @@ extension Structure {
 
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
-      let isRequired = self.isRequired(field: field, selectionMap: selectionMap)
       let isSelectable = self.isSelectable(field: field, selectionMap: selectionMap)
 
-      return isRequired || isSelectable
+      return isSelectable
     }.sorted(by: { $0.name < $1.name })
   }
+
+	func requiredFields(selectionMap: SelectionMap?) -> [Field] {
+		fields.filter { field in
+			return isRequired(field: field, selectionMap: selectionMap)
+		}.sorted(by: { $0.name < $1.name })
+	}
 }

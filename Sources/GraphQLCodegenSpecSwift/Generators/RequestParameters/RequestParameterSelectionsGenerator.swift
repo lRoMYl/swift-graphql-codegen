@@ -108,15 +108,42 @@ extension RequestParameterSelectionsGenerator {
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap
   ) throws -> String {
+		let interfaceKey = try entityNameStrategy.name(for: field.type.namedType)
+
     guard
-      let returnInterfaceType = schema.interfaces.first(where: { $0.name == field.type.namedType.name })
+			let returnInterfaceType = interfaceTypeMap[interfaceKey],
+			let possibleObjectTypes = try field.possibleObjectTypes(
+				objectTypeMap: objectTypeMap,
+				interfaceTypeMap: interfaceTypeMap,
+				entityNameStrategy: entityNameStrategy
+			)
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
     }
 
-    let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
-    var fieldMap: FieldMap = [fieldScalarType: field]
-    fieldMap.merge(try returnInterfaceType.allNestedFields(objects: schema.objects, scalarMap: scalarMap)) { (_, new) in new }
+		var fieldMap = FieldMap()
+
+		fieldMap[returnInterfaceType.name] = Field(
+			name: returnInterfaceType.name,
+			description: returnInterfaceType.description,
+			args: [],
+			type: .named(.interface(returnInterfaceType.name)),
+			isDeprecated: false,
+			deprecationReason: nil
+		)
+
+		try possibleObjectTypes.forEach {
+			fieldMap[$0.name] = Field(
+				name: $0.name,
+				description: $0.description,
+				args: [],
+				type: .named(.object($0.name)),
+				isDeprecated: false,
+				deprecationReason: nil
+			)
+
+			fieldMap.merge(try $0.nestedFields(objects: schema.objects, scalarMap: scalarMap)) { _, new in new }
+		}
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -163,7 +190,8 @@ extension RequestParameterSelectionsGenerator {
     let selectionFragmentMap = try fieldMaps.selectionFragmentMap(
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameStrategy: entityNameStrategy,
+			selectionMap: selectionMap
     )
     let selectionDeclarationMap = fieldMaps.selectionDeclarationMap
 
@@ -227,13 +255,17 @@ private extension Field {
     else { return "" }
 
     let fields = returnType.selectableFields(selectionMap: selectionMap)
-    let fieldsEnum = try fields.map {
+    var fieldsEnum = try fields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
         type: $0.type,
         scalarMap: scalarMap
       )
     }.lines
+
+    if fieldsEnum.isEmpty {
+      fieldsEnum = "case all = \"\""
+    }
 
     let selectionVariableName = "\(returnName.camelCase)Selections"
     let selectionEnumName = "\(returnName.pascalCase)Selection"
@@ -323,10 +355,22 @@ private extension Collection where Element == FieldMap.Element {
   func selectionFragmentMap(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameStrategy: EntityNamingStrategy,
+		selectionMap: SelectionMap?
   ) throws -> String {
     try map {
       let interfaceFragmentCode: String
+
+			let structure = try $0.value.structure(
+				objectTypeMap: objectTypeMap,
+				interfaceTypeMap: interfaceTypeMap,
+				entityNameStrategy: entityNameStrategy
+			)
+
+			let requiredFields = structure?
+				.requiredFields(selectionMap: selectionMap)
+				.map { "\t" + $0.name }
+        .lines ?? ""
 
       if let possibleObjectTypes = try $0.value.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
@@ -337,9 +381,7 @@ private extension Collection where Element == FieldMap.Element {
         \n\t__typename\n\t\(
           possibleObjectTypes.map {
             """
-            ... on \($0.name) {
-            \t\t\($0.fields.map { $0.name }.joined(separator: "\n\t\t") )
-            \t}
+            ...\($0.name)Fragment
             """
           }.joined(separator: "\n\t")
         )
@@ -350,7 +392,9 @@ private extension Collection where Element == FieldMap.Element {
 
       return """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)\(interfaceFragmentCode)
+      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {
+      \(requiredFields)
+      \t\\(\($0.key.camelCase)Selections.declaration)\(interfaceFragmentCode)
       }
       \"\"\"\n
       """
