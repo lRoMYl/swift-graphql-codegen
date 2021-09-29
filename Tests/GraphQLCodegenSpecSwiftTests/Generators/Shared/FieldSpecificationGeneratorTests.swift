@@ -67,7 +67,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let discount: GraphQLObjects.Discount
+    let discount: DiscountGraphQLObjects
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -85,7 +85,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let discount: GraphQLObjects.Discount?
+    let discount: DiscountGraphQLObjects?
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -103,7 +103,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let campaignSource: GraphQLEnums.CampaignSource
+    let campaignSource: CampaignSourceEnum
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -121,7 +121,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try self.declaration(field: field)
     let expecation = try """
-    let campaignSource: GraphQLEnums.CampaignSource?
+    let campaignSource: CampaignSourceEnum?
     """.format()
 
     XCTAssertEqual(declaration, expecation)

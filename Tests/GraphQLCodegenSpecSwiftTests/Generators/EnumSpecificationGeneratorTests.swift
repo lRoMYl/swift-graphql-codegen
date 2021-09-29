@@ -58,10 +58,10 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
     let declaration = try generator.code(schema: schema).format()
 
     let expected = try """
-    // MARK: - GraphQLEnums
+    // MARK: - Enum
 
     /// Djini discount type
-    enum DiscountType: RawRepresentable, Codable {
+    enum DiscountTypeEnum: RawRepresentable, Codable {
       typealias RawValue = String
 
       case free
@@ -88,7 +88,7 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
         }
       }
 
-      static func == (lhs: DiscountType, rhs: DiscountType) -> Bool {
+      static func == (lhs: DiscountTypeEnum, rhs: DiscountTypeEnum) -> Bool {
         switch (lhs, rhs) {
         case (.free, .free): return true
         case (.absolute, .absolute): return true
@@ -99,7 +99,7 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
     }
 
     /// CampaignSource
-    enum CampaignSource: RawRepresentable, Codable {
+    enum CampaignSourceEnum: RawRepresentable, Codable {
       typealias RawValue = String
 
       case djini
@@ -121,7 +121,7 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
         }
       }
 
-      static func == (lhs: CampaignSource, rhs: CampaignSource) -> Bool {
+      static func == (lhs: CampaignSourceEnum, rhs: CampaignSourceEnum) -> Bool {
         switch (lhs, rhs) {
         case (.djini, .djini): return true
         case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue

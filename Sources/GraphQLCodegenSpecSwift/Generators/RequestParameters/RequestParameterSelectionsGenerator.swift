@@ -326,25 +326,31 @@ private extension Collection where Element == FieldMap.Element {
     entityNameStrategy: EntityNamingStrategy
   ) throws -> String {
     try map {
-      let possibleObjectTypes = try $0.value.possibleObjectTypes(
+      let interfaceFragmentCode: String
+
+      if let possibleObjectTypes = try $0.value.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         entityNameStrategy: entityNameStrategy
-      )
-
-      return """
-      let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)
-        __typename
-        \(
-          possibleObjectTypes?.map {
+      ) {
+        interfaceFragmentCode = """
+        \n\t__typename\n\t\(
+          possibleObjectTypes.map {
             """
             ... on \($0.name) {
             \t\t\($0.fields.map { $0.name }.joined(separator: "\n\t\t") )
             \t}
             """
-          }.joined(separator: "\n\t") ?? ""
+          }.joined(separator: "\n\t")
         )
+        """
+      } else {
+        interfaceFragmentCode = ""
+      }
+
+      return """
+      let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
+      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)\(interfaceFragmentCode)
       }
       \"\"\"\n
       """

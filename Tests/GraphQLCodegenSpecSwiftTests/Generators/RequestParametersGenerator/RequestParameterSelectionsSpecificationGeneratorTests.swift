@@ -235,51 +235,52 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     let formattedCode = try code.format()
 
     let expected = try #"""
-    // MARK: - Selections
+		// MARK: - Selections
 
-    let selections: Selections
+		let selections: Selections
 
-    struct Selections: GraphQLSelections {
-      let characterSelections: Set<CharacterSelection>
+		struct Selections: GraphQLSelections {
+			let characterSelections: Set<CharacterSelection>
 
-      enum CharacterSelection: String, GraphQLSelection {
-        case id
-        case name
-      }
+			enum CharacterSelection: String, GraphQLSelection {
+				case id
+				case name
+			}
 
-      init(
-        characterSelections: Set<CharacterSelection> = []
-      ) {
-        self.characterSelections = characterSelections
-      }
+			init(
+				characterSelections: Set<CharacterSelection> = []
+			) {
+				self.characterSelections = characterSelections
+			}
 
-      func declaration() -> String {
-        let characterSelectionsDeclaration = """
-        fragment CharacterFragment on Character {\(characterSelections.declaration)
-          ... on Droid {
-            id
-            name
-            primaryFunction
-            appearsIn
-          }
-          ... on Human {
-            id
-            name
-            homePlanet
-            appearsIn
-            infoURL
-          }
-        }
-        """
+			func declaration() -> String {
+				let characterSelectionsDeclaration = """
+				fragment CharacterFragment on Character {\(characterSelections.declaration)
+					__typename
+					... on Droid {
+						id
+						name
+						primaryFunction
+						appearsIn
+					}
+					... on Human {
+						id
+						name
+						homePlanet
+						appearsIn
+						infoURL
+					}
+				}
+				"""
 
-        let selectionDeclarationMap = [
-          "CharacterFragment": characterSelectionsDeclaration
-        ]
+				let selectionDeclarationMap = [
+					"CharacterFragment": characterSelectionsDeclaration
+				]
 
-        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
-      }
-    }
-    """#.format()
+				return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
+			}
+		}
+		"""#.format()
 
     XCTAssertEqual(formattedCode, expected)
   }

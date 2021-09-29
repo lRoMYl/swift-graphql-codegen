@@ -54,14 +54,15 @@ final class InterfaceCodeGeneratorTests: XCTestCase {
 
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let singleContainer = try decoder.singleValueContainer()
 
         __typename = try container.decode(ObjectType.self, forKey: .__typename)
 
         switch __typename {
         case .droid:
-          data = .droid(try container.decode(DroidGraphQLObjects.self, forKey: .data))
+          data = .droid(try singleContainer.decode(DroidGraphQLObjects.self))
         case .human:
-          data = .human(try container.decode(HumanGraphQLObjects.self, forKey: .data))
+          data = .human(try singleContainer.decode(HumanGraphQLObjects.self))
         }
       }
 
