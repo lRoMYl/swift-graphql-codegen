@@ -12,9 +12,9 @@
 import XCTest
 
 final class ObjectSpecificationGeneratorTests: XCTestCase {
-  func testGeneratedCode() throws {
-    let entityNameStrategy = DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
+  private let entityNameStrategy = DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
 
+  func testGeneratedCode() throws {
     let discountObjectType = ObjectType(
       name: "Discount",
       description: nil,
@@ -56,26 +56,113 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - GraphQLObjects
 
-    enum GraphQLObjects {}
+    struct DiscountGraphQLObjects: Codable {
+      let type: DiscountTypeGraphQLObjects
 
-    extension GraphQLObjects {
+      let value: Double
 
-      struct Discount: Codable {
-        let type: GraphQLObjects.DiscountType
+      // MARK: - CodingKeys
 
-        let value: Double
-
-        // MARK: - CodingKeys
-
-        private enum CodingKeys: String, CodingKey {
-          case type
-          case value
-        }
+      private enum CodingKeys: String, CodingKey {
+        case type
+        case value
       }
     }
     """.format()
 
     XCTAssertEqual(declaration, expected)
+  }
+
+  func testDroidStarWarsObject() throws {
+    let starWarsSchema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+
+    let whitelist = ["Droid"]
+    let characterInterfaceObjects = starWarsSchema.types.filter {
+      whitelist.contains($0.name)
+    }
+    let schema = Schema(types: characterInterfaceObjects, query: "")
+
+    let generator = ObjectCodeGenerator(
+      scalarMap: ScalarMap.default, selectionMap: nil,
+      entityNameMap: .default,
+      entityNameStrategy: entityNameStrategy
+    )
+
+    let code = try generator.code(schema: schema)
+    let formattedCode = try code.format()
+
+    let expected = try """
+    // MARK: - GraphQLObjects
+
+    struct DroidGraphQLObjects: Codable {
+      let appearsIn: [EpisodeEnum]
+
+      let id: String
+
+      let name: String
+
+      let primaryFunction: String
+
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case appearsIn
+        case id
+        case name
+        case primaryFunction
+      }
+    }
+    """.format()
+
+    XCTAssertEqual(formattedCode, expected)
+  }
+
+  func testHumanStarWarsObject() throws {
+    let starWarsSchema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+
+    let whitelist = ["Human"]
+    let characterInterfaceObjects = starWarsSchema.types.filter {
+      whitelist.contains($0.name)
+    }
+    let schema = Schema(types: characterInterfaceObjects, query: "")
+
+    let generator = ObjectCodeGenerator(
+      scalarMap: ScalarMap.default, selectionMap: nil,
+      entityNameMap: .default,
+      entityNameStrategy: entityNameStrategy
+    )
+
+    let code = try generator.code(schema: schema)
+    let formattedCode = try code.format()
+
+    let expected = try """
+    // MARK: - GraphQLObjects
+
+    struct HumanGraphQLObjects: Codable {
+      let appearsIn: [EpisodeEnum]
+      /// The home planet of the human, or null if unknown.
+
+      let homePlanet: String?
+
+      let id: String
+
+      let infoUrl: String?
+
+      let name: String
+
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case appearsIn
+        case homePlanet
+        case id
+        case infoUrl = "infoURL"
+        case name
+      }
+    }
+    """.format()
+
+    XCTAssertEqual(formattedCode, expected)
   }
 }
 

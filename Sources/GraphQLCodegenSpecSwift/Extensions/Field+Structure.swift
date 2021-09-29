@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 enum FieldStructureError: Error, LocalizedError {
   case missingReturnType(context: String)
@@ -19,15 +20,19 @@ enum FieldStructureError: Error, LocalizedError {
 }
 
 extension Field {
-  func structure(objects: [ObjectType], interfaces: [InterfaceType], scalarMap: ScalarMap) throws -> Structure? {
-    let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
+  func structure(
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> Structure? {
+    let key = try entityNameStrategy.name(for: self.type.namedType)
 
     let structure: Structure
 
     switch type.namedType {
     case let .object(objectName):
       guard
-        let result = objects.first(where: { $0.name == returnName })
+        let result = objectTypeMap[key]
       else {
         throw FieldStructureError.missingReturnType(context: "Object \(objectName) not found")
       }
@@ -35,7 +40,7 @@ extension Field {
       structure = result
     case let .interface(interfaceName):
       guard
-        let result = interfaces.first(where: { $0.name == returnName })
+        let result = interfaceTypeMap[key]
       else {
         throw FieldStructureError.missingReturnType(context: "Interface \(interfaceName) not found")
       }
@@ -49,5 +54,21 @@ extension Field {
     }
 
     return structure
+  }
+}
+
+extension Field {
+  func possibleObjectTypes(
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> [ObjectType]? {
+    let key = try entityNameStrategy.name(for: type.namedType)
+    guard let interfaceType = interfaceTypeMap[key] else { return nil }
+
+    return try interfaceType.possibleObjectTypes(
+      objectTypeMap: objectTypeMap,
+      entityNameStrategy: entityNameStrategy
+    )
   }
 }

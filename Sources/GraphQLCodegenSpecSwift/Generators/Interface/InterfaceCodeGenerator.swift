@@ -77,6 +77,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
 
           init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            let singleContainer = try decoder.singleValueContainer()
 
             __typename = try container.decode(ObjectType.self, forKey: .__typename)
 
@@ -85,7 +86,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
               try possibleObjectTypes.map {
                 """
                 case .\($0.name.camelCase):
-                  data = .\($0.name.camelCase)(try container.decode(\(try entityNameStrategy.name(for: $0)).self, forKey: .data))
+                  data = .\($0.name.camelCase)(try singleContainer.decode(\(try entityNameStrategy.name(for: $0)).self))
                 """
               }.lines
             )

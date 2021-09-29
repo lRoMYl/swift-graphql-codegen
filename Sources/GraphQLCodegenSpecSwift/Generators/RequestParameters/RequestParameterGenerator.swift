@@ -47,7 +47,8 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
-      entityNameMap: entityNameMap
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(
@@ -76,7 +77,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       return """
       // MARK: - \(requestEntityObjectName)
 
-      \(try operation($0, objects: schema.objects, interfaces: schema.interfaces).lines)
+      \(try operation($0, schema: schema).lines)
       """
     }.lines
 
@@ -93,16 +94,14 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 private extension RequestParameterGenerator {
   func operation(
     _ operation: GraphQLAST.Operation,
-    objects: [ObjectType],
-    interfaces: [InterfaceType]
+    schema: Schema
   ) throws -> [String] {
     let returnObject = try operation.returnObject()
 
     let result: [String] = try returnObject.fields.map { field in
       return try requestParameterDeclaration(
         operation: operation,
-        objectMap: objects,
-        interfaceMap: interfaces,
+        schema: schema,
         scalarMap: scalarMap,
         entityNameMap: entityNameMap,
         field: field
@@ -114,8 +113,7 @@ private extension RequestParameterGenerator {
 
   func requestParameterDeclaration(
     operation: GraphQLAST.Operation,
-    objectMap: [ObjectType],
-    interfaceMap: [InterfaceType],
+    schema: Schema,
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
     field: Field
@@ -131,10 +129,9 @@ private extension RequestParameterGenerator {
       field: field
     )
 
-    let selections = try selectionsGenerator.declaration(
+    let selections = try selectionsGenerator.code(
       field: field,
-      objects: objectMap,
-      interfaces: interfaceMap
+      schema: schema
     )
 
     let codingKeys = try codingKeysGenerator.declaration(field: field)

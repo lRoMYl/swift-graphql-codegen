@@ -8,8 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
-
-private typealias FieldMap = [String: Field]
+import GraphQLCodegenNameSwift
 
 enum RequestParameterSelectionsError: Error, LocalizedError {
   case missingReturnType(context: String)
@@ -30,23 +29,42 @@ struct RequestParameterSelectionsGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
+  private let entityNameStrategy: EntityNamingStrategy
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap) {
+  init(
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?,
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
+    self.entityNameStrategy = entityNameStrategy
   }
 
-  func declaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
+  func code(field: Field, schema: Schema) throws -> String {
     let namedType = field.type.namedType
+    let interfaceTypeMap = try schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
+    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
 
     switch namedType {
     case .object:
-      return try objectDeclaration(field: field, objects: objects, interfaces: interfaces)
+      return try objectDeclaration(
+        field: field,
+        schema: schema,
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap
+      )
     case .enum, .scalar:
       return emptyDeclaration(field: field)
     case .interface:
-      return try interfaceDeclaration(field: field, objects: objects, interfaces: interfaces)
+      return try interfaceDeclaration(
+        field: field,
+        schema: schema,
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap
+      )
     case .union:
       // TODO
       return emptyDeclaration(field: field)
@@ -57,16 +75,21 @@ struct RequestParameterSelectionsGenerator {
 // MARK: - RequestParameterSelectionsGenerator
 
 extension RequestParameterSelectionsGenerator {
-  func objectDeclaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
+  func objectDeclaration(
+    field: Field,
+    schema: Schema,
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap
+  ) throws -> String {
     guard
-      let returnObjectType = objects.first(where: { $0.name == field.type.namedType.name })
+      let returnObjectType = schema.objects.first(where: { $0.name == field.type.namedType.name })
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
     }
 
     let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
     var fieldMap: FieldMap = [fieldScalarType: field]
-    fieldMap.merge(try returnObjectType.nestedFields(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
+    fieldMap.merge(try returnObjectType.nestedFields(objects: schema.objects, scalarMap: scalarMap)) { (_, new) in new }
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -74,21 +97,26 @@ extension RequestParameterSelectionsGenerator {
     return try structureDeclaration(
       field: field,
       fieldMaps: sortedFieldMap,
-      objects: objects,
-      interfaces: interfaces
+      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
     )
   }
 
-  func interfaceDeclaration(field: Field, objects: [ObjectType], interfaces: [InterfaceType]) throws -> String {
+  func interfaceDeclaration(
+    field: Field,
+    schema: Schema,
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap
+  ) throws -> String {
     guard
-      let returnInterfaceType = interfaces.first(where: { $0.name == field.type.namedType.name })
+      let returnInterfaceType = schema.interfaces.first(where: { $0.name == field.type.namedType.name })
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
     }
 
     let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
     var fieldMap: FieldMap = [fieldScalarType: field]
-    fieldMap.merge(try returnInterfaceType.allNestedFields(objects: objects, scalarMap: scalarMap)) { (_, new) in new }
+    fieldMap.merge(try returnInterfaceType.allNestedFields(objects: schema.objects, scalarMap: scalarMap)) { (_, new) in new }
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -96,8 +124,8 @@ extension RequestParameterSelectionsGenerator {
     return try structureDeclaration(
       field: field,
       fieldMaps: sortedFieldMap,
-      objects: objects,
-      interfaces: interfaces
+      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
     )
   }
 
@@ -118,20 +146,25 @@ extension RequestParameterSelectionsGenerator {
   private func structureDeclaration(
     field: Field,
     fieldMaps: [FieldMap.Element],
-    objects: [ObjectType],
-    interfaces: [InterfaceType]
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap
   ) throws -> String {
     let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
     let selectionDeclarations = try fieldMaps.selectionDeclarations(
-      objects: objects,
-      interfaces: interfaces,
+      objectTypeMap: objectTypeMap,
+      interfaceTypeMap: interfaceTypeMap,
       scalarMap: scalarMap,
       selectionMap: selectionMap,
-      entityNameMap: entityNameMap
+      entityNameMap: entityNameMap,
+      entityNameStrategy: entityNameStrategy
     )
 
-    let selectionFragmentMap = fieldMaps.selectionFragmentMap
+    let selectionFragmentMap = try fieldMaps.selectionFragmentMap(
+      objectTypeMap: objectTypeMap,
+      interfaceTypeMap: interfaceTypeMap,
+      entityNameStrategy: entityNameStrategy
+    )
     let selectionDeclarationMap = fieldMaps.selectionDeclarationMap
 
     let code = """
@@ -176,16 +209,21 @@ extension RequestParameterSelectionsGenerator {
 
 private extension Field {
   func selectionDeclaration(
-    objects: [ObjectType],
-    interfaces: [InterfaceType],
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
-    entityNameMap: EntityNameMap
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
   ) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
     guard
-      let returnType = try structure(objects: objects, interfaces: interfaces, scalarMap: scalarMap)
+      let returnType = try structure(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
     else { return "" }
 
     let fields = returnType.selectableFields(selectionMap: selectionMap)
@@ -263,28 +301,50 @@ private extension InterfaceType {
 
 private extension Collection where Element == FieldMap.Element {
   func selectionDeclarations(
-    objects: [ObjectType],
-    interfaces: [InterfaceType],
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
-    entityNameMap: EntityNameMap
+    entityNameMap: EntityNameMap,
+    entityNameStrategy: EntityNamingStrategy
   ) throws -> String {
     try map {
       try $0.value.selectionDeclaration(
-        objects: objects,
-        interfaces: interfaces,
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
         scalarMap: scalarMap,
         selectionMap: selectionMap,
-        entityNameMap: entityNameMap
+        entityNameMap: entityNameMap,
+        entityNameStrategy: entityNameStrategy
       )
     }.lines
   }
 
-  var selectionFragmentMap: String {
-    map {
-      """
+  func selectionFragmentMap(
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> String {
+    try map {
+      let possibleObjectTypes = try $0.value.possibleObjectTypes(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
+
+      return """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
       fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\\(\($0.key.camelCase)Selections.declaration)
+        __typename
+        \(
+          possibleObjectTypes?.map {
+            """
+            ... on \($0.name) {
+            \t\t\($0.fields.map { $0.name }.joined(separator: "\n\t\t") )
+            \t}
+            """
+          }.joined(separator: "\n\t") ?? ""
+        )
       }
       \"\"\"\n
       """
