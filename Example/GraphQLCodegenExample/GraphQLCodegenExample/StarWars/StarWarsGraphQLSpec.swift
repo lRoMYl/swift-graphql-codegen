@@ -146,23 +146,23 @@ struct HumanStarWarsObjects: Codable {
 struct QueryStarWarsObjects: Codable {
   let character: CharacterUnionStarWarsUnions?
 
-  let characters: [CharacterStarWarsInterfaces]
+  let characters: [CharacterStarWarsInterfaces]?
 
   let droid: DroidStarWarsObjects?
 
-  let droids: [DroidStarWarsObjects]
+  let droids: [DroidStarWarsObjects]?
 
-  let greeting: String
+  let greeting: String?
 
   let human: HumanStarWarsObjects?
 
-  let humans: [HumanStarWarsObjects]
+  let humans: [HumanStarWarsObjects]?
 
   let luke: HumanStarWarsObjects?
 
-  let time: String
+  let time: String?
 
-  let whoami: String
+  let whoami: String?
 
   // MARK: - CodingKeys
 
@@ -219,7 +219,43 @@ struct GreetingOptionsStarWarsInputObjects: Codable {
 
 // MARK: - StarWarsInterfaces
 
-struct CharacterStarWarsInterfaces: Codable {}
+struct CharacterStarWarsInterfaces: Codable {
+  enum Object {
+    case droid(DroidStarWarsObjects)
+    case human(HumanStarWarsObjects)
+  }
+
+  enum ObjectType: String, Decodable {
+    case droid = "Droid"
+    case human = "Human"
+  }
+
+  let __typename: ObjectType
+  let data: Object
+
+  enum CodingKeys: String, CodingKey {
+    case __typename
+    case data
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let singleContainer = try decoder.singleValueContainer()
+
+    __typename = try container.decode(ObjectType.self, forKey: .__typename)
+
+    switch __typename {
+    case .droid:
+      data = .droid(try singleContainer.decode(DroidStarWarsObjects.self))
+    case .human:
+      data = .human(try singleContainer.decode(HumanStarWarsObjects.self))
+    }
+  }
+
+  func encode(to _: Encoder) throws {
+    fatalError("Not implemented")
+  }
+}
 
 // MARK: - StarWarsUnions
 
@@ -288,6 +324,8 @@ struct HumanStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {\(humanSelections.declaration)
+        __typename
+
       }
       """
 
@@ -371,6 +409,8 @@ struct DroidStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let droidSelectionsDeclaration = """
       fragment DroidFragment on Droid {\(droidSelections.declaration)
+        __typename
+
       }
       """
 
@@ -505,6 +545,8 @@ struct LukeStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {\(humanSelections.declaration)
+        __typename
+
       }
       """
 
@@ -577,6 +619,8 @@ struct HumansStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {\(humanSelections.declaration)
+        __typename
+
       }
       """
 
@@ -648,6 +692,8 @@ struct DroidsStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let droidSelectionsDeclaration = """
       fragment DroidFragment on Droid {\(droidSelections.declaration)
+        __typename
+
       }
       """
 
@@ -717,6 +763,20 @@ struct CharactersStarWarsQueries: GraphQLRequestParameter {
     func declaration() -> String {
       let characterSelectionsDeclaration = """
       fragment CharacterFragment on Character {\(characterSelections.declaration)
+        __typename
+        ... on Droid {
+      		id
+      		name
+      		primaryFunction
+      		appearsIn
+      	}
+      	... on Human {
+      		id
+      		name
+      		homePlanet
+      		appearsIn
+      		infoURL
+      	}
       }
       """
 

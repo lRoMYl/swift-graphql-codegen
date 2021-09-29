@@ -1,7 +1,6 @@
 {
-  "namespace": "",
   "entityNameMap": {
-    "query":           "QueryRequestParameter",
+    "query":            "QueryRequestParameter",
     "mutation":         "MutationRequestParameter",
     "subscription":     "SubscriptionRequestParameter",
     "object":           "ResponseObject",

@@ -9,7 +9,7 @@ import ApiClient
 
 struct GroceriesWebService: WebService {
   func baseServiceURL() -> String {
-    return "https://sg-st.fd-api.com/groceries-product-service"
+    return "https://sg-st.fd-api.com/groceries-product-service/query"
   }
 
   func defaultHttpHeaders() -> [String: String]? {

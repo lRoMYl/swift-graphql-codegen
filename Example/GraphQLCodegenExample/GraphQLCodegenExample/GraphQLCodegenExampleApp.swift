@@ -24,12 +24,25 @@ struct GraphQLCodegenExampleApp: App {
     return repository
   }()
 
+  private let starWarsRepository: StarWarsRepository = {
+    let restClient = RestClientImpl(
+      webService: StarWarsWebService(),
+      authProvider: nil
+    )
+
+    let apiClient = StarWarsApiClient(restClient: restClient)
+    let repository = StarWarsRepository(apiClient: apiClient)
+
+    return repository
+  }()
+
   var body: some Scene {
     WindowGroup {
       ContentView().onAppear() {
         setup()
 
-        try? testGroceriesGraphQL()
+//        try? testGroceriesGraphQL()
+        try? testStarWarsInterfaceGraphQL()
       }
     }
   }
@@ -54,6 +67,22 @@ extension GraphQLCodegenExampleApp {
 
     groceriesRepository
       .campaigns(with: parameters)
+      .subscribe(
+        onSuccess: { response in
+          print(response)
+        },
+        onError: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsInterfaceGraphQL() throws {
+    let parameters = CharactersStarWarsQueries()
+
+    starWarsRepository
+      .characters(with: parameters)
       .subscribe(
         onSuccess: { response in
           print(response)

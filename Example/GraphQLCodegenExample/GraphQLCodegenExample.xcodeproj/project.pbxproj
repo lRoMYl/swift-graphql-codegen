@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1427043B9100602EC4 /* StarWarsRepository.swift */; };
+		F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1627043C4900602EC4 /* StarWarsWebService.swift */; };
 		F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */; };
 		F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */; };
 		F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */; };
@@ -44,6 +46,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F855FD1427043B9100602EC4 /* StarWarsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsRepository.swift; sourceTree = "<group>"; };
+		F855FD1627043C4900602EC4 /* StarWarsWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsWebService.swift; sourceTree = "<group>"; };
 		F8C4086D270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultResourceParametersImplementation.swift; sourceTree = "<group>"; };
 		F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesRepository.swift; sourceTree = "<group>"; };
 		F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphQLCodegenExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +147,8 @@
 			isa = PBXGroup;
 			children = (
 				F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */,
+				F855FD1627043C4900602EC4 /* StarWarsWebService.swift */,
+				F855FD1427043B9100602EC4 /* StarWarsRepository.swift */,
 				F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */,
 			);
 			path = StarWars;
@@ -266,7 +272,9 @@
 				F8D323AB26FF9CA800A594B2 /* GraphQLEntity.swift in Sources */,
 				F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
+				F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */,
 				F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */,
+				F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */,
 				F8C4086E270193CE00CA5F13 /* DefaultResourceParametersImplementation.swift in Sources */,
 				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
 			);

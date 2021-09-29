@@ -7,18 +7,28 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
+@testable import GraphQLCodegenNameSwift
 @testable import GraphQLCodegenSpecSwift
 @testable import GraphQLDownloader
 import XCTest
 
 final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
-  func testCampaignsDeclaration() throws {
-    let generator = RequestParameterSelectionsGenerator(
+  private lazy var entityNameStrategy: EntityNamingStrategy = {
+    DHEntityNameStrategy(
+      scalarMap: .default,
+      entityNameMap: .default
+    )
+  }()
+  private lazy var generator: RequestParameterSelectionsGenerator = {
+    RequestParameterSelectionsGenerator(
       scalarMap: ScalarMap.default,
       selectionMap: nil,
-      entityNameMap: EntityNameMap.default
+      entityNameMap: EntityNameMap.default,
+      entityNameStrategy: entityNameStrategy
     )
+  }()
 
+  func testCampaignsDeclaration() throws {
     let campaignRequestField = Field(
       name: "campaigns",
       description: nil,
@@ -30,10 +40,9 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
 
     let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
 
-    let declaration = try generator.declaration(
+    let declaration = try generator.code(
       field: campaignRequestField,
-      objects: schema.objects,
-      interfaces: schema.interfaces
+      schema: schema
     ).format()
 
     let expected = try #"""
@@ -158,12 +167,6 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
   }
 
   func testObjectFieldDeclaration() throws {
-    let generator = RequestParameterSelectionsGenerator(
-      scalarMap: ScalarMap.default,
-      selectionMap: nil,
-      entityNameMap: EntityNameMap.default
-    )
-
     let campaignRequestField = Field(
       name: "discount",
       description: nil,
@@ -177,8 +180,9 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try generator.objectDeclaration(
       field: campaignRequestField,
-      objects: schema.objects,
-      interfaces: schema.interfaces
+      schema: schema,
+      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
     )
 
     let expected = try #"""
@@ -216,5 +220,67 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     """#.format()
 
     XCTAssertEqual(declaration, expected)
+  }
+
+  func testStarWarCharactersSelection() throws {
+    let schema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+
+    let queryOperation = schema.operations.first(where: { $0.type.name == "Query" })!
+    let charactersField = queryOperation.type.fields.first(where: { $0.name == "characters" })!
+
+    let code = try generator.code(
+      field: charactersField,
+      schema: schema
+    )
+    let formattedCode = try code.format()
+
+    let expected = try #"""
+    // MARK: - Selections
+
+    let selections: Selections
+
+    struct Selections: GraphQLSelections {
+      let characterSelections: Set<CharacterSelection>
+
+      enum CharacterSelection: String, GraphQLSelection {
+        case id
+        case name
+      }
+
+      init(
+        characterSelections: Set<CharacterSelection> = []
+      ) {
+        self.characterSelections = characterSelections
+      }
+
+      func declaration() -> String {
+        let characterSelectionsDeclaration = """
+        fragment CharacterFragment on Character {\(characterSelections.declaration)
+          ... on Droid {
+            id
+            name
+            primaryFunction
+            appearsIn
+          }
+          ... on Human {
+            id
+            name
+            homePlanet
+            appearsIn
+            infoURL
+          }
+        }
+        """
+
+        let selectionDeclarationMap = [
+          "CharacterFragment": characterSelectionsDeclaration
+        ]
+
+        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
+      }
+    }
+    """#.format()
+
+    XCTAssertEqual(formattedCode, expected)
   }
 }

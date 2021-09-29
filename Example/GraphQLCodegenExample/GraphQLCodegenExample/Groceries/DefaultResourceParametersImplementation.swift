@@ -9,7 +9,7 @@ import Foundation
 
 class GraphQLResourceParametersImplementation: GroceriesResourceParametersImplementing {
   func servicePath(with resourceParameter: GroceriesResourceParameters) -> String {
-    "query"
+    ""
   }
 
   func headers(with resourceParameter: GroceriesResourceParameters) -> [String: String]? {
