@@ -57,10 +57,10 @@ public extension String {
         continue
       } else {
         // There was a range of >1 capital letters. Turn those into a word, stopping at the capital before the lower case character.
-        words.append(wordStart ..< lowerCaseRange.lowerBound)
+        words.append(wordStart ..< index(before: lowerCaseRange.lowerBound))
 
         // Next word starts at the capital before the lowercase we just found
-        wordStart = index(after: lowerCaseRange.lowerBound)
+        wordStart = index(before: lowerCaseRange.lowerBound)
         searchRange = wordStart ..< searchRange.upperBound
       }
     }

@@ -288,7 +288,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   let languageCode: String
 
-  let apikY: String
+  let apiKey: String
 
   let discoClientId: String
 
@@ -426,7 +426,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
     case languageCode = "LanguageCode"
 
-    case apikY = "APIKey"
+    case apiKey = "APIKey"
 
     case discoClientId = "DiscoClientID"
   }
@@ -437,7 +437,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     locale: String,
     languageId: String,
     languageCode: String,
-    apikY: String,
+    apiKey: String,
     discoClientId: String,
     selections: Selections = .init()
   ) {
@@ -446,7 +446,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     self.locale = locale
     self.languageId = languageId
     self.languageCode = languageCode
-    self.apikY = apikY
+    self.apiKey = apiKey
     self.discoClientId = discoClientId
     self.selections = selections
   }

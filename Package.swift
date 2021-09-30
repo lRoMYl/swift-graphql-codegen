@@ -32,7 +32,7 @@ let package = Package(
     ),
     .target(
       name: "GraphQLCodegenUtil",
-      dependencies: ["SwiftFormat"]
+      dependencies: ["SwiftFormat", "GraphQLCodegenConfig"]
     ),
     .target(
       name: "GraphQLCodegenNameSwift",
@@ -76,6 +76,10 @@ let package = Package(
       resources: [
         .process("Resources")
       ]
+    ),
+    .testTarget(
+      name: "GraphQLStringCaseTests",
+      dependencies: ["SwiftFormat", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     )
   ]
 )
