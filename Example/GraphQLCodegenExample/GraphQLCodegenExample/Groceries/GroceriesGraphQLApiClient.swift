@@ -8,8 +8,8 @@ import RxSwift
 
 protocol GroceriesApiClientImplementing {
   func campaigns(
-    with parameters: CampaignsQueryRequestParameter
-  ) -> Single<ApiResponse<CampaignsResponseObject?>>
+    with parameters: CampaignsQueryRequest
+  ) -> Single<ApiResponse<CampaignsResponseModel?>>
 }
 
 // MARK: - GroceriesApiClientImplementing
@@ -24,8 +24,8 @@ final class GroceriesApiClient: GroceriesApiClientImplementing {
   }
 
   func campaigns(
-    with parameters: CampaignsQueryRequestParameter
-  ) -> Single<ApiResponse<CampaignsResponseObject?>> {
+    with parameters: CampaignsQueryRequest
+  ) -> Single<ApiResponse<CampaignsResponseModel?>> {
     let resource = GroceriesResourceParameters
       .queryCampaigns(parameters: parameters)
 
@@ -75,7 +75,7 @@ final class GroceriesResourceParametersDIContainer {
 enum GroceriesResourceParameters: ResourceParameters {
   private static var diContainer = GroceriesResourceParametersDIContainer.shared
 
-  case queryCampaigns(parameters: CampaignsQueryRequestParameter)
+  case queryCampaigns(parameters: CampaignsQueryRequest)
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON
@@ -112,9 +112,9 @@ enum GroceriesResourceParameters: ResourceParameters {
     }
   }
 
-  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequestParameter {
+  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
     guard
-      let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters))
+      let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
     else { return [:] }
 
     return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

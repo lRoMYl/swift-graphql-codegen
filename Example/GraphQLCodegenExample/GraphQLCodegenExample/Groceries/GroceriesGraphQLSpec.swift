@@ -124,9 +124,9 @@ enum DiscountTypeEnum: RawRepresentable, Codable {
   }
 }
 
-// MARK: - ResponseObject
+// MARK: - ResponseModel
 
-struct BenefitResponseObject: Codable {
+struct BenefitResponseModel: Codable {
   let productId: String
 
   let quantity: Int
@@ -139,10 +139,10 @@ struct BenefitResponseObject: Codable {
   }
 }
 
-struct CampaignAttributeResponseObject: Codable {
+struct CampaignAttributeResponseModel: Codable {
   let autoApplied: Bool
 
-  let benefits: [BenefitResponseObject]?
+  let benefits: [BenefitResponseModel]?
 
   let campaignType: CampaignTypeEnum
 
@@ -170,10 +170,10 @@ struct CampaignAttributeResponseObject: Codable {
   }
 }
 
-struct CampaignsResponseObject: Codable {
-  let campaignAttributes: [CampaignAttributeResponseObject?]?
+struct CampaignsResponseModel: Codable {
+  let campaignAttributes: [CampaignAttributeResponseModel?]?
 
-  let productDeals: [ProductDealResponseObject?]?
+  let productDeals: [ProductDealResponseModel?]?
 
   // MARK: - CodingKeys
 
@@ -183,7 +183,7 @@ struct CampaignsResponseObject: Codable {
   }
 }
 
-struct DealResponseObject: Codable {
+struct DealResponseModel: Codable {
   let campaignId: String
   /// things that would change across products for a campaign
 
@@ -201,8 +201,8 @@ struct DealResponseObject: Codable {
   }
 }
 
-struct ProductDealResponseObject: Codable {
-  let deals: [DealResponseObject?]?
+struct ProductDealResponseModel: Codable {
+  let deals: [DealResponseModel?]?
 
   let productId: String
 
@@ -214,8 +214,8 @@ struct ProductDealResponseObject: Codable {
   }
 }
 
-struct QueryResponseObject: Codable {
-  let campaigns: CampaignsResponseObject?
+struct QueryResponseModel: Codable {
+  let campaigns: CampaignsResponseModel?
 
   // MARK: - CodingKeys
 
@@ -230,13 +230,13 @@ struct QueryResponseObject: Codable {
 
 // MARK: - Union
 
-// MARK: - GraphQLRequestParameter
+// MARK: - GraphQLRequesting
 
-// MARK: - QueryRequestParameter
+// MARK: - QueryRequest
 
-// MARK: - CampaignsQueryRequestParameter
+// MARK: - CampaignsQueryRequest
 
-struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
+struct CampaignsQueryRequest: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -453,9 +453,9 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
 }
 
 struct CampaignsQueryResponse: GraphQLResponseData {
-  let campaigns: CampaignsResponseObject?
+  let campaigns: CampaignsResponseModel?
 
-  var wrappedValue: CampaignsResponseObject? {
+  var wrappedValue: CampaignsResponseModel? {
     return campaigns
   }
 }

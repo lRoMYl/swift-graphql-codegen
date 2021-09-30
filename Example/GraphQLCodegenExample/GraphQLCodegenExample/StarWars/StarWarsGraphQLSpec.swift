@@ -89,9 +89,9 @@ enum LanguageStarWarsEnums: RawRepresentable, Codable {
   }
 }
 
-// MARK: - StarWarsObjects
+// MARK: - StarWarsObject
 
-struct MutationStarWarsObjects: Codable {
+struct MutationStarWarsObject: Codable {
   let mutate: Bool
 
   // MARK: - CodingKeys
@@ -101,7 +101,7 @@ struct MutationStarWarsObjects: Codable {
   }
 }
 
-struct DroidStarWarsObjects: Codable {
+struct DroidStarWarsObject: Codable {
   let appearsIn: [EpisodeStarWarsEnums]
 
   let id: String
@@ -120,7 +120,7 @@ struct DroidStarWarsObjects: Codable {
   }
 }
 
-struct HumanStarWarsObjects: Codable {
+struct HumanStarWarsObject: Codable {
   let appearsIn: [EpisodeStarWarsEnums]
   /// The home planet of the human, or null if unknown.
 
@@ -143,22 +143,22 @@ struct HumanStarWarsObjects: Codable {
   }
 }
 
-struct QueryStarWarsObjects: Codable {
+struct QueryStarWarsObject: Codable {
   let character: CharacterUnionStarWarsUnions?
 
-  let characters: [CharacterStarWarsInterfaces]
+  let characters: [CharacterStarWarsInterface]
 
-  let droid: DroidStarWarsObjects?
+  let droid: DroidStarWarsObject?
 
-  let droids: [DroidStarWarsObjects]
+  let droids: [DroidStarWarsObject]
 
   let greeting: String
 
-  let human: HumanStarWarsObjects?
+  let human: HumanStarWarsObject?
 
-  let humans: [HumanStarWarsObjects]
+  let humans: [HumanStarWarsObject]
 
-  let luke: HumanStarWarsObjects?
+  let luke: HumanStarWarsObject?
 
   let time: String
 
@@ -180,7 +180,7 @@ struct QueryStarWarsObjects: Codable {
   }
 }
 
-struct SubscriptionStarWarsObjects: Codable {
+struct SubscriptionStarWarsObject: Codable {
   /// Returns a random number every second. You should see it changing if your subscriptions work right.
 
   let number: Int
@@ -194,7 +194,7 @@ struct SubscriptionStarWarsObjects: Codable {
 
 // MARK: - Input Objects
 
-struct GreetingStarWarsInputObjects: Codable {
+struct GreetingStarWarsInputObject: Codable {
   let language: LanguageStarWarsEnums?
 
   let name: String
@@ -207,7 +207,7 @@ struct GreetingStarWarsInputObjects: Codable {
   }
 }
 
-struct GreetingOptionsStarWarsInputObjects: Codable {
+struct GreetingOptionsStarWarsInputObject: Codable {
   let prefix: String?
 
   // MARK: - CodingKeys
@@ -217,12 +217,12 @@ struct GreetingOptionsStarWarsInputObjects: Codable {
   }
 }
 
-// MARK: - StarWarsInterfaces
+// MARK: - StarWarsInterface
 
-struct CharacterStarWarsInterfaces: Codable {
+struct CharacterStarWarsInterface: Codable {
   enum Object {
-    case droid(DroidStarWarsObjects)
-    case human(HumanStarWarsObjects)
+    case droid(DroidStarWarsObject)
+    case human(HumanStarWarsObject)
   }
 
   enum ObjectType: String, Decodable {
@@ -246,9 +246,9 @@ struct CharacterStarWarsInterfaces: Codable {
 
     switch __typename {
     case .droid:
-      data = .droid(try singleContainer.decode(DroidStarWarsObjects.self))
+      data = .droid(try singleContainer.decode(DroidStarWarsObject.self))
     case .human:
-      data = .human(try singleContainer.decode(HumanStarWarsObjects.self))
+      data = .human(try singleContainer.decode(HumanStarWarsObject.self))
     }
   }
 
@@ -261,13 +261,13 @@ struct CharacterStarWarsInterfaces: Codable {
 
 struct CharacterUnionStarWarsUnions: Codable {}
 
-// MARK: - GraphQLRequestParameter
+// MARK: - GraphQLRequesting
 
-// MARK: - StarWarsQueries
+// MARK: - StarWarsQuery
 
-// MARK: - HumanStarWarsQueries
+// MARK: - HumanStarWarsQuery
 
-struct HumanStarWarsQueries: GraphQLRequestParameter {
+struct HumanStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -350,9 +350,9 @@ struct HumanStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - DroidStarWarsQueries
+// MARK: - DroidStarWarsQuery
 
-struct DroidStarWarsQueries: GraphQLRequestParameter {
+struct DroidStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -435,9 +435,9 @@ struct DroidStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - CharacterStarWarsQueries
+// MARK: - CharacterStarWarsQuery
 
-struct CharacterStarWarsQueries: GraphQLRequestParameter {
+struct CharacterStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -492,9 +492,9 @@ struct CharacterStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - LukeStarWarsQueries
+// MARK: - LukeStarWarsQuery
 
-struct LukeStarWarsQueries: GraphQLRequestParameter {
+struct LukeStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -565,9 +565,9 @@ struct LukeStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - HumansStarWarsQueries
+// MARK: - HumansStarWarsQuery
 
-struct HumansStarWarsQueries: GraphQLRequestParameter {
+struct HumansStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -638,9 +638,9 @@ struct HumansStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - DroidsStarWarsQueries
+// MARK: - DroidsStarWarsQuery
 
-struct DroidsStarWarsQueries: GraphQLRequestParameter {
+struct DroidsStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -711,9 +711,9 @@ struct DroidsStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - CharactersStarWarsQueries
+// MARK: - CharactersStarWarsQuery
 
-struct CharactersStarWarsQueries: GraphQLRequestParameter {
+struct CharactersStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -823,9 +823,9 @@ struct CharactersStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - GreetingStarWarsQueries
+// MARK: - GreetingStarWarsQuery
 
-struct GreetingStarWarsQueries: GraphQLRequestParameter {
+struct GreetingStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -853,7 +853,7 @@ struct GreetingStarWarsQueries: GraphQLRequestParameter {
 
   // MARK: - Arguments
 
-  let input: GreetingStarWarsInputObjects?
+  let input: GreetingStarWarsInputObject?
 
   // MARK: - Selections
 
@@ -870,7 +870,7 @@ struct GreetingStarWarsQueries: GraphQLRequestParameter {
   }
 
   init(
-    input: GreetingStarWarsInputObjects?,
+    input: GreetingStarWarsInputObject?,
     selections: Selections = .init()
   ) {
     self.input = input
@@ -878,9 +878,9 @@ struct GreetingStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - WhoamiStarWarsQueries
+// MARK: - WhoamiStarWarsQuery
 
-struct WhoamiStarWarsQueries: GraphQLRequestParameter {
+struct WhoamiStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -923,9 +923,9 @@ struct WhoamiStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - TimeStarWarsQueries
+// MARK: - TimeStarWarsQuery
 
-struct TimeStarWarsQueries: GraphQLRequestParameter {
+struct TimeStarWarsQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
@@ -968,11 +968,11 @@ struct TimeStarWarsQueries: GraphQLRequestParameter {
   }
 }
 
-// MARK: - StarWarsMutations
+// MARK: - StarWarsMutation
 
-// MARK: - MutateStarWarsMutations
+// MARK: - MutateStarWarsMutation
 
-struct MutateStarWarsMutations: GraphQLRequestParameter {
+struct MutateStarWarsMutation: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .mutation
@@ -1015,11 +1015,11 @@ struct MutateStarWarsMutations: GraphQLRequestParameter {
   }
 }
 
-// MARK: - StarWarsSubscriptions
+// MARK: - StarWarsSubscription
 
-// MARK: - NumberStarWarsSubscriptions
+// MARK: - NumberStarWarsSubscription
 
-struct NumberStarWarsSubscriptions: GraphQLRequestParameter {
+struct NumberStarWarsSubscription: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .subscription
@@ -1063,17 +1063,17 @@ struct NumberStarWarsSubscriptions: GraphQLRequestParameter {
 }
 
 struct HumanQueryResponse: GraphQLResponseData {
-  let human: HumanStarWarsObjects?
+  let human: HumanStarWarsObject?
 
-  var wrappedValue: HumanStarWarsObjects? {
+  var wrappedValue: HumanStarWarsObject? {
     return human
   }
 }
 
 struct DroidQueryResponse: GraphQLResponseData {
-  let droid: DroidStarWarsObjects?
+  let droid: DroidStarWarsObject?
 
-  var wrappedValue: DroidStarWarsObjects? {
+  var wrappedValue: DroidStarWarsObject? {
     return droid
   }
 }
@@ -1087,33 +1087,33 @@ struct CharacterQueryResponse: GraphQLResponseData {
 }
 
 struct LukeQueryResponse: GraphQLResponseData {
-  let luke: HumanStarWarsObjects?
+  let luke: HumanStarWarsObject?
 
-  var wrappedValue: HumanStarWarsObjects? {
+  var wrappedValue: HumanStarWarsObject? {
     return luke
   }
 }
 
 struct HumansQueryResponse: GraphQLResponseData {
-  let humans: [HumanStarWarsObjects]
+  let humans: [HumanStarWarsObject]
 
-  var wrappedValue: [HumanStarWarsObjects] {
+  var wrappedValue: [HumanStarWarsObject] {
     return humans
   }
 }
 
 struct DroidsQueryResponse: GraphQLResponseData {
-  let droids: [DroidStarWarsObjects]
+  let droids: [DroidStarWarsObject]
 
-  var wrappedValue: [DroidStarWarsObjects] {
+  var wrappedValue: [DroidStarWarsObject] {
     return droids
   }
 }
 
 struct CharactersQueryResponse: GraphQLResponseData {
-  let characters: [CharacterStarWarsInterfaces]
+  let characters: [CharacterStarWarsInterface]
 
-  var wrappedValue: [CharacterStarWarsInterfaces] {
+  var wrappedValue: [CharacterStarWarsInterface] {
     return characters
   }
 }

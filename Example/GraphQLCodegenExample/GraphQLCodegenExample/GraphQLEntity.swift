@@ -6,7 +6,7 @@ import Foundation
 
 // MARK: - Interfaces
 
-protocol GraphQLRequestParameter: Encodable {
+protocol GraphQLRequesting: Encodable {
   associatedtype Selections: GraphQLSelections
 
   var requestType: GraphQLRequestType { get }
@@ -27,9 +27,9 @@ enum GraphQLRequestType {
   case subscription
 }
 
-// MARK: GraphQLRequest
+// MARK: GraphQLRequestCodableWrapper
 
-struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
+struct GraphQLRequestCodableWrapper<RequestParameters: GraphQLRequesting>: Encodable {
   let parameters: RequestParameters
 
   enum CodingKeys: String, CodingKey {

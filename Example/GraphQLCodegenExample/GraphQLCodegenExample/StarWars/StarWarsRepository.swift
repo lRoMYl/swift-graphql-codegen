@@ -20,8 +20,8 @@ final class StarWarsRepository {
   }
 
   func characters(
-    with parameters: CharactersStarWarsQueries
-  ) -> Single<Result<[CharacterStarWarsInterfaces], StarWarsRepositoryError>> {
+    with parameters: CharactersStarWarsQuery
+  ) -> Single<Result<[CharacterStarWarsInterface], StarWarsRepositoryError>> {
     apiClient.characters(with: parameters)
       .map {
         guard let data = $0.data else {

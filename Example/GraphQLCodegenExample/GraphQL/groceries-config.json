@@ -1,10 +1,12 @@
 {
   "entityNameMap": {
-    "query":            "QueryRequestParameter",
-    "mutation":         "MutationRequestParameter",
-    "subscription":     "SubscriptionRequestParameter",
-    "object":           "ResponseObject",
-    "inputObject":      "RequestObject",
+    "request":          "GraphQLRequestCodableWrapper",
+    "requestParameter": "GraphQLRequesting",
+    "query":            "QueryRequest",
+    "mutation":         "MutationRequest",
+    "subscription":     "SubscriptionRequest",
+    "object":           "ResponseModel",
+    "inputObject":      "RequestModel",
     "interface":        "Interface",
     "union":            "Union",
     "enum":             "Enum",

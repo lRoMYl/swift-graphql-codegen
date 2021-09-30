@@ -20,8 +20,8 @@ final class GroceriesRepository {
   }
 
   func campaigns(
-    with parameters: CampaignsQueryRequestParameter
-  ) -> Single<Result<CampaignsResponseObject?, GroceriesRepositoryError>> {
+    with parameters: CampaignsQueryRequest
+  ) -> Single<Result<CampaignsResponseModel?, GroceriesRepositoryError>> {
     apiClient.campaigns(with: parameters)
       .map {
         guard let data = $0.data else {

@@ -8,40 +8,40 @@ import RxSwift
 
 protocol StarWarsApiClientImplementing {
   func human(
-    with parameters: HumanStarWarsQueries
-  ) -> Single<ApiResponse<HumanStarWarsObjects?>>
+    with parameters: HumanStarWarsQuery
+  ) -> Single<ApiResponse<HumanStarWarsObject?>>
   func droid(
-    with parameters: DroidStarWarsQueries
-  ) -> Single<ApiResponse<DroidStarWarsObjects?>>
+    with parameters: DroidStarWarsQuery
+  ) -> Single<ApiResponse<DroidStarWarsObject?>>
   func character(
-    with parameters: CharacterStarWarsQueries
+    with parameters: CharacterStarWarsQuery
   ) -> Single<ApiResponse<CharacterUnionStarWarsUnions?>>
   func luke(
-    with parameters: LukeStarWarsQueries
-  ) -> Single<ApiResponse<HumanStarWarsObjects?>>
+    with parameters: LukeStarWarsQuery
+  ) -> Single<ApiResponse<HumanStarWarsObject?>>
   func humans(
-    with parameters: HumansStarWarsQueries
-  ) -> Single<ApiResponse<[HumanStarWarsObjects]>>
+    with parameters: HumansStarWarsQuery
+  ) -> Single<ApiResponse<[HumanStarWarsObject]>>
   func droids(
-    with parameters: DroidsStarWarsQueries
-  ) -> Single<ApiResponse<[DroidStarWarsObjects]>>
+    with parameters: DroidsStarWarsQuery
+  ) -> Single<ApiResponse<[DroidStarWarsObject]>>
   func characters(
-    with parameters: CharactersStarWarsQueries
-  ) -> Single<ApiResponse<[CharacterStarWarsInterfaces]>>
+    with parameters: CharactersStarWarsQuery
+  ) -> Single<ApiResponse<[CharacterStarWarsInterface]>>
   func greeting(
-    with parameters: GreetingStarWarsQueries
+    with parameters: GreetingStarWarsQuery
   ) -> Single<ApiResponse<String>>
   func whoami(
-    with parameters: WhoamiStarWarsQueries
+    with parameters: WhoamiStarWarsQuery
   ) -> Single<ApiResponse<String>>
   func time(
-    with parameters: TimeStarWarsQueries
+    with parameters: TimeStarWarsQuery
   ) -> Single<ApiResponse<String>>
   func mutate(
-    with parameters: MutateStarWarsMutations
+    with parameters: MutateStarWarsMutation
   ) -> Single<ApiResponse<Bool>>
   func number(
-    with parameters: NumberStarWarsSubscriptions
+    with parameters: NumberStarWarsSubscription
   ) -> Single<ApiResponse<Int>>
 }
 
@@ -57,8 +57,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func human(
-    with parameters: HumanStarWarsQueries
-  ) -> Single<ApiResponse<HumanStarWarsObjects?>> {
+    with parameters: HumanStarWarsQuery
+  ) -> Single<ApiResponse<HumanStarWarsObject?>> {
     let resource = StarWarsResourceParameters
       .queryHuman(parameters: parameters)
 
@@ -69,8 +69,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func droid(
-    with parameters: DroidStarWarsQueries
-  ) -> Single<ApiResponse<DroidStarWarsObjects?>> {
+    with parameters: DroidStarWarsQuery
+  ) -> Single<ApiResponse<DroidStarWarsObject?>> {
     let resource = StarWarsResourceParameters
       .queryDroid(parameters: parameters)
 
@@ -81,7 +81,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func character(
-    with parameters: CharacterStarWarsQueries
+    with parameters: CharacterStarWarsQuery
   ) -> Single<ApiResponse<CharacterUnionStarWarsUnions?>> {
     let resource = StarWarsResourceParameters
       .queryCharacter(parameters: parameters)
@@ -93,8 +93,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func luke(
-    with parameters: LukeStarWarsQueries
-  ) -> Single<ApiResponse<HumanStarWarsObjects?>> {
+    with parameters: LukeStarWarsQuery
+  ) -> Single<ApiResponse<HumanStarWarsObject?>> {
     let resource = StarWarsResourceParameters
       .queryLuke(parameters: parameters)
 
@@ -105,8 +105,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func humans(
-    with parameters: HumansStarWarsQueries
-  ) -> Single<ApiResponse<[HumanStarWarsObjects]>> {
+    with parameters: HumansStarWarsQuery
+  ) -> Single<ApiResponse<[HumanStarWarsObject]>> {
     let resource = StarWarsResourceParameters
       .queryHumans(parameters: parameters)
 
@@ -117,8 +117,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func droids(
-    with parameters: DroidsStarWarsQueries
-  ) -> Single<ApiResponse<[DroidStarWarsObjects]>> {
+    with parameters: DroidsStarWarsQuery
+  ) -> Single<ApiResponse<[DroidStarWarsObject]>> {
     let resource = StarWarsResourceParameters
       .queryDroids(parameters: parameters)
 
@@ -129,8 +129,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func characters(
-    with parameters: CharactersStarWarsQueries
-  ) -> Single<ApiResponse<[CharacterStarWarsInterfaces]>> {
+    with parameters: CharactersStarWarsQuery
+  ) -> Single<ApiResponse<[CharacterStarWarsInterface]>> {
     let resource = StarWarsResourceParameters
       .queryCharacters(parameters: parameters)
 
@@ -141,7 +141,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func greeting(
-    with parameters: GreetingStarWarsQueries
+    with parameters: GreetingStarWarsQuery
   ) -> Single<ApiResponse<String>> {
     let resource = StarWarsResourceParameters
       .queryGreeting(parameters: parameters)
@@ -153,7 +153,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func whoami(
-    with parameters: WhoamiStarWarsQueries
+    with parameters: WhoamiStarWarsQuery
   ) -> Single<ApiResponse<String>> {
     let resource = StarWarsResourceParameters
       .queryWhoami(parameters: parameters)
@@ -165,7 +165,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func time(
-    with parameters: TimeStarWarsQueries
+    with parameters: TimeStarWarsQuery
   ) -> Single<ApiResponse<String>> {
     let resource = StarWarsResourceParameters
       .queryTime(parameters: parameters)
@@ -177,7 +177,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func mutate(
-    with parameters: MutateStarWarsMutations
+    with parameters: MutateStarWarsMutation
   ) -> Single<ApiResponse<Bool>> {
     let resource = StarWarsResourceParameters
       .updateMutate(parameters: parameters)
@@ -189,7 +189,7 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   }
 
   func number(
-    with parameters: NumberStarWarsSubscriptions
+    with parameters: NumberStarWarsSubscription
   ) -> Single<ApiResponse<Int>> {
     let resource = StarWarsResourceParameters
       .subscribeNumber(parameters: parameters)
@@ -276,18 +276,18 @@ final class StarWarsResourceParametersDIContainer {
 enum StarWarsResourceParameters: ResourceParameters {
   private static var diContainer = StarWarsResourceParametersDIContainer.shared
 
-  case queryHuman(parameters: HumanStarWarsQueries)
-  case queryDroid(parameters: DroidStarWarsQueries)
-  case queryCharacter(parameters: CharacterStarWarsQueries)
-  case queryLuke(parameters: LukeStarWarsQueries)
-  case queryHumans(parameters: HumansStarWarsQueries)
-  case queryDroids(parameters: DroidsStarWarsQueries)
-  case queryCharacters(parameters: CharactersStarWarsQueries)
-  case queryGreeting(parameters: GreetingStarWarsQueries)
-  case queryWhoami(parameters: WhoamiStarWarsQueries)
-  case queryTime(parameters: TimeStarWarsQueries)
-  case updateMutate(parameters: MutateStarWarsMutations)
-  case subscribeNumber(parameters: NumberStarWarsSubscriptions)
+  case queryHuman(parameters: HumanStarWarsQuery)
+  case queryDroid(parameters: DroidStarWarsQuery)
+  case queryCharacter(parameters: CharacterStarWarsQuery)
+  case queryLuke(parameters: LukeStarWarsQuery)
+  case queryHumans(parameters: HumansStarWarsQuery)
+  case queryDroids(parameters: DroidsStarWarsQuery)
+  case queryCharacters(parameters: CharactersStarWarsQuery)
+  case queryGreeting(parameters: GreetingStarWarsQuery)
+  case queryWhoami(parameters: WhoamiStarWarsQuery)
+  case queryTime(parameters: TimeStarWarsQuery)
+  case updateMutate(parameters: MutateStarWarsMutation)
+  case subscribeNumber(parameters: NumberStarWarsSubscription)
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON
@@ -346,9 +346,9 @@ enum StarWarsResourceParameters: ResourceParameters {
     }
   }
 
-  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequestParameter {
+  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
     guard
-      let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters))
+      let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
     else { return [:] }
 
     return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

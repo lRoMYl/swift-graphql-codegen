@@ -55,7 +55,7 @@ extension GraphQLCodegenExampleApp {
   }
 
   func testGroceriesGraphQL() throws {
-    let parameters = CampaignsQueryRequestParameter(
+    let parameters = CampaignsQueryRequest(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
       locale: "en_SG",
@@ -79,7 +79,7 @@ extension GraphQLCodegenExampleApp {
   }
 
   func testStarWarsInterfaceGraphQL() throws {
-    let parameters = CharactersStarWarsQueries(
+    let parameters = CharactersStarWarsQuery(
       selections: .init(
         characterSelections: [.all],
         droidSelections: [.all],
