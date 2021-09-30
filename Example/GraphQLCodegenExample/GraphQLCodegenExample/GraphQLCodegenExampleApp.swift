@@ -50,7 +50,7 @@ struct GraphQLCodegenExampleApp: App {
 
 extension GraphQLCodegenExampleApp {
   func setup() {
-    GroceriesResourceParametersDIContainer.shared.implementation
+    GroceriesResourceParametersDIContainer.shared.provider
       = GraphQLResourceParametersProvider()
   }
 

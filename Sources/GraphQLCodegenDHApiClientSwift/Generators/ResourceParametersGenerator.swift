@@ -54,7 +54,7 @@ struct ResourceParametersGenerator: Generating {
     final class \(diContainerName) {
       static let shared = \(diContainerName)()
 
-      var providing: \(resourceParameterProviding)?
+      var provider: \(resourceParameterProviding)?
     }
 
     enum \(resourceParametersName): ResourceParameters {
@@ -71,23 +71,23 @@ struct ResourceParametersGenerator: Generating {
       }
 
       func servicePath() -> String {
-        Self.diContainer.providing?.servicePath(with: self) ?? ""
+        Self.diContainer.provider?.servicePath(with: self) ?? ""
       }
 
       func headers() -> [String: String]? {
-        Self.diContainer.providing?.headers(with: self) ?? nil
+        Self.diContainer.provider?.headers(with: self) ?? nil
       }
 
       func timeoutInterval() -> TimeInterval? {
-        Self.diContainer.providing?.timeoutInterval(with: self) ?? nil
+        Self.diContainer.provider?.timeoutInterval(with: self) ?? nil
       }
 
       func preventRetry() -> Bool {
-        Self.diContainer.providing?.preventRetry(with: self) ?? false
+        Self.diContainer.provider?.preventRetry(with: self) ?? false
       }
 
       func preventAddingLanguageParameters() -> Bool {
-        Self.diContainer.providing?.preventAddingLanguageParameters(with: self) ?? false
+        Self.diContainer.provider?.preventAddingLanguageParameters(with: self) ?? false
       }
 
       func bodyParameters() -> Any? {
