@@ -185,11 +185,11 @@ struct CampaignsResponseModel: Codable {
 
 struct DealResponseModel: Codable {
   let campaignId: String
+
   /// things that would change across products for a campaign
-
   let discountTag: String
-  /// buy 3 get 1 free
 
+  /// buy 3 get 1 free
   let triggerQuantity: Int
 
   // MARK: - CodingKeys

@@ -122,8 +122,8 @@ struct DroidStarWarsObject: Codable {
 
 struct HumanStarWarsObject: Codable {
   let appearsIn: [EpisodeStarWarsEnums]
-  /// The home planet of the human, or null if unknown.
 
+  /// The home planet of the human, or null if unknown.
   let homePlanet: String?
 
   let id: String
@@ -182,7 +182,6 @@ struct QueryStarWarsObject: Codable {
 
 struct SubscriptionStarWarsObject: Codable {
   /// Returns a random number every second. You should see it changing if your subscriptions work right.
-
   let number: Int
 
   // MARK: - CodingKeys

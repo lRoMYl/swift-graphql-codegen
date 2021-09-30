@@ -68,7 +68,7 @@ private extension ObjectType {
 
     let fieldsVariable = try sortedFields
       .map { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
-      .lines
+      .joined(separator: "\n\n")
     let fieldsCodingKey = sortedFields
       .map { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines

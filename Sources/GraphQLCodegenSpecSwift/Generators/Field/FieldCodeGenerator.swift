@@ -39,11 +39,13 @@ struct FieldCodeGenerator {
         type.append("?")
       }
 
-      return """
-      \(field.docs)
-      \(field.availability)
-      let \(field.name.camelCase): \(type)
-      """
+      let texts: [String] = [
+        field.docs,
+        field.availability,
+        "let \(field.name.camelCase): \(type)"
+      ]
+
+      return texts.filter { !$0.isEmpty }.lines
     } else {
       return ""
     }
