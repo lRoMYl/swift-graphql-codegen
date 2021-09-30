@@ -1,15 +1,14 @@
 # DHGraphQLCodegen
 
-Swift type-safe GraphQL query builder
-- No knowledge in GraphQL is required to use the query builder, as the GraphQL specification is just a struct with Codable conformance
+DH Swift type-safe GraphQL query builder
+- Plain Swift Types without external dependencies
 - All permutation are generated up-front with type safety are generated as GraphQL specification (struct/class)
-- GraphQL specificaiton doesn't have external dependencies as it only uses build-in Swift type
-- Network layer agnostic, generated GraphQL specification doesn't require specific network layer implementation. You can use it with either URLSession, Alamofire & any other library
+- Network layer agnostic, the generated code will produce the GraphQL definition without dictating the network library to be used
 - Example App include with DH flavor networking layer
 
 Usage example without writing a single line of GraphQL query
 ```
-let parameter = QueryParameter.VendorRequestParameter(
+let parameter = VendorRequestParameter(
   name: "vendor name", // Argument1 is code-generated
   country: .sg,  // Argument2 is code-generated
   selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
@@ -26,7 +25,7 @@ Supports GraphQL Native Feature
 - [x] Object
 - [x] InputObject
 - [x] Enum / Enumeration
-- [ ] Interface
+- [x] Interface
 - [ ] Union
 - [x] Query
 - [x] Mutation
