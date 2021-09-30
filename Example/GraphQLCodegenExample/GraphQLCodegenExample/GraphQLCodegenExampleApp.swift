@@ -41,7 +41,7 @@ struct GraphQLCodegenExampleApp: App {
       ContentView().onAppear() {
         setup()
 
-//        try? testGroceriesGraphQL()
+        try? testGroceriesGraphQL()
         try? testStarWarsInterfaceGraphQL()
       }
     }
@@ -79,7 +79,13 @@ extension GraphQLCodegenExampleApp {
   }
 
   func testStarWarsInterfaceGraphQL() throws {
-    let parameters = CharactersStarWarsQueries()
+    let parameters = CharactersStarWarsQueries(
+      selections: .init(
+        characterSelections: [.all],
+        droidSelections: [.all],
+        humanSelections: [.homePlanet]
+      )
+    )
 
     starWarsRepository
       .characters(with: parameters)

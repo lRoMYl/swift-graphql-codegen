@@ -146,23 +146,23 @@ struct HumanStarWarsObjects: Codable {
 struct QueryStarWarsObjects: Codable {
   let character: CharacterUnionStarWarsUnions?
 
-  let characters: [CharacterStarWarsInterfaces]?
+  let characters: [CharacterStarWarsInterfaces]
 
   let droid: DroidStarWarsObjects?
 
-  let droids: [DroidStarWarsObjects]?
+  let droids: [DroidStarWarsObjects]
 
-  let greeting: String?
+  let greeting: String
 
   let human: HumanStarWarsObjects?
 
-  let humans: [HumanStarWarsObjects]?
+  let humans: [HumanStarWarsObjects]
 
   let luke: HumanStarWarsObjects?
 
-  let time: String?
+  let time: String
 
-  let whoami: String?
+  let whoami: String
 
   // MARK: - CodingKeys
 
@@ -308,11 +308,8 @@ struct HumanStarWarsQueries: GraphQLRequestParameter {
     let humanSelections: Set<HumanSelection>
 
     enum HumanSelection: String, GraphQLSelection {
-      case appearsIn
       case homePlanet
-      case id
       case infoURL
-      case name
     }
 
     init(
@@ -323,9 +320,11 @@ struct HumanStarWarsQueries: GraphQLRequestParameter {
 
     func declaration() -> String {
       let humanSelectionsDeclaration = """
-      fragment HumanFragment on Human {\(humanSelections.declaration)
-        __typename
-
+      fragment HumanFragment on Human {
+      	appearsIn
+      	id
+      	name
+      	\(humanSelections.declaration)
       }
       """
 
@@ -394,10 +393,7 @@ struct DroidStarWarsQueries: GraphQLRequestParameter {
     let droidSelections: Set<DroidSelection>
 
     enum DroidSelection: String, GraphQLSelection {
-      case appearsIn
-      case id
-      case name
-      case primaryFunction
+      case all = ""
     }
 
     init(
@@ -408,9 +404,12 @@ struct DroidStarWarsQueries: GraphQLRequestParameter {
 
     func declaration() -> String {
       let droidSelectionsDeclaration = """
-      fragment DroidFragment on Droid {\(droidSelections.declaration)
-        __typename
-
+      fragment DroidFragment on Droid {
+      	appearsIn
+      	id
+      	name
+      	primaryFunction
+      	\(droidSelections.declaration)
       }
       """
 
@@ -529,11 +528,8 @@ struct LukeStarWarsQueries: GraphQLRequestParameter {
     let humanSelections: Set<HumanSelection>
 
     enum HumanSelection: String, GraphQLSelection {
-      case appearsIn
       case homePlanet
-      case id
       case infoURL
-      case name
     }
 
     init(
@@ -544,9 +540,11 @@ struct LukeStarWarsQueries: GraphQLRequestParameter {
 
     func declaration() -> String {
       let humanSelectionsDeclaration = """
-      fragment HumanFragment on Human {\(humanSelections.declaration)
-        __typename
-
+      fragment HumanFragment on Human {
+      	appearsIn
+      	id
+      	name
+      	\(humanSelections.declaration)
       }
       """
 
@@ -603,11 +601,8 @@ struct HumansStarWarsQueries: GraphQLRequestParameter {
     let humanSelections: Set<HumanSelection>
 
     enum HumanSelection: String, GraphQLSelection {
-      case appearsIn
       case homePlanet
-      case id
       case infoURL
-      case name
     }
 
     init(
@@ -618,9 +613,11 @@ struct HumansStarWarsQueries: GraphQLRequestParameter {
 
     func declaration() -> String {
       let humanSelectionsDeclaration = """
-      fragment HumanFragment on Human {\(humanSelections.declaration)
-        __typename
-
+      fragment HumanFragment on Human {
+      	appearsIn
+      	id
+      	name
+      	\(humanSelections.declaration)
       }
       """
 
@@ -677,10 +674,7 @@ struct DroidsStarWarsQueries: GraphQLRequestParameter {
     let droidSelections: Set<DroidSelection>
 
     enum DroidSelection: String, GraphQLSelection {
-      case appearsIn
-      case id
-      case name
-      case primaryFunction
+      case all = ""
     }
 
     init(
@@ -691,9 +685,12 @@ struct DroidsStarWarsQueries: GraphQLRequestParameter {
 
     func declaration() -> String {
       let droidSelectionsDeclaration = """
-      fragment DroidFragment on Droid {\(droidSelections.declaration)
-        __typename
-
+      fragment DroidFragment on Droid {
+      	appearsIn
+      	id
+      	name
+      	primaryFunction
+      	\(droidSelections.declaration)
       }
       """
 
@@ -750,38 +747,67 @@ struct CharactersStarWarsQueries: GraphQLRequestParameter {
     let characterSelections: Set<CharacterSelection>
 
     enum CharacterSelection: String, GraphQLSelection {
-      case id
-      case name
+      case all = ""
+    }
+
+    let droidSelections: Set<DroidSelection>
+
+    enum DroidSelection: String, GraphQLSelection {
+      case all = ""
+    }
+
+    let humanSelections: Set<HumanSelection>
+
+    enum HumanSelection: String, GraphQLSelection {
+      case homePlanet
+      case infoURL
     }
 
     init(
-      characterSelections: Set<CharacterSelection> = []
+      characterSelections: Set<CharacterSelection> = [],
+      droidSelections: Set<DroidSelection> = [],
+      humanSelections: Set<HumanSelection> = []
     ) {
       self.characterSelections = characterSelections
+      self.droidSelections = droidSelections
+      self.humanSelections = humanSelections
     }
 
     func declaration() -> String {
       let characterSelectionsDeclaration = """
-      fragment CharacterFragment on Character {\(characterSelections.declaration)
-        __typename
-        ... on Droid {
-      		id
-      		name
-      		primaryFunction
-      		appearsIn
-      	}
-      	... on Human {
-      		id
-      		name
-      		homePlanet
-      		appearsIn
-      		infoURL
-      	}
+      fragment CharacterFragment on Character {
+      	id
+      	name
+      	\(characterSelections.declaration)
+      	__typename
+      	...DroidFragment
+      	...HumanFragment
+      }
+      """
+
+      let droidSelectionsDeclaration = """
+      fragment DroidFragment on Droid {
+      	appearsIn
+      	id
+      	name
+      	primaryFunction
+      	\(droidSelections.declaration)
+      }
+      """
+
+      let humanSelectionsDeclaration = """
+      fragment HumanFragment on Human {
+      	appearsIn
+      	id
+      	name
+      	\(humanSelections.declaration)
       }
       """
 
       let selectionDeclarationMap = [
-        "CharacterFragment": characterSelectionsDeclaration
+        "CharacterFragment": characterSelectionsDeclaration,
+        "DroidFragment": droidSelectionsDeclaration,
+        "HumanFragment": humanSelectionsDeclaration
       ]
 
       return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
@@ -1033,5 +1059,101 @@ struct NumberStarWarsSubscriptions: GraphQLRequestParameter {
     selections: Selections = .init()
   ) {
     self.selections = selections
+  }
+}
+
+struct HumanQueryResponse: GraphQLResponseData {
+  let human: HumanStarWarsObjects?
+
+  var wrappedValue: HumanStarWarsObjects? {
+    return human
+  }
+}
+
+struct DroidQueryResponse: GraphQLResponseData {
+  let droid: DroidStarWarsObjects?
+
+  var wrappedValue: DroidStarWarsObjects? {
+    return droid
+  }
+}
+
+struct CharacterQueryResponse: GraphQLResponseData {
+  let character: CharacterUnionStarWarsUnions?
+
+  var wrappedValue: CharacterUnionStarWarsUnions? {
+    return character
+  }
+}
+
+struct LukeQueryResponse: GraphQLResponseData {
+  let luke: HumanStarWarsObjects?
+
+  var wrappedValue: HumanStarWarsObjects? {
+    return luke
+  }
+}
+
+struct HumansQueryResponse: GraphQLResponseData {
+  let humans: [HumanStarWarsObjects]
+
+  var wrappedValue: [HumanStarWarsObjects] {
+    return humans
+  }
+}
+
+struct DroidsQueryResponse: GraphQLResponseData {
+  let droids: [DroidStarWarsObjects]
+
+  var wrappedValue: [DroidStarWarsObjects] {
+    return droids
+  }
+}
+
+struct CharactersQueryResponse: GraphQLResponseData {
+  let characters: [CharacterStarWarsInterfaces]
+
+  var wrappedValue: [CharacterStarWarsInterfaces] {
+    return characters
+  }
+}
+
+struct GreetingQueryResponse: GraphQLResponseData {
+  let greeting: String
+
+  var wrappedValue: String {
+    return greeting
+  }
+}
+
+struct WhoamiQueryResponse: GraphQLResponseData {
+  let whoami: String
+
+  var wrappedValue: String {
+    return whoami
+  }
+}
+
+struct TimeQueryResponse: GraphQLResponseData {
+  let time: String
+
+  var wrappedValue: String {
+    return time
+  }
+}
+
+struct MutateMutationResponse: GraphQLResponseData {
+  let mutate: Bool
+
+  var wrappedValue: Bool {
+    return mutate
+  }
+}
+
+struct NumberSubscriptionResponse: GraphQLResponseData {
+  let number: Int
+
+  var wrappedValue: Int {
+    return number
   }
 }

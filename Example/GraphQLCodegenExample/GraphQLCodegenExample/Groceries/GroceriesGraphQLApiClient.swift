@@ -29,15 +29,19 @@ final class GroceriesApiClient: GroceriesApiClientImplementing {
     let resource = GroceriesResourceParameters
       .queryCampaigns(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: CampaignsQueryResponse.self,
+      resource: resource
+    )
   }
 }
 
 private extension GroceriesApiClient {
-  func executeGraphQLQuery<T>(
+  func executeGraphQLQuery<R, T>(
+    responseData _: R.Type,
     resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<QueryResponseObject, T>>> = restClient
+  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
       .executeRequest(resource: resource)
 
     return request
@@ -120,15 +124,8 @@ enum GroceriesResourceParameters: ResourceParameters {
   }
 }
 
-// MARK: - GraphQLResponse+QueryResponseObjectWrappedValue
-
-extension GraphQLResponse where OperationType == QueryResponseObject {
+extension GraphQLResponse where ResponseData == CampaignsQueryResponse {
   var wrappedValue: ReturnType? {
-    switch ReturnType.self {
-    case is CampaignsResponseObject?.Type:
-      return data.campaigns as? ReturnType
-    default:
-      return nil
-    }
+    return data.campaigns as? ReturnType
   }
 }

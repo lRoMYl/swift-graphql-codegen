@@ -62,7 +62,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryHuman(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: HumanQueryResponse.self,
+      resource: resource
+    )
   }
 
   func droid(
@@ -71,7 +74,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryDroid(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: DroidQueryResponse.self,
+      resource: resource
+    )
   }
 
   func character(
@@ -80,7 +86,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryCharacter(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: CharacterQueryResponse.self,
+      resource: resource
+    )
   }
 
   func luke(
@@ -89,7 +98,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryLuke(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: LukeQueryResponse.self,
+      resource: resource
+    )
   }
 
   func humans(
@@ -98,7 +110,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryHumans(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: HumansQueryResponse.self,
+      resource: resource
+    )
   }
 
   func droids(
@@ -107,7 +122,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryDroids(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: DroidsQueryResponse.self,
+      resource: resource
+    )
   }
 
   func characters(
@@ -116,7 +134,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryCharacters(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: CharactersQueryResponse.self,
+      resource: resource
+    )
   }
 
   func greeting(
@@ -125,7 +146,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryGreeting(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: GreetingQueryResponse.self,
+      resource: resource
+    )
   }
 
   func whoami(
@@ -134,7 +158,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryWhoami(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: WhoamiQueryResponse.self,
+      resource: resource
+    )
   }
 
   func time(
@@ -143,7 +170,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .queryTime(parameters: parameters)
 
-    return executeGraphQLQuery(resource: resource)
+    return executeGraphQLQuery(
+      responseData: TimeQueryResponse.self,
+      resource: resource
+    )
   }
 
   func mutate(
@@ -152,7 +182,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .updateMutate(parameters: parameters)
 
-    return executeGraphQLMutation(resource: resource)
+    return executeGraphQLMutation(
+      responseData: MutateMutationResponse.self,
+      resource: resource
+    )
   }
 
   func number(
@@ -161,15 +194,19 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     let resource = StarWarsResourceParameters
       .subscribeNumber(parameters: parameters)
 
-    return executeGraphQLSubscription(resource: resource)
+    return executeGraphQLSubscription(
+      responseData: NumberSubscriptionResponse.self,
+      resource: resource
+    )
   }
 }
 
 private extension StarWarsApiClient {
-  func executeGraphQLQuery<T>(
+  func executeGraphQLQuery<R, T>(
+    responseData _: R.Type,
     resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<QueryStarWarsObjects, T>>> = restClient
+  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
       .executeRequest(resource: resource)
 
     return request
@@ -183,10 +220,11 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLMutation<T>(
+  func executeGraphQLMutation<R, T>(
+    responseData _: R.Type,
     resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<MutationStarWarsObjects, T>>> = restClient
+  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
       .executeRequest(resource: resource)
 
     return request
@@ -200,10 +238,11 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLSubscription<T>(
+  func executeGraphQLSubscription<R, T>(
+    responseData _: R.Type,
     resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<SubscriptionStarWarsObjects, T>>> = restClient
+  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
       .executeRequest(resource: resource)
 
     return request
@@ -319,59 +358,74 @@ enum StarWarsResourceParameters: ResourceParameters {
   }
 }
 
-// MARK: - GraphQLResponse+QueryStarWarsObjectsWrappedValue
-
-extension GraphQLResponse where OperationType == QueryStarWarsObjects {
+extension GraphQLResponse where ResponseData == HumanQueryResponse {
   var wrappedValue: ReturnType? {
-    switch ReturnType.self {
-    case is HumanStarWarsObjects?.Type:
-      return data.human as? ReturnType
-    case is DroidStarWarsObjects?.Type:
-      return data.droid as? ReturnType
-    case is CharacterUnionStarWarsUnions?.Type:
-      return data.character as? ReturnType
-    case is HumanStarWarsObjects?.Type:
-      return data.luke as? ReturnType
-    case is [HumanStarWarsObjects].Type:
-      return data.humans as? ReturnType
-    case is [DroidStarWarsObjects].Type:
-      return data.droids as? ReturnType
-    case is [CharacterStarWarsInterfaces].Type:
-      return data.characters as? ReturnType
-    case is String.Type:
-      return data.greeting as? ReturnType
-    case is String.Type:
-      return data.whoami as? ReturnType
-    case is String.Type:
-      return data.time as? ReturnType
-    default:
-      return nil
-    }
+    return data.human as? ReturnType
   }
 }
 
-// MARK: - GraphQLResponse+MutationStarWarsObjectsWrappedValue
-
-extension GraphQLResponse where OperationType == MutationStarWarsObjects {
+extension GraphQLResponse where ResponseData == DroidQueryResponse {
   var wrappedValue: ReturnType? {
-    switch ReturnType.self {
-    case is Bool.Type:
-      return data.mutate as? ReturnType
-    default:
-      return nil
-    }
+    return data.droid as? ReturnType
   }
 }
 
-// MARK: - GraphQLResponse+SubscriptionStarWarsObjectsWrappedValue
-
-extension GraphQLResponse where OperationType == SubscriptionStarWarsObjects {
+extension GraphQLResponse where ResponseData == CharacterQueryResponse {
   var wrappedValue: ReturnType? {
-    switch ReturnType.self {
-    case is Int.Type:
-      return data.number as? ReturnType
-    default:
-      return nil
-    }
+    return data.character as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == LukeQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.luke as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == HumansQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.humans as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == DroidsQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.droids as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == CharactersQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.characters as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == GreetingQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.greeting as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == WhoamiQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.whoami as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == TimeQueryResponse {
+  var wrappedValue: ReturnType? {
+    return data.time as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == MutateMutationResponse {
+  var wrappedValue: ReturnType? {
+    return data.mutate as? ReturnType
+  }
+}
+
+extension GraphQLResponse where ResponseData == NumberSubscriptionResponse {
+  var wrappedValue: ReturnType? {
+    return data.number as? ReturnType
   }
 }

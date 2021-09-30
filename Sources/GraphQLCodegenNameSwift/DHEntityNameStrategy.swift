@@ -71,4 +71,8 @@ public final class DHEntityNameStrategy: EntityNamingStrategy {
   public func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
     field.name.pascalCase + operation.type(entityNameMap: entityNameMap)
   }
+
+  public func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
+    "\(field.name.pascalCase)\(operation.type.name.pascalCase)Response"
+  }
 }

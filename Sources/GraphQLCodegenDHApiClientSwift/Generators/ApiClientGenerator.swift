@@ -92,7 +92,10 @@ extension ApiClientGenerator {
         let resource = \(entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix))
           .\($0.enumName(with: operation))(parameters: parameters)
 
-        return executeGraphQL\(operationName)(resource: resource)
+        return executeGraphQL\(operationName)(
+          responseData: \(try entityNameStrategy.responseDataName(for: $0, with: operation)).self,
+          resource: resource
+        )
       }
       """
     }
@@ -116,13 +119,13 @@ extension ApiClientGenerator {
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName =  operation.type.name.pascalCase
-    let responseType = try entityNameStrategy.name(for: operation.type)
-    let responseDataText = "\(entityNameMap.response)<\(responseType), T>"
+    let responseDataText = "\(entityNameMap.response)<R, T>"
 
     return """
-    func executeGraphQL\(operationName)<T>(
+    func executeGraphQL\(operationName)<R, T>(
+      responseData: R.Type,
       resource: ResourceParameters
-    ) -> \(responseGenericCode(text: "T")) where T: Codable {
+    ) -> \(responseGenericCode(text: "T")) where R: \(entityNameMap.responseData), T: Codable {
       let request: \(responseGenericCode(text: responseDataText)) = restClient
         .executeRequest(resource: resource)
 

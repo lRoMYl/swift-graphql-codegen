@@ -75,6 +75,10 @@ public struct GraphQLCodegenSpecSwift {
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
         entityNameStrategy: self.entityNameStrategy
+      ),
+      ResponseCodeGenerator(
+        entityNameMap: self.entityNameMap,
+        entityNameStrategy: entityNameStrategy
       )
     ]
   }

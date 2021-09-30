@@ -15,7 +15,7 @@ import GraphQLCodegenEntitySwift
 import GraphQLCodegenSpecSwift
 import GraphQLDownloader
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 
 //GraphQLCodegenCLI.main(
 //  [
@@ -26,47 +26,57 @@ GraphQLCodegenCLI.main()
 //  ]
 //)
 //
-//let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample"
-//let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
-//let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
-//let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
-//
-//GraphQLCodegenCLI.main(
-//  [
-//    groceriesSchema,
-//    "--action", "specification",
-//    "--output", "\(groceriesOutputPath)GraphQLSpec.swift",
-//    "--config-path", groceriesConfig
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    groceriesSchema,
-//    "--action", "dh-repository",
-//    "--output", "\(groceriesOutputPath)GraphQLApiClient.swift",
-//    "--config-path", groceriesConfig
-//  ]
-//)
-//
-//let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
-//let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
-//let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
-//GraphQLCodegenCLI.main(
-//  [
-//    starwarsSchema,
-//    "--action", "specification",
-//    "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
-//    "--config-path", starwarsConfig
-//  ]
-//)
-//GraphQLCodegenCLI.main(
-//  [
-//    starwarsSchema,
-//    "--action", "dh-repository",
-//    "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
-//    "--config-path", starwarsConfig
-//  ]
-//)
+let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample"
+
+let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
+let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
+let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
+
+GraphQLCodegenCLI.main(
+  [
+    groceriesSchema,
+    "--action", "entity",
+    "--output", "\(examplePath)/GraphQLCodegenExample/GraphQLEntity.swift",
+    "--config-path", groceriesConfig
+  ]
+)
+
+GraphQLCodegenCLI.main(
+  [
+    groceriesSchema,
+    "--action", "specification",
+    "--output", "\(groceriesOutputPath)GraphQLSpec.swift",
+    "--config-path", groceriesConfig
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    groceriesSchema,
+    "--action", "dh-repository",
+    "--output", "\(groceriesOutputPath)GraphQLApiClient.swift",
+    "--config-path", groceriesConfig
+  ]
+)
+
+let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
+let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
+let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
+GraphQLCodegenCLI.main(
+  [
+    starwarsSchema,
+    "--action", "specification",
+    "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
+    "--config-path", starwarsConfig
+  ]
+)
+GraphQLCodegenCLI.main(
+  [
+    starwarsSchema,
+    "--action", "dh-repository",
+    "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
+    "--config-path", starwarsConfig
+  ]
+)
 
 enum SchemaSource: String, ExpressibleByArgument {
   case local

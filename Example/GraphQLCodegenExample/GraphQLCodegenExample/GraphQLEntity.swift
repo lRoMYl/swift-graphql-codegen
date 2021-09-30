@@ -63,12 +63,24 @@ struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
 
 // MARK: - GraphQLResponse
 
-struct GraphQLResponse<OperationType: Codable, ReturnType: Codable>: Codable {
-  let data: OperationType
+struct GraphQLResponse<ResponseData: GraphQLResponseData, ReturnType: Codable>: Codable {
+  let data: ResponseData
 
   enum CodingKeys: String, CodingKey {
     case data
   }
+
+  var wrappedValue: ReturnType? {
+    data.wrappedValue as? ReturnType
+  }
+}
+
+// MARK: - GraphQLResponseData
+
+protocol GraphQLResponseData: Codable {
+  associatedtype T: Decodable
+
+  var wrappedValue: T { get }
 }
 
 // MARK: - GraphQLSelection+Declaration

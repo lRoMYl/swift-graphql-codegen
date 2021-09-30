@@ -18,4 +18,6 @@ public protocol EntityNamingStrategy {
   func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
 
   func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
+
+  func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
 }

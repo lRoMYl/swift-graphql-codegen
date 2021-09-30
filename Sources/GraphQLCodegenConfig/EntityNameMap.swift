@@ -29,6 +29,7 @@ public struct EntityNameMap: Decodable {
   public let requestParameter: String
 
   public let response: String
+  public let responseData: String
 
   public let selection: String
   public let selections: String
@@ -58,6 +59,7 @@ public struct EntityNameMap: Decodable {
     case requestType
     case requestParameter
     case response
+    case responseData
     case selection
     case selections
     case query
@@ -78,6 +80,7 @@ public struct EntityNameMap: Decodable {
     requestType: String,
     requestParameter: String,
     response: String,
+    responseData: String,
     selection: String,
     selections: String,
     query: String,
@@ -94,6 +97,7 @@ public struct EntityNameMap: Decodable {
     self.requestType = requestType
     self.requestParameter = requestParameter
     self.response = response
+    self.responseData = responseData
     self.selection = selection
     self.selections = selections
     self.query = query
@@ -116,6 +120,7 @@ public struct EntityNameMap: Decodable {
     requestParameter = try container.decodeIfPresent(String.self, forKey: .requestParameter) ?? defaultValue.requestParameter
 
     response = try container.decodeIfPresent(String.self, forKey: .response) ?? defaultValue.response
+    responseData = try container.decodeIfPresent(String.self, forKey: .responseData) ?? defaultValue.responseData
 
     selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? defaultValue.selection
     selections = try container.decodeIfPresent(String.self, forKey: .selections) ?? defaultValue.selections
@@ -143,6 +148,7 @@ public extension EntityNameMap {
       requestType: "GraphQLRequestType",
       requestParameter: "GraphQLRequestParameter",
       response: "GraphQLResponse",
+      responseData: "GraphQLResponseData",
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
       query: "GraphQLQuery",

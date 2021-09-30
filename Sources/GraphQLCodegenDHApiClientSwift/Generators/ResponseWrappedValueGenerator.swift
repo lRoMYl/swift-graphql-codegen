@@ -35,24 +35,16 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
 
 extension GraphQLResponseWrappedValueGenerator {
   func wrappedValueCode(with operation: GraphQLAST.Operation) throws -> String {
-    let operationName: String = try entityNameStrategy.name(for: operation.type)
-    let cases = try operation.type.fields.map {
-      """
-      case is \(try entityNameStrategy.name(for: $0.type)).Type:
-        return data.\($0.name.camelCase) as? ReturnType
-      """
+    try operation.type.fields.map {
+      try wrappedValueCode(field: $0, operation: operation)
     }.lines
+  }
 
+  func wrappedValueCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
     return """
-    // MARK: - \(responseEntityName)+\(operationName)WrappedValue
-
-    extension \(responseEntityName) where OperationType == \(operationName) {
+    extension GraphQLResponse where ResponseData == \(field.name.pascalCase)\(operation.type.name.pascalCase)Response {
       var wrappedValue: ReturnType? {
-        switch ReturnType.self {
-        \(cases)
-        default:
-          return nil
-        }
+        return data.\(field.name) as? ReturnType
       }
     }
     """

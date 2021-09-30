@@ -300,25 +300,17 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
     let benefitSelections: Set<BenefitSelection>
 
     enum BenefitSelection: String, GraphQLSelection {
-      case productID
-      case quantity
+      case all = ""
     }
 
     let campaignAttributeSelections: Set<CampaignAttributeSelection>
 
     enum CampaignAttributeSelection: String, GraphQLSelection {
-      case autoApplied
       case benefits = """
       benefits {
         ...BenefitFragment
       }
       """
-      case campaignType
-      case description
-      case id
-      case name
-      case redemptionLimit
-      case source
     }
 
     let campaignsSelections: Set<CampaignsSelection>
@@ -339,9 +331,7 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
     let dealSelections: Set<DealSelection>
 
     enum DealSelection: String, GraphQLSelection {
-      case campaignID
-      case discountTag
-      case triggerQuantity
+      case all = ""
     }
 
     let productDealSelections: Set<ProductDealSelection>
@@ -352,7 +342,6 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
         ...DealFragment
       }
       """
-      case productID
     }
 
     init(
@@ -371,27 +360,46 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
 
     func declaration() -> String {
       let benefitSelectionsDeclaration = """
-      fragment BenefitFragment on Benefit {\(benefitSelections.declaration)
+      fragment BenefitFragment on Benefit {
+      	productID
+      	quantity
+      	\(benefitSelections.declaration)
       }
       """
 
       let campaignAttributeSelectionsDeclaration = """
-      fragment CampaignAttributeFragment on CampaignAttribute {\(campaignAttributeSelections.declaration)
+      fragment CampaignAttributeFragment on CampaignAttribute {
+      	autoApplied
+      	campaignType
+      	description
+      	id
+      	name
+      	redemptionLimit
+      	source
+      	\(campaignAttributeSelections.declaration)
       }
       """
 
       let campaignsSelectionsDeclaration = """
-      fragment CampaignsFragment on Campaigns {\(campaignsSelections.declaration)
+      fragment CampaignsFragment on Campaigns {
+
+      	\(campaignsSelections.declaration)
       }
       """
 
       let dealSelectionsDeclaration = """
-      fragment DealFragment on Deal {\(dealSelections.declaration)
+      fragment DealFragment on Deal {
+      	campaignID
+      	discountTag
+      	triggerQuantity
+      	\(dealSelections.declaration)
       }
       """
 
       let productDealSelectionsDeclaration = """
-      fragment ProductDealFragment on ProductDeal {\(productDealSelections.declaration)
+      fragment ProductDealFragment on ProductDeal {
+      	productID
+      	\(productDealSelections.declaration)
       }
       """
 
@@ -441,5 +449,13 @@ struct CampaignsQueryRequestParameter: GraphQLRequestParameter {
     self.apikY = apikY
     self.discoClientId = discoClientId
     self.selections = selections
+  }
+}
+
+struct CampaignsQueryResponse: GraphQLResponseData {
+  let campaigns: CampaignsResponseObject?
+
+  var wrappedValue: CampaignsResponseObject? {
+    return campaigns
   }
 }
