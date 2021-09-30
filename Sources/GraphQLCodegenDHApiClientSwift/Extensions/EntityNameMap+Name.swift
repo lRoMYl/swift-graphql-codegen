@@ -21,10 +21,10 @@ extension EntityNameMap {
     return "\(prefix)DIContainer"
   }
 
-  func resourceParametersImplementing(apiClientPrefix: String) -> String {
+  func resourceParametersProviding(apiClientPrefix: String) -> String {
     let prefix = resourceParametersName(apiClientPrefix: apiClientPrefix)
 
-    return "\(prefix)Implementing"
+    return "\(prefix)Providing"
   }
 
 }

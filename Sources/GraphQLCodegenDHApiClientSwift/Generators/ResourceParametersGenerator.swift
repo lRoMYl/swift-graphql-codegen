@@ -37,13 +37,13 @@ struct ResourceParametersGenerator: Generating {
   func code(schema: Schema) throws -> String {
     let diContainerName = entityNameMap.resourceParametersDIContainer(apiClientPrefix: apiClientPrefix)
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
-    let resourceParameterImplementing = entityNameMap.resourceParametersImplementing(apiClientPrefix: apiClientPrefix)
+    let resourceParameterProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
 
     return """
 
     // MARK: - \(resourceParametersName)
 
-    protocol \(resourceParameterImplementing) {
+    protocol \(resourceParameterProviding) {
       func servicePath(with resourceParameters: \(resourceParametersName)) -> String
       func headers(with resourceParameters: \(resourceParametersName)) -> [String: String]?
       func timeoutInterval(with resourceParameters: \(resourceParametersName)) -> TimeInterval?
@@ -54,7 +54,7 @@ struct ResourceParametersGenerator: Generating {
     final class \(diContainerName) {
       static let shared = \(diContainerName)()
 
-      var implementation: \(resourceParameterImplementing)?
+      var providing: \(resourceParameterProviding)?
     }
 
     enum \(resourceParametersName): ResourceParameters {
@@ -71,23 +71,23 @@ struct ResourceParametersGenerator: Generating {
       }
 
       func servicePath() -> String {
-        Self.diContainer.implementation?.servicePath(with: self) ?? ""
+        Self.diContainer.providing?.servicePath(with: self) ?? ""
       }
 
       func headers() -> [String: String]? {
-        Self.diContainer.implementation?.headers(with: self) ?? nil
+        Self.diContainer.providing?.headers(with: self) ?? nil
       }
 
       func timeoutInterval() -> TimeInterval? {
-        Self.diContainer.implementation?.timeoutInterval(with: self) ?? nil
+        Self.diContainer.providing?.timeoutInterval(with: self) ?? nil
       }
 
       func preventRetry() -> Bool {
-        Self.diContainer.implementation?.preventRetry(with: self) ?? false
+        Self.diContainer.providing?.preventRetry(with: self) ?? false
       }
 
       func preventAddingLanguageParameters() -> Bool {
-        Self.diContainer.implementation?.preventAddingLanguageParameters(with: self) ?? false
+        Self.diContainer.providing?.preventAddingLanguageParameters(with: self) ?? false
       }
 
       func bodyParameters() -> Any? {

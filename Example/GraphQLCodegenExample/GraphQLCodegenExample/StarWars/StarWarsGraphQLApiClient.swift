@@ -259,7 +259,7 @@ private extension StarWarsApiClient {
 
 // MARK: - StarWarsResourceParameters
 
-protocol StarWarsResourceParametersImplementing {
+protocol StarWarsResourceParametersProviding {
   func servicePath(with resourceParameters: StarWarsResourceParameters) -> String
   func headers(with resourceParameters: StarWarsResourceParameters) -> [String: String]?
   func timeoutInterval(with resourceParameters: StarWarsResourceParameters) -> TimeInterval?
@@ -270,7 +270,7 @@ protocol StarWarsResourceParametersImplementing {
 final class StarWarsResourceParametersDIContainer {
   static let shared = StarWarsResourceParametersDIContainer()
 
-  var implementation: StarWarsResourceParametersImplementing?
+  var providing: StarWarsResourceParametersProviding?
 }
 
 enum StarWarsResourceParameters: ResourceParameters {
@@ -298,23 +298,23 @@ enum StarWarsResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    Self.diContainer.implementation?.servicePath(with: self) ?? ""
+    Self.diContainer.providing?.servicePath(with: self) ?? ""
   }
 
   func headers() -> [String: String]? {
-    Self.diContainer.implementation?.headers(with: self) ?? nil
+    Self.diContainer.providing?.headers(with: self) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    Self.diContainer.implementation?.timeoutInterval(with: self) ?? nil
+    Self.diContainer.providing?.timeoutInterval(with: self) ?? nil
   }
 
   func preventRetry() -> Bool {
-    Self.diContainer.implementation?.preventRetry(with: self) ?? false
+    Self.diContainer.providing?.preventRetry(with: self) ?? false
   }
 
   func preventAddingLanguageParameters() -> Bool {
-    Self.diContainer.implementation?.preventAddingLanguageParameters(with: self) ?? false
+    Self.diContainer.providing?.preventAddingLanguageParameters(with: self) ?? false
   }
 
   func bodyParameters() -> Any? {

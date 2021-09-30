@@ -58,7 +58,7 @@ private extension GroceriesApiClient {
 
 // MARK: - GroceriesResourceParameters
 
-protocol GroceriesResourceParametersImplementing {
+protocol GroceriesResourceParametersProviding {
   func servicePath(with resourceParameters: GroceriesResourceParameters) -> String
   func headers(with resourceParameters: GroceriesResourceParameters) -> [String: String]?
   func timeoutInterval(with resourceParameters: GroceriesResourceParameters) -> TimeInterval?
@@ -69,7 +69,7 @@ protocol GroceriesResourceParametersImplementing {
 final class GroceriesResourceParametersDIContainer {
   static let shared = GroceriesResourceParametersDIContainer()
 
-  var implementation: GroceriesResourceParametersImplementing?
+  var providing: GroceriesResourceParametersProviding?
 }
 
 enum GroceriesResourceParameters: ResourceParameters {
@@ -86,23 +86,23 @@ enum GroceriesResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    Self.diContainer.implementation?.servicePath(with: self) ?? ""
+    Self.diContainer.providing?.servicePath(with: self) ?? ""
   }
 
   func headers() -> [String: String]? {
-    Self.diContainer.implementation?.headers(with: self) ?? nil
+    Self.diContainer.providing?.headers(with: self) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    Self.diContainer.implementation?.timeoutInterval(with: self) ?? nil
+    Self.diContainer.providing?.timeoutInterval(with: self) ?? nil
   }
 
   func preventRetry() -> Bool {
-    Self.diContainer.implementation?.preventRetry(with: self) ?? false
+    Self.diContainer.providing?.preventRetry(with: self) ?? false
   }
 
   func preventAddingLanguageParameters() -> Bool {
-    Self.diContainer.implementation?.preventAddingLanguageParameters(with: self) ?? false
+    Self.diContainer.providing?.preventAddingLanguageParameters(with: self) ?? false
   }
 
   func bodyParameters() -> Any? {
