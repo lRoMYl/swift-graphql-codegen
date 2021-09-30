@@ -17,17 +17,25 @@ protocol GroceriesApiClientImplementing {
 final class GroceriesApiClient: GroceriesApiClientImplementing {
   private let restClient: RestClient
   private let scheduler: SchedulerType
+  private let resourceParametersProvider: GroceriesResourceParametersProviding?
 
-  init(restClient: RestClient, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)) {
+  init(
+    restClient: RestClient,
+    scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
+    resourceParametersProvider: GroceriesResourceParametersProviding?
+  ) {
     self.restClient = restClient
     self.scheduler = scheduler
+    self.resourceParametersProvider = resourceParametersProvider
   }
 
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<ApiResponse<CampaignsResponseModel?>> {
-    let resource = GroceriesResourceParameters
-      .queryCampaigns(parameters: parameters)
+    let resource = GroceriesResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryCampaigns(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: CampaignsQueryResponse.self,
@@ -59,23 +67,24 @@ private extension GroceriesApiClient {
 // MARK: - GroceriesResourceParameters
 
 protocol GroceriesResourceParametersProviding {
-  func servicePath(with resourceParameters: GroceriesResourceParameters) -> String
-  func headers(with resourceParameters: GroceriesResourceParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: GroceriesResourceParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: GroceriesResourceParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: GroceriesResourceParameters) -> Bool
+  func servicePath(with resourceParameters: GroceriesResourceBodyParameters) -> String
+  func headers(with resourceParameters: GroceriesResourceBodyParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: GroceriesResourceBodyParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: GroceriesResourceBodyParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: GroceriesResourceBodyParameters) -> Bool
 }
 
-final class GroceriesResourceParametersDIContainer {
-  static let shared = GroceriesResourceParametersDIContainer()
+final class GroceriesResourceParameters: ResourceParameters {
+  private let provider: GroceriesResourceParametersProviding?
+  private let resourceBodyParameters: GroceriesResourceBodyParameters
 
-  var provider: GroceriesResourceParametersProviding?
-}
-
-enum GroceriesResourceParameters: ResourceParameters {
-  private static var diContainer = GroceriesResourceParametersDIContainer.shared
-
-  case queryCampaigns(parameters: CampaignsQueryRequest)
+  init(
+    provider: GroceriesResourceParametersProviding?,
+    resourceBodyParameters: GroceriesResourceBodyParameters
+  ) {
+    self.provider = provider
+    self.resourceBodyParameters = resourceBodyParameters
+  }
 
   func bodyFormat() -> HttpBodyFormat {
     .JSON
@@ -86,24 +95,32 @@ enum GroceriesResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    Self.diContainer.provider?.servicePath(with: self) ?? ""
+    provider?.servicePath(with: resourceBodyParameters) ?? ""
   }
 
   func headers() -> [String: String]? {
-    Self.diContainer.provider?.headers(with: self) ?? nil
+    provider?.headers(with: resourceBodyParameters) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    Self.diContainer.provider?.timeoutInterval(with: self) ?? nil
+    provider?.timeoutInterval(with: resourceBodyParameters) ?? nil
   }
 
   func preventRetry() -> Bool {
-    Self.diContainer.provider?.preventRetry(with: self) ?? false
+    provider?.preventRetry(with: resourceBodyParameters) ?? false
   }
 
   func preventAddingLanguageParameters() -> Bool {
-    Self.diContainer.provider?.preventAddingLanguageParameters(with: self) ?? false
+    provider?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
   }
+
+  func bodyParameters() -> Any? {
+    return resourceBodyParameters.bodyParameters()
+  }
+}
+
+enum GroceriesResourceBodyParameters {
+  case queryCampaigns(parameters: CampaignsQueryRequest)
 
   func bodyParameters() -> Any? {
     switch self {

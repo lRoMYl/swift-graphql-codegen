@@ -36,7 +36,9 @@ struct ApiClientGenerator: Generating {
   }
 
   func code(schema: Schema) throws -> String {
-    """
+    let resourceParametersProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
+
+    return """
     \(try self.protocolCode(with: schema.operations))
 
     // MARK: - \(apiClientPrefix)\(apiClientInterfacePostfix)
@@ -44,15 +46,19 @@ struct ApiClientGenerator: Generating {
     final class \(apiClientPrefix)\(apiClientPostfix): \(apiClientPrefix)\(apiClientInterfacePostfix) {
       private let restClient: RestClient
       private let scheduler: SchedulerType
+      private let resourceParametersProvider: \(resourceParametersProviding)?
 
-      init(restClient: RestClient, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)) {
+      init(
+        restClient: RestClient,
+        scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
+        resourceParametersProvider: \(resourceParametersProviding)?
+      ) {
         self.restClient = restClient
         self.scheduler = scheduler
+        self.resourceParametersProvider = resourceParametersProvider
       }
 
       \(try schema.operations.map { try funcCode(with: $0).lines }.lines)
-
-
     }
 
     private extension \(apiClientPrefix)\(apiClientPostfix) {
@@ -89,8 +95,10 @@ extension ApiClientGenerator {
     let codes = try operation.type.fields.map {
       """
       \(try funcSignatureCode(field: $0, operation: operation)) {
-        let resource = \(entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix))
-          .\($0.enumName(with: operation))(parameters: parameters)
+        let resource = \(entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix))(
+          provider: resourceParametersProvider,
+          resourceBodyParameters: .\($0.enumName(with: operation))(parameters: parameters)
+        )
 
         return executeGraphQL\(operationName)(
           responseData: \(try entityNameStrategy.responseDataName(for: $0, with: operation)).self,

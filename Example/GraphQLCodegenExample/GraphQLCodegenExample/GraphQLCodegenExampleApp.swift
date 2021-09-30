@@ -18,7 +18,10 @@ struct GraphQLCodegenExampleApp: App {
       authProvider: nil
     )
 
-    let apiClient = GroceriesApiClient(restClient: restClient)
+    let apiClient = GroceriesApiClient(
+      restClient: restClient,
+      resourceParametersProvider: GraphQLResourceParametersProvider()
+    )
     let repository = GroceriesRepository(apiClient: apiClient)
 
     return repository
@@ -30,7 +33,10 @@ struct GraphQLCodegenExampleApp: App {
       authProvider: nil
     )
 
-    let apiClient = StarWarsApiClient(restClient: restClient)
+    let apiClient = StarWarsApiClient(
+      restClient: restClient,
+      resourceParametersProvider: nil
+    )
     let repository = StarWarsRepository(apiClient: apiClient)
 
     return repository
@@ -39,8 +45,6 @@ struct GraphQLCodegenExampleApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView().onAppear() {
-        setup()
-
         try? testGroceriesGraphQL()
         try? testStarWarsInterfaceGraphQL()
       }
@@ -49,11 +53,6 @@ struct GraphQLCodegenExampleApp: App {
 }
 
 extension GraphQLCodegenExampleApp {
-  func setup() {
-    GroceriesResourceParametersDIContainer.shared.provider
-      = GraphQLResourceParametersProvider()
-  }
-
   func testGroceriesGraphQL() throws {
     let parameters = CampaignsQueryRequest(
       vendorId: "x1yy",

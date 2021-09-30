@@ -35,8 +35,8 @@ struct ResourceParametersGenerator: Generating {
 
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
-    let diContainerName = entityNameMap.resourceParametersDIContainer(apiClientPrefix: apiClientPrefix)
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
+    let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
     let resourceParameterProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
 
     return """
@@ -44,23 +44,24 @@ struct ResourceParametersGenerator: Generating {
     // MARK: - \(resourceParametersName)
 
     protocol \(resourceParameterProviding) {
-      func servicePath(with resourceParameters: \(resourceParametersName)) -> String
-      func headers(with resourceParameters: \(resourceParametersName)) -> [String: String]?
-      func timeoutInterval(with resourceParameters: \(resourceParametersName)) -> TimeInterval?
-      func preventRetry(with resourceParameters: \(resourceParametersName)) -> Bool
-      func preventAddingLanguageParameters(with resourceParameters: \(resourceParametersName)) -> Bool
+      func servicePath(with resourceParameters: \(resourceBodyParametersName)) -> String
+      func headers(with resourceParameters: \(resourceBodyParametersName)) -> [String: String]?
+      func timeoutInterval(with resourceParameters: \(resourceBodyParametersName)) -> TimeInterval?
+      func preventRetry(with resourceParameters: \(resourceBodyParametersName)) -> Bool
+      func preventAddingLanguageParameters(with resourceParameters: \(resourceBodyParametersName)) -> Bool
     }
 
-    final class \(diContainerName) {
-      static let shared = \(diContainerName)()
+    final class \(resourceParametersName): ResourceParameters {
+      private let provider: \(resourceParameterProviding)?
+      private let resourceBodyParameters: \(resourceBodyParametersName)
 
-      var provider: \(resourceParameterProviding)?
-    }
-
-    enum \(resourceParametersName): ResourceParameters {
-      private static var diContainer = \(diContainerName).shared
-
-      \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
+      init(
+        provider: \(resourceParameterProviding)?,
+        resourceBodyParameters: \(resourceBodyParametersName)
+      ) {
+        self.provider = provider
+        self.resourceBodyParameters = resourceBodyParameters
+      }
 
       func bodyFormat() -> HttpBodyFormat {
         .JSON
@@ -71,24 +72,32 @@ struct ResourceParametersGenerator: Generating {
       }
 
       func servicePath() -> String {
-        Self.diContainer.provider?.servicePath(with: self) ?? ""
+        provider?.servicePath(with: resourceBodyParameters) ?? ""
       }
 
       func headers() -> [String: String]? {
-        Self.diContainer.provider?.headers(with: self) ?? nil
+        provider?.headers(with: resourceBodyParameters) ?? nil
       }
 
       func timeoutInterval() -> TimeInterval? {
-        Self.diContainer.provider?.timeoutInterval(with: self) ?? nil
+        provider?.timeoutInterval(with: resourceBodyParameters) ?? nil
       }
 
       func preventRetry() -> Bool {
-        Self.diContainer.provider?.preventRetry(with: self) ?? false
+        provider?.preventRetry(with: resourceBodyParameters) ?? false
       }
 
       func preventAddingLanguageParameters() -> Bool {
-        Self.diContainer.provider?.preventAddingLanguageParameters(with: self) ?? false
+        provider?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
       }
+
+      func bodyParameters() -> Any? {
+        return resourceBodyParameters.bodyParameters()
+      }
+    }
+
+    enum \(resourceBodyParametersName) {
+      \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
 
       func bodyParameters() -> Any? {
         switch self {

@@ -50,17 +50,25 @@ protocol StarWarsApiClientImplementing {
 final class StarWarsApiClient: StarWarsApiClientImplementing {
   private let restClient: RestClient
   private let scheduler: SchedulerType
+  private let resourceParametersProvider: StarWarsResourceParametersProviding?
 
-  init(restClient: RestClient, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)) {
+  init(
+    restClient: RestClient,
+    scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
+    resourceParametersProvider: StarWarsResourceParametersProviding?
+  ) {
     self.restClient = restClient
     self.scheduler = scheduler
+    self.resourceParametersProvider = resourceParametersProvider
   }
 
   func human(
     with parameters: HumanStarWarsQuery
   ) -> Single<ApiResponse<HumanStarWarsObject?>> {
-    let resource = StarWarsResourceParameters
-      .queryHuman(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryHuman(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: HumanQueryResponse.self,
@@ -71,8 +79,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func droid(
     with parameters: DroidStarWarsQuery
   ) -> Single<ApiResponse<DroidStarWarsObject?>> {
-    let resource = StarWarsResourceParameters
-      .queryDroid(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryDroid(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: DroidQueryResponse.self,
@@ -83,8 +93,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func character(
     with parameters: CharacterStarWarsQuery
   ) -> Single<ApiResponse<CharacterUnionStarWarsUnions?>> {
-    let resource = StarWarsResourceParameters
-      .queryCharacter(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryCharacter(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: CharacterQueryResponse.self,
@@ -95,8 +107,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func luke(
     with parameters: LukeStarWarsQuery
   ) -> Single<ApiResponse<HumanStarWarsObject?>> {
-    let resource = StarWarsResourceParameters
-      .queryLuke(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryLuke(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: LukeQueryResponse.self,
@@ -107,8 +121,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func humans(
     with parameters: HumansStarWarsQuery
   ) -> Single<ApiResponse<[HumanStarWarsObject]>> {
-    let resource = StarWarsResourceParameters
-      .queryHumans(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryHumans(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: HumansQueryResponse.self,
@@ -119,8 +135,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func droids(
     with parameters: DroidsStarWarsQuery
   ) -> Single<ApiResponse<[DroidStarWarsObject]>> {
-    let resource = StarWarsResourceParameters
-      .queryDroids(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryDroids(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: DroidsQueryResponse.self,
@@ -131,8 +149,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func characters(
     with parameters: CharactersStarWarsQuery
   ) -> Single<ApiResponse<[CharacterStarWarsInterface]>> {
-    let resource = StarWarsResourceParameters
-      .queryCharacters(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryCharacters(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: CharactersQueryResponse.self,
@@ -143,8 +163,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func greeting(
     with parameters: GreetingStarWarsQuery
   ) -> Single<ApiResponse<String>> {
-    let resource = StarWarsResourceParameters
-      .queryGreeting(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryGreeting(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: GreetingQueryResponse.self,
@@ -155,8 +177,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func whoami(
     with parameters: WhoamiStarWarsQuery
   ) -> Single<ApiResponse<String>> {
-    let resource = StarWarsResourceParameters
-      .queryWhoami(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryWhoami(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: WhoamiQueryResponse.self,
@@ -167,8 +191,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func time(
     with parameters: TimeStarWarsQuery
   ) -> Single<ApiResponse<String>> {
-    let resource = StarWarsResourceParameters
-      .queryTime(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .queryTime(parameters: parameters)
+    )
 
     return executeGraphQLQuery(
       responseData: TimeQueryResponse.self,
@@ -179,8 +205,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func mutate(
     with parameters: MutateStarWarsMutation
   ) -> Single<ApiResponse<Bool>> {
-    let resource = StarWarsResourceParameters
-      .updateMutate(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .updateMutate(parameters: parameters)
+    )
 
     return executeGraphQLMutation(
       responseData: MutateMutationResponse.self,
@@ -191,8 +219,10 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
   func number(
     with parameters: NumberStarWarsSubscription
   ) -> Single<ApiResponse<Int>> {
-    let resource = StarWarsResourceParameters
-      .subscribeNumber(parameters: parameters)
+    let resource = StarWarsResourceParameters(
+      provider: resourceParametersProvider,
+      resourceBodyParameters: .subscribeNumber(parameters: parameters)
+    )
 
     return executeGraphQLSubscription(
       responseData: NumberSubscriptionResponse.self,
@@ -260,22 +290,59 @@ private extension StarWarsApiClient {
 // MARK: - StarWarsResourceParameters
 
 protocol StarWarsResourceParametersProviding {
-  func servicePath(with resourceParameters: StarWarsResourceParameters) -> String
-  func headers(with resourceParameters: StarWarsResourceParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: StarWarsResourceParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: StarWarsResourceParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: StarWarsResourceParameters) -> Bool
+  func servicePath(with resourceParameters: StarWarsResourceBodyParameters) -> String
+  func headers(with resourceParameters: StarWarsResourceBodyParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: StarWarsResourceBodyParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: StarWarsResourceBodyParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: StarWarsResourceBodyParameters) -> Bool
 }
 
-final class StarWarsResourceParametersDIContainer {
-  static let shared = StarWarsResourceParametersDIContainer()
+final class StarWarsResourceParameters: ResourceParameters {
+  private let provider: StarWarsResourceParametersProviding?
+  private let resourceBodyParameters: StarWarsResourceBodyParameters
 
-  var provider: StarWarsResourceParametersProviding?
+  init(
+    provider: StarWarsResourceParametersProviding?,
+    resourceBodyParameters: StarWarsResourceBodyParameters
+  ) {
+    self.provider = provider
+    self.resourceBodyParameters = resourceBodyParameters
+  }
+
+  func bodyFormat() -> HttpBodyFormat {
+    .JSON
+  }
+
+  func httpMethod() -> RequestHttpMethod {
+    .post
+  }
+
+  func servicePath() -> String {
+    provider?.servicePath(with: resourceBodyParameters) ?? ""
+  }
+
+  func headers() -> [String: String]? {
+    provider?.headers(with: resourceBodyParameters) ?? nil
+  }
+
+  func timeoutInterval() -> TimeInterval? {
+    provider?.timeoutInterval(with: resourceBodyParameters) ?? nil
+  }
+
+  func preventRetry() -> Bool {
+    provider?.preventRetry(with: resourceBodyParameters) ?? false
+  }
+
+  func preventAddingLanguageParameters() -> Bool {
+    provider?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
+  }
+
+  func bodyParameters() -> Any? {
+    return resourceBodyParameters.bodyParameters()
+  }
 }
 
-enum StarWarsResourceParameters: ResourceParameters {
-  private static var diContainer = StarWarsResourceParametersDIContainer.shared
-
+enum StarWarsResourceBodyParameters {
   case queryHuman(parameters: HumanStarWarsQuery)
   case queryDroid(parameters: DroidStarWarsQuery)
   case queryCharacter(parameters: CharacterStarWarsQuery)
@@ -288,34 +355,6 @@ enum StarWarsResourceParameters: ResourceParameters {
   case queryTime(parameters: TimeStarWarsQuery)
   case updateMutate(parameters: MutateStarWarsMutation)
   case subscribeNumber(parameters: NumberStarWarsSubscription)
-
-  func bodyFormat() -> HttpBodyFormat {
-    .JSON
-  }
-
-  func httpMethod() -> RequestHttpMethod {
-    .post
-  }
-
-  func servicePath() -> String {
-    Self.diContainer.provider?.servicePath(with: self) ?? ""
-  }
-
-  func headers() -> [String: String]? {
-    Self.diContainer.provider?.headers(with: self) ?? nil
-  }
-
-  func timeoutInterval() -> TimeInterval? {
-    Self.diContainer.provider?.timeoutInterval(with: self) ?? nil
-  }
-
-  func preventRetry() -> Bool {
-    Self.diContainer.provider?.preventRetry(with: self) ?? false
-  }
-
-  func preventAddingLanguageParameters() -> Bool {
-    Self.diContainer.provider?.preventAddingLanguageParameters(with: self) ?? false
-  }
 
   func bodyParameters() -> Any? {
     switch self {
