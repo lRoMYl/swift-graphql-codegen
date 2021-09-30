@@ -10,17 +10,31 @@ import Foundation
 import XCTest
 
 final class StringCaseTests: XCTestCase {
-  func testCamelCase() throws {
-    let camelText = "APIKey".camelCase
-    let expected = "apiKey"
+  let texts = [
+    "APIKey",
+    "dateISO",
+    "FirmwareNRFMetadata"
+  ]
 
-    XCTAssertEqual(camelText, expected)
+  func testCamelCase() throws {
+    let camelTexts = texts.map { $0.camelCase }
+    let expectations = [
+      "apiKey",
+      "dateIso",
+      "firmwareNrfMetadata"
+    ]
+
+    XCTAssertEqual(camelTexts, expectations)
   }
 
   func testPascalCase() throws {
-    let pascalText = "APIKey".pascalCase
-    let expected = "ApiKey"
+    let pascalTexts = texts.map { $0.pascalCase }
+    let expectations = [
+      "ApiKey",
+      "DateIso",
+      "FirmwareNrfMetadata"
+    ]
 
-    XCTAssertEqual(pascalText, expected)
+    XCTAssertEqual(pascalTexts, expectations)
   }
 }
