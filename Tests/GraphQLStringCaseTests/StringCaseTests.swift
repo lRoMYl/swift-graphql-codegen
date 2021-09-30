@@ -13,7 +13,11 @@ final class StringCaseTests: XCTestCase {
   let texts = [
     "APIKey",
     "dateISO",
-    "FirmwareNRFMetadata"
+    "FirmwareNRFMetadata",
+    "___a very peculiarNameIndeed__wouldNot.you.agree.AMAZING?____",
+    "ENUM",
+    "linkToURL",
+    "grandfather_father.son grandson"
   ]
 
   func testCamelCase() throws {
@@ -21,7 +25,11 @@ final class StringCaseTests: XCTestCase {
     let expectations = [
       "apiKey",
       "dateIso",
-      "firmwareNrfMetadata"
+      "firmwareNrfMetadata",
+      "aVeryPeculiarNameIndeedWouldNotYouAgreeAmazing",
+      "enum",
+      "linkToUrl",
+      "grandfatherFatherSonGrandson"
     ]
 
     XCTAssertEqual(camelTexts, expectations)
@@ -32,7 +40,11 @@ final class StringCaseTests: XCTestCase {
     let expectations = [
       "ApiKey",
       "DateIso",
-      "FirmwareNrfMetadata"
+      "FirmwareNrfMetadata",
+      "AVeryPeculiarNameIndeedWouldNotYouAgreeAmazing",
+      "Enum",
+      "LinkToUrl",
+      "GrandfatherFatherSonGrandson"
     ]
 
     XCTAssertEqual(pascalTexts, expectations)
