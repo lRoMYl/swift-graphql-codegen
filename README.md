@@ -1,4 +1,4 @@
-# DHGraphQLCodegen
+# DHGraphQLCodegen [WIP]
 
 DH Swift type-safe GraphQL query builder
 - Plain Swift Types without external dependencies
