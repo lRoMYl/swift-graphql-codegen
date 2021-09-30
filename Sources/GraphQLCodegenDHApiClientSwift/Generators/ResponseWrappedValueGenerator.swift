@@ -27,9 +27,10 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
   }
 
   func code(schema: Schema) throws -> String {
-    """
-    \(try schema.operations.map { try wrappedValueCode(with: $0) }.lines)
-    """
+    return ""
+//    """
+//    \(try schema.operations.map { try wrappedValueCode(with: $0) }.lines)
+//    """
   }
 }
 

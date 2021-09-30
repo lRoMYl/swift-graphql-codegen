@@ -71,8 +71,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: HumanQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: HumanQueryResponse.self
     )
   }
 
@@ -85,8 +85,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: DroidQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: DroidQueryResponse.self
     )
   }
 
@@ -99,8 +99,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: CharacterQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: CharacterQueryResponse.self
     )
   }
 
@@ -113,8 +113,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: LukeQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: LukeQueryResponse.self
     )
   }
 
@@ -127,8 +127,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: HumansQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: HumansQueryResponse.self
     )
   }
 
@@ -141,8 +141,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: DroidsQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: DroidsQueryResponse.self
     )
   }
 
@@ -155,8 +155,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: CharactersQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: CharactersQueryResponse.self
     )
   }
 
@@ -169,8 +169,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: GreetingQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: GreetingQueryResponse.self
     )
   }
 
@@ -183,8 +183,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: WhoamiQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: WhoamiQueryResponse.self
     )
   }
 
@@ -197,8 +197,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: TimeQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: TimeQueryResponse.self
     )
   }
 
@@ -211,8 +211,8 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLMutation(
-      responseData: MutateMutationResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: MutateMutationResponse.self
     )
   }
 
@@ -225,24 +225,24 @@ final class StarWarsApiClient: StarWarsApiClientImplementing {
     )
 
     return executeGraphQLSubscription(
-      responseData: NumberSubscriptionResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: NumberSubscriptionResponse.self
     )
   }
 }
 
 private extension StarWarsApiClient {
-  func executeGraphQLQuery<R, T>(
-    responseData _: R.Type,
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
+  func executeGraphQLQuery<Response, ResponseModel>(
+    resource: ResourceParameters,
+    responseType _: Response.Type
+  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue,
+          data: apiResponse.data?.wrappedValue as? ResponseModel,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -250,17 +250,17 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLMutation<R, T>(
-    responseData _: R.Type,
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
+  func executeGraphQLMutation<Response, ResponseModel>(
+    resource: ResourceParameters,
+    responseType _: Response.Type
+  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue,
+          data: apiResponse.data?.wrappedValue as? ResponseModel,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -268,17 +268,17 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLSubscription<R, T>(
-    responseData _: R.Type,
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
+  func executeGraphQLSubscription<Response, ResponseModel>(
+    resource: ResourceParameters,
+    responseType _: Response.Type
+  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue,
+          data: apiResponse.data?.wrappedValue as? ResponseModel,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -394,77 +394,5 @@ enum StarWarsResourceBodyParameters {
       .flatMap {
         $0 as? [String: Any]
       } ?? [:]
-  }
-}
-
-extension GraphQLResponse where ResponseData == HumanQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.human as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == DroidQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.droid as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == CharacterQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.character as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == LukeQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.luke as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == HumansQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.humans as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == DroidsQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.droids as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == CharactersQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.characters as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == GreetingQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.greeting as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == WhoamiQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.whoami as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == TimeQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.time as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == MutateMutationResponse {
-  var wrappedValue: ReturnType? {
-    return data.mutate as? ReturnType
-  }
-}
-
-extension GraphQLResponse where ResponseData == NumberSubscriptionResponse {
-  var wrappedValue: ReturnType? {
-    return data.number as? ReturnType
   }
 }

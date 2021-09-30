@@ -21,14 +21,14 @@ final class GroceriesRepository {
 
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<Result<CampaignsResponseModel?, GroceriesRepositoryError>> {
+  ) -> Single<CampaignsResponseModel?> {
     apiClient.campaigns(with: parameters)
       .map {
         guard let data = $0.data else {
-          return .failure(.missingData)
+          throw GroceriesRepositoryError.missingData
         }
 
-        return .success(data)
+        return data
       }
   }
 }

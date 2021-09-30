@@ -96,15 +96,11 @@ public struct GraphQLCodegenEntitySwift {
 
     // MARK: - \(entityNameMap.response)
 
-    struct \(entityNameMap.response)<ResponseData: \(entityNameMap.responseData), ReturnType: Codable>: Codable {
+    struct \(entityNameMap.response)<ResponseData: \(entityNameMap.responseData)>: Codable {
       let data: ResponseData
 
-      enum CodingKeys: String, CodingKey {
-        case data
-      }
-
-      var wrappedValue: ReturnType? {
-        data.wrappedValue as? ReturnType
+      var wrappedValue: Decodable {
+        data.data
       }
     }
 
@@ -112,7 +108,7 @@ public struct GraphQLCodegenEntitySwift {
     protocol \(entityNameMap.responseData): Codable {
       associatedtype T: Decodable
 
-      var wrappedValue: T { get }
+      var data: T { get }
     }
 
     // MARK: - \(entityNameMap.selection)+Declaration

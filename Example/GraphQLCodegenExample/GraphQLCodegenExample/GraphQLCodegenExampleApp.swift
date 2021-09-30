@@ -68,7 +68,7 @@ extension GraphQLCodegenExampleApp {
       .campaigns(with: parameters)
       .subscribe(
         onSuccess: { response in
-          print(response)
+          print(String(describing: response))
         },
         onError: { error in
           print(error)

@@ -35,10 +35,10 @@ extension ResponseCodeGenerator {
   func code(field: Field, operation: GraphQLAST.Operation) throws -> String {
     return """
     struct \(try entityNameStrategy.responseDataName(for: field, with: operation)): \(entityNameMap.responseData) {
-      let \(field.name): \(try entityNameStrategy.name(for: field.type))
+      let data: \(try entityNameStrategy.name(for: field.type))
 
-      var wrappedValue: \(try entityNameStrategy.name(for: field.type)) {
-        return \(field.name)
+      enum CodingKeys: String, CodingKey {
+        case data = \"\(field.name)\"
       }
     }
     """

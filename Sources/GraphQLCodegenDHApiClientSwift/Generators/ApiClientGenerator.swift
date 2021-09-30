@@ -101,8 +101,8 @@ extension ApiClientGenerator {
         )
 
         return executeGraphQL\(operationName)(
-          responseData: \(try entityNameStrategy.responseDataName(for: $0, with: operation)).self,
-          resource: resource
+          resource: resource,
+          responseType: \(try entityNameStrategy.responseDataName(for: $0, with: operation)).self
         )
       }
       """
@@ -127,20 +127,24 @@ extension ApiClientGenerator {
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName =  operation.type.name.pascalCase
-    let responseDataText = "\(entityNameMap.response)<R, T>"
+    let genericResponse = "Response"
+    let genericResponseModel = "ResponseModel"
+    let responseDataText = "\(entityNameMap.response)<\(genericResponse)>"
+    let responseGenericCode = self.responseGenericCode(text: genericResponseModel)
+    let responseDataGenericCode = self.responseGenericCode(text: responseDataText)
 
     return """
-    func executeGraphQL\(operationName)<R, T>(
-      responseData: R.Type,
-      resource: ResourceParameters
-    ) -> \(responseGenericCode(text: "T")) where R: \(entityNameMap.responseData), T: Codable {
-      let request: \(responseGenericCode(text: responseDataText)) = restClient
+    func executeGraphQL\(operationName)<\(genericResponse), \(genericResponseModel)>(
+      resource: ResourceParameters,
+      responseType: \(genericResponse).Type
+    ) -> \(responseGenericCode) where \(genericResponse): \(entityNameMap.responseData), \(genericResponseModel): Codable {
+      let request: \(responseDataGenericCode) = restClient
         .executeRequest(resource: resource)
 
       return request
         .map { apiResponse in
           return ApiResponse(
-            data: apiResponse.data?.wrappedValue,
+            data: apiResponse.data?.wrappedValue as? \(genericResponseModel),
             httpURLResponse: apiResponse.httpURLResponse,
             metaData: apiResponse.metaData
           )

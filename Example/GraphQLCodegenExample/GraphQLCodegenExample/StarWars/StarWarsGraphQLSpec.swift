@@ -1063,97 +1063,97 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 }
 
 struct HumanQueryResponse: GraphQLResponseData {
-  let human: HumanStarWarsObject?
+  let data: HumanStarWarsObject?
 
-  var wrappedValue: HumanStarWarsObject? {
-    return human
+  enum CodingKeys: String, CodingKey {
+    case data = "human"
   }
 }
 
 struct DroidQueryResponse: GraphQLResponseData {
-  let droid: DroidStarWarsObject?
+  let data: DroidStarWarsObject?
 
-  var wrappedValue: DroidStarWarsObject? {
-    return droid
+  enum CodingKeys: String, CodingKey {
+    case data = "droid"
   }
 }
 
 struct CharacterQueryResponse: GraphQLResponseData {
-  let character: CharacterUnionStarWarsUnions?
+  let data: CharacterUnionStarWarsUnions?
 
-  var wrappedValue: CharacterUnionStarWarsUnions? {
-    return character
+  enum CodingKeys: String, CodingKey {
+    case data = "character"
   }
 }
 
 struct LukeQueryResponse: GraphQLResponseData {
-  let luke: HumanStarWarsObject?
+  let data: HumanStarWarsObject?
 
-  var wrappedValue: HumanStarWarsObject? {
-    return luke
+  enum CodingKeys: String, CodingKey {
+    case data = "luke"
   }
 }
 
 struct HumansQueryResponse: GraphQLResponseData {
-  let humans: [HumanStarWarsObject]
+  let data: [HumanStarWarsObject]
 
-  var wrappedValue: [HumanStarWarsObject] {
-    return humans
+  enum CodingKeys: String, CodingKey {
+    case data = "humans"
   }
 }
 
 struct DroidsQueryResponse: GraphQLResponseData {
-  let droids: [DroidStarWarsObject]
+  let data: [DroidStarWarsObject]
 
-  var wrappedValue: [DroidStarWarsObject] {
-    return droids
+  enum CodingKeys: String, CodingKey {
+    case data = "droids"
   }
 }
 
 struct CharactersQueryResponse: GraphQLResponseData {
-  let characters: [CharacterStarWarsInterface]
+  let data: [CharacterStarWarsInterface]
 
-  var wrappedValue: [CharacterStarWarsInterface] {
-    return characters
+  enum CodingKeys: String, CodingKey {
+    case data = "characters"
   }
 }
 
 struct GreetingQueryResponse: GraphQLResponseData {
-  let greeting: String
+  let data: String
 
-  var wrappedValue: String {
-    return greeting
+  enum CodingKeys: String, CodingKey {
+    case data = "greeting"
   }
 }
 
 struct WhoamiQueryResponse: GraphQLResponseData {
-  let whoami: String
+  let data: String
 
-  var wrappedValue: String {
-    return whoami
+  enum CodingKeys: String, CodingKey {
+    case data = "whoami"
   }
 }
 
 struct TimeQueryResponse: GraphQLResponseData {
-  let time: String
+  let data: String
 
-  var wrappedValue: String {
-    return time
+  enum CodingKeys: String, CodingKey {
+    case data = "time"
   }
 }
 
 struct MutateMutationResponse: GraphQLResponseData {
-  let mutate: Bool
+  let data: Bool
 
-  var wrappedValue: Bool {
-    return mutate
+  enum CodingKeys: String, CodingKey {
+    case data = "mutate"
   }
 }
 
 struct NumberSubscriptionResponse: GraphQLResponseData {
-  let number: Int
+  let data: Int
 
-  var wrappedValue: Int {
-    return number
+  enum CodingKeys: String, CodingKey {
+    case data = "number"
   }
 }

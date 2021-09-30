@@ -38,24 +38,24 @@ final class GroceriesApiClient: GroceriesApiClientImplementing {
     )
 
     return executeGraphQLQuery(
-      responseData: CampaignsQueryResponse.self,
-      resource: resource
+      resource: resource,
+      responseType: CampaignsQueryResponse.self
     )
   }
 }
 
 private extension GroceriesApiClient {
-  func executeGraphQLQuery<R, T>(
-    responseData _: R.Type,
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<T>> where R: GraphQLResponseData, T: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<R, T>>> = restClient
+  func executeGraphQLQuery<Response, ResponseModel>(
+    resource: ResourceParameters,
+    responseType _: Response.Type
+  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue,
+          data: apiResponse.data?.wrappedValue as? ResponseModel,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -138,11 +138,5 @@ enum GroceriesResourceBodyParameters {
       .flatMap {
         $0 as? [String: Any]
       } ?? [:]
-  }
-}
-
-extension GraphQLResponse where ResponseData == CampaignsQueryResponse {
-  var wrappedValue: ReturnType? {
-    return data.campaigns as? ReturnType
   }
 }
