@@ -280,9 +280,9 @@ struct HumanStarWarsQuery: GraphQLRequesting {
   ) {
     human(
       id: $id
-  ) {
-  ...HumanFragment
-  }
+  	) {
+  		...HumanFragment
+  	}
   }
 
   %1$@
@@ -365,9 +365,9 @@ struct DroidStarWarsQuery: GraphQLRequesting {
   ) {
     droid(
       id: $id
-  ) {
-  ...DroidFragment
-  }
+  	) {
+  		...DroidFragment
+  	}
   }
 
   %1$@
@@ -450,7 +450,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
   ) {
     character(
       id: $id
-  )
+  	)
   }
 
   %1$@
@@ -504,8 +504,8 @@ struct LukeStarWarsQuery: GraphQLRequesting {
   private let operationDefinitionFormat: String = """
   query {
     luke {
-  ...HumanFragment
-  }
+  		...HumanFragment
+  	}
   }
 
   %1$@
@@ -577,8 +577,8 @@ struct HumansStarWarsQuery: GraphQLRequesting {
   private let operationDefinitionFormat: String = """
   query {
     humans {
-  ...HumanFragment
-  }
+  		...HumanFragment
+  	}
   }
 
   %1$@
@@ -650,8 +650,8 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
   private let operationDefinitionFormat: String = """
   query {
     droids {
-  ...DroidFragment
-  }
+  		...DroidFragment
+  	}
   }
 
   %1$@
@@ -723,8 +723,8 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
   private let operationDefinitionFormat: String = """
   query {
     characters {
-  ...CharacterFragment
-  }
+  		...CharacterFragment
+  	}
   }
 
   %1$@
@@ -838,7 +838,7 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
   ) {
     greeting(
       input: $input
-  )
+  	)
   }
 
   %1$@

@@ -261,9 +261,9 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       LanguageCode: $LanguageCode
       APIKey: $APIKey
       DiscoClientID: $DiscoClientID
-  ) {
-  ...CampaignsFragment
-  }
+  	) {
+  		...CampaignsFragment
+  	}
   }
 
   %1$@
