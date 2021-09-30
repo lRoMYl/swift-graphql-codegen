@@ -45,7 +45,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       schema: schema
     ).format()
 
-    let expected = try #"""
+    let expected = try """
     // MARK: - Selections
 
     let selections: Selections
@@ -54,60 +54,49 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       let campaignAttributeSelections: Set<CampaignAttributeSelection>
 
       enum CampaignAttributeSelection: String, GraphQLSelection {
-        case autoApplied
         case benefits
-        case campaignType
-        case description
-        case discount = """
+        case discount = \"\"\"
         discount {
           ...DiscountFragment
         }
-        """
-        case id
-        case name
-        case redemptionLimit
-        case source
+        \"\"\"
       }
 
       let campaignsSelections: Set<CampaignsSelection>
 
       enum CampaignsSelection: String, GraphQLSelection {
-        case campaignAttributes = """
+        case campaignAttributes = \"\"\"
         campaignAttributes {
           ...CampaignAttributeFragment
         }
-        """
-        case productDeals = """
+        \"\"\"
+        case productDeals = \"\"\"
         productDeals {
           ...ProductDealFragment
         }
-        """
+        \"\"\"
       }
 
       let dealSelections: Set<DealSelection>
 
       enum DealSelection: String, GraphQLSelection {
-        case campaignID
-        case discountTag
-        case triggerQuantity
+        case all = ""
       }
 
       let discountSelections: Set<DiscountSelection>
 
       enum DiscountSelection: String, GraphQLSelection {
-        case type
-        case value
+        case all = ""
       }
 
       let productDealSelections: Set<ProductDealSelection>
 
       enum ProductDealSelection: String, GraphQLSelection {
-        case deals = """
+        case deals = \"\"\"
         deals {
           ...DealFragment
         }
-        """
-        case productID
+        \"\"\"
       }
 
       init(
@@ -125,30 +114,49 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       }
 
       func declaration() -> String {
-        let campaignAttributeSelectionsDeclaration = """
-        fragment CampaignAttributeFragment on CampaignAttribute {\(campaignAttributeSelections.declaration)
+        let campaignAttributeSelectionsDeclaration = \"\"\"
+        fragment CampaignAttributeFragment on CampaignAttribute {
+        \tautoApplied
+        \tcampaignType
+        \tdescription
+        \tid
+        \tname
+        \tredemptionLimit
+        \tsource
+        \t\\(campaignAttributeSelections.declaration)
         }
-        """
+        \"\"\"
 
-        let campaignsSelectionsDeclaration = """
-        fragment CampaignsFragment on Campaigns {\(campaignsSelections.declaration)
-        }
-        """
+        let campaignsSelectionsDeclaration = \"\"\"
+        fragment CampaignsFragment on Campaigns {
 
-        let dealSelectionsDeclaration = """
-        fragment DealFragment on Deal {\(dealSelections.declaration)
+        \t\\(campaignsSelections.declaration)
         }
-        """
+        \"\"\"
 
-        let discountSelectionsDeclaration = """
-        fragment DiscountFragment on Discount {\(discountSelections.declaration)
+        let dealSelectionsDeclaration = \"\"\"
+        fragment DealFragment on Deal {
+        \tcampaignID
+        \tdiscountTag
+        \ttriggerQuantity
+        \t\\(dealSelections.declaration)
         }
-        """
+        \"\"\"
 
-        let productDealSelectionsDeclaration = """
-        fragment ProductDealFragment on ProductDeal {\(productDealSelections.declaration)
+        let discountSelectionsDeclaration = \"\"\"
+        fragment DiscountFragment on Discount {
+        \ttype
+        \tvalue
+        \t\\(discountSelections.declaration)
         }
-        """
+        \"\"\"
+
+        let productDealSelectionsDeclaration = \"\"\"
+        fragment ProductDealFragment on ProductDeal {
+        \tproductID
+        \t\\(productDealSelections.declaration)
+        }
+        \"\"\"
 
         let selectionDeclarationMap = [
           "CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
@@ -161,7 +169,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
         return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
       }
     }
-    """#.format()
+    """.format()
 
     XCTAssertEqual(declaration, expected)
   }
@@ -185,7 +193,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
     )
 
-    let expected = try #"""
+    let expected = try """
     // MARK: - Selections
 
     let selections: Selections
@@ -194,8 +202,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       let discountSelections: Set<DiscountSelection>
 
       enum DiscountSelection: String, GraphQLSelection {
-        case type
-        case value
+        case all = ""
       }
 
       init(
@@ -205,10 +212,13 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       }
 
       func declaration() -> String {
-        let discountSelectionsDeclaration = """
-        fragment DiscountFragment on Discount {\(discountSelections.declaration)
+        let discountSelectionsDeclaration = \"\"\"
+        fragment DiscountFragment on Discount {
+        \ttype
+        \tvalue
+        \t\\(discountSelections.declaration)
         }
-        """
+        \"\"\"
 
         let selectionDeclarationMap = [
           "DiscountFragment": discountSelectionsDeclaration
@@ -217,7 +227,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
         return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "DiscountFragment")
       }
     }
-    """#.format()
+    """.format()
 
     XCTAssertEqual(declaration, expected)
   }
@@ -234,53 +244,82 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     )
     let formattedCode = try code.format()
 
-    let expected = try #"""
-		// MARK: - Selections
+    let expected = try """
+    // MARK: - Selections
 
-		let selections: Selections
+    let selections: Selections
 
-		struct Selections: GraphQLSelections {
-			let characterSelections: Set<CharacterSelection>
+    struct Selections: GraphQLSelections {
+      let characterSelections: Set<CharacterSelection>
 
-			enum CharacterSelection: String, GraphQLSelection {
-				case id
-				case name
-			}
+      enum CharacterSelection: String, GraphQLSelection {
+        case all = ""
+      }
 
-			init(
-				characterSelections: Set<CharacterSelection> = []
-			) {
-				self.characterSelections = characterSelections
-			}
+      let droidSelections: Set<DroidSelection>
 
-			func declaration() -> String {
-				let characterSelectionsDeclaration = """
-				fragment CharacterFragment on Character {\(characterSelections.declaration)
-					__typename
-					... on Droid {
-						id
-						name
-						primaryFunction
-						appearsIn
-					}
-					... on Human {
-						id
-						name
-						homePlanet
-						appearsIn
-						infoURL
-					}
-				}
-				"""
+      enum DroidSelection: String, GraphQLSelection {
+        case all = ""
+      }
 
-				let selectionDeclarationMap = [
-					"CharacterFragment": characterSelectionsDeclaration
-				]
+      let humanSelections: Set<HumanSelection>
 
-				return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
-			}
-		}
-		"""#.format()
+      enum HumanSelection: String, GraphQLSelection {
+        case homePlanet
+        case infoURL
+      }
+
+      init(
+        characterSelections: Set<CharacterSelection> = [],
+        droidSelections: Set<DroidSelection> = [],
+        humanSelections: Set<HumanSelection> = []
+      ) {
+        self.characterSelections = characterSelections
+        self.droidSelections = droidSelections
+        self.humanSelections = humanSelections
+      }
+
+      func declaration() -> String {
+        let characterSelectionsDeclaration = \"\"\"
+        fragment CharacterFragment on Character {
+        \tid
+        \tname
+        \t\\(characterSelections.declaration)
+        \t__typename
+        \t...DroidFragment
+        \t...HumanFragment
+        }
+        \"\"\"
+
+        let droidSelectionsDeclaration = \"\"\"
+        fragment DroidFragment on Droid {
+        \tappearsIn
+        \tid
+        \tname
+        \tprimaryFunction
+        \t\\(droidSelections.declaration)
+        }
+        \"\"\"
+
+        let humanSelectionsDeclaration = \"\"\"
+        fragment HumanFragment on Human {
+        \tappearsIn
+        \tid
+        \tname
+        \t\\(humanSelections.declaration)
+        }
+        \"\"\"
+
+        let selectionDeclarationMap = [
+          "CharacterFragment": characterSelectionsDeclaration,
+          "DroidFragment": droidSelectionsDeclaration,
+          "HumanFragment": humanSelectionsDeclaration
+        ]
+
+        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
+      }
+    }
+    """.format()
 
     XCTAssertEqual(formattedCode, expected)
   }
