@@ -11,13 +11,12 @@ enum EpisodeStarWarsEnums: RawRepresentable, Codable {
   typealias RawValue = String
 
   /// Released in 1977.
-
   case newhope
+
   /// Released in 1980.
-
   case empire
-  /// Released in 1983
 
+  /// Released in 1983
   case jedi
 
   /// Auto generated constant for unknown enum values

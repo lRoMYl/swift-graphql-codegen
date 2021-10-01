@@ -60,7 +60,7 @@ private extension EnumType {
     \(
       enumValues.map {
         $0.declaration
-      }.joined(separator: "\n")
+      }.joined(separator: "\n\n")
     )
 
     /// Auto generated constant for unknown enum values
@@ -122,10 +122,12 @@ private extension EnumType {
 private extension EnumValue {
   /// Returns an enum case definition.
   var declaration: String {
-    """
-    \(docs)
-    \(availability)
-    case \(name.camelCase.normalize)
-    """
+    let texts: [String] = [
+      docs,
+      availability,
+      "case \(name.camelCase.normalize)"
+    ]
+
+    return texts.filter { !$0.isEmpty }.lines
   }
 }
