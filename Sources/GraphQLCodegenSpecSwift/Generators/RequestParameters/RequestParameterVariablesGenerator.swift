@@ -88,6 +88,8 @@ struct RequestParameterVariablesGenerator {
       """
     }.lines
 
+    guard !argumentVariables.isEmpty else { return "" }
+
     return """
     // MARK: - Arguments
     \(argumentVariables)

@@ -13,9 +13,9 @@ enum StarWarsRepositoryError: Error {
 }
 
 final class StarWarsRepository {
-  private let apiClient: StarWarsApiClientImplementing
+  private let apiClient: StarWarsApiClientProtocol
 
-  init(apiClient: StarWarsApiClientImplementing) {
+  init(apiClient: StarWarsApiClientProtocol) {
     self.apiClient = apiClient
   }
 

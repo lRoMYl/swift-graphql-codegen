@@ -261,8 +261,6 @@ struct CharacterUnionStarWarsUnions: Codable {}
 
 // MARK: - GraphQLRequesting
 
-// MARK: - StarWarsQuery
-
 // MARK: - HumanStarWarsQuery
 
 struct HumanStarWarsQuery: GraphQLRequesting {
@@ -270,7 +268,7 @@ struct HumanStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query(
@@ -355,7 +353,7 @@ struct DroidStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query(
@@ -440,7 +438,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query(
@@ -497,7 +495,7 @@ struct LukeStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -515,8 +513,6 @@ struct LukeStarWarsQuery: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 
@@ -570,7 +566,7 @@ struct HumansStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -588,8 +584,6 @@ struct HumansStarWarsQuery: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 
@@ -643,7 +637,7 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -661,8 +655,6 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 
@@ -716,7 +708,7 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -734,8 +726,6 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 
@@ -828,7 +818,7 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query(
@@ -883,7 +873,7 @@ struct WhoamiStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -899,8 +889,6 @@ struct WhoamiStarWarsQuery: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 
@@ -928,7 +916,7 @@ struct TimeStarWarsQuery: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query {
@@ -945,8 +933,6 @@ struct TimeStarWarsQuery: GraphQLRequesting {
     )
   }
 
-  // MARK: - Arguments
-
   // MARK: - Selections
 
   let selections: Selections
@@ -966,8 +952,6 @@ struct TimeStarWarsQuery: GraphQLRequesting {
   }
 }
 
-// MARK: - StarWarsMutation
-
 // MARK: - MutateStarWarsMutation
 
 struct MutateStarWarsMutation: GraphQLRequesting {
@@ -975,7 +959,7 @@ struct MutateStarWarsMutation: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .mutation
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   mutation {
@@ -992,8 +976,6 @@ struct MutateStarWarsMutation: GraphQLRequesting {
     )
   }
 
-  // MARK: - Arguments
-
   // MARK: - Selections
 
   let selections: Selections
@@ -1013,8 +995,6 @@ struct MutateStarWarsMutation: GraphQLRequesting {
   }
 }
 
-// MARK: - StarWarsSubscription
-
 // MARK: - NumberStarWarsSubscription
 
 struct NumberStarWarsSubscription: GraphQLRequesting {
@@ -1022,7 +1002,7 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .subscription
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   subscription {
@@ -1038,8 +1018,6 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
       selections.declaration()
     )
   }
-
-  // MARK: - Arguments
 
   // MARK: - Selections
 

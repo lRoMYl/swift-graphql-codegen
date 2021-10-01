@@ -21,14 +21,16 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    """
+    let code = try schema.enums.map {
+      try $0.declaration(entityNameStrategy: entityNameStrategy)
+    }.lines
+
+    guard !code.isEmpty else { return "" }
+
+    return """
     // MARK: - \(entityNameMap.`enum`)
 
-    \(
-      try schema.enums.map {
-        try $0.declaration(entityNameStrategy: entityNameStrategy)
-      }.lines
-    )
+    \(code)
     """
   }
 }

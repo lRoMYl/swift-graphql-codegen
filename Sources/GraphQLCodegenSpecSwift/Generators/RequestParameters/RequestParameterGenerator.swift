@@ -72,14 +72,12 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let responseParameters = try schema.operations.map {
-      let requestEntityObjectName = $0.requestEntityObjectName(entityNameMap: entityNameMap)
-
       return """
-      // MARK: - \(requestEntityObjectName)
-
       \(try operation($0, schema: schema).lines)
       """
     }.lines
+
+    guard !responseParameters.isEmpty else { return "" }
 
     return """
     // MARK: - \(entityName)

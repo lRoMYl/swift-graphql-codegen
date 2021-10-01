@@ -32,17 +32,19 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    return """
-    // MARK: - \(entityNameMap.union)
-
-    \(
-      try schema.unions.compactMap {
-        """
+    let code = try schema.unions.compactMap {
+      """
         struct \(try entityNameStrategy.name(for: $0)): Codable {
         }
         """
-      }.lines
-    )
+    }.lines
+
+    guard !code.isEmpty else { return "" }
+
+    return """
+    // MARK: - \(entityNameMap.union)
+
+    \(code)
     """
   }
 }

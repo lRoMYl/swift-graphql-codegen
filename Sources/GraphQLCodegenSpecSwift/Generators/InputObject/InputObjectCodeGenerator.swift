@@ -30,14 +30,16 @@ struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    """
+    let codes = try schema.inputObjects.compactMap {
+      try declaration(inputObjectType: $0)
+    }.lines
+
+    guard !codes.isEmpty else { return "" }
+
+    return """
     // MARK: - Input Objects
 
-    \(
-      try schema.inputObjects.compactMap {
-        try declaration(inputObjectType: $0)
-      }.lines
-    )
+    \(codes)
     """
   }
 }

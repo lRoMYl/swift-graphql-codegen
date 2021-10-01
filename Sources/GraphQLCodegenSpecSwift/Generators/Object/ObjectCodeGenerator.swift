@@ -37,19 +37,21 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
+    let code = try schema.objects.compactMap {
+      try $0.declaration(
+        objects: schema.objects,
+        scalarMap: scalarMap,
+        fieldSpecificationGenerator: fieldSpecificationGenerator,
+        entityNameStrategy: entityNameStrategy
+      )
+    }.lines
+
+    guard !code.isEmpty else { return "" }
+
     return """
     // MARK: - \(entityNameMap.object)
 
-    \(
-      try schema.objects.compactMap {
-        try $0.declaration(
-          objects: schema.objects,
-          scalarMap: scalarMap,
-          fieldSpecificationGenerator: fieldSpecificationGenerator,
-          entityNameStrategy: entityNameStrategy
-        )
-      }.lines
-    )
+    \(code)
 
     """
   }

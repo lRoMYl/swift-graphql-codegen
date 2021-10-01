@@ -13,9 +13,9 @@ enum GroceriesRepositoryError: Error {
 }
 
 final class GroceriesRepository {
-  private let apiClient: GroceriesApiClientImplementing
+  private let apiClient: GroceriesApiClientProtocol
 
-  init(apiClient: GroceriesApiClientImplementing) {
+  init(apiClient: GroceriesApiClientProtocol) {
     self.apiClient = apiClient
   }
 

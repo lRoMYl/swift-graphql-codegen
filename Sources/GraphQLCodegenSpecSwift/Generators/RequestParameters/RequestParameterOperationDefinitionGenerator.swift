@@ -35,7 +35,7 @@ struct RequestParameterOperationDefinitionGenerator {
       : "(\n\(operationArguments)\n\t)"
 
     return """
-    // MARK: - Operation Defintion
+    // MARK: - Operation Definition
 
     private let operationDefinitionFormat: String = \"\"\"
     \(operationName)\(operationVariablesDeclaration) {

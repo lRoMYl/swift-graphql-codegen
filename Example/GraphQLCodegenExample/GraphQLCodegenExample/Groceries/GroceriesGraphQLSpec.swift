@@ -224,15 +224,7 @@ struct QueryResponseModel: Codable {
   }
 }
 
-// MARK: - Input Objects
-
-// MARK: - Interface
-
-// MARK: - Union
-
 // MARK: - GraphQLRequesting
-
-// MARK: - QueryRequest
 
 // MARK: - CampaignsQueryRequest
 
@@ -241,7 +233,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Defintion
+  // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
   query(
