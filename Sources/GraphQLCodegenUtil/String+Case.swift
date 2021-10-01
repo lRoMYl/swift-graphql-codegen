@@ -31,7 +31,6 @@ public extension String {
       guard self[delimiterRange.lowerBound].isLetter else {
         if !range.isEmpty { words.append(range) }
         wordStart = index(after: range.upperBound)
-        print(words.map { self[$0].capitalized })
         searchRange = wordStart ..< searchRange.upperBound
         continue
       }
@@ -43,7 +42,6 @@ public extension String {
 
       if !range.isEmpty {
         words.append(range)
-        print(words.map { self[$0].capitalized })
       }
 
       // If there are no more lower delimiters. Just end here and append all the remaining uppercase characters.
@@ -62,7 +60,7 @@ public extension String {
 
         // If the next character after the capital letters is not a letter, turn all the capital letters into a word.
         // Else turn all the capital letters up the second last index into a word.
-        if !self[index(after: lowerCaseRange.lowerBound)].isLetter {
+        if !self[lowerCaseRange.lowerBound].isLetter {
           words.append(wordStart ..< lowerCaseRange.lowerBound)
 
           // Next word starts after capital letters we just found
@@ -73,8 +71,6 @@ public extension String {
           // Next word starts at the last capital letters we just found
           wordStart = index(before: lowerCaseRange.lowerBound)
         }
-        print(words.map { self[$0].capitalized })
-
 
         searchRange = wordStart ..< searchRange.upperBound
       }
@@ -84,12 +80,7 @@ public extension String {
     if !remaining.isEmpty {
       // Append the last part of the word.
       words.append(remaining)
-      print(words.map { self[$0].capitalized })
-    } else {
-        print(remaining)
     }
-
-    print(words.map { self[$0].capitalized })
 
     let result = words.map { self[$0].capitalized }.joined()
     return result

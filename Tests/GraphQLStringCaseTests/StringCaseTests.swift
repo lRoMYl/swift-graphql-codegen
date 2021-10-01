@@ -17,7 +17,8 @@ final class StringCaseTests: XCTestCase {
     "___a very peculiarNameIndeed__wouldNot.you.agree.AMAZING?____",
     "ENUM",
     "linkToURL",
-    "grandfather_father.son grandson"
+    "grandfather_father.son grandson",
+    "GRAndFATHER_Father.son"
   ]
 
   func testCamelCase() throws {
@@ -29,7 +30,8 @@ final class StringCaseTests: XCTestCase {
       "aVeryPeculiarNameIndeedWouldNotYouAgreeAmazing",
       "enum",
       "linkToUrl",
-      "grandfatherFatherSonGrandson"
+      "grandfatherFatherSonGrandson",
+      "grAndFatherFatherSon"
     ]
 
     XCTAssertEqual(camelTexts, expectations)
@@ -44,7 +46,8 @@ final class StringCaseTests: XCTestCase {
       "AVeryPeculiarNameIndeedWouldNotYouAgreeAmazing",
       "Enum",
       "LinkToUrl",
-      "GrandfatherFatherSonGrandson"
+      "GrandfatherFatherSonGrandson",
+      "GrAndFatherFatherSon"
     ]
 
     XCTAssertEqual(pascalTexts, expectations)
