@@ -34,4 +34,11 @@ extension EntityNameMap {
     return "\(prefix)Providing"
   }
 
+  func apiClientProtocolName(apiClientPrefix: String) -> String {
+    apiClientPrefix + "ApiClientProtocol"
+  }
+
+  func apiClientName(apiClientPrefix: String) -> String {
+    apiClientPrefix + "ApiClient"
+  }
 }

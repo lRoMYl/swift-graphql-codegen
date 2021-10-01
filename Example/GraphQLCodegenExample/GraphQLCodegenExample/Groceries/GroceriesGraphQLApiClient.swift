@@ -6,15 +6,15 @@ import ApiClient
 import Foundation
 import RxSwift
 
-protocol GroceriesApiClientImplementing {
+protocol GroceriesApiClientProtocol {
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<ApiResponse<CampaignsResponseModel?>>
 }
 
-// MARK: - GroceriesApiClientImplementing
+// MARK: - GroceriesApiClientProtocol
 
-final class GroceriesApiClient: GroceriesApiClientImplementing {
+final class GroceriesApiClient: GroceriesApiClientProtocol {
   private let restClient: RestClient
   private let scheduler: SchedulerType
   private let resourceParametersProvider: GroceriesResourceParametersProviding?

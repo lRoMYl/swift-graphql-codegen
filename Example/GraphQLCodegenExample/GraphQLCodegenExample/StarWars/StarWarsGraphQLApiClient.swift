@@ -6,7 +6,7 @@ import ApiClient
 import Foundation
 import RxSwift
 
-protocol StarWarsApiClientImplementing {
+protocol StarWarsApiClientProtocol {
   func human(
     with parameters: HumanStarWarsQuery
   ) -> Single<ApiResponse<HumanStarWarsObject?>>
@@ -45,9 +45,9 @@ protocol StarWarsApiClientImplementing {
   ) -> Single<ApiResponse<Int>>
 }
 
-// MARK: - StarWarsApiClientImplementing
+// MARK: - StarWarsApiClientProtocol
 
-final class StarWarsApiClient: StarWarsApiClientImplementing {
+final class StarWarsApiClient: StarWarsApiClientProtocol {
   private let restClient: RestClient
   private let scheduler: SchedulerType
   private let resourceParametersProvider: StarWarsResourceParametersProviding?

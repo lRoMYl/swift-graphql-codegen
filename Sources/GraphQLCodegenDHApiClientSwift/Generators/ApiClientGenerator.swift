@@ -21,8 +21,9 @@ enum ApiClientGeneratorError: Error, LocalizedError {
 
 struct ApiClientGenerator: Generating {
   private let apiClientPrefix: String
-  private let apiClientInterfacePostfix: String = "ApiClientImplementing"
-  private let apiClientPostfix: String = "ApiClient"
+
+  private let apiClientName: String
+  private let apiClientProtocolName: String
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
@@ -30,6 +31,8 @@ struct ApiClientGenerator: Generating {
 
   init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
+    self.apiClientName = entityNameMap.apiClientName(apiClientPrefix: apiClientPrefix)
+    self.apiClientProtocolName = entityNameMap.apiClientProtocolName(apiClientPrefix: apiClientPrefix)
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameStrategy = entityNameStrategy
@@ -41,9 +44,9 @@ struct ApiClientGenerator: Generating {
     return """
     \(try self.protocolCode(with: schema.operations))
 
-    // MARK: - \(apiClientPrefix)\(apiClientInterfacePostfix)
+    // MARK: - \(apiClientProtocolName)
 
-    final class \(apiClientPrefix)\(apiClientPostfix): \(apiClientPrefix)\(apiClientInterfacePostfix) {
+    final class \(apiClientName): \(apiClientProtocolName) {
       private let restClient: RestClient
       private let scheduler: SchedulerType
       private let resourceParametersProvider: \(resourceParametersProviding)?
@@ -61,7 +64,7 @@ struct ApiClientGenerator: Generating {
       \(try schema.operations.map { try funcCode(with: $0).lines }.lines)
     }
 
-    private extension \(apiClientPrefix)\(apiClientPostfix) {
+    private extension \(apiClientName) {
       \(try schema.operations.map { try executeCode(with: $0) }.lines)
     }
     """
@@ -79,7 +82,7 @@ extension ApiClientGenerator {
 
   func protocolCode(with operations: [GraphQLAST.Operation]) throws -> String {
     return """
-    protocol \(apiClientPrefix)\(apiClientInterfacePostfix) {
+    protocol \(apiClientProtocolName) {
       \(
         try operations.map {
           try protocolCode(with: $0)
