@@ -6,6 +6,7 @@
 //
 
 import GraphQLAST
+import GraphQLCodegenConfig
 
 extension ObjectType: Structure {
   var possibleTypes: [ObjectTypeRef] {

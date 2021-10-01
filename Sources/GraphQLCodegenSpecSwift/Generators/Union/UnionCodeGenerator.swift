@@ -32,11 +32,53 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let code = try schema.unions.compactMap {
-      """
-        struct \(try entityNameStrategy.name(for: $0)): Codable {
+    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
+
+    let code = try schema.unions.compactMap { union -> String in
+      let possibleObjectTypes = try union.possibleTypes.compactMap {
+        try $0.objectType(objectTypeMap: objectTypeMap, entityNameStrategy: entityNameStrategy)
+      }
+      let fields = possibleObjectTypes
+        .flatMap { ($0 as Structure).selectionFields(with: selectionMap) }
+        .unique(by: { $0.name })
+        .sorted(by: { $0.name < $1.name })
+
+      return """
+      enum \(try entityNameStrategy.name(for: union)): Codable {
+        \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameStrategy.name(for: $0)))" }.lines)
+
+        enum Typename: String, Decodable {
+          \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
         }
-        """
+
+        private enum CodingKeys: String, CodingKey {
+          case __typename
+          \(fields.map { "case \($0.name.camelCase)" }.lines)
+        }
+
+        init(from decoder: Decoder) throws {
+          let container = try decoder.container(keyedBy: CodingKeys.self)
+          let singleValueContainer = try decoder.singleValueContainer()
+          let type = try container.decode(Typename.self, forKey: .__typename)
+
+          switch type {
+          \(
+            try possibleObjectTypes.map {
+              return """
+                case .\($0.name.camelCase):
+                let value = try singleValueContainer.decode(\(try entityNameStrategy.name(for: $0)).self)
+                self = .\($0.name.camelCase)(value)
+              """
+            }.lines
+          )
+          }
+        }
+
+        func encode(to encoder: Encoder) throws {
+          assertionFailure("Not implemented yet")
+        }
+      }
+      """
     }.lines
 
     guard !code.isEmpty else { return "" }

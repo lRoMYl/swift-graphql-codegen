@@ -257,7 +257,44 @@ struct CharacterStarWarsInterface: Codable {
 
 // MARK: - StarWarsUnions
 
-struct CharacterUnionStarWarsUnions: Codable {}
+enum CharacterUnionStarWarsUnions: Codable {
+  case human(HumanStarWarsObject)
+  case droid(DroidStarWarsObject)
+
+  enum Typename: String, Decodable {
+    case human = "Human"
+    case droid = "Droid"
+  }
+
+  private enum CodingKeys: String, CodingKey {
+    case __typename
+    case appearsIn
+    case homePlanet
+    case id
+    case infoUrl
+    case name
+    case primaryFunction
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let singleValueContainer = try decoder.singleValueContainer()
+    let type = try container.decode(Typename.self, forKey: .__typename)
+
+    switch type {
+    case .human:
+      let value = try singleValueContainer.decode(HumanStarWarsObject.self)
+      self = .human(value)
+    case .droid:
+      let value = try singleValueContainer.decode(DroidStarWarsObject.self)
+      self = .droid(value)
+    }
+  }
+
+  func encode(to _: Encoder) throws {
+    assertionFailure("Not implemented yet")
+  }
+}
 
 // MARK: - GraphQLRequesting
 
