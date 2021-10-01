@@ -104,8 +104,7 @@ extension ApiClientGenerator {
         )
 
         return executeGraphQL\(operationName)(
-          resource: resource,
-          responseType: \(try entityNameStrategy.responseDataName(for: $0, with: operation)).self
+          resource: resource
         )
       }
       """
@@ -115,7 +114,7 @@ extension ApiClientGenerator {
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = try entityNameStrategy.name(for: field.type)
+    let responseDataText = try entityNameStrategy.responseDataName(for: field, with: operation)
 
     let parametersName = try entityNameStrategy.requestParameterName(for: field, with: operation)
 
@@ -131,23 +130,21 @@ extension ApiClientGenerator {
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
     let operationName =  operation.type.name.pascalCase
     let genericResponse = "Response"
-    let genericResponseModel = "ResponseModel"
     let responseDataText = "\(entityNameMap.response)<\(genericResponse)>"
-    let responseGenericCode = self.responseGenericCode(text: genericResponseModel)
+    let responseGenericCode = self.responseGenericCode(text: genericResponse)
     let responseDataGenericCode = self.responseGenericCode(text: responseDataText)
 
     return """
-    func executeGraphQL\(operationName)<\(genericResponse), \(genericResponseModel)>(
-      resource: ResourceParameters,
-      responseType: \(genericResponse).Type
-    ) -> \(responseGenericCode) where \(genericResponse): \(entityNameMap.responseData), \(genericResponseModel): Codable {
+    func executeGraphQL\(operationName)<\(genericResponse)>(
+      resource: ResourceParameters
+    ) -> \(responseGenericCode) where \(genericResponse): \(entityNameMap.responseData) {
       let request: \(responseDataGenericCode) = restClient
         .executeRequest(resource: resource)
 
       return request
         .map { apiResponse in
           return ApiResponse(
-            data: apiResponse.data?.wrappedValue as? \(genericResponseModel),
+            data: apiResponse.data?.data,
             httpURLResponse: apiResponse.httpURLResponse,
             metaData: apiResponse.metaData
           )

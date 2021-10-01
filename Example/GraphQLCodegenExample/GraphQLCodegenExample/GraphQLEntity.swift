@@ -65,19 +65,11 @@ struct GraphQLRequestCodableWrapper<RequestParameters: GraphQLRequesting>: Encod
 
 struct GraphQLResponse<ResponseData: GraphQLResponseData>: Codable {
   let data: ResponseData
-
-  var wrappedValue: Decodable {
-    data.data
-  }
 }
 
 // MARK: - GraphQLResponseData
 
-protocol GraphQLResponseData: Codable {
-  associatedtype T: Decodable
-
-  var data: T { get }
-}
+protocol GraphQLResponseData: Codable {}
 
 // MARK: - GraphQLSelection+Declaration
 

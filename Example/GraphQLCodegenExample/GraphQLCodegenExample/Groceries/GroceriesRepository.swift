@@ -24,11 +24,11 @@ final class GroceriesRepository {
   ) -> Single<CampaignsResponseModel?> {
     apiClient.campaigns(with: parameters)
       .map {
-        guard let data = $0.data else {
+        guard let campaigns = $0.data?.campaigns else {
           throw GroceriesRepositoryError.missingData
         }
 
-        return data
+        return campaigns
       }
   }
 }

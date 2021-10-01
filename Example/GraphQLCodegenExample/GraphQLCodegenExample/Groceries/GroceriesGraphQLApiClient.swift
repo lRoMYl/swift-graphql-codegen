@@ -9,7 +9,7 @@ import RxSwift
 protocol GroceriesApiClientProtocol {
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<ApiResponse<CampaignsResponseModel?>>
+  ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
 // MARK: - GroceriesApiClientProtocol
@@ -31,31 +31,29 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<ApiResponse<CampaignsResponseModel?>> {
+  ) -> Single<ApiResponse<CampaignsQueryResponse>> {
     let resource = GroceriesResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryCampaigns(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: CampaignsQueryResponse.self
+      resource: resource
     )
   }
 }
 
 private extension GroceriesApiClient {
-  func executeGraphQLQuery<Response, ResponseModel>(
-    resource: ResourceParameters,
-    responseType _: Response.Type
-  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+  func executeGraphQLQuery<Response>(
+    resource: ResourceParameters
+  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue as? ResponseModel,
+          data: apiResponse.data?.data,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )

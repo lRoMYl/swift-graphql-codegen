@@ -1039,97 +1039,49 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 }
 
 struct HumanQueryResponse: GraphQLResponseData {
-  let data: HumanStarWarsObject?
-
-  enum CodingKeys: String, CodingKey {
-    case data = "human"
-  }
+  let human: HumanStarWarsObject?
 }
 
 struct DroidQueryResponse: GraphQLResponseData {
-  let data: DroidStarWarsObject?
-
-  enum CodingKeys: String, CodingKey {
-    case data = "droid"
-  }
+  let droid: DroidStarWarsObject?
 }
 
 struct CharacterQueryResponse: GraphQLResponseData {
-  let data: CharacterUnionStarWarsUnions?
-
-  enum CodingKeys: String, CodingKey {
-    case data = "character"
-  }
+  let character: CharacterUnionStarWarsUnions?
 }
 
 struct LukeQueryResponse: GraphQLResponseData {
-  let data: HumanStarWarsObject?
-
-  enum CodingKeys: String, CodingKey {
-    case data = "luke"
-  }
+  let luke: HumanStarWarsObject?
 }
 
 struct HumansQueryResponse: GraphQLResponseData {
-  let data: [HumanStarWarsObject]
-
-  enum CodingKeys: String, CodingKey {
-    case data = "humans"
-  }
+  let humans: [HumanStarWarsObject]
 }
 
 struct DroidsQueryResponse: GraphQLResponseData {
-  let data: [DroidStarWarsObject]
-
-  enum CodingKeys: String, CodingKey {
-    case data = "droids"
-  }
+  let droids: [DroidStarWarsObject]
 }
 
 struct CharactersQueryResponse: GraphQLResponseData {
-  let data: [CharacterStarWarsInterface]
-
-  enum CodingKeys: String, CodingKey {
-    case data = "characters"
-  }
+  let characters: [CharacterStarWarsInterface]
 }
 
 struct GreetingQueryResponse: GraphQLResponseData {
-  let data: String
-
-  enum CodingKeys: String, CodingKey {
-    case data = "greeting"
-  }
+  let greeting: String
 }
 
 struct WhoamiQueryResponse: GraphQLResponseData {
-  let data: String
-
-  enum CodingKeys: String, CodingKey {
-    case data = "whoami"
-  }
+  let whoami: String
 }
 
 struct TimeQueryResponse: GraphQLResponseData {
-  let data: String
-
-  enum CodingKeys: String, CodingKey {
-    case data = "time"
-  }
+  let time: String
 }
 
 struct MutateMutationResponse: GraphQLResponseData {
-  let data: Bool
-
-  enum CodingKeys: String, CodingKey {
-    case data = "mutate"
-  }
+  let mutate: Bool
 }
 
 struct NumberSubscriptionResponse: GraphQLResponseData {
-  let data: Int
-
-  enum CodingKeys: String, CodingKey {
-    case data = "number"
-  }
+  let number: Int
 }

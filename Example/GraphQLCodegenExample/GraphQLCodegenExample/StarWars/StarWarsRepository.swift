@@ -21,14 +21,14 @@ final class StarWarsRepository {
 
   func characters(
     with parameters: CharactersStarWarsQuery
-  ) -> Single<Result<[CharacterStarWarsInterface], StarWarsRepositoryError>> {
+  ) -> Single<[CharacterStarWarsInterface]> {
     apiClient.characters(with: parameters)
       .map {
-        guard let data = $0.data else {
-          return .failure(.missingData)
+        guard let data = $0.data?.characters else {
+          throw StarWarsRepositoryError.missingData
         }
 
-        return .success(data)
+        return data
       }
   }
 }

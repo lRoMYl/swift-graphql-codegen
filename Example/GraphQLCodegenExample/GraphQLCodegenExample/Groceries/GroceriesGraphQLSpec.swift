@@ -445,9 +445,5 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 }
 
 struct CampaignsQueryResponse: GraphQLResponseData {
-  let data: CampaignsResponseModel?
-
-  enum CodingKeys: String, CodingKey {
-    case data = "campaigns"
-  }
+  let campaigns: CampaignsResponseModel?
 }

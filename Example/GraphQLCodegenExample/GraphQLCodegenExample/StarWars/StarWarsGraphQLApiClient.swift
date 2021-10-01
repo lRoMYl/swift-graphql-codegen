@@ -9,40 +9,40 @@ import RxSwift
 protocol StarWarsApiClientProtocol {
   func human(
     with parameters: HumanStarWarsQuery
-  ) -> Single<ApiResponse<HumanStarWarsObject?>>
+  ) -> Single<ApiResponse<HumanQueryResponse>>
   func droid(
     with parameters: DroidStarWarsQuery
-  ) -> Single<ApiResponse<DroidStarWarsObject?>>
+  ) -> Single<ApiResponse<DroidQueryResponse>>
   func character(
     with parameters: CharacterStarWarsQuery
-  ) -> Single<ApiResponse<CharacterUnionStarWarsUnions?>>
+  ) -> Single<ApiResponse<CharacterQueryResponse>>
   func luke(
     with parameters: LukeStarWarsQuery
-  ) -> Single<ApiResponse<HumanStarWarsObject?>>
+  ) -> Single<ApiResponse<LukeQueryResponse>>
   func humans(
     with parameters: HumansStarWarsQuery
-  ) -> Single<ApiResponse<[HumanStarWarsObject]>>
+  ) -> Single<ApiResponse<HumansQueryResponse>>
   func droids(
     with parameters: DroidsStarWarsQuery
-  ) -> Single<ApiResponse<[DroidStarWarsObject]>>
+  ) -> Single<ApiResponse<DroidsQueryResponse>>
   func characters(
     with parameters: CharactersStarWarsQuery
-  ) -> Single<ApiResponse<[CharacterStarWarsInterface]>>
+  ) -> Single<ApiResponse<CharactersQueryResponse>>
   func greeting(
     with parameters: GreetingStarWarsQuery
-  ) -> Single<ApiResponse<String>>
+  ) -> Single<ApiResponse<GreetingQueryResponse>>
   func whoami(
     with parameters: WhoamiStarWarsQuery
-  ) -> Single<ApiResponse<String>>
+  ) -> Single<ApiResponse<WhoamiQueryResponse>>
   func time(
     with parameters: TimeStarWarsQuery
-  ) -> Single<ApiResponse<String>>
+  ) -> Single<ApiResponse<TimeQueryResponse>>
   func mutate(
     with parameters: MutateStarWarsMutation
-  ) -> Single<ApiResponse<Bool>>
+  ) -> Single<ApiResponse<MutateMutationResponse>>
   func number(
     with parameters: NumberStarWarsSubscription
-  ) -> Single<ApiResponse<Int>>
+  ) -> Single<ApiResponse<NumberSubscriptionResponse>>
 }
 
 // MARK: - StarWarsApiClientProtocol
@@ -64,185 +64,172 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
 
   func human(
     with parameters: HumanStarWarsQuery
-  ) -> Single<ApiResponse<HumanStarWarsObject?>> {
+  ) -> Single<ApiResponse<HumanQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryHuman(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: HumanQueryResponse.self
+      resource: resource
     )
   }
 
   func droid(
     with parameters: DroidStarWarsQuery
-  ) -> Single<ApiResponse<DroidStarWarsObject?>> {
+  ) -> Single<ApiResponse<DroidQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryDroid(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: DroidQueryResponse.self
+      resource: resource
     )
   }
 
   func character(
     with parameters: CharacterStarWarsQuery
-  ) -> Single<ApiResponse<CharacterUnionStarWarsUnions?>> {
+  ) -> Single<ApiResponse<CharacterQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryCharacter(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: CharacterQueryResponse.self
+      resource: resource
     )
   }
 
   func luke(
     with parameters: LukeStarWarsQuery
-  ) -> Single<ApiResponse<HumanStarWarsObject?>> {
+  ) -> Single<ApiResponse<LukeQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryLuke(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: LukeQueryResponse.self
+      resource: resource
     )
   }
 
   func humans(
     with parameters: HumansStarWarsQuery
-  ) -> Single<ApiResponse<[HumanStarWarsObject]>> {
+  ) -> Single<ApiResponse<HumansQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryHumans(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: HumansQueryResponse.self
+      resource: resource
     )
   }
 
   func droids(
     with parameters: DroidsStarWarsQuery
-  ) -> Single<ApiResponse<[DroidStarWarsObject]>> {
+  ) -> Single<ApiResponse<DroidsQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryDroids(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: DroidsQueryResponse.self
+      resource: resource
     )
   }
 
   func characters(
     with parameters: CharactersStarWarsQuery
-  ) -> Single<ApiResponse<[CharacterStarWarsInterface]>> {
+  ) -> Single<ApiResponse<CharactersQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryCharacters(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: CharactersQueryResponse.self
+      resource: resource
     )
   }
 
   func greeting(
     with parameters: GreetingStarWarsQuery
-  ) -> Single<ApiResponse<String>> {
+  ) -> Single<ApiResponse<GreetingQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryGreeting(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: GreetingQueryResponse.self
+      resource: resource
     )
   }
 
   func whoami(
     with parameters: WhoamiStarWarsQuery
-  ) -> Single<ApiResponse<String>> {
+  ) -> Single<ApiResponse<WhoamiQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryWhoami(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: WhoamiQueryResponse.self
+      resource: resource
     )
   }
 
   func time(
     with parameters: TimeStarWarsQuery
-  ) -> Single<ApiResponse<String>> {
+  ) -> Single<ApiResponse<TimeQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryTime(parameters: parameters)
     )
 
     return executeGraphQLQuery(
-      resource: resource,
-      responseType: TimeQueryResponse.self
+      resource: resource
     )
   }
 
   func mutate(
     with parameters: MutateStarWarsMutation
-  ) -> Single<ApiResponse<Bool>> {
+  ) -> Single<ApiResponse<MutateMutationResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .updateMutate(parameters: parameters)
     )
 
     return executeGraphQLMutation(
-      resource: resource,
-      responseType: MutateMutationResponse.self
+      resource: resource
     )
   }
 
   func number(
     with parameters: NumberStarWarsSubscription
-  ) -> Single<ApiResponse<Int>> {
+  ) -> Single<ApiResponse<NumberSubscriptionResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
       resourceBodyParameters: .subscribeNumber(parameters: parameters)
     )
 
     return executeGraphQLSubscription(
-      resource: resource,
-      responseType: NumberSubscriptionResponse.self
+      resource: resource
     )
   }
 }
 
 private extension StarWarsApiClient {
-  func executeGraphQLQuery<Response, ResponseModel>(
-    resource: ResourceParameters,
-    responseType _: Response.Type
-  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+  func executeGraphQLQuery<Response>(
+    resource: ResourceParameters
+  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue as? ResponseModel,
+          data: apiResponse.data?.data,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -250,17 +237,16 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLMutation<Response, ResponseModel>(
-    resource: ResourceParameters,
-    responseType _: Response.Type
-  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+  func executeGraphQLMutation<Response>(
+    resource: ResourceParameters
+  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue as? ResponseModel,
+          data: apiResponse.data?.data,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
@@ -268,17 +254,16 @@ private extension StarWarsApiClient {
       .subscribeOn(scheduler)
   }
 
-  func executeGraphQLSubscription<Response, ResponseModel>(
-    resource: ResourceParameters,
-    responseType _: Response.Type
-  ) -> Single<ApiResponse<ResponseModel>> where Response: GraphQLResponseData, ResponseModel: Codable {
+  func executeGraphQLSubscription<Response>(
+    resource: ResourceParameters
+  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.wrappedValue as? ResponseModel,
+          data: apiResponse.data?.data,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )
