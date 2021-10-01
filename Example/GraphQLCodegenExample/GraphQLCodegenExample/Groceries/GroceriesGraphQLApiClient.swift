@@ -67,20 +67,42 @@ private extension GroceriesApiClient {
 // MARK: - GroceriesResourceParameters
 
 protocol GroceriesResourceParametersProviding {
-  func servicePath(with resourceParameters: GroceriesResourceBodyParameters) -> String
-  func headers(with resourceParameters: GroceriesResourceBodyParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: GroceriesResourceBodyParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: GroceriesResourceBodyParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: GroceriesResourceBodyParameters) -> Bool
+  func servicePath(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> String
+  func headers(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> Bool
 }
 
-final class GroceriesResourceParameters: ResourceParameters {
+struct GroceriesResourceParameters: ResourceParameters {
+  enum BodyParameters {
+    case queryCampaigns(parameters: CampaignsQueryRequest)
+
+    func bodyParameters() -> Any? {
+      switch self {
+      case let .queryCampaigns(parameters):
+        return bodyParameters(parameters: parameters)
+      }
+    }
+
+    private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
+      guard
+        let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
+      else { return [:] }
+
+      return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
+        .flatMap {
+          $0 as? [String: Any]
+        } ?? [:]
+    }
+  }
+
   private let provider: GroceriesResourceParametersProviding?
-  private let resourceBodyParameters: GroceriesResourceBodyParameters
+  private let resourceBodyParameters: BodyParameters
 
   init(
     provider: GroceriesResourceParametersProviding?,
-    resourceBodyParameters: GroceriesResourceBodyParameters
+    resourceBodyParameters: BodyParameters
   ) {
     self.provider = provider
     self.resourceBodyParameters = resourceBodyParameters
@@ -116,27 +138,5 @@ final class GroceriesResourceParameters: ResourceParameters {
 
   func bodyParameters() -> Any? {
     return resourceBodyParameters.bodyParameters()
-  }
-}
-
-enum GroceriesResourceBodyParameters {
-  case queryCampaigns(parameters: CampaignsQueryRequest)
-
-  func bodyParameters() -> Any? {
-    switch self {
-    case let .queryCampaigns(parameters):
-      return bodyParameters(parameters: parameters)
-    }
-  }
-
-  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
-    guard
-      let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
-    else { return [:] }
-
-    return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-      .flatMap {
-        $0 as? [String: Any]
-      } ?? [:]
   }
 }

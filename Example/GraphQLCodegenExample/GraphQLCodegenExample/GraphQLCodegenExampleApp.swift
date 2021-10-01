@@ -60,7 +60,7 @@ extension GraphQLCodegenExampleApp {
       locale: "en_SG",
       languageId: "1",
       languageCode: "en",
-      apikY: "iQis4oC8Y4DxHiO5",
+      apiKey: "iQis4oC8Y4DxHiO5",
       discoClientId: "iOS"
     )
 

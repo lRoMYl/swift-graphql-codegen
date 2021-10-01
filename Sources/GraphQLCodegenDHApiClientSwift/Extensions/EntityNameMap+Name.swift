@@ -15,11 +15,17 @@ extension EntityNameMap {
     return "\(prefix)ResourceParameters"
   }
 
-  func resourceBodyParametersName(apiClientPrefix: String) -> String {
+  func resourceBodyParametersName(apiClientPrefix: String?) -> String {
     // Prefix cannot be empty due to name collision with ApiClient.ResourceParameters
-    let prefix = apiClientPrefix.isEmpty ? "Default" : apiClientPrefix
+    let prefix: String
 
-    return "\(prefix)ResourceBodyParameters"
+    if let apiClientPrefix = apiClientPrefix {
+      prefix = resourceParametersName(apiClientPrefix: apiClientPrefix) + "."
+    } else {
+      prefix = ""
+    }
+
+    return "\(prefix)BodyParameters"
   }
 
   func resourceParametersProviding(apiClientPrefix: String) -> String {

@@ -290,20 +290,75 @@ private extension StarWarsApiClient {
 // MARK: - StarWarsResourceParameters
 
 protocol StarWarsResourceParametersProviding {
-  func servicePath(with resourceParameters: StarWarsResourceBodyParameters) -> String
-  func headers(with resourceParameters: StarWarsResourceBodyParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: StarWarsResourceBodyParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: StarWarsResourceBodyParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: StarWarsResourceBodyParameters) -> Bool
+  func servicePath(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> String
+  func headers(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> [String: String]?
+  func timeoutInterval(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> TimeInterval?
+  func preventRetry(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> Bool
 }
 
-final class StarWarsResourceParameters: ResourceParameters {
+struct StarWarsResourceParameters: ResourceParameters {
+  enum BodyParameters {
+    case queryHuman(parameters: HumanStarWarsQuery)
+    case queryDroid(parameters: DroidStarWarsQuery)
+    case queryCharacter(parameters: CharacterStarWarsQuery)
+    case queryLuke(parameters: LukeStarWarsQuery)
+    case queryHumans(parameters: HumansStarWarsQuery)
+    case queryDroids(parameters: DroidsStarWarsQuery)
+    case queryCharacters(parameters: CharactersStarWarsQuery)
+    case queryGreeting(parameters: GreetingStarWarsQuery)
+    case queryWhoami(parameters: WhoamiStarWarsQuery)
+    case queryTime(parameters: TimeStarWarsQuery)
+    case updateMutate(parameters: MutateStarWarsMutation)
+    case subscribeNumber(parameters: NumberStarWarsSubscription)
+
+    func bodyParameters() -> Any? {
+      switch self {
+      case let .queryHuman(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryDroid(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryCharacter(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryLuke(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryHumans(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryDroids(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryCharacters(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryGreeting(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryWhoami(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .queryTime(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .updateMutate(parameters):
+        return bodyParameters(parameters: parameters)
+      case let .subscribeNumber(parameters):
+        return bodyParameters(parameters: parameters)
+      }
+    }
+
+    private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
+      guard
+        let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
+      else { return [:] }
+
+      return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
+        .flatMap {
+          $0 as? [String: Any]
+        } ?? [:]
+    }
+  }
+
   private let provider: StarWarsResourceParametersProviding?
-  private let resourceBodyParameters: StarWarsResourceBodyParameters
+  private let resourceBodyParameters: BodyParameters
 
   init(
     provider: StarWarsResourceParametersProviding?,
-    resourceBodyParameters: StarWarsResourceBodyParameters
+    resourceBodyParameters: BodyParameters
   ) {
     self.provider = provider
     self.resourceBodyParameters = resourceBodyParameters
@@ -339,60 +394,5 @@ final class StarWarsResourceParameters: ResourceParameters {
 
   func bodyParameters() -> Any? {
     return resourceBodyParameters.bodyParameters()
-  }
-}
-
-enum StarWarsResourceBodyParameters {
-  case queryHuman(parameters: HumanStarWarsQuery)
-  case queryDroid(parameters: DroidStarWarsQuery)
-  case queryCharacter(parameters: CharacterStarWarsQuery)
-  case queryLuke(parameters: LukeStarWarsQuery)
-  case queryHumans(parameters: HumansStarWarsQuery)
-  case queryDroids(parameters: DroidsStarWarsQuery)
-  case queryCharacters(parameters: CharactersStarWarsQuery)
-  case queryGreeting(parameters: GreetingStarWarsQuery)
-  case queryWhoami(parameters: WhoamiStarWarsQuery)
-  case queryTime(parameters: TimeStarWarsQuery)
-  case updateMutate(parameters: MutateStarWarsMutation)
-  case subscribeNumber(parameters: NumberStarWarsSubscription)
-
-  func bodyParameters() -> Any? {
-    switch self {
-    case let .queryHuman(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryDroid(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryCharacter(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryLuke(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryHumans(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryDroids(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryCharacters(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryGreeting(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryWhoami(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .queryTime(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .updateMutate(parameters):
-      return bodyParameters(parameters: parameters)
-    case let .subscribeNumber(parameters):
-      return bodyParameters(parameters: parameters)
-    }
-  }
-
-  private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
-    guard
-      let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
-    else { return [:] }
-
-    return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-      .flatMap {
-        $0 as? [String: Any]
-      } ?? [:]
   }
 }

@@ -36,7 +36,8 @@ struct ResourceParametersGenerator: Generating {
   /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
-    let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
+    let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: nil)
+    let resourceBodyParametersNameWithPrefix = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
     let resourceParameterProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
 
     return """
@@ -44,14 +45,35 @@ struct ResourceParametersGenerator: Generating {
     // MARK: - \(resourceParametersName)
 
     protocol \(resourceParameterProviding) {
-      func servicePath(with resourceParameters: \(resourceBodyParametersName)) -> String
-      func headers(with resourceParameters: \(resourceBodyParametersName)) -> [String: String]?
-      func timeoutInterval(with resourceParameters: \(resourceBodyParametersName)) -> TimeInterval?
-      func preventRetry(with resourceParameters: \(resourceBodyParametersName)) -> Bool
-      func preventAddingLanguageParameters(with resourceParameters: \(resourceBodyParametersName)) -> Bool
+      func servicePath(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> String
+      func headers(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> [String: String]?
+      func timeoutInterval(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> TimeInterval?
+      func preventRetry(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
+      func preventAddingLanguageParameters(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
     }
 
-    final class \(resourceParametersName): ResourceParameters {
+    struct \(resourceParametersName): ResourceParameters {
+      enum \(resourceBodyParametersName) {
+        \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
+
+        func bodyParameters() -> Any? {
+          switch self {
+          \(try schema.operations.map{ try bodyParametersCases(with: $0).lines }.lines)
+          }
+        }
+
+        private func bodyParameters<T>(parameters: T) -> [String: Any] where T: \(entityNameMap.requestParameter) {
+          guard
+            let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters))
+          else { return [:]  }
+
+          return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
+            .flatMap {
+              $0 as? [String: Any]
+            } ?? [:]
+        }
+      }
+
       private let provider: \(resourceParameterProviding)?
       private let resourceBodyParameters: \(resourceBodyParametersName)
 
@@ -93,27 +115,6 @@ struct ResourceParametersGenerator: Generating {
 
       func bodyParameters() -> Any? {
         return resourceBodyParameters.bodyParameters()
-      }
-    }
-
-    enum \(resourceBodyParametersName) {
-      \(try schema.operations.map { try resourceParametersCases(with: $0).lines }.lines)
-
-      func bodyParameters() -> Any? {
-        switch self {
-        \(try schema.operations.map{ try bodyParametersCases(with: $0).lines }.lines)
-        }
-      }
-
-      private func bodyParameters<T>(parameters: T) -> [String: Any] where T: \(entityNameMap.requestParameter) {
-        guard
-          let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters))
-        else { return [:]  }
-
-        return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-          .flatMap {
-            $0 as? [String: Any]
-          } ?? [:]
       }
     }
     """
