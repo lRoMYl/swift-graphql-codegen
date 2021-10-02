@@ -26,7 +26,7 @@ Supports GraphQL Native Feature
 - [x] InputObject
 - [x] Enum / Enumeration
 - [x] Interface
-- [ ] Union
+- [x] Union
 - [x] Query
 - [x] Mutation
 - [x] Subscription; Partial support, request/response/respository/resource are generated but DH ApiClient doesn't have native support for WebSocket yet

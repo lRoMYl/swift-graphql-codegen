@@ -33,7 +33,6 @@ struct ResourceParametersGenerator: Generating {
     self.entityNameStrategy = entityNameStrategy
   }
 
-  /// TODO: Inject headers, timeoutInterval, preventRetry
   func code(schema: Schema) throws -> String {
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
     let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: nil)

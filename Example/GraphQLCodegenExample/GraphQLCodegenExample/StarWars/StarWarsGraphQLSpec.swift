@@ -268,12 +268,8 @@ enum CharacterUnionStarWarsUnions: Codable {
 
   private enum CodingKeys: String, CodingKey {
     case __typename
-    case appearsIn
     case homePlanet
-    case id
     case infoUrl
-    case name
-    case primaryFunction
   }
 
   init(from decoder: Decoder) throws {
@@ -483,7 +479,9 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
   ) {
     character(
       id: $id
-  	)
+  	) {
+  		...CharacterUnionFragment
+  	}
   }
 
   %1$@
@@ -506,8 +504,71 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
+    let characterUnionSelections: Set<CharacterUnionSelection>
+
+    enum CharacterUnionSelection: String, GraphQLSelection {
+      case all = ""
+    }
+
+    let droidSelections: Set<DroidSelection>
+
+    enum DroidSelection: String, GraphQLSelection {
+      case all = ""
+    }
+
+    let humanSelections: Set<HumanSelection>
+
+    enum HumanSelection: String, GraphQLSelection {
+      case homePlanet
+      case infoURL
+    }
+
+    init(
+      characterUnionSelections: Set<CharacterUnionSelection> = [],
+      droidSelections: Set<DroidSelection> = [],
+      humanSelections: Set<HumanSelection> = []
+    ) {
+      self.characterUnionSelections = characterUnionSelections
+      self.droidSelections = droidSelections
+      self.humanSelections = humanSelections
+    }
+
     func declaration() -> String {
-      ""
+      let characterUnionSelectionsDeclaration = """
+      fragment CharacterUnionFragment on CharacterUnion {
+      	\(characterUnionSelections.declaration)
+      	__typename
+      	...HumanFragment
+      	...DroidFragment
+      }
+      """
+
+      let droidSelectionsDeclaration = """
+      fragment DroidFragment on Droid {
+      	appearsIn
+      	id
+      	name
+      	primaryFunction
+      	\(droidSelections.declaration)
+      }
+      """
+
+      let humanSelectionsDeclaration = """
+      fragment HumanFragment on Human {
+      	appearsIn
+      	id
+      	name
+      	\(humanSelections.declaration)
+      }
+      """
+
+      let selectionDeclarationMap = [
+        "CharacterUnionFragment": characterUnionSelectionsDeclaration,
+        "DroidFragment": droidSelectionsDeclaration,
+        "HumanFragment": humanSelectionsDeclaration
+      ]
+
+      return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterUnionFragment")
     }
   }
 

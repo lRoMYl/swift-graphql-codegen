@@ -45,15 +45,17 @@ struct GraphQLCodegenExampleApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView().onAppear() {
-        try? testGroceriesGraphQL()
-        try? testStarWarsInterfaceGraphQL()
+        testGroceriesGraphQL()
+        testStarWarsInterfaceGraphQL()
+        testStarWarsUnionHumanGraphQL()
+        testStarWarsUnionDroidGraphQL()
       }
     }
   }
 }
 
 extension GraphQLCodegenExampleApp {
-  func testGroceriesGraphQL() throws {
+  func testGroceriesGraphQL() {
     let parameters = CampaignsQueryRequest(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
@@ -68,7 +70,8 @@ extension GraphQLCodegenExampleApp {
       .campaigns(with: parameters)
       .subscribe(
         onSuccess: { response in
-          print(String(describing: response))
+          print("Groceries campaign query request success")
+          // print(String(describing: response))
         },
         onError: { error in
           print(error)
@@ -77,11 +80,11 @@ extension GraphQLCodegenExampleApp {
       .disposed(by: disposeBag)
   }
 
-  func testStarWarsInterfaceGraphQL() throws {
+  func testStarWarsInterfaceGraphQL() {
     let parameters = CharactersStarWarsQuery(
       selections: .init(
-        characterSelections: [.all],
-        droidSelections: [.all],
+        characterSelections: [],
+        droidSelections: [],
         humanSelections: [.homePlanet]
       )
     )
@@ -90,7 +93,67 @@ extension GraphQLCodegenExampleApp {
       .characters(with: parameters)
       .subscribe(
         onSuccess: { response in
-          print(response)
+          print("Starwars characters interface query request success")
+          // print(response)
+        },
+        onError: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsUnionHumanGraphQL() {
+    let parameters = CharacterStarWarsQuery(
+      id: "1000",
+      selections: .init(
+        characterUnionSelections: [.all],
+        droidSelections: [],
+        humanSelections: [.infoURL]
+      )
+    )
+
+    starWarsRepository
+      .character(with: parameters)
+      .subscribe(
+        onSuccess: { response in
+          switch response {
+          case let .human(human):
+            print("Starwars character union query request as human success")
+          default :
+            print("Starwars character union query request as human failed xxxx")
+          }
+
+          // print(response)
+        },
+        onError: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsUnionDroidGraphQL() {
+    let parameters = CharacterStarWarsQuery(
+      id: "2000",
+      selections: .init(
+        droidSelections: [],
+        humanSelections: []
+      )
+    )
+
+    starWarsRepository
+      .character(with: parameters)
+      .subscribe(
+        onSuccess: { response in
+          switch response {
+          case .droid:
+            print("Starwars character union query request as droid success")
+          default :
+            print("Starwars character union query request as droid failed xxxx")
+          }
+
+          // print(response)
         },
         onError: { error in
           print(error)

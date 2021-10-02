@@ -23,6 +23,7 @@ extension Field {
   func structure(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
     entityNameStrategy: EntityNamingStrategy
   ) throws -> Structure? {
     let key = try entityNameStrategy.name(for: self.type.namedType)
@@ -48,9 +49,14 @@ extension Field {
       structure = result
     case .scalar, .enum:
       return nil
-    case .union:
-      // TODO
-      return nil
+    case let .union(unionName):
+      guard
+        let result = unionTypeMap[key]
+      else {
+        throw FieldStructureError.missingReturnType(context: "Union \(unionName) not found")
+      }
+
+      structure = result
     }
 
     return structure
@@ -61,14 +67,28 @@ extension Field {
   func possibleObjectTypes(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
     entityNameStrategy: EntityNamingStrategy
   ) throws -> [ObjectType]? {
-    let key = try entityNameStrategy.name(for: type.namedType)
-    guard let interfaceType = interfaceTypeMap[key] else { return nil }
+    switch type.namedType {
+    case .interface:
+      let key = try entityNameStrategy.name(for: type.namedType)
+      guard let interfaceType = interfaceTypeMap[key] else { return nil }
 
-    return try interfaceType.possibleObjectTypes(
-      objectTypeMap: objectTypeMap,
-      entityNameStrategy: entityNameStrategy
-    )
+      return try interfaceType.possibleObjectTypes(
+        objectTypeMap: objectTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
+    case .union:
+      let key = try entityNameStrategy.name(for: type.namedType)
+      guard let unionType = unionTypeMap[key] else { return nil }
+
+      return try unionType.possibleObjectTypes(
+        objectTypeMap: objectTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
+    default:
+      return nil
+    }
   }
 }

@@ -47,6 +47,7 @@ struct RequestParameterSelectionsGenerator {
     let namedType = field.type.namedType
     let interfaceTypeMap = try schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
     let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
+    let unionTypeMap = try schema.unionTypeMap(entityNameStrategy: entityNameStrategy)
 
     switch namedType {
     case .object:
@@ -54,7 +55,8 @@ struct RequestParameterSelectionsGenerator {
         field: field,
         schema: schema,
         objectTypeMap: objectTypeMap,
-        interfaceTypeMap: interfaceTypeMap
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap
       )
     case .enum, .scalar:
       return emptyDeclaration(field: field)
@@ -63,11 +65,17 @@ struct RequestParameterSelectionsGenerator {
         field: field,
         schema: schema,
         objectTypeMap: objectTypeMap,
-        interfaceTypeMap: interfaceTypeMap
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap
       )
     case .union:
-      // TODO
-      return emptyDeclaration(field: field)
+      return try unionDeclaration(
+        field: field,
+        schema: schema,
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap
+      )
     }
   }
 }
@@ -79,7 +87,8 @@ extension RequestParameterSelectionsGenerator {
     field: Field,
     schema: Schema,
     objectTypeMap: ObjectTypeMap,
-    interfaceTypeMap: InterfaceTypeMap
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap
   ) throws -> String {
     guard
       let returnObjectType = schema.objects.first(where: { $0.name == field.type.namedType.name })
@@ -98,7 +107,8 @@ extension RequestParameterSelectionsGenerator {
       field: field,
       fieldMaps: sortedFieldMap,
       objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
-      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
+      unionTypeMap: unionTypeMap
     )
   }
 
@@ -106,7 +116,8 @@ extension RequestParameterSelectionsGenerator {
     field: Field,
     schema: Schema,
     objectTypeMap: ObjectTypeMap,
-    interfaceTypeMap: InterfaceTypeMap
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap
   ) throws -> String {
 		let interfaceKey = try entityNameStrategy.name(for: field.type.namedType)
 
@@ -114,7 +125,8 @@ extension RequestParameterSelectionsGenerator {
 			let returnInterfaceType = interfaceTypeMap[interfaceKey],
 			let possibleObjectTypes = try field.possibleObjectTypes(
 				objectTypeMap: objectTypeMap,
-				interfaceTypeMap: interfaceTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
 				entityNameStrategy: entityNameStrategy
 			)
     else {
@@ -152,7 +164,65 @@ extension RequestParameterSelectionsGenerator {
       field: field,
       fieldMaps: sortedFieldMap,
       objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
-      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
+      unionTypeMap: unionTypeMap
+    )
+  }
+
+  func unionDeclaration(
+    field: Field,
+    schema: Schema,
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap
+  ) throws -> String {
+    let unionKey = try entityNameStrategy.name(for: field.type.namedType)
+
+    guard
+      let returnUnionType = unionTypeMap[unionKey],
+      let possibleObjectTypes = try field.possibleObjectTypes(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
+    else {
+      throw RequestParameterSelectionsError.missingReturnType(context: "No UnionType type found for field \(field.name)")
+    }
+
+    var fieldMap = FieldMap()
+
+    fieldMap[returnUnionType.name] = Field(
+      name: returnUnionType.name,
+      description: returnUnionType.description,
+      args: [],
+      type: .named(.union(returnUnionType.name)),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
+
+    try possibleObjectTypes.forEach {
+      fieldMap[$0.name] = Field(
+        name: $0.name,
+        description: $0.description,
+        args: [],
+        type: .named(.object($0.name)),
+        isDeprecated: false,
+        deprecationReason: nil
+      )
+
+      fieldMap.merge(try $0.nestedFields(objects: schema.objects, scalarMap: scalarMap)) { _, new in new }
+    }
+
+    // Sort field map to ensure the generated code sequence is always consistent
+    let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
+
+    return try structureDeclaration(
+      field: field,
+      fieldMaps: sortedFieldMap,
+      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
+      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
+      unionTypeMap: schema.unionTypeMap(entityNameStrategy: entityNameStrategy)
     )
   }
 
@@ -174,13 +244,15 @@ extension RequestParameterSelectionsGenerator {
     field: Field,
     fieldMaps: [FieldMap.Element],
     objectTypeMap: ObjectTypeMap,
-    interfaceTypeMap: InterfaceTypeMap
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap
   ) throws -> String {
     let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
     let selectionDeclarations = try fieldMaps.selectionDeclarations(
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
+      unionTypeMap: unionTypeMap,
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
@@ -190,6 +262,7 @@ extension RequestParameterSelectionsGenerator {
     let selectionFragmentMap = try fieldMaps.selectionFragmentMap(
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
+      unionTypeMap: unionTypeMap,
       entityNameStrategy: entityNameStrategy,
 			selectionMap: selectionMap
     )
@@ -236,9 +309,41 @@ extension RequestParameterSelectionsGenerator {
 // MARK: - Field
 
 private extension Field {
+  func returnTypeFields(
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
+    entityNameStrategy: EntityNamingStrategy
+  ) throws -> [Field] {
+    guard
+      let returnType = try structure(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
+        entityNameStrategy: entityNameStrategy
+      )
+    else { return [] }
+
+    let returnObjectTypes: [ObjectType] = try returnType.possibleTypes.map {
+      let key = try entityNameStrategy.name(for: $0)
+      guard let objectType = objectTypeMap[try entityNameStrategy.name(for: $0)] else {
+        throw RequestParameterSelectionsError.missingReturnType(context: "Missing return type for \(key)")
+      }
+
+      return objectType
+    }
+
+    let allFields = returnObjectTypes
+      .flatMap { $0.fields }
+      .unique(by: { $0.name })
+
+    return allFields
+  }
+
   func selectionDeclaration(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
@@ -250,6 +355,7 @@ private extension Field {
       let returnType = try structure(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
         entityNameStrategy: entityNameStrategy
       )
     else { return "" }
@@ -335,6 +441,7 @@ private extension Collection where Element == FieldMap.Element {
   func selectionDeclarations(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
@@ -344,6 +451,7 @@ private extension Collection where Element == FieldMap.Element {
       try $0.value.selectionDeclaration(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
         scalarMap: scalarMap,
         selectionMap: selectionMap,
         entityNameMap: entityNameMap,
@@ -355,6 +463,7 @@ private extension Collection where Element == FieldMap.Element {
   func selectionFragmentMap(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
     entityNameStrategy: EntityNamingStrategy,
 		selectionMap: SelectionMap?
   ) throws -> String {
@@ -364,17 +473,24 @@ private extension Collection where Element == FieldMap.Element {
 			let structure = try $0.value.structure(
 				objectTypeMap: objectTypeMap,
 				interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
 				entityNameStrategy: entityNameStrategy
 			)
 
 			let requiredFields = structure?
-				.requiredFields(selectionMap: selectionMap)
-				.map { "\t" + $0.name }
+        .requiredFields(selectionMap: selectionMap)
+        .enumerated()
+        .map {
+          // Add newline if its the first element
+          let prefix = $0.offset == 0 ? "\n\t" : "\t"
+          return prefix + $0.element.name
+        }
         .lines ?? ""
 
       if let possibleObjectTypes = try $0.value.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
         entityNameStrategy: entityNameStrategy
       ) {
         interfaceFragmentCode = """
@@ -392,8 +508,7 @@ private extension Collection where Element == FieldMap.Element {
 
       return """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {
-      \(requiredFields)
+      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\(requiredFields)
       \t\\(\($0.key.camelCase)Selections.declaration)\(interfaceFragmentCode)
       }
       \"\"\"\n

@@ -31,4 +31,17 @@ final class StarWarsRepository {
         return data
       }
   }
+
+  func character(
+    with parameters: CharacterStarWarsQuery
+  ) -> Single<CharacterUnionStarWarsUnions?> {
+    apiClient.character(with: parameters)
+      .map {
+        guard let data = $0.data?.character else {
+          throw StarWarsRepositoryError.missingData
+        }
+
+        return data
+      }
+  }
 }

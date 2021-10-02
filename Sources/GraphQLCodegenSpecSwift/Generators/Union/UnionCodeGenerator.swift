@@ -39,7 +39,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
         try $0.objectType(objectTypeMap: objectTypeMap, entityNameStrategy: entityNameStrategy)
       }
       let fields = possibleObjectTypes
-        .flatMap { ($0 as Structure).selectionFields(with: selectionMap) }
+        .flatMap { ($0 as Structure).selectableFields(selectionMap: selectionMap) }
         .unique(by: { $0.name })
         .sorted(by: { $0.name < $1.name })
 

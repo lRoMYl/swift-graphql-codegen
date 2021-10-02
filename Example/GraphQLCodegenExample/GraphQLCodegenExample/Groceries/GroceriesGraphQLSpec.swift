@@ -374,7 +374,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
       let campaignsSelectionsDeclaration = """
       fragment CampaignsFragment on Campaigns {
-
       	\(campaignsSelections.declaration)
       }
       """
