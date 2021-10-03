@@ -289,12 +289,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let benefitSelections: Set<BenefitSelection>
-
-    enum BenefitSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
     let campaignAttributeSelections: Set<CampaignAttributeSelection>
 
     enum CampaignAttributeSelection: String, GraphQLSelection {
@@ -320,12 +314,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       """
     }
 
-    let dealSelections: Set<DealSelection>
-
-    enum DealSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
     let productDealSelections: Set<ProductDealSelection>
 
     enum ProductDealSelection: String, GraphQLSelection {
@@ -337,16 +325,12 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     }
 
     init(
-      benefitSelections: Set<BenefitSelection> = [],
       campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
       campaignsSelections: Set<CampaignsSelection> = [],
-      dealSelections: Set<DealSelection> = [],
       productDealSelections: Set<ProductDealSelection> = []
     ) {
-      self.benefitSelections = benefitSelections
       self.campaignAttributeSelections = campaignAttributeSelections
       self.campaignsSelections = campaignsSelections
-      self.dealSelections = dealSelections
       self.productDealSelections = productDealSelections
     }
 
@@ -355,7 +339,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       fragment BenefitFragment on Benefit {
       	productID
       	quantity
-      	\(benefitSelections.declaration)
+
       }
       """
 
@@ -383,7 +367,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       	campaignID
       	discountTag
       	triggerQuantity
-      	\(dealSelections.declaration)
+
       }
       """
 

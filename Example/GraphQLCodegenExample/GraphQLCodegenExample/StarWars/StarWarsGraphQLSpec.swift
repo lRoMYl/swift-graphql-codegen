@@ -419,17 +419,7 @@ struct DroidStarWarsQuery: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let droidSelections: Set<DroidSelection>
-
-    enum DroidSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
-    init(
-      droidSelections: Set<DroidSelection> = []
-    ) {
-      self.droidSelections = droidSelections
-    }
+    init() {}
 
     func declaration() -> String {
       let droidSelectionsDeclaration = """
@@ -438,7 +428,7 @@ struct DroidStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-      	\(droidSelections.declaration)
+
       }
       """
 
@@ -504,18 +494,6 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let characterUnionSelections: Set<CharacterUnionSelection>
-
-    enum CharacterUnionSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
-    let droidSelections: Set<DroidSelection>
-
-    enum DroidSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
     let humanSelections: Set<HumanSelection>
 
     enum HumanSelection: String, GraphQLSelection {
@@ -524,19 +502,15 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
     }
 
     init(
-      characterUnionSelections: Set<CharacterUnionSelection> = [],
-      droidSelections: Set<DroidSelection> = [],
       humanSelections: Set<HumanSelection> = []
     ) {
-      self.characterUnionSelections = characterUnionSelections
-      self.droidSelections = droidSelections
       self.humanSelections = humanSelections
     }
 
     func declaration() -> String {
       let characterUnionSelectionsDeclaration = """
       fragment CharacterUnionFragment on CharacterUnion {
-      	\(characterUnionSelections.declaration)
+
       	__typename
       	...HumanFragment
       	...DroidFragment
@@ -549,7 +523,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-      	\(droidSelections.declaration)
+
       }
       """
 
@@ -759,17 +733,7 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let droidSelections: Set<DroidSelection>
-
-    enum DroidSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
-    init(
-      droidSelections: Set<DroidSelection> = []
-    ) {
-      self.droidSelections = droidSelections
-    }
+    init() {}
 
     func declaration() -> String {
       let droidSelectionsDeclaration = """
@@ -778,7 +742,7 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-      	\(droidSelections.declaration)
+
       }
       """
 
@@ -830,18 +794,6 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let characterSelections: Set<CharacterSelection>
-
-    enum CharacterSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
-    let droidSelections: Set<DroidSelection>
-
-    enum DroidSelection: String, GraphQLSelection {
-      case all = ""
-    }
-
     let humanSelections: Set<HumanSelection>
 
     enum HumanSelection: String, GraphQLSelection {
@@ -850,12 +802,8 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
     }
 
     init(
-      characterSelections: Set<CharacterSelection> = [],
-      droidSelections: Set<DroidSelection> = [],
       humanSelections: Set<HumanSelection> = []
     ) {
-      self.characterSelections = characterSelections
-      self.droidSelections = droidSelections
       self.humanSelections = humanSelections
     }
 
@@ -864,7 +812,7 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
       fragment CharacterFragment on Character {
       	id
       	name
-      	\(characterSelections.declaration)
+
       	__typename
       	...DroidFragment
       	...HumanFragment
@@ -877,7 +825,7 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-      	\(droidSelections.declaration)
+
       }
       """
 

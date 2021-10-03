@@ -83,8 +83,6 @@ extension GraphQLCodegenExampleApp {
   func testStarWarsInterfaceGraphQL() {
     let parameters = CharactersStarWarsQuery(
       selections: .init(
-        characterSelections: [],
-        droidSelections: [],
         humanSelections: [.homePlanet]
       )
     )
@@ -107,8 +105,6 @@ extension GraphQLCodegenExampleApp {
     let parameters = CharacterStarWarsQuery(
       id: "1000",
       selections: .init(
-        characterUnionSelections: [.all],
-        droidSelections: [],
         humanSelections: [.infoURL]
       )
     )
@@ -137,7 +133,6 @@ extension GraphQLCodegenExampleApp {
     let parameters = CharacterStarWarsQuery(
       id: "2000",
       selections: .init(
-        droidSelections: [],
         humanSelections: []
       )
     )

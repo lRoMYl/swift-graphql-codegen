@@ -267,6 +267,13 @@ extension RequestParameterSelectionsGenerator {
 			selectionMap: selectionMap
     )
     let selectionDeclarationMap = fieldMaps.selectionDeclarationMap
+    let memberwiseInitializerDeclaration = try fieldMaps.memberwiseInitializerDeclaration(
+      objectTypeMap: objectTypeMap,
+      interfaceTypeMap: interfaceTypeMap,
+      unionTypeMap: unionTypeMap,
+      entityNameStrategy: entityNameStrategy,
+      selectionMap: selectionMap
+    )
 
     let code = """
     // MARK: - Selections
@@ -276,7 +283,7 @@ extension RequestParameterSelectionsGenerator {
     struct Selections: \(entityNameMap.selections) {
       \(selectionDeclarations)
 
-      \(try fieldMaps.memberwiseInitializerDeclaration())
+      \(memberwiseInitializerDeclaration)
 
       func declaration() -> String {
         \(selectionFragmentMap)
@@ -308,12 +315,13 @@ extension RequestParameterSelectionsGenerator {
 
 // MARK: - Field
 
-private extension Field {
-  func returnTypeFields(
+fileprivate extension Field {
+  func returnTypeSelectableFields(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameStrategy: EntityNamingStrategy,
+    selectionMap: SelectionMap?
   ) throws -> [Field] {
     guard
       let returnType = try structure(
@@ -324,20 +332,7 @@ private extension Field {
       )
     else { return [] }
 
-    let returnObjectTypes: [ObjectType] = try returnType.possibleTypes.map {
-      let key = try entityNameStrategy.name(for: $0)
-      guard let objectType = objectTypeMap[try entityNameStrategy.name(for: $0)] else {
-        throw RequestParameterSelectionsError.missingReturnType(context: "Missing return type for \(key)")
-      }
-
-      return objectType
-    }
-
-    let allFields = returnObjectTypes
-      .flatMap { $0.fields }
-      .unique(by: { $0.name })
-
-    return allFields
+    return returnType.selectableFields(selectionMap: selectionMap)
   }
 
   func selectionDeclaration(
@@ -351,27 +346,25 @@ private extension Field {
   ) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
-    guard
-      let returnType = try structure(
-        objectTypeMap: objectTypeMap,
-        interfaceTypeMap: interfaceTypeMap,
-        unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy
-      )
-    else { return "" }
+    let fields = try returnTypeSelectableFields(
+      objectTypeMap: objectTypeMap,
+      interfaceTypeMap: interfaceTypeMap,
+      unionTypeMap: unionTypeMap,
+      entityNameStrategy: entityNameStrategy,
+      selectionMap: selectionMap
+    )
 
-    let fields = returnType.selectableFields(selectionMap: selectionMap)
-    var fieldsEnum = try fields.map {
+    if fields.isEmpty {
+      return ""
+    }
+
+    let fieldsEnum = try fields.map {
       try $0.enumCaseDeclaration(
         name: $0.name,
         type: $0.type,
         scalarMap: scalarMap
       )
     }.lines
-
-    if fieldsEnum.isEmpty {
-      fieldsEnum = "case all = \"\""
-    }
 
     let selectionVariableName = "\(returnName.camelCase)Selections"
     let selectionEnumName = "\(returnName.pascalCase)Selection"
@@ -487,6 +480,14 @@ private extension Collection where Element == FieldMap.Element {
         }
         .lines ?? ""
 
+      let returnTypeSelectableFields = try $0.value.returnTypeSelectableFields(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
+        entityNameStrategy: entityNameStrategy,
+        selectionMap: selectionMap
+      )
+
       if let possibleObjectTypes = try $0.value.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
@@ -506,10 +507,14 @@ private extension Collection where Element == FieldMap.Element {
         interfaceFragmentCode = ""
       }
 
+      let selectionDeclaration = returnTypeSelectableFields.isEmpty
+        ? ""
+        : "\t\\(\($0.key.camelCase)Selections.declaration)"
+
       return """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
       fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\(requiredFields)
-      \t\\(\($0.key.camelCase)Selections.declaration)\(interfaceFragmentCode)
+      \(selectionDeclaration)\(interfaceFragmentCode)
       }
       \"\"\"\n
       """
@@ -534,11 +539,35 @@ private extension Collection where Element == FieldMap.Element {
     """
   }
 
-  func memberwiseInitializerDeclaration() throws -> String {
-    let arguments = map {
+  func memberwiseInitializerDeclaration(
+    objectTypeMap: ObjectTypeMap,
+    interfaceTypeMap: InterfaceTypeMap,
+    unionTypeMap: UnionTypeMap,
+    entityNameStrategy: EntityNamingStrategy,
+    selectionMap: SelectionMap?
+  ) throws -> String {
+    let filteredElements = try compactMap { element -> FieldMap.Element? in
+      let fields = try element.value.returnTypeSelectableFields(
+        objectTypeMap: objectTypeMap,
+        interfaceTypeMap: interfaceTypeMap,
+        unionTypeMap: unionTypeMap,
+        entityNameStrategy: entityNameStrategy,
+        selectionMap: selectionMap
+      )
+
+      guard !fields.isEmpty else { return nil }
+
+      return element
+    }
+
+    guard !filteredElements.isEmpty else {
+      return "init() {}"
+    }
+
+    let arguments = filteredElements.map {
       "\($0.key.camelCase)Selections: Set<\($0.value.type.namedType.name)Selection> = []"
     }.joined(separator: ",\n")
-    let assignments = map {
+    let assignments = filteredElements.map {
       let argumentName = $0.key.camelCase
       return "self.\(argumentName)Selections = \(argumentName)Selections"
     }.lines
