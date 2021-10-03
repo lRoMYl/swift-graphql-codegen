@@ -23,17 +23,14 @@ extension Field {
   func structure(
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
-    unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy
+    unionTypeMap: UnionTypeMap
   ) throws -> Structure? {
-    let key = try entityNameStrategy.name(for: self.type.namedType)
-
     let structure: Structure
 
     switch type.namedType {
     case let .object(objectName):
       guard
-        let result = objectTypeMap[key]
+        let result = try objectTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Object \(objectName) not found")
       }
@@ -41,7 +38,7 @@ extension Field {
       structure = result
     case let .interface(interfaceName):
       guard
-        let result = interfaceTypeMap[key]
+        let result = try interfaceTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Interface \(interfaceName) not found")
       }
@@ -51,7 +48,7 @@ extension Field {
       return nil
     case let .union(unionName):
       guard
-        let result = unionTypeMap[key]
+        let result = try unionTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Union \(unionName) not found")
       }
@@ -72,16 +69,14 @@ extension Field {
   ) throws -> [ObjectType]? {
     switch type.namedType {
     case .interface:
-      let key = try entityNameStrategy.name(for: type.namedType)
-      guard let interfaceType = interfaceTypeMap[key] else { return nil }
+      guard let interfaceType = try interfaceTypeMap.value(from: type.namedType) else { return nil }
 
       return try interfaceType.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
         entityNameStrategy: entityNameStrategy
       )
     case .union:
-      let key = try entityNameStrategy.name(for: type.namedType)
-      guard let unionType = unionTypeMap[key] else { return nil }
+      guard let unionType = try unionTypeMap.value(from: type.namedType) else { return nil }
 
       return try unionType.possibleObjectTypes(
         objectTypeMap: objectTypeMap,

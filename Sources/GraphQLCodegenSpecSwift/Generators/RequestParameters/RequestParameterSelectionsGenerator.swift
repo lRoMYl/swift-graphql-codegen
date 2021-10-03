@@ -45,9 +45,9 @@ struct RequestParameterSelectionsGenerator {
 
   func code(field: Field, schema: Schema) throws -> String {
     let namedType = field.type.namedType
-    let interfaceTypeMap = try schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy)
-    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
-    let unionTypeMap = try schema.unionTypeMap(entityNameStrategy: entityNameStrategy)
+    let interfaceTypeMap = InterfaceTypeMap(schema: schema)
+    let objectTypeMap = ObjectTypeMap(schema: schema)
+    let unionTypeMap = UnionTypeMap(schema: schema)
 
     switch namedType {
     case .object:
@@ -106,8 +106,8 @@ extension RequestParameterSelectionsGenerator {
     return try structureDeclaration(
       field: field,
       fieldMaps: sortedFieldMap,
-      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
-      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
+      objectTypeMap: ObjectTypeMap(schema: schema),
+      interfaceTypeMap: InterfaceTypeMap(schema: schema),
       unionTypeMap: unionTypeMap
     )
   }
@@ -119,10 +119,8 @@ extension RequestParameterSelectionsGenerator {
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap
   ) throws -> String {
-		let interfaceKey = try entityNameStrategy.name(for: field.type.namedType)
-
     guard
-			let returnInterfaceType = interfaceTypeMap[interfaceKey],
+      let returnInterfaceType = try interfaceTypeMap.value(from: field.type.namedType),
 			let possibleObjectTypes = try field.possibleObjectTypes(
 				objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
@@ -163,8 +161,8 @@ extension RequestParameterSelectionsGenerator {
     return try structureDeclaration(
       field: field,
       fieldMaps: sortedFieldMap,
-      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
-      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
+      objectTypeMap: ObjectTypeMap(schema: schema),
+      interfaceTypeMap: InterfaceTypeMap(schema: schema),
       unionTypeMap: unionTypeMap
     )
   }
@@ -176,10 +174,8 @@ extension RequestParameterSelectionsGenerator {
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap
   ) throws -> String {
-    let unionKey = try entityNameStrategy.name(for: field.type.namedType)
-
     guard
-      let returnUnionType = unionTypeMap[unionKey],
+      let returnUnionType = try unionTypeMap.value(from: field.type.namedType),
       let possibleObjectTypes = try field.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
@@ -220,9 +216,9 @@ extension RequestParameterSelectionsGenerator {
     return try structureDeclaration(
       field: field,
       fieldMaps: sortedFieldMap,
-      objectTypeMap: schema.objectTypeMap(entityNameStrategy: entityNameStrategy),
-      interfaceTypeMap: schema.interfaceTypeMap(entityNameStrategy: entityNameStrategy),
-      unionTypeMap: schema.unionTypeMap(entityNameStrategy: entityNameStrategy)
+      objectTypeMap: ObjectTypeMap(schema: schema),
+      interfaceTypeMap: InterfaceTypeMap(schema: schema),
+      unionTypeMap: UnionTypeMap(schema: schema)
     )
   }
 
@@ -327,8 +323,7 @@ fileprivate extension Field {
       let returnType = try structure(
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
-        unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy
+        unionTypeMap: unionTypeMap
       )
     else { return [] }
 
@@ -466,8 +461,7 @@ private extension Collection where Element == FieldMap.Element {
 			let structure = try $0.value.structure(
 				objectTypeMap: objectTypeMap,
 				interfaceTypeMap: interfaceTypeMap,
-        unionTypeMap: unionTypeMap,
-				entityNameStrategy: entityNameStrategy
+        unionTypeMap: unionTypeMap
 			)
 
 			let requiredFields = structure?

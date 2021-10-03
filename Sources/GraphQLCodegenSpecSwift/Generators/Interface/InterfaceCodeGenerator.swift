@@ -37,7 +37,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
+    let objectTypeMap = ObjectTypeMap(schema: schema)
     let code = try schema.interfaces.map { try self.code(interface: $0, objectTypeMap: objectTypeMap) }.lines
 
     guard !code.isEmpty else { return "" }

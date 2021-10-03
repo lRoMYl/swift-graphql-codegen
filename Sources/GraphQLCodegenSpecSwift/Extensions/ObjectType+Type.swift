@@ -16,9 +16,7 @@ extension ObjectType: Structure {
 }
 
 extension ObjectTypeRef {
-  func objectType(objectTypeMap: ObjectTypeMap, entityNameStrategy: EntityNamingStrategy) throws -> ObjectType? {
-    let objectTypeName = try entityNameStrategy.name(for: self)
-
-    return objectTypeMap[objectTypeName]
+  func objectType(objectTypeMap: ObjectTypeMap) throws -> ObjectType {
+    return try objectTypeMap.value(from: self)
   }
 }

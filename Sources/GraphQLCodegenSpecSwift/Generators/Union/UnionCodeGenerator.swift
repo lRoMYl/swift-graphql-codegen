@@ -32,11 +32,11 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let objectTypeMap = try schema.objectTypeMap(entityNameStrategy: entityNameStrategy)
+    let objectTypeMap = ObjectTypeMap(schema: schema)
 
     let code = try schema.unions.compactMap { union -> String in
       let possibleObjectTypes = try union.possibleTypes.compactMap {
-        try $0.objectType(objectTypeMap: objectTypeMap, entityNameStrategy: entityNameStrategy)
+        try $0.objectType(objectTypeMap: objectTypeMap)
       }
       let fields = possibleObjectTypes
         .flatMap { ($0 as Structure).selectableFields(selectionMap: selectionMap) }
