@@ -13,7 +13,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
@@ -21,18 +21,18 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
   }
 
@@ -42,7 +42,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
         objects: schema.objects,
         scalarMap: scalarMap,
         fieldSpecificationGenerator: fieldSpecificationGenerator,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     }.lines
 
@@ -64,7 +64,7 @@ private extension ObjectType {
     objects: [ObjectType],
     scalarMap: ScalarMap,
     fieldSpecificationGenerator: FieldCodeGenerator,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> String {
     let sortedFields = fields.sorted(by: { $0.name < $1.name })
 
@@ -78,7 +78,7 @@ private extension ObjectType {
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
-    struct \(try entityNameStrategy.name(for: self)): Codable {
+    struct \(try entityNameProvider.name(for: self)): Codable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys

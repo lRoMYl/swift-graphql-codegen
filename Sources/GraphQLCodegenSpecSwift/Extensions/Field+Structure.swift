@@ -65,7 +65,7 @@ extension Field {
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> [ObjectType]? {
     switch type.namedType {
     case .interface:
@@ -73,14 +73,14 @@ extension Field {
 
       return try interfaceType.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     case .union:
       guard let unionType = try unionTypeMap.value(from: type.namedType) else { return nil }
 
       return try unionType.possibleObjectTypes(
         objectTypeMap: objectTypeMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     default:
       return nil

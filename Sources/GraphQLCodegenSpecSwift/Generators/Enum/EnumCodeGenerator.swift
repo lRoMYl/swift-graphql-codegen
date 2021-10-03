@@ -12,17 +12,17 @@ import GraphQLCodegenNameSwift
 struct EnumCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(schema: Schema) throws -> String {
     let code = try schema.enums.map {
-      try $0.declaration(entityNameStrategy: entityNameStrategy)
+      try $0.declaration(entityNameProvider: entityNameProvider)
     }.lines
 
     guard !code.isEmpty else { return "" }
@@ -39,10 +39,10 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
 
 private extension EnumType {
   /// Represents the enum structure.
-  func declaration(entityNameStrategy: EntityNamingStrategy) throws -> String {
+  func declaration(entityNameProvider: EntityNameProviding) throws -> String {
     """
     \(docs)
-    enum \(try entityNameStrategy.name(for: self)): RawRepresentable, Codable {
+    enum \(try entityNameProvider.name(for: self)): RawRepresentable, Codable {
       typealias RawValue = String
 
       \(valueDeclaration)
@@ -51,7 +51,7 @@ private extension EnumType {
 
       \(rawValueDeclaration)
 
-      \(try equatableDeclaration(entityNamingStrategy: entityNameStrategy))
+      \(try equatableDeclaration(entityNamingStrategy: entityNameProvider))
     }
     """
   }
@@ -100,7 +100,7 @@ private extension EnumType {
     """
   }
 
-  func equatableDeclaration(entityNamingStrategy: EntityNamingStrategy) throws -> String {
+  func equatableDeclaration(entityNamingStrategy: EntityNameProviding) throws -> String {
     let enumTypeName = try entityNamingStrategy.name(for: self)
 
     return """

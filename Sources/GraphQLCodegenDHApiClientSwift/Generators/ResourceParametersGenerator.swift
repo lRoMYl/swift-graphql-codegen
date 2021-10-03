@@ -24,13 +24,13 @@ struct ResourceParametersGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(schema: Schema) throws -> String {
@@ -124,7 +124,7 @@ extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
     let enumCases = try operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
-      let requestParameterName = try entityNameStrategy.requestParameterName(for: field, with: operation)
+      let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
 
       return """
       case \(enumName)(parameters: \(requestParameterName))

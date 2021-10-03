@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-public protocol EntityNamingStrategy {
+public protocol EntityNameProviding {
   func name(for typeRef: OutputTypeRef) throws -> String
   func name(for typeRef: InputTypeRef) throws -> String
   func name(for typeRef: ObjectTypeRef) throws -> String

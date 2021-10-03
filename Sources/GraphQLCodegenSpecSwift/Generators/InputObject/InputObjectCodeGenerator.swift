@@ -13,19 +13,19 @@ import GraphQLCodegenConfig
 struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let objectFieldCodeGenerator: InputObjectFieldCodeGenerator
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.objectFieldCodeGenerator = InputObjectFieldCodeGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
   }
 
@@ -50,7 +50,7 @@ private extension InputObjectCodeGenerator {
   func declaration(
     inputObjectType: InputObjectType
   ) throws -> String {
-    let name = try entityNameStrategy.name(for: inputObjectType)
+    let name = try entityNameProvider.name(for: inputObjectType)
 
     let fieldsVariable = try inputObjectType.inputFields
       .map { try objectFieldCodeGenerator.variableDeclaration(input: $0) }

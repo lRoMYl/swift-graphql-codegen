@@ -12,17 +12,17 @@ import GraphQLCodegenNameSwift
 struct RequestParameterInitializerGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func declaration(field: Field) throws -> String {
     var arguments = try field.args.map {
-      "\($0.name.camelCase): \(try entityNameStrategy.name(for: $0.type))"
+      "\($0.name.camelCase): \(try entityNameProvider.name(for: $0.type))"
     }
     .joined(separator: ",\n")
 

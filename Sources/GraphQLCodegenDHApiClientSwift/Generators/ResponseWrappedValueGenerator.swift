@@ -16,12 +16,12 @@ struct GraphQLResponseWrappedValueGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.responseEntityName = entityNameMap.response
   }

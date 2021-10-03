@@ -52,7 +52,7 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let entityNameStrategy = DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
+    let entityNameStrategy = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
     let generator = EnumCodeGenerator(scalarMap: [:], entityNameMap: .default, entityNameStrategy: entityNameStrategy)
     let declaration = try generator.code(schema: schema).format()

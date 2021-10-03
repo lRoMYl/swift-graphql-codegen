@@ -27,15 +27,15 @@ struct ApiClientGenerator: Generating {
 
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameStrategy: EntityNamingStrategy) {
+  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.apiClientName = entityNameMap.apiClientName(apiClientPrefix: apiClientPrefix)
     self.apiClientProtocolName = entityNameMap.apiClientProtocolName(apiClientPrefix: apiClientPrefix)
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(schema: Schema) throws -> String {
@@ -114,9 +114,9 @@ extension ApiClientGenerator {
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = try entityNameStrategy.responseDataName(for: field, with: operation)
+    let responseDataText = try entityNameProvider.responseDataName(for: field, with: operation)
 
-    let parametersName = try entityNameStrategy.requestParameterName(for: field, with: operation)
+    let parametersName = try entityNameProvider.requestParameterName(for: field, with: operation)
 
     return """
     func \(field.funcName(with: operation))(

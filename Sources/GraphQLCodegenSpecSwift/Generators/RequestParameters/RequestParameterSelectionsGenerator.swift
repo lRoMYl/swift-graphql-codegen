@@ -29,18 +29,18 @@ struct RequestParameterSelectionsGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   init(
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(field: Field, schema: Schema) throws -> String {
@@ -125,7 +125,7 @@ extension RequestParameterSelectionsGenerator {
 				objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         unionTypeMap: unionTypeMap,
-				entityNameStrategy: entityNameStrategy
+				entityNameProvider: entityNameProvider
 			)
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
@@ -180,7 +180,7 @@ extension RequestParameterSelectionsGenerator {
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     else {
       throw RequestParameterSelectionsError.missingReturnType(context: "No UnionType type found for field \(field.name)")
@@ -252,14 +252,14 @@ extension RequestParameterSelectionsGenerator {
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     let selectionFragmentMap = try fieldMaps.selectionFragmentMap(
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
       unionTypeMap: unionTypeMap,
-      entityNameStrategy: entityNameStrategy,
+      entityNameProvider: entityNameProvider,
 			selectionMap: selectionMap
     )
     let selectionDeclarationMap = fieldMaps.selectionDeclarationMap
@@ -267,7 +267,7 @@ extension RequestParameterSelectionsGenerator {
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
       unionTypeMap: unionTypeMap,
-      entityNameStrategy: entityNameStrategy,
+      entityNameProvider: entityNameProvider,
       selectionMap: selectionMap
     )
 
@@ -316,7 +316,7 @@ fileprivate extension Field {
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy,
+    entityNameProvider: EntityNameProviding,
     selectionMap: SelectionMap?
   ) throws -> [Field] {
     guard
@@ -337,7 +337,7 @@ fileprivate extension Field {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> String {
     let returnName = try type.namedType.scalarType(scalarMap: scalarMap)
 
@@ -345,7 +345,7 @@ fileprivate extension Field {
       objectTypeMap: objectTypeMap,
       interfaceTypeMap: interfaceTypeMap,
       unionTypeMap: unionTypeMap,
-      entityNameStrategy: entityNameStrategy,
+      entityNameProvider: entityNameProvider,
       selectionMap: selectionMap
     )
 
@@ -433,7 +433,7 @@ private extension Collection where Element == FieldMap.Element {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> String {
     try map {
       try $0.value.selectionDeclaration(
@@ -443,7 +443,7 @@ private extension Collection where Element == FieldMap.Element {
         scalarMap: scalarMap,
         selectionMap: selectionMap,
         entityNameMap: entityNameMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     }.lines
   }
@@ -452,7 +452,7 @@ private extension Collection where Element == FieldMap.Element {
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy,
+    entityNameProvider: EntityNameProviding,
 		selectionMap: SelectionMap?
   ) throws -> String {
     try map {
@@ -478,7 +478,7 @@ private extension Collection where Element == FieldMap.Element {
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy,
+        entityNameProvider: entityNameProvider,
         selectionMap: selectionMap
       )
 
@@ -486,7 +486,7 @@ private extension Collection where Element == FieldMap.Element {
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       ) {
         interfaceFragmentCode = """
         \n\t__typename\n\t\(
@@ -537,7 +537,7 @@ private extension Collection where Element == FieldMap.Element {
     objectTypeMap: ObjectTypeMap,
     interfaceTypeMap: InterfaceTypeMap,
     unionTypeMap: UnionTypeMap,
-    entityNameStrategy: EntityNamingStrategy,
+    entityNameProvider: EntityNameProviding,
     selectionMap: SelectionMap?
   ) throws -> String {
     let filteredElements = try compactMap { element -> FieldMap.Element? in
@@ -545,7 +545,7 @@ private extension Collection where Element == FieldMap.Element {
         objectTypeMap: objectTypeMap,
         interfaceTypeMap: interfaceTypeMap,
         unionTypeMap: unionTypeMap,
-        entityNameStrategy: entityNameStrategy,
+        entityNameProvider: entityNameProvider,
         selectionMap: selectionMap
       )
 

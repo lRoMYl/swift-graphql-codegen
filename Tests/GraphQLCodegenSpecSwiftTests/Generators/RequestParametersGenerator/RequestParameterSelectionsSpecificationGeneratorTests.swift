@@ -13,8 +13,8 @@
 import XCTest
 
 final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
-  private lazy var entityNameStrategy: EntityNamingStrategy = {
-    DHEntityNameStrategy(
+  private lazy var entityNameStrategy: EntityNameProviding = {
+    DHEntityNameProvider(
       scalarMap: .default,
       entityNameMap: .default
     )

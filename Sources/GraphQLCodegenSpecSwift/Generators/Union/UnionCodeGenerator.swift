@@ -13,21 +13,21 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
-  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, selectionMap: SelectionMap?, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
     
     self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
   }
 
@@ -44,8 +44,8 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
         .sorted(by: { $0.name < $1.name })
 
       return """
-      enum \(try entityNameStrategy.name(for: union)): Codable {
-        \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameStrategy.name(for: $0)))" }.lines)
+      enum \(try entityNameProvider.name(for: union)): Codable {
+        \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
 
         enum Typename: String, Decodable {
           \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
@@ -66,7 +66,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
             try possibleObjectTypes.map {
               return """
                 case .\($0.name.camelCase):
-                let value = try singleValueContainer.decode(\(try entityNameStrategy.name(for: $0)).self)
+                let value = try singleValueContainer.decode(\(try entityNameProvider.name(for: $0)).self)
                 self = .\($0.name.camelCase)(value)
               """
             }.lines

@@ -162,7 +162,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
     try selectionMap?.validate()
     try entityNameMap.validate()
 
-    let entityNameStrategy = self.entityNameStrategy(scalarMap: scalarMap, entityNameMap: entityNameMap)
+    let entityNameProvider = self.entityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     switch action {
     case .introspection:
@@ -173,7 +173,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
         schema: schema,
         scalarMap: scalarMap,
         entityNameMap: entityNameMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
       generatedCodeData = generatedCode.data(using: .utf8)
     case .specification:
@@ -183,7 +183,7 @@ struct GraphQLCodegenCLI: ParsableCommand {
         scalarMap: scalarMap,
         entityNameMap: entityNameMap,
         selectionMap: selectionMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
       generatedCodeData = generatedCode.data(using: .utf8)
     case .entity:
@@ -287,8 +287,8 @@ private extension GraphQLCodegenCLI {
 // MARK: - Generators
 
 private extension GraphQLCodegenCLI {
-  func entityNameStrategy(scalarMap: ScalarMap, entityNameMap: EntityNameMap) -> EntityNamingStrategy {
-    DHEntityNameStrategy(
+  func entityNameProvider(scalarMap: ScalarMap, entityNameMap: EntityNameMap) -> EntityNameProviding {
+    DHEntityNameProvider(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap
     )
@@ -314,13 +314,13 @@ private extension GraphQLCodegenCLI {
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
     selectionMap: SelectionMap?,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> String {
     let generator = try GraphQLCodegenSpecSwift(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
     let generatedCode = try generator.code(schema: schema)
 
@@ -331,12 +331,12 @@ private extension GraphQLCodegenCLI {
     schema: Schema,
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws -> String {
     let generator = try GraphQLCodegenDHApiClientSwift(
       entityNameMap: entityNameMap,
       scalarMap: scalarMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
     let generatedCode = try generator.code(schema: schema)
 

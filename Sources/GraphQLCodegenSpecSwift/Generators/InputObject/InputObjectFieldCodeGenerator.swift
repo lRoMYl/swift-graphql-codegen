@@ -13,16 +13,16 @@ import GraphQLCodegenUtil
 struct InputObjectFieldCodeGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func variableDeclaration(input: InputValue) throws -> String {
-    let type = try entityNameStrategy.name(for: input.type)
+    let type = try entityNameProvider.name(for: input.type)
 
     return """
     \(input.docs)

@@ -13,7 +13,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
@@ -21,18 +21,18 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
   }
 
@@ -55,15 +55,15 @@ extension InterfaceCodeGenerator {
   func code(interface: InterfaceType, objectTypeMap: ObjectTypeMap) throws -> String {
     let possibleObjectTypes: [ObjectType] = try interface.possibleObjectTypes(
       objectTypeMap: objectTypeMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     return """
-      struct \(try entityNameStrategy.name(for: interface)): Codable {
+      struct \(try entityNameProvider.name(for: interface)): Codable {
         enum Object {
           \(
             try possibleObjectTypes.map {
-              "case \($0.name.camelCase)(\(try entityNameStrategy.name(for: $0)))"
+              "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))"
             }.lines
           )
         }
@@ -95,7 +95,7 @@ extension InterfaceCodeGenerator {
             try possibleObjectTypes.map {
               """
               case .\($0.name.camelCase):
-                data = .\($0.name.camelCase)(try singleContainer.decode(\(try entityNameStrategy.name(for: $0)).self))
+                data = .\($0.name.camelCase)(try singleContainer.decode(\(try entityNameProvider.name(for: $0)).self))
               """
             }.lines
           )

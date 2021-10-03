@@ -9,7 +9,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
-public final class DHEntityNameStrategy: EntityNamingStrategy {
+public final class DHEntityNameProvider: EntityNameProviding {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
 

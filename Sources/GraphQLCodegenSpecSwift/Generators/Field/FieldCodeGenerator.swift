@@ -14,18 +14,18 @@ struct FieldCodeGenerator {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   init(
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func variableDeclaration(object: Structure, field: Field) throws -> String {
@@ -33,7 +33,7 @@ struct FieldCodeGenerator {
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
     if isRequired || isSelectable {
-      var type: String = try entityNameStrategy.name(for: field.type)
+      var type: String = try entityNameProvider.name(for: field.type)
 
       if isSelectable && !type.contains("?") {
         type.append("?")

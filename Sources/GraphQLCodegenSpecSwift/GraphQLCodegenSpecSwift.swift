@@ -25,7 +25,7 @@ public struct GraphQLCodegenSpecSwift {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let generators: [GraphQLCodeGenerating]
 
@@ -33,52 +33,52 @@ public struct GraphQLCodegenSpecSwift {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) throws {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.generators = [
       HeaderCodeGenerator(entityNameMap: self.entityNameMap),
       EnumCodeGenerator(
         scalarMap: self.scalarMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       ObjectCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       InputObjectCodeGenerator(
         scalarMap: self.scalarMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       InterfaceCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       UnionCodeGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       RequestParameterGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: self.entityNameStrategy
+        entityNameProvider: self.entityNameProvider
       ),
       ResponseCodeGenerator(
         entityNameMap: self.entityNameMap,
-        entityNameStrategy: entityNameStrategy
+        entityNameProvider: entityNameProvider
       )
     ]
   }

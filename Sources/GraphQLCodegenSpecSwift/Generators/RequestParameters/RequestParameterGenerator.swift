@@ -25,7 +25,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
   private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
@@ -37,24 +37,24 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
-    entityNameStrategy: EntityNamingStrategy
+    entityNameProvider: EntityNameProviding
   ) {
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
 
     self.selectionsGenerator = RequestParameterSelectionsGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
     self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
       scalarMap: scalarMap,
@@ -63,7 +63,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.initializerGenerator = RequestParameterInitializerGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     // Initialize entity name variable
@@ -116,7 +116,7 @@ private extension RequestParameterGenerator {
     entityNameMap: EntityNameMap,
     field: Field
   ) throws -> String {
-    let requestParameterName = try entityNameStrategy.requestParameterName(for: field, with: operation)
+    let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
 
     let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,

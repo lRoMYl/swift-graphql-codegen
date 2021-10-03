@@ -12,7 +12,7 @@
 import XCTest
 
 final class ObjectSpecificationGeneratorTests: XCTestCase {
-  private let entityNameStrategy = DHEntityNameStrategy(scalarMap: .default, entityNameMap: .default)
+  private let entityNameStrategy = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
   func testGeneratedCode() throws {
     let discountObjectType = ObjectType(

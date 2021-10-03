@@ -13,12 +13,12 @@ import GraphQLCodegenNameSwift
 struct RequestParameterVariablesGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   /**
@@ -80,7 +80,7 @@ struct RequestParameterVariablesGenerator {
    */
   func argumentVariablesDeclaration(field: Field) throws -> String {
     let argumentVariables = try field.args.compactMap {
-      let typeName = try entityNameStrategy.name(for: $0.type)
+      let typeName = try entityNameProvider.name(for: $0.type)
 
       return """
       \($0.docs)

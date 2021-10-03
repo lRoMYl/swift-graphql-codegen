@@ -11,11 +11,11 @@ import GraphQLCodegenNameSwift
 
 struct ResponseCodeGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
-  private let entityNameStrategy: EntityNamingStrategy
+  private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, entityNameStrategy: EntityNamingStrategy) {
+  init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
-    self.entityNameStrategy = entityNameStrategy
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(schema: Schema) throws -> String {
@@ -34,8 +34,8 @@ extension ResponseCodeGenerator {
 
   func code(field: Field, operation: GraphQLAST.Operation) throws -> String {
     return """
-    struct \(try entityNameStrategy.responseDataName(for: field, with: operation)): \(entityNameMap.responseData) {
-      let \(field.name): \(try entityNameStrategy.name(for: field.type))
+    struct \(try entityNameProvider.responseDataName(for: field, with: operation)): \(entityNameMap.responseData) {
+      let \(field.name): \(try entityNameProvider.name(for: field.type))
     }
     """
   }
