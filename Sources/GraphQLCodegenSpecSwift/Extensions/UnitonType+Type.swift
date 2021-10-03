@@ -13,7 +13,7 @@ extension UnionType: Structure {
 }
 
 extension UnionType {
-  func possibleObjectTypes(objectTypeMap: ObjectTypeMap, entityNameProvider: EntityNameProviding) throws -> [ObjectType] {
+  func possibleObjectTypes(objectTypeMap: ObjectTypeMap) throws -> [ObjectType] {
     try possibleTypes.compactMap {
       try $0.objectType(objectTypeMap: objectTypeMap)
     }

@@ -54,8 +54,7 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
 extension InterfaceCodeGenerator {
   func code(interface: InterfaceType, objectTypeMap: ObjectTypeMap) throws -> String {
     let possibleObjectTypes: [ObjectType] = try interface.possibleObjectTypes(
-      objectTypeMap: objectTypeMap,
-      entityNameProvider: entityNameProvider
+      objectTypeMap: objectTypeMap
     )
 
     return """

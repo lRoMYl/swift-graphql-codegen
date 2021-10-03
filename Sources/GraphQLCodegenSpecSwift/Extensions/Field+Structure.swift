@@ -21,16 +21,14 @@ enum FieldStructureError: Error, LocalizedError {
 
 extension Field {
   func structure(
-    objectTypeMap: ObjectTypeMap,
-    interfaceTypeMap: InterfaceTypeMap,
-    unionTypeMap: UnionTypeMap
+    schemaMap: SchemaMap
   ) throws -> Structure? {
     let structure: Structure
 
     switch type.namedType {
     case let .object(objectName):
       guard
-        let result = try objectTypeMap.value(from: type.namedType)
+        let result = try schemaMap.objectTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Object \(objectName) not found")
       }
@@ -38,7 +36,7 @@ extension Field {
       structure = result
     case let .interface(interfaceName):
       guard
-        let result = try interfaceTypeMap.value(from: type.namedType)
+        let result = try schemaMap.interfaceTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Interface \(interfaceName) not found")
       }
@@ -48,7 +46,7 @@ extension Field {
       return nil
     case let .union(unionName):
       guard
-        let result = try unionTypeMap.value(from: type.namedType)
+        let result = try schemaMap.unionTypeMap.value(from: type.namedType)
       else {
         throw FieldStructureError.missingReturnType(context: "Union \(unionName) not found")
       }
@@ -62,28 +60,49 @@ extension Field {
 
 extension Field {
   func possibleObjectTypes(
-    objectTypeMap: ObjectTypeMap,
-    interfaceTypeMap: InterfaceTypeMap,
-    unionTypeMap: UnionTypeMap,
-    entityNameProvider: EntityNameProviding
+    schemaMap: SchemaMap
   ) throws -> [ObjectType]? {
     switch type.namedType {
     case .interface:
-      guard let interfaceType = try interfaceTypeMap.value(from: type.namedType) else { return nil }
+      guard let interfaceType = try schemaMap.interfaceTypeMap.value(from: type.namedType) else { return nil }
 
       return try interfaceType.possibleObjectTypes(
-        objectTypeMap: objectTypeMap,
-        entityNameProvider: entityNameProvider
+        objectTypeMap: schemaMap.objectTypeMap
       )
     case .union:
-      guard let unionType = try unionTypeMap.value(from: type.namedType) else { return nil }
+      guard let unionType = try schemaMap.unionTypeMap.value(from: type.namedType) else { return nil }
 
       return try unionType.possibleObjectTypes(
-        objectTypeMap: objectTypeMap,
-        entityNameProvider: entityNameProvider
+        objectTypeMap: schemaMap.objectTypeMap
       )
     default:
       return nil
     }
+  }
+
+  func returnObjectType(schemaMap: SchemaMap) throws -> ObjectType? {
+    switch type.namedType {
+    case .object:
+      guard let objectType = try schemaMap.objectTypeMap.value(from: type.namedType) else { return nil }
+
+      return objectType
+    default:
+      return nil
+    }
+  }
+}
+
+extension Field {
+  func returnTypeSelectableFields(
+    schemaMap: SchemaMap,
+    selectionMap: SelectionMap?
+  ) throws -> [Field] {
+    guard
+      let returnType = try structure(
+        schemaMap: schemaMap
+      )
+    else { return [] }
+
+    return returnType.selectableFields(selectionMap: selectionMap)
   }
 }
