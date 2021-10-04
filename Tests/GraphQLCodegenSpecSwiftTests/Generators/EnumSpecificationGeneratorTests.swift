@@ -52,9 +52,9 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
       query: ""
     )
 
-    let entityNameStrategy = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+    let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
-    let generator = EnumCodeGenerator(scalarMap: [:], entityNameMap: .default, entityNameStrategy: entityNameStrategy)
+    let generator = EnumCodeGenerator(scalarMap: [:], entityNameMap: .default, entityNameProvider: entityNameProvider)
     let declaration = try generator.code(schema: schema).format()
 
     let expected = try """
@@ -65,6 +65,7 @@ final class EnumSpecificationGeneratorTests: XCTestCase {
       typealias RawValue = String
 
       case free
+
       /// Absolute price discount
       @available(*, deprecated, message: "Deprecated")
       case absolute

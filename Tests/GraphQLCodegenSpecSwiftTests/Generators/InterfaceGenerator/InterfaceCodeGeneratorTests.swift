@@ -16,13 +16,13 @@ final class InterfaceCodeGeneratorTests: XCTestCase {
     let scalarMap = ScalarMap.default
     let selectionMap: SelectionMap? = nil
     let entityNameMap = EntityNameMap.default
-    let entityNameStrategy = DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
+    let entityNameProvider = DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     let interfaceCodeGenerator = InterfaceCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     let schema = try SchemaHelper.schema(with: "StarWarsTestSchema")

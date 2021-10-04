@@ -361,11 +361,8 @@ extension RequestParameterSelectionsGenerator {
 
       let requiredFields = structure?
         .requiredFields(selectionMap: selectionMap)
-        .enumerated()
         .map {
-          // Add newline if its the first element
-          let prefix = $0.offset == 0 ? "\n\t" : "\t"
-          return prefix + $0.element.name
+          "\t" + $0.name
         }
         .lines ?? ""
 
@@ -378,7 +375,7 @@ extension RequestParameterSelectionsGenerator {
         schemaMap: schemaMap
       ) {
         interfaceFragmentCode = """
-        \n\t__typename\n\t\(
+        \t__typename\n\t\(
           possibleObjectTypes.map {
             """
             ...\($0.name)Fragment
@@ -394,10 +391,18 @@ extension RequestParameterSelectionsGenerator {
         ? ""
         : "\t\\(\($0.key.camelCase)Selections.declaration)"
 
+      let fragmentContent: [String] = [
+        requiredFields,
+        selectionDeclaration,
+        interfaceFragmentCode
+      ].filter { !$0.isEmpty }
+
+      let fragmentContentCode = fragmentContent.compactMap { $0 }.lines
+
       return """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {\(requiredFields)
-      \(selectionDeclaration)\(interfaceFragmentCode)
+      fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {
+      \(fragmentContentCode)
       }
       \"\"\"\n
       """

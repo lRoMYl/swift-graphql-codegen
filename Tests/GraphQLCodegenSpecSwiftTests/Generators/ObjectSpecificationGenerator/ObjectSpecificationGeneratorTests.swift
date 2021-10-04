@@ -12,7 +12,7 @@
 import XCTest
 
 final class ObjectSpecificationGeneratorTests: XCTestCase {
-  private let entityNameStrategy = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+  private let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
   func testGeneratedCode() throws {
     let discountObjectType = ObjectType(
@@ -49,7 +49,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let generator = ObjectCodeGenerator(
       scalarMap: ScalarMap.default, selectionMap: nil,
       entityNameMap: .default,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
     let declaration = try generator.code(schema: schema).format()
 
@@ -85,7 +85,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let generator = ObjectCodeGenerator(
       scalarMap: ScalarMap.default, selectionMap: nil,
       entityNameMap: .default,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     let code = try generator.code(schema: schema)
@@ -129,7 +129,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let generator = ObjectCodeGenerator(
       scalarMap: ScalarMap.default, selectionMap: nil,
       entityNameMap: .default,
-      entityNameStrategy: entityNameStrategy
+      entityNameProvider: entityNameProvider
     )
 
     let code = try generator.code(schema: schema)
@@ -140,8 +140,8 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
 
     struct HumanGraphQLObjects: Codable {
       let appearsIn: [EpisodeEnum]
-      /// The home planet of the human, or null if unknown.
 
+      /// The home planet of the human, or null if unknown.
       let homePlanet: String?
 
       let id: String

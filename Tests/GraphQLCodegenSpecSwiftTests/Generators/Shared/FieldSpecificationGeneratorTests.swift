@@ -16,7 +16,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
     scalarMap: ScalarMap.default,
     selectionMap: nil,
     entityNameMap: .default,
-    entityNameStrategy: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+    entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
   )
 
   func testScalar() throws {
@@ -237,7 +237,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 }
 
 private extension FieldSpecificationGeneratorTests {
-  func declaration(objectName: String = "object name", field: Field) throws -> String {
+  func declaration(objectName: String = "object name", field: Field) throws -> String? {
     let object = ObjectType(
       kind: .object,
       name: objectName,
@@ -249,13 +249,13 @@ private extension FieldSpecificationGeneratorTests {
     return try defaultGenerator.variableDeclaration(
       object: object,
       field: field
-    ).format()
+    )?.format()
   }
 
   func codingKeyDeclaration(
     objectName: String = "object name",
     field: Field
-  ) throws -> String {
+  ) throws -> String? {
     let object = ObjectType(
       kind: .object,
       name: objectName,
@@ -267,6 +267,6 @@ private extension FieldSpecificationGeneratorTests {
     return try defaultGenerator.codingKeyDeclaration(
       object: object,
       field: field
-    ).format()
+    )?.format()
   }
 }
