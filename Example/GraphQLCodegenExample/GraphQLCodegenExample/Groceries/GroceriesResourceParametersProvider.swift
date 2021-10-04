@@ -7,7 +7,7 @@
 
 import Foundation
 
-class GraphQLResourceParametersProvider: GroceriesResourceParametersProviding {
+class GroceriesResourceParametersProvider: GroceriesResourceParametersProviding {
   func servicePath(with resourceParameter: GroceriesResourceParameters.BodyParameters) -> String {
     ""
   }

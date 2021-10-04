@@ -39,7 +39,7 @@ struct ApiClientGenerator: Generating {
   }
 
   func code(schema: Schema) throws -> String {
-    let resourceParametersProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
+    let resourceParametersProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
 
     return """
     \(try self.protocolCode(with: schema.operations))

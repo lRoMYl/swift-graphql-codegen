@@ -20,7 +20,7 @@ struct GraphQLCodegenExampleApp: App {
 
     let apiClient = GroceriesApiClient(
       restClient: restClient,
-      resourceParametersProvider: GraphQLResourceParametersProvider()
+      resourceParametersProvider: GroceriesResourceParametersProvider()
     )
     let repository = GroceriesRepository(apiClient: apiClient)
 

@@ -36,7 +36,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "entity",
-    "--output", "\(examplePath)/GraphQLCodegenExample/GraphQLEntity.swift",
+    "--output", "\(examplePath)/GraphQLCodegenExample/GraphQLEntities.swift",
     "--config-path", groceriesConfig
   ]
 )
@@ -45,7 +45,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "specification",
-    "--output", "\(groceriesOutputPath)GraphQLSpec.swift",
+    "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
     "--config-path", groceriesConfig
   ]
 )
@@ -53,7 +53,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "dh-repository",
-    "--output", "\(groceriesOutputPath)GraphQLApiClient.swift",
+    "--output", "\(groceriesOutputPath)ApiClient.swift",
     "--config-path", groceriesConfig
   ]
 )

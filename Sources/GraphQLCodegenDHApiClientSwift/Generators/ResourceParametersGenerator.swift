@@ -37,7 +37,7 @@ struct ResourceParametersGenerator: Generating {
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
     let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: nil)
     let resourceBodyParametersNameWithPrefix = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
-    let resourceParameterProviding = entityNameMap.resourceParametersProviding(apiClientPrefix: apiClientPrefix)
+    let resourceParameterProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
 
     return """
 
