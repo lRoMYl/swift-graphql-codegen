@@ -159,7 +159,7 @@ struct QueryStarWarsObject: Codable {
 
   let luke: HumanStarWarsObject?
 
-  let time: String
+  let time: DateTimeInterval
 
   let whoami: String
 
@@ -1115,7 +1115,7 @@ struct WhoamiQueryResponse: Codable {
 }
 
 struct TimeQueryResponse: Codable {
-  let time: String
+  let time: DateTimeInterval
 }
 
 struct MutateMutationResponse: Codable {

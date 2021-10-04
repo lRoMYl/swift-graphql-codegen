@@ -44,4 +44,17 @@ final class StarWarsRepository {
         return data
       }
   }
+
+  func time(
+    with parameters: TimeStarWarsQuery
+  ) -> Single<DateTimeInterval> {
+    apiClient.time(with: parameters)
+      .map {
+        guard let data = $0.data?.time else {
+          throw StarWarsRepositoryError.missingData
+        }
+
+        return data
+      }
+  }
 }

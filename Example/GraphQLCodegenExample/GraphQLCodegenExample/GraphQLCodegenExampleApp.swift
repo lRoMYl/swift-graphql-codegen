@@ -49,6 +49,7 @@ struct GraphQLCodegenExampleApp: App {
         testStarWarsInterfaceGraphQL()
         testStarWarsUnionHumanGraphQL()
         testStarWarsUnionDroidGraphQL()
+        testStarWarsDateGraphQL()
       }
     }
   }
@@ -87,12 +88,40 @@ extension GraphQLCodegenExampleApp {
       )
     )
 
+    let expected = Array(
+      [
+        Array(repeating: String(describing: HumanStarWarsObject.self), count: 5),
+        Array(repeating: String(describing: DroidStarWarsObject.self), count: 2)
+      ]
+      .joined()
+    )
+
     starWarsRepository
       .characters(with: parameters)
       .subscribe(
-        onSuccess: { response in
+        onSuccess: { characters in
           print("Starwars characters interface query request success")
-          // print(response)
+
+          guard expected.count == characters.count else {
+            print("Response count(\(characters.count)) != expected count(\(expected.count))")
+            return
+          }
+
+          zip(characters, expected).enumerated().forEach { enumeration in
+            let modelType: String
+            let expectedType = enumeration.element.1
+
+            switch enumeration.element.0.data {
+            case .human:
+              modelType = String(describing: HumanStarWarsObject.self)
+            case .droid:
+              modelType = String(describing: DroidStarWarsObject.self)
+            }
+
+            if modelType != expectedType {
+              print("Invalid type(\(modelType) but expected (\(expectedType) at \(enumeration.offset)")
+            }
+          }
         },
         onError: { error in
           print(error)
@@ -114,7 +143,7 @@ extension GraphQLCodegenExampleApp {
       .subscribe(
         onSuccess: { response in
           switch response {
-          case let .human(human):
+          case .human:
             print("Starwars character union query request as human success")
           default :
             print("Starwars character union query request as human failed xxxx")
@@ -149,6 +178,19 @@ extension GraphQLCodegenExampleApp {
           }
 
           // print(response)
+        },
+        onError: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsDateGraphQL() {
+    starWarsRepository.time(with: .init())
+      .subscribe(
+        onSuccess: { response in
+          print("Starwars time query request success: \(response.rawValue)")
         },
         onError: { error in
           print(error)

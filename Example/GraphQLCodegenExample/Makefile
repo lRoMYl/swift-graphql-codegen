@@ -19,12 +19,12 @@ codegen-groceries:
 
 	# Generate common entity class for all GraphQL microservices. 
 	# If you have multiple endpoint for GraphQL, do not regenerate this.
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "entity" --output "GraphQLCodegenExample/GraphQLEntity.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "entity" --output "GraphQLCodegenExample/core/GraphQLEntities.swift" --config-path $(GROCERIES_CONFIG)
 
 	# Generate groceries GraphQL specification file from local schema
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLSpec.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLNetworkModels.swift" --config-path $(GROCERIES_CONFIG)
 	# Generate groceries repository file from local schema
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "dh-repository" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLApiClient.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "dh-repository" --output "$(GROCERIES_OUTPUT_PREFIX)ApiClient.swift" --config-path $(GROCERIES_CONFIG)
 
 codegen-starwars:
 	# For the purpose of this example, we will not need to fetch StarWars introspection from remote url

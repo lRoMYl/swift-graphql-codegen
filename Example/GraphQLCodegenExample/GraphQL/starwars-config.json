@@ -1,14 +1,10 @@
 {
 	"namespace": "",
 	"scalarMap": {
-		"BigDecimal": "Double",
-        "DateTime": "Double",
-        "Long": "Double",
-        "Upload": "String",
-        "Date": "String"
+        "Date": "DateTimeInterval"
     },
     "entityNameMap": {
-        "request":          "GraphQLRequestCodableWrapper",
+        "request":          "GraphQLRequest",
         "requestParameter": "GraphQLRequesting",
         "query":            "StarWarsQuery",
         "mutation":         "StarWarsMutation",
