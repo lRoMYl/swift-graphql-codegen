@@ -28,7 +28,7 @@ struct FieldCodeGenerator {
     self.entityNameProvider = entityNameProvider
   }
 
-  func variableDeclaration(object: Structure, field: Field) throws -> String {
+  func variableDeclaration(object: Structure, field: Field) throws -> String? {
     let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
@@ -47,18 +47,18 @@ struct FieldCodeGenerator {
 
       return texts.filter { !$0.isEmpty }.lines
     } else {
-      return ""
+      return nil
     }
   }
 
-  func codingKeyDeclaration(object: Structure, field: Field) -> String {
+  func codingKeyDeclaration(object: Structure, field: Field) -> String? {
     let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
     if isRequired || isSelectable {
       return "case \(field.name.camelCase) = \"\(field.name)\""
     } else {
-      return ""
+      return nil
     }
   }
 }

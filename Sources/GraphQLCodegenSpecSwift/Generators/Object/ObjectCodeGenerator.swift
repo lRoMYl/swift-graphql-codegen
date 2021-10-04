@@ -5,9 +5,21 @@
 //  Created by Romy Cheah on 9/9/21.
 //
 
+import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+
+enum ObjectCodeGeneratorError: Error, LocalizedError {
+  case emptyFields(name: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .emptyFields(name):
+    return "\(Self.self): No fields was whitelisted for \(name) object"
+    }
+  }
+}
 
 struct ObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
@@ -69,11 +81,15 @@ private extension ObjectType {
     let sortedFields = fields.sorted(by: { $0.name < $1.name })
 
     let fieldsVariable = try sortedFields
-      .map { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
+      .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
       .joined(separator: "\n\n")
     let fieldsCodingKey = sortedFields
-      .map { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
+      .compactMap { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
       .lines
+
+    guard !fieldsCodingKey.isEmpty || !fieldsCodingKey.isEmpty else {
+      throw ObjectCodeGeneratorError.emptyFields(name: self.name)
+    }
 
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance

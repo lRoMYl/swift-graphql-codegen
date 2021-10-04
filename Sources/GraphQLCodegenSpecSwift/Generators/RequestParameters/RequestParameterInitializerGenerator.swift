@@ -26,9 +26,11 @@ struct RequestParameterInitializerGenerator {
     }
     .joined(separator: ",\n")
 
+    // If there are prior argument, a comma needs to be added manually before the default Selections
     if arguments.count > 0 {
       arguments.append(",\n")
     }
+
     arguments.append("selections: Selections = .init()")
 
     var assignments = field.args.map {
