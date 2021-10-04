@@ -137,7 +137,7 @@ extension ApiClientGenerator {
     return """
     func executeGraphQL\(operationName)<\(genericResponse)>(
       resource: ResourceParameters
-    ) -> \(responseGenericCode) where \(genericResponse): \(entityNameMap.responseData) {
+    ) -> \(responseGenericCode) where \(genericResponse): Codable {
       let request: \(responseDataGenericCode) = restClient
         .executeRequest(resource: resource)
 

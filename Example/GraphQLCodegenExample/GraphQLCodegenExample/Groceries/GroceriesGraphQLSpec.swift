@@ -339,7 +339,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       fragment BenefitFragment on Benefit {
       	productID
       	quantity
-
       }
       """
 
@@ -367,7 +366,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
       	campaignID
       	discountTag
       	triggerQuantity
-
       }
       """
 
@@ -427,6 +425,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   }
 }
 
-struct CampaignsQueryResponse: GraphQLResponseData {
+struct CampaignsQueryResponse: Codable {
   let campaigns: CampaignsResponseModel?
 }

@@ -63,13 +63,9 @@ struct GraphQLRequestCodableWrapper<RequestParameters: GraphQLRequesting>: Encod
 
 // MARK: - GraphQLResponse
 
-struct GraphQLResponse<ResponseData: GraphQLResponseData>: Codable {
+struct GraphQLResponse<ResponseData: Codable>: Codable {
   let data: ResponseData
 }
-
-// MARK: - GraphQLResponseData
-
-protocol GraphQLResponseData: Codable {}
 
 // MARK: - GraphQLSelection+Declaration
 

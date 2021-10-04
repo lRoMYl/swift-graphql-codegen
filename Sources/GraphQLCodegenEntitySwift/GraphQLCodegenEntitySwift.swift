@@ -96,12 +96,9 @@ public struct GraphQLCodegenEntitySwift {
 
     // MARK: - \(entityNameMap.response)
 
-    struct \(entityNameMap.response)<ResponseData: \(entityNameMap.responseData)>: Codable {
+    struct \(entityNameMap.response)<ResponseData: Codable>: Codable {
       let data: ResponseData
     }
-
-    // MARK: - \(entityNameMap.responseData)
-    protocol \(entityNameMap.responseData): Codable {}
 
     // MARK: - \(entityNameMap.selection)+Declaration
 

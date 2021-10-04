@@ -34,7 +34,7 @@ extension ResponseCodeGenerator {
 
   func code(field: Field, operation: GraphQLAST.Operation) throws -> String {
     return """
-    struct \(try entityNameProvider.responseDataName(for: field, with: operation)): \(entityNameMap.responseData) {
+    struct \(try entityNameProvider.responseDataName(for: field, with: operation)): Codable {
       let \(field.name): \(try entityNameProvider.name(for: field.type))
     }
     """

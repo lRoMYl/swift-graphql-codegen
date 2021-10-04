@@ -428,7 +428,6 @@ struct DroidStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-
       }
       """
 
@@ -510,7 +509,6 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
     func declaration() -> String {
       let characterUnionSelectionsDeclaration = """
       fragment CharacterUnionFragment on CharacterUnion {
-
       	__typename
       	...HumanFragment
       	...DroidFragment
@@ -523,7 +521,6 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-
       }
       """
 
@@ -742,7 +739,6 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-
       }
       """
 
@@ -812,7 +808,6 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
       fragment CharacterFragment on Character {
       	id
       	name
-
       	__typename
       	...DroidFragment
       	...HumanFragment
@@ -825,7 +820,6 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
       	id
       	name
       	primaryFunction
-
       }
       """
 
@@ -1084,50 +1078,50 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
   }
 }
 
-struct HumanQueryResponse: GraphQLResponseData {
+struct HumanQueryResponse: Codable {
   let human: HumanStarWarsObject?
 }
 
-struct DroidQueryResponse: GraphQLResponseData {
+struct DroidQueryResponse: Codable {
   let droid: DroidStarWarsObject?
 }
 
-struct CharacterQueryResponse: GraphQLResponseData {
+struct CharacterQueryResponse: Codable {
   let character: CharacterUnionStarWarsUnions?
 }
 
-struct LukeQueryResponse: GraphQLResponseData {
+struct LukeQueryResponse: Codable {
   let luke: HumanStarWarsObject?
 }
 
-struct HumansQueryResponse: GraphQLResponseData {
+struct HumansQueryResponse: Codable {
   let humans: [HumanStarWarsObject]
 }
 
-struct DroidsQueryResponse: GraphQLResponseData {
+struct DroidsQueryResponse: Codable {
   let droids: [DroidStarWarsObject]
 }
 
-struct CharactersQueryResponse: GraphQLResponseData {
+struct CharactersQueryResponse: Codable {
   let characters: [CharacterStarWarsInterface]
 }
 
-struct GreetingQueryResponse: GraphQLResponseData {
+struct GreetingQueryResponse: Codable {
   let greeting: String
 }
 
-struct WhoamiQueryResponse: GraphQLResponseData {
+struct WhoamiQueryResponse: Codable {
   let whoami: String
 }
 
-struct TimeQueryResponse: GraphQLResponseData {
+struct TimeQueryResponse: Codable {
   let time: String
 }
 
-struct MutateMutationResponse: GraphQLResponseData {
+struct MutateMutationResponse: Codable {
   let mutate: Bool
 }
 
-struct NumberSubscriptionResponse: GraphQLResponseData {
+struct NumberSubscriptionResponse: Codable {
   let number: Int
 }

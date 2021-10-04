@@ -46,7 +46,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 private extension GroceriesApiClient {
   func executeGraphQLQuery<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
+  ) -> Single<ApiResponse<Response>> where Response: Codable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 

@@ -222,7 +222,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
 private extension StarWarsApiClient {
   func executeGraphQLQuery<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
+  ) -> Single<ApiResponse<Response>> where Response: Codable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
@@ -239,7 +239,7 @@ private extension StarWarsApiClient {
 
   func executeGraphQLMutation<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
+  ) -> Single<ApiResponse<Response>> where Response: Codable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
@@ -256,7 +256,7 @@ private extension StarWarsApiClient {
 
   func executeGraphQLSubscription<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: GraphQLResponseData {
+  ) -> Single<ApiResponse<Response>> where Response: Codable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
