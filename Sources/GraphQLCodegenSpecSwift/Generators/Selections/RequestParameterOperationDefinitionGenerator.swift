@@ -52,7 +52,7 @@ struct RequestParameterOperationDefinitionGenerator {
     var operationDefinition: String {
       String(
         format: operationDefinitionFormat,
-        selections.declaration()
+        declaration()
       )
     }
     """

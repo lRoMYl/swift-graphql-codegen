@@ -50,6 +50,7 @@ public struct GraphQLCodegenEntitySwift {
     protocol \(entityNameMap.selection): RawRepresentable, Hashable, CaseIterable where RawValue == String {}
     protocol \(entityNameMap.selections) {
       func declaration() -> String
+      var operationDefinition: String { get }
     }
 
     // MARK: - Enum

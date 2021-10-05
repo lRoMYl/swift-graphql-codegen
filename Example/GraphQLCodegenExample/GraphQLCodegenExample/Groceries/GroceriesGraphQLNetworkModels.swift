@@ -233,39 +233,8 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  // MARK: - Operation Definition
-
-  private let operationDefinitionFormat: String = """
-  query(
-    $VendorID: String!
-    $GlobalEntityID: String!
-    $Locale: String!
-    $LanguageID: String!
-    $LanguageCode: String!
-    $APIKey: String!
-    $DiscoClientID: String!
-  ) {
-    campaigns(
-      VendorID: $VendorID
-      GlobalEntityID: $GlobalEntityID
-      Locale: $Locale
-      LanguageID: $LanguageID
-      LanguageCode: $LanguageCode
-      APIKey: $APIKey
-      DiscoClientID: $DiscoClientID
-  	) {
-  		...CampaignsFragment
-  	}
-  }
-
-  %1$@
-  """
-
   var operationDefinition: String {
-    String(
-      format: operationDefinitionFormat,
-      selections.declaration()
-    )
+    selections.operationDefinition
   }
 
   // MARK: - Arguments
@@ -289,40 +258,45 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   let selections: Selections
 
   struct Selections: GraphQLSelections {
-    let campaignAttributeSelections: Set<CampaignAttributeSelection>
+    // MARK: - Operation Definition
 
-    enum CampaignAttributeSelection: String, GraphQLSelection {
-      case benefits = """
-      benefits {
-        ...BenefitFragment
-      }
-      """
+    private let operationDefinitionFormat: String = """
+    query(
+      $VendorID: String!
+      $GlobalEntityID: String!
+      $Locale: String!
+      $LanguageID: String!
+      $LanguageCode: String!
+      $APIKey: String!
+      $DiscoClientID: String!
+    ) {
+      campaigns(
+        VendorID: $VendorID
+        GlobalEntityID: $GlobalEntityID
+        Locale: $Locale
+        LanguageID: $LanguageID
+        LanguageCode: $LanguageCode
+        APIKey: $APIKey
+        DiscoClientID: $DiscoClientID
+    	) {
+    		...CampaignsFragment
+    	}
     }
 
+    %1$@
+    """
+
+    var operationDefinition: String {
+      String(
+        format: operationDefinitionFormat,
+        declaration()
+      )
+    }
+
+    let campaignAttributeSelections: Set<CampaignAttributeSelection>
     let campaignsSelections: Set<CampaignsSelection>
 
-    enum CampaignsSelection: String, GraphQLSelection {
-      case campaignAttributes = """
-      campaignAttributes {
-        ...CampaignAttributeFragment
-      }
-      """
-      case productDeals = """
-      productDeals {
-        ...ProductDealFragment
-      }
-      """
-    }
-
     let productDealSelections: Set<ProductDealSelection>
-
-    enum ProductDealSelection: String, GraphQLSelection {
-      case deals = """
-      deals {
-        ...DealFragment
-      }
-      """
-    }
 
     init(
       campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
@@ -427,4 +401,35 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
 struct CampaignsQueryResponse: Codable {
   let campaigns: CampaignsResponseModel?
+}
+
+// MARK: - GraphQLSelection
+
+enum CampaignAttributeSelection: String, GraphQLSelection {
+  case benefits = """
+  benefits {
+    ...BenefitFragment
+  }
+  """
+}
+
+enum CampaignsSelection: String, GraphQLSelection {
+  case campaignAttributes = """
+  campaignAttributes {
+    ...CampaignAttributeFragment
+  }
+  """
+  case productDeals = """
+  productDeals {
+    ...ProductDealFragment
+  }
+  """
+}
+
+enum ProductDealSelection: String, GraphQLSelection {
+  case deals = """
+  deals {
+    ...DealFragment
+  }
+  """
 }

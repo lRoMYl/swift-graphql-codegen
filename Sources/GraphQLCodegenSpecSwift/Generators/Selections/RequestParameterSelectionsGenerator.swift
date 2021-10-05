@@ -31,6 +31,8 @@ struct RequestParameterSelectionsGenerator {
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
+  private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
+
   init(
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
@@ -41,27 +43,41 @@ struct RequestParameterSelectionsGenerator {
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
+
+    let requestParameterVariablesGenerator = RequestParameterVariablesGenerator(
+      scalarMap: scalarMap,
+      entityNameMap: entityNameMap,
+      entityNameProvider: entityNameProvider
+    )
+
+    self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
+      scalarMap: scalarMap,
+      variablesGenerator: requestParameterVariablesGenerator
+    )
   }
 
-  func code(field: Field, schema: Schema) throws -> String {
+  func code(operation: GraphQLAST.Operation, field: Field, schema: Schema) throws -> String {
     let namedType = field.type.namedType
     let schemaMap = try SchemaMap(schema: schema)
 
     switch namedType {
     case .object:
       return try objectDeclaration(
+        operation: operation,
         field: field,
         schemaMap: schemaMap
       )
     case .enum, .scalar:
-      return emptyDeclaration(field: field)
+      return try emptyDeclaration(operation: operation, field: field)
     case .interface:
       return try interfaceDeclaration(
+        operation: operation,
         field: field,
         schemaMap: schemaMap
       )
     case .union:
       return try unionDeclaration(
+        operation: operation,
         field: field,
         schemaMap: schemaMap
       )
@@ -73,6 +89,7 @@ struct RequestParameterSelectionsGenerator {
 
 extension RequestParameterSelectionsGenerator {
   func objectDeclaration(
+    operation: GraphQLAST.Operation,
     field: Field,
     schemaMap: SchemaMap
   ) throws -> String {
@@ -88,6 +105,7 @@ extension RequestParameterSelectionsGenerator {
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
 
     return try structureDeclaration(
+      operation: operation,
       field: field,
       fieldMaps: sortedFieldMap,
       schemaMap: schemaMap
@@ -95,6 +113,7 @@ extension RequestParameterSelectionsGenerator {
   }
 
   func interfaceDeclaration(
+    operation: GraphQLAST.Operation,
     field: Field,
     schemaMap: SchemaMap
   ) throws -> String {
@@ -135,6 +154,7 @@ extension RequestParameterSelectionsGenerator {
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
 
     return try structureDeclaration(
+      operation: operation,
       field: field,
       fieldMaps: sortedFieldMap,
       schemaMap: schemaMap
@@ -142,6 +162,7 @@ extension RequestParameterSelectionsGenerator {
   }
 
   func unionDeclaration(
+    operation: GraphQLAST.Operation,
     field: Field,
     schemaMap: SchemaMap
   ) throws -> String {
@@ -182,19 +203,27 @@ extension RequestParameterSelectionsGenerator {
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
 
     return try structureDeclaration(
+      operation: operation,
       field: field,
       fieldMaps: sortedFieldMap,
       schemaMap: schemaMap
     )
   }
 
-  func emptyDeclaration(field: Field) -> String {
-    """
+  func emptyDeclaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
+    let operationDefinition = try self.operationDefinitionGenerator.declaration(
+      operation: operation,
+      field: field
+    )
+
+    return """
     // MARK: - Selections
 
     let selections: Selections
 
     struct Selections: \(entityNameMap.selections) {
+      \(operationDefinition)
+
       func declaration() -> String {
         \"\"
       }
@@ -203,12 +232,17 @@ extension RequestParameterSelectionsGenerator {
   }
 
   func structureDeclaration(
+    operation: GraphQLAST.Operation,
     field: Field,
     fieldMaps: [FieldMap.Element],
     schemaMap: SchemaMap
   ) throws -> String {
     let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
+    let operationDefinition = try self.operationDefinitionGenerator.declaration(
+      operation: operation,
+      field: field
+    )
     let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionDeclarationMap = self.selectionDeclarationMap(fieldMaps: fieldMaps)
@@ -223,6 +257,8 @@ extension RequestParameterSelectionsGenerator {
     let selections: Selections
 
     struct Selections: \(entityNameMap.selections) {
+      \(operationDefinition)
+
       \(selectionDeclarations)
 
       \(memberwiseInitializerDeclaration)
@@ -294,19 +330,11 @@ extension RequestParameterSelectionsGenerator {
       return ""
     }
 
-    let fieldsEnum = try fields.map {
-      try enumCaseDeclaration(name: $0.name, outputRef: $0.type, scalarMap: scalarMap)
-    }.lines
-
     let selectionVariableName = "\(returnName.camelCase)Selections"
     let selectionEnumName = "\(returnName.pascalCase)Selection"
 
     let result = """
     let \(selectionVariableName): Set<\(selectionEnumName)>
-
-    enum \(selectionEnumName): String, \(entityNameMap.selection) {
-      \(fieldsEnum)
-    }
     """
 
     return result

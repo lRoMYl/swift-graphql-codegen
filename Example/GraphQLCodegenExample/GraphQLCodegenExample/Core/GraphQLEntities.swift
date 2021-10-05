@@ -17,6 +17,7 @@ protocol GraphQLRequesting: Encodable {
 protocol GraphQLSelection: RawRepresentable, Hashable, CaseIterable where RawValue == String {}
 protocol GraphQLSelections {
   func declaration() -> String
+  var operationDefinition: String { get }
 }
 
 // MARK: - Enum
