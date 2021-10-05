@@ -9,7 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct RequestParameterOperationDefinitionGenerator {
+struct SelectionsOperationDefinitionGenerator {
   private let scalarMap: ScalarMap
   private let variablesGenerator: RequestParameterVariablesGenerator
 

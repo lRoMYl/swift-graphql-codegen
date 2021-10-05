@@ -27,7 +27,6 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
-  private let selectionsGenerator: RequestParameterSelectionsGenerator
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestParameterVariablesGenerator
   private let initializerGenerator: RequestParameterInitializerGenerator
@@ -43,12 +42,6 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
 
-    self.selectionsGenerator = RequestParameterSelectionsGenerator(
-      scalarMap: scalarMap,
-      selectionMap: selectionMap,
-      entityNameMap: entityNameMap,
-      entityNameProvider: entityNameProvider
-    )
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
     self.variablesGenerator = RequestParameterVariablesGenerator(
       scalarMap: scalarMap,
@@ -117,12 +110,6 @@ private extension RequestParameterGenerator {
       field: field
     )
 
-    let selections = try selectionsGenerator.code(
-      operation: operation,
-      field: field,
-      schema: schema
-    )
-
     let codingKeys = try codingKeysGenerator.declaration(field: field)
 
     let initializer = try initializerGenerator.declaration(field: field)
@@ -135,13 +122,7 @@ private extension RequestParameterGenerator {
 
         let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
 
-        var operationDefinition: String {
-          selections.operationDefinition
-        }
-
         \(argumentVariables)
-
-        \(selections)
 
         \(codingKeys)
 

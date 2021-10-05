@@ -65,36 +65,6 @@ extension SelectionGenerator {
     """
   }
 
-  func selectionDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
-    let returnName = try field.type.namedType.scalarType(scalarMap: scalarMap)
-
-    let fields = try field.returnTypeSelectableFields(
-      schemaMap: schemaMap,
-      selectionMap: selectionMap
-    )
-
-    guard !fields.isEmpty else {
-      return ""
-    }
-
-    let fieldsEnum = try fields.map {
-      try enumCaseDeclaration(name: $0.name, outputRef: $0.type, scalarMap: scalarMap)
-    }.lines
-
-    let selectionVariableName = "\(returnName.camelCase)Selections"
-    let selectionEnumName = "\(returnName.pascalCase)Selection"
-
-    let result = """
-    let \(selectionVariableName): Set<\(selectionEnumName)>
-
-    enum \(selectionEnumName): String, \(entityNameMap.selection) {
-      \(fieldsEnum)
-    }
-    """
-
-    return result
-  }
-
   func enumCaseDeclaration(name: String, outputRef: OutputTypeRef, scalarMap: ScalarMap) throws -> String {
     switch outputRef {
     case let .list(outputRef), let .nonNull(outputRef):

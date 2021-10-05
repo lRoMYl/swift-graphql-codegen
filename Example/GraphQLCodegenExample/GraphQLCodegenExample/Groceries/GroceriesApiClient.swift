@@ -8,7 +8,8 @@ import RxSwift
 
 protocol GroceriesApiClientProtocol {
   func campaigns(
-    with parameters: CampaignsQueryRequest
+    with parameters: CampaignsQueryRequest,
+    selections: CampaignsQueryRequestGraphQLSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
@@ -30,11 +31,12 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   }
 
   func campaigns(
-    with parameters: CampaignsQueryRequest
+    with parameters: CampaignsQueryRequest,
+    selections: CampaignsQueryRequestGraphQLSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>> {
     let resource = GroceriesResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryCampaigns(parameters: parameters)
+      resourceBodyParameters: .queryCampaigns(parameters: parameters, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -74,18 +76,18 @@ protocol GroceriesResourceParametersProviding {
 
 struct GroceriesResourceParameters: ResourceParameters {
   enum BodyParameters {
-    case queryCampaigns(parameters: CampaignsQueryRequest)
+    case queryCampaigns(parameters: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
 
     func bodyParameters() -> Any? {
       switch self {
-      case let .queryCampaigns(parameters):
-        return bodyParameters(parameters: parameters)
+      case let .queryCampaigns(parameters, selections):
+        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
       }
     }
 
-    private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
+    private func bodyParameters<T>(parameters: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
       guard
-        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters))
+        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters, selections: selections))
       else { return [:] }
 
       return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

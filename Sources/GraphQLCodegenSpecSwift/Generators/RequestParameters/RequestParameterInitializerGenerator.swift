@@ -21,23 +21,15 @@ struct RequestParameterInitializerGenerator {
   }
 
   func declaration(field: Field) throws -> String {
-    var arguments = try field.args.map {
+    let arguments = try field.args.map {
       "\($0.name.camelCase): \(try entityNameProvider.name(for: $0.type))"
     }
     .joined(separator: ",\n")
 
-    // If there are prior argument, a comma needs to be added manually before the default Selections
-    if arguments.count > 0 {
-      arguments.append(",\n")
-    }
-
-    arguments.append("selections: Selections = .init()")
-
-    var assignments = field.args.map {
+    let assignments = field.args.map {
       let argumentName = $0.name.camelCase
       return "self.\(argumentName) = \(argumentName)"
     }.lines
-    assignments.append("\nself.selections = selections")
 
     return """
     init(

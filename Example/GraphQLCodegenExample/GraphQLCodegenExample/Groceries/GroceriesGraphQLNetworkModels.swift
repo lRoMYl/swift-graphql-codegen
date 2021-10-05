@@ -233,10 +233,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   let requestType: GraphQLRequestType = .query
 
-  var operationDefinition: String {
-    selections.operationDefinition
-  }
-
   // MARK: - Arguments
 
   let vendorId: String
@@ -252,115 +248,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   let apiKey: String
 
   let discoClientId: String
-
-  // MARK: - Selections
-
-  let selections: Selections
-
-  struct Selections: GraphQLSelections {
-    // MARK: - Operation Definition
-
-    private let operationDefinitionFormat: String = """
-    query(
-      $VendorID: String!
-      $GlobalEntityID: String!
-      $Locale: String!
-      $LanguageID: String!
-      $LanguageCode: String!
-      $APIKey: String!
-      $DiscoClientID: String!
-    ) {
-      campaigns(
-        VendorID: $VendorID
-        GlobalEntityID: $GlobalEntityID
-        Locale: $Locale
-        LanguageID: $LanguageID
-        LanguageCode: $LanguageCode
-        APIKey: $APIKey
-        DiscoClientID: $DiscoClientID
-    	) {
-    		...CampaignsFragment
-    	}
-    }
-
-    %1$@
-    """
-
-    var operationDefinition: String {
-      String(
-        format: operationDefinitionFormat,
-        declaration()
-      )
-    }
-
-    let campaignAttributeSelections: Set<CampaignAttributeSelection>
-    let campaignsSelections: Set<CampaignsSelection>
-
-    let productDealSelections: Set<ProductDealSelection>
-
-    init(
-      campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
-      campaignsSelections: Set<CampaignsSelection> = [],
-      productDealSelections: Set<ProductDealSelection> = []
-    ) {
-      self.campaignAttributeSelections = campaignAttributeSelections
-      self.campaignsSelections = campaignsSelections
-      self.productDealSelections = productDealSelections
-    }
-
-    func declaration() -> String {
-      let benefitSelectionsDeclaration = """
-      fragment BenefitFragment on Benefit {
-      	productID
-      	quantity
-      }
-      """
-
-      let campaignAttributeSelectionsDeclaration = """
-      fragment CampaignAttributeFragment on CampaignAttribute {
-      	autoApplied
-      	campaignType
-      	description
-      	id
-      	name
-      	redemptionLimit
-      	source
-      	\(campaignAttributeSelections.declaration)
-      }
-      """
-
-      let campaignsSelectionsDeclaration = """
-      fragment CampaignsFragment on Campaigns {
-      	\(campaignsSelections.declaration)
-      }
-      """
-
-      let dealSelectionsDeclaration = """
-      fragment DealFragment on Deal {
-      	campaignID
-      	discountTag
-      	triggerQuantity
-      }
-      """
-
-      let productDealSelectionsDeclaration = """
-      fragment ProductDealFragment on ProductDeal {
-      	productID
-      	\(productDealSelections.declaration)
-      }
-      """
-
-      let selectionDeclarationMap = [
-        "BenefitFragment": benefitSelectionsDeclaration,
-        "CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
-        "CampaignsFragment": campaignsSelectionsDeclaration,
-        "DealFragment": dealSelectionsDeclaration,
-        "ProductDealFragment": productDealSelectionsDeclaration
-      ]
-
-      return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
-    }
-  }
 
   private enum CodingKeys: String, CodingKey {
     case vendorId = "VendorID"
@@ -385,8 +272,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     languageId: String,
     languageCode: String,
     apiKey: String,
-    discoClientId: String,
-    selections: Selections = .init()
+    discoClientId: String
   ) {
     self.vendorId = vendorId
     self.globalEntityId = globalEntityId
@@ -395,7 +281,6 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     self.languageCode = languageCode
     self.apiKey = apiKey
     self.discoClientId = discoClientId
-    self.selections = selections
   }
 }
 
@@ -432,4 +317,111 @@ enum ProductDealSelection: String, GraphQLSelection {
     ...DealFragment
   }
   """
+}
+
+// MARK: - Selections
+
+struct CampaignsQueryRequestGraphQLSelections: GraphQLSelections {
+  // MARK: - Operation Definition
+
+  private let operationDefinitionFormat: String = """
+  query(
+    $VendorID: String!
+    $GlobalEntityID: String!
+    $Locale: String!
+    $LanguageID: String!
+    $LanguageCode: String!
+    $APIKey: String!
+    $DiscoClientID: String!
+  ) {
+    campaigns(
+      VendorID: $VendorID
+      GlobalEntityID: $GlobalEntityID
+      Locale: $Locale
+      LanguageID: $LanguageID
+      LanguageCode: $LanguageCode
+      APIKey: $APIKey
+      DiscoClientID: $DiscoClientID
+  	) {
+  		...CampaignsFragment
+  	}
+  }
+
+  %1$@
+  """
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  let campaignAttributeSelections: Set<CampaignAttributeSelection>
+  let campaignsSelections: Set<CampaignsSelection>
+
+  let productDealSelections: Set<ProductDealSelection>
+
+  init(
+    campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
+    campaignsSelections: Set<CampaignsSelection> = [],
+    productDealSelections: Set<ProductDealSelection> = []
+  ) {
+    self.campaignAttributeSelections = campaignAttributeSelections
+    self.campaignsSelections = campaignsSelections
+    self.productDealSelections = productDealSelections
+  }
+
+  func declaration() -> String {
+    let benefitSelectionsDeclaration = """
+    fragment BenefitFragment on Benefit {
+    	productID
+    	quantity
+    }
+    """
+
+    let campaignAttributeSelectionsDeclaration = """
+    fragment CampaignAttributeFragment on CampaignAttribute {
+    	autoApplied
+    	campaignType
+    	description
+    	id
+    	name
+    	redemptionLimit
+    	source
+    	\(campaignAttributeSelections.declaration)
+    }
+    """
+
+    let campaignsSelectionsDeclaration = """
+    fragment CampaignsFragment on Campaigns {
+    	\(campaignsSelections.declaration)
+    }
+    """
+
+    let dealSelectionsDeclaration = """
+    fragment DealFragment on Deal {
+    	campaignID
+    	discountTag
+    	triggerQuantity
+    }
+    """
+
+    let productDealSelectionsDeclaration = """
+    fragment ProductDealFragment on ProductDeal {
+    	productID
+    	\(productDealSelections.declaration)
+    }
+    """
+
+    let selectionDeclarationMap = [
+      "BenefitFragment": benefitSelectionsDeclaration,
+      "CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
+      "CampaignsFragment": campaignsSelectionsDeclaration,
+      "DealFragment": dealSelectionsDeclaration,
+      "ProductDealFragment": productDealSelectionsDeclaration
+    ]
+
+    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
+  }
 }

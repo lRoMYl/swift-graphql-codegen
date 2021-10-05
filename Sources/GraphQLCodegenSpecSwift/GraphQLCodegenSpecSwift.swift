@@ -85,6 +85,12 @@ public struct GraphQLCodegenSpecSwift {
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,
         entityNameProvider: self.entityNameProvider
+      ),
+      SelectionsGenerator(
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap,
+        entityNameMap: self.entityNameMap,
+        entityNameProvider: self.entityNameProvider
       )
     ]
   }

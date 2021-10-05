@@ -40,11 +40,7 @@ public struct GraphQLCodegenEntitySwift {
     // MARK: - Interfaces
 
     protocol \(entityNameMap.requestParameter): Encodable {
-      associatedtype Selections: \(entityNameMap.selections)
-
       var requestType: \(entityNameMap.requestType) { get }
-      var selections: Selections { get }
-      var operationDefinition: String { get }
     }
 
     protocol \(entityNameMap.selection): RawRepresentable, Hashable, CaseIterable where RawValue == String {}
@@ -65,6 +61,7 @@ public struct GraphQLCodegenEntitySwift {
 
     struct \(entityNameMap.request)<RequestParameters: \(entityNameMap.requestParameter)>: Encodable {
       let parameters: RequestParameters
+      let selections: \(entityNameMap.selections)
 
       enum CodingKeys: String, CodingKey {
         case parameters = "variables"
@@ -73,8 +70,9 @@ public struct GraphQLCodegenEntitySwift {
         case subscription
       }
 
-      init(parameters: RequestParameters) {
+      init(parameters: RequestParameters, selections: \(entityNameMap.selections)) {
         self.parameters = parameters
+        self.selections = selections
       }
 
       func encode(to encoder: Encoder) throws {
@@ -82,7 +80,7 @@ public struct GraphQLCodegenEntitySwift {
 
         try container.encode(parameters, forKey: .parameters)
 
-        let operationDefinition = parameters.operationDefinition
+        let operationDefinition = selections.operationDefinition
 
         switch parameters.requestType {
         case .query:

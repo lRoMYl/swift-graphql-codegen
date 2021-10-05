@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 
-enum RequestParameterSelectionsError: Error, LocalizedError {
+enum SelectionsGeneratorError: Error, LocalizedError {
   case missingReturnType(context: String)
   case notImplemented(context: String)
   case formatError(context: String)
@@ -25,13 +25,13 @@ enum RequestParameterSelectionsError: Error, LocalizedError {
   }
 }
 
-struct RequestParameterSelectionsGenerator {
+struct SelectionsGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
-  private let operationDefinitionGenerator: RequestParameterOperationDefinitionGenerator
+  private let operationDefinitionGenerator: SelectionsOperationDefinitionGenerator
 
   init(
     scalarMap: ScalarMap,
@@ -50,10 +50,18 @@ struct RequestParameterSelectionsGenerator {
       entityNameProvider: entityNameProvider
     )
 
-    self.operationDefinitionGenerator = RequestParameterOperationDefinitionGenerator(
+    self.operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
       scalarMap: scalarMap,
       variablesGenerator: requestParameterVariablesGenerator
     )
+  }
+
+  func code(schema: Schema) throws -> String {
+    try schema.operations.map { operation in
+      try operation.type.fields.map { field in
+        try code(operation: operation, field: field, schema: schema)
+      }.lines
+    }.lines
   }
 
   func code(operation: GraphQLAST.Operation, field: Field, schema: Schema) throws -> String {
@@ -87,14 +95,14 @@ struct RequestParameterSelectionsGenerator {
 
 // MARK: - RequestParameterSelectionsGenerator
 
-extension RequestParameterSelectionsGenerator {
+extension SelectionsGenerator {
   func objectDeclaration(
     operation: GraphQLAST.Operation,
     field: Field,
     schemaMap: SchemaMap
   ) throws -> String {
     guard let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) else {
-      throw RequestParameterSelectionsError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
+      throw SelectionsGeneratorError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
     }
 
     let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
@@ -123,7 +131,7 @@ extension RequestParameterSelectionsGenerator {
         schemaMap: schemaMap
 			)
     else {
-      throw RequestParameterSelectionsError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
+      throw SelectionsGeneratorError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
     }
 
 		var fieldMap = FieldMap()
@@ -172,7 +180,7 @@ extension RequestParameterSelectionsGenerator {
         schemaMap: schemaMap
       )
     else {
-      throw RequestParameterSelectionsError.missingReturnType(context: "No UnionType type found for field \(field.name)")
+      throw SelectionsGeneratorError.missingReturnType(context: "No UnionType type found for field \(field.name)")
     }
 
     var fieldMap = FieldMap()
@@ -215,13 +223,12 @@ extension RequestParameterSelectionsGenerator {
       operation: operation,
       field: field
     )
+    let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
 
     return """
     // MARK: - Selections
 
-    let selections: Selections
-
-    struct Selections: \(entityNameMap.selections) {
+    struct \(selectionsName): \(entityNameMap.selections) {
       \(operationDefinition)
 
       func declaration() -> String {
@@ -243,6 +250,7 @@ extension RequestParameterSelectionsGenerator {
       operation: operation,
       field: field
     )
+    let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
     let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionDeclarationMap = self.selectionDeclarationMap(fieldMaps: fieldMaps)
@@ -254,9 +262,7 @@ extension RequestParameterSelectionsGenerator {
     let code = """
     // MARK: - Selections
 
-    let selections: Selections
-
-    struct Selections: \(entityNameMap.selections) {
+    struct \(selectionsName): \(entityNameMap.selections) {
       \(operationDefinition)
 
       \(selectionDeclarations)
@@ -277,7 +283,7 @@ extension RequestParameterSelectionsGenerator {
     do {
       formattedCode = try code.format()
     } catch {
-      throw RequestParameterSelectionsError
+      throw SelectionsGeneratorError
         .formatError(
           context: """
             \(error)
@@ -303,21 +309,9 @@ private extension ObjectType {
   }
 }
 
-// MARK: - InterfaceType
-
-private extension InterfaceType {
-  func allNestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
-    let fieldMap = try self.fields.flatMap {
-      try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
-    }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
-
-    return fieldMap
-  }
-}
-
 // MARK: - Fields
 
-extension RequestParameterSelectionsGenerator {
+extension SelectionsGenerator {
   func selectionDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
     let returnName = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
@@ -339,34 +333,11 @@ extension RequestParameterSelectionsGenerator {
 
     return result
   }
-
-  func enumCaseDeclaration(name: String, outputRef: OutputTypeRef, scalarMap: ScalarMap) throws -> String {
-    switch outputRef {
-    case let .list(outputRef), let .nonNull(outputRef):
-      return try enumCaseDeclaration(name: name, outputRef: outputRef, scalarMap: scalarMap)
-    case let .named(objectRef):
-      switch objectRef {
-      case .scalar, .enum:
-        return "case \(name) = \"\(name)\""
-      case .object, .interface:
-        return """
-        case \(name) = \"\"\"
-        \(name) {
-          ...\(try objectRef.scalarType(scalarMap: scalarMap))Fragment
-        }
-        \"\"\"
-        """
-      case .union:
-        // TODO
-        return ""
-      }
-    }
-  }
 }
 
 // MARK: - [FieldMap.Element]
 
-extension RequestParameterSelectionsGenerator {
+extension SelectionsGenerator {
   func selectionDeclarations(
     fieldMaps: [FieldMap.Element],
     schemaMap: SchemaMap

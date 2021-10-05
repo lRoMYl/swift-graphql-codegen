@@ -7,11 +7,7 @@ import Foundation
 // MARK: - Interfaces
 
 protocol GraphQLRequesting: Encodable {
-  associatedtype Selections: GraphQLSelections
-
   var requestType: GraphQLRequestType { get }
-  var selections: Selections { get }
-  var operationDefinition: String { get }
 }
 
 protocol GraphQLSelection: RawRepresentable, Hashable, CaseIterable where RawValue == String {}
@@ -32,6 +28,7 @@ enum GraphQLRequestType {
 
 struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
   let parameters: RequestParameters
+  let selections: GraphQLSelections
 
   enum CodingKeys: String, CodingKey {
     case parameters = "variables"
@@ -40,8 +37,9 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
     case subscription
   }
 
-  init(parameters: RequestParameters) {
+  init(parameters: RequestParameters, selections: GraphQLSelections) {
     self.parameters = parameters
+    self.selections = selections
   }
 
   func encode(to encoder: Encoder) throws {
@@ -49,7 +47,7 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
 
     try container.encode(parameters, forKey: .parameters)
 
-    let operationDefinition = parameters.operationDefinition
+    let operationDefinition = selections.operationDefinition
 
     switch parameters.requestType {
     case .query:

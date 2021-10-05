@@ -38,6 +38,8 @@ struct ResourceParametersGenerator: Generating {
     let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: nil)
     let resourceBodyParametersNameWithPrefix = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
     let resourceParameterProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
+    let selectionsName = entityNameMap.selections
+    let requestParameterName = entityNameMap.requestParameter
 
     return """
 
@@ -61,10 +63,10 @@ struct ResourceParametersGenerator: Generating {
           }
         }
 
-        private func bodyParameters<T>(parameters: T) -> [String: Any] where T: \(entityNameMap.requestParameter) {
+        private func bodyParameters<T>(parameters: T, selections: \(selectionsName)) -> [String: Any] where T: \(requestParameterName) {
           guard
-            let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters))
-          else { return [:]  }
+            let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters, selections: selections))
+          else { return [:] }
 
           return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
             .flatMap {
@@ -125,9 +127,10 @@ extension ResourceParametersGenerator {
     let enumCases = try operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
+      let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
 
       return """
-      case \(enumName)(parameters: \(requestParameterName))
+      case \(enumName)(parameters: \(requestParameterName), selections: \(selectionsName))
       """
     }
 
@@ -137,10 +140,11 @@ extension ResourceParametersGenerator {
   func bodyParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
     let enumCases = operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
+      let selectionsName = entityNameMap.selections
 
       return """
-      case let .\(enumName)(parameters):
-        return bodyParameters(parameters: parameters)
+      case let .\(enumName)(parameters, selections):
+        return bodyParameters(parameters: parameters, selections: selections as \(selectionsName))
       """
     }
 

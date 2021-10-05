@@ -19,8 +19,8 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       entityNameMap: .default
     )
   }()
-  private lazy var generator: RequestParameterSelectionsGenerator = {
-    RequestParameterSelectionsGenerator(
+  private lazy var generator: SelectionsGenerator = {
+    SelectionsGenerator(
       scalarMap: ScalarMap.default,
       selectionMap: nil,
       entityNameMap: EntityNameMapResponse.default,

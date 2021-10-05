@@ -22,7 +22,7 @@ final class StarWarsRepository {
   func characters(
     with parameters: CharactersStarWarsQuery
   ) -> Single<[CharacterStarWarsInterfaceModel]> {
-    apiClient.characters(with: parameters)
+    apiClient.characters(with: parameters, selections: .init())
       .map {
         guard let data = $0.data?.characters else {
           throw StarWarsRepositoryError.missingData
@@ -35,7 +35,7 @@ final class StarWarsRepository {
   func character(
     with parameters: CharacterStarWarsQuery
   ) -> Single<CharacterUnionStarWarsUnionModel?> {
-    apiClient.character(with: parameters)
+    apiClient.character(with: parameters, selections: .init())
       .map {
         guard let data = $0.data?.character else {
           throw StarWarsRepositoryError.missingData
@@ -48,7 +48,7 @@ final class StarWarsRepository {
   func time(
     with parameters: TimeStarWarsQuery
   ) -> Single<DateTimeInterval> {
-    apiClient.time(with: parameters)
+    apiClient.time(with: parameters, selections: .init())
       .map {
         guard let data = $0.data?.time else {
           throw StarWarsRepositoryError.missingData
