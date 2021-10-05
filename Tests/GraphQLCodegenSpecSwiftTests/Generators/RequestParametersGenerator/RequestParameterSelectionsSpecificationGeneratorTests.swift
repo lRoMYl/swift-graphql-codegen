@@ -23,7 +23,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     RequestParameterSelectionsGenerator(
       scalarMap: ScalarMap.default,
       selectionMap: nil,
-      entityNameMap: EntityNameMap.default,
+      entityNameMap: EntityNameMapResponse.default,
       entityNameProvider: entityNameStrategy
     )
   }()
@@ -38,7 +38,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
+    let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let declaration = try generator.code(
       field: campaignRequestField,
@@ -165,7 +165,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let schema = try SchemaHelper.schema(with: "CampaignSelectionsTestSchema")
+    let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let declaration = try generator.objectDeclaration(
       field: campaignRequestField,
@@ -230,7 +230,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
   }
 
   func testStarWarCharactersSelection() throws {
-    let schema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+    let schema = try Schema.schema(from: "StarWarsTestSchema")
 
     let queryOperation = schema.operations.first(where: { $0.type.name == "Query" })!
     let charactersField = queryOperation.type.fields.first(where: { $0.name == "characters" })!

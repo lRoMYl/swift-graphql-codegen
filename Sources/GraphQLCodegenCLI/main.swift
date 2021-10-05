@@ -264,28 +264,65 @@ private extension GraphQLCodegenCLI {
   }
 
   func fetchConfig() throws -> Config? {
-    guard let configPath = configPath else { return nil }
+    // Default config response from the package
+    let defaultConfigResponse: ConfigResponse?
 
-    guard let jsonData = try String(contentsOfFile: configPath).data(using: .utf8) else {
-      throw GraphQLCodegenCLIError.invalidConfigPath
-    }
+    if let defaultConfigPath = GraphQLCodegenSpecSwift.defaultConfigPath {
+      do {
+        guard let defaultJsonData = try String(contentsOfFile: defaultConfigPath).data(using: .utf8) else {
+          throw GraphQLCodegenCLIError.invalidConfigPath
+        }
 
-    var config: Config?
+        let config = try JSONDecoder().decode(ConfigResponse.self, from: defaultJsonData)
+        defaultConfigResponse = config
+      } catch {
+        if verbose {
+          print("[Warning] Discarding package config, package defaultConfigPath was given but serialization failed: \(error)")
+        } else {
+          print("[Warning] Discarding package config, package defaultConfigPath was given but serialization failed")
+        }
 
-    do {
-      config = try JSONDecoder().decode(Config.self, from: jsonData)
-    } catch {
-      if verbose {
-        print("[Warning] Discarding config, --config-path was given but serialization failed: \(error)")
-      } else {
-        print("[Warning] Discarding config, --config-path was given but serialization failed")
+        defaultConfigResponse = nil
       }
+    } else {
+      defaultConfigResponse = nil
     }
 
-    return config
+    // Config response from parameter
+    let configResponse: ConfigResponse?
+
+    if let configPath = configPath {
+      do {
+        guard let jsonData = try String(contentsOfFile: configPath).data(using: .utf8) else {
+          throw GraphQLCodegenCLIError.invalidConfigPath
+        }
+
+        configResponse = try JSONDecoder().decode(ConfigResponse.self, from: jsonData)
+      } catch {
+        if verbose {
+          print("[Warning] Discarding config, --config-path was given but serialization failed: \(error)")
+        } else {
+          print("[Warning] Discarding config, --config-path was given but serialization failed")
+        }
+
+        configResponse = nil
+      }
+    } else {
+      configResponse = nil
+    }
+
+    switch (defaultConfigResponse, configResponse) {
+    case let (.some(defaultConfigResponse), .some(configResponse)):
+      let combinedConfigResponse = defaultConfigResponse.merging(configResponse: configResponse)
+      return Config(response: combinedConfigResponse)
+    case let (.none, .some(configResponse)):
+      return Config(response: configResponse)
+    case let (.some(defaultConfigResponse), .none):
+      return Config(response: defaultConfigResponse)
+    case (.none, .none):
+      return nil
+    }
   }
-
-
 }
 
 // MARK: - Generators
@@ -348,7 +385,7 @@ private extension GraphQLCodegenCLI {
   }
 
   func graphQLEntitySwiftCode(schema: Schema, config: Config?) throws -> String {
-    let generator = GraphQLCodegenEntitySwift(entityNameMap: config?.entityNameMap)
+    let generator = GraphQLCodegenEntitySwift(entityNameMap: entityNameMap(config: config))
 
     let generatoedCode = try generator.code(schema: schema)
 

@@ -18,6 +18,14 @@ import Foundation
  */
 public typealias SelectionMap = [String: SelectionItemMap]
 
+extension SelectionMap {
+  init(response: SelectionMapResponse) {
+    self = response.mapValues {
+      SelectionItemMap(required: $0.required, selectable: $0.selectable)
+    }
+  }
+}
+
 public enum SelectionMapError: Error, LocalizedError {
   case duplicateKey(context: String)
 

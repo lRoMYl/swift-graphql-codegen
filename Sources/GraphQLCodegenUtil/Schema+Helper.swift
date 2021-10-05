@@ -2,28 +2,31 @@
 //  File.swift
 //  
 //
-//  Created by Romy Cheah on 23/9/21.
+//  Created by Romy Cheah on 5/10/21.
 //
 
 import Foundation
 import GraphQLAST
 import GraphQLDownloader
-import XCTest
 
-enum SchemaHelperError: Error {
+enum SchemaError: Error, LocalizedError {
   case serializationError
-  case notFound(context: String)
+  case notFound(context: String?)
+
+  var errorDescription: String? {
+    switch self {
+    case let .notFound(context):
+      return "\(Self.self): \(String(describing: context))"
+    case .serializationError:
+      return "\(Self.self)"
+    }
+  }
 }
 
-final class SchemaHelper {
-  static func schema(with name: String) throws -> Schema {
-    let path = Bundle.module.path(
-      forResource: name,
-      ofType: "json"
-    )
-
+public extension Schema {
+  static func schema(from path: String?) throws -> Schema {
     guard let schemaPath = path else {
-      throw SchemaHelperError.notFound(context: name)
+      throw SchemaError.notFound(context: path)
     }
 
     let url = NSURL.fileURL(withPath: schemaPath)
@@ -34,7 +37,7 @@ final class SchemaHelper {
     } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: data)  {
       return response.schema
     } else {
-      throw SchemaHelperError.serializationError
+      throw SchemaError.serializationError
     }
   }
 }

@@ -74,7 +74,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
   }
 
   func testDroidStarWarsObject() throws {
-    let starWarsSchema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+    let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
 
     let whitelist = ["Droid"]
     let characterInterfaceObjects = starWarsSchema.types.filter {
@@ -118,7 +118,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
   }
 
   func testHumanStarWarsObject() throws {
-    let starWarsSchema = try SchemaHelper.schema(with: "StarWarsTestSchema")
+    let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
 
     let whitelist = ["Human"]
     let characterInterfaceObjects = starWarsSchema.types.filter {

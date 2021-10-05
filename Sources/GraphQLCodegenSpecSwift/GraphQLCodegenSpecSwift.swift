@@ -101,4 +101,8 @@ public struct GraphQLCodegenSpecSwift {
     }
     return formattedCode
   }
+
+  public static var defaultConfigPath: String? {
+    return Bundle.module.path(forResource: "default-config", ofType: "json")
+  }
 }

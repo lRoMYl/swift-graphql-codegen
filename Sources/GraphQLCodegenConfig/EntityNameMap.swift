@@ -21,7 +21,7 @@ public enum EntityNameMapError: Error, LocalizedError {
 }
 
 /// Shared antity name mapping convention across generators
-public struct EntityNameMap: Decodable {
+public struct EntityNameMap {
   // MARK: - Custom GraphQL Entities
 
   public let request: String
@@ -78,7 +78,6 @@ public struct EntityNameMap: Decodable {
     requestType: String,
     requestParameter: String,
     response: String,
-//    responseData: String,
     selection: String,
     selections: String,
     query: String,
@@ -108,30 +107,26 @@ public struct EntityNameMap: Decodable {
     self.apiClientPrefix = apiClientPrefix
   }
 
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
+  public init(response: EntityNameMapResponse) {
     let defaultValue = Self.default
 
-    request = try container.decodeIfPresent(String.self, forKey: .request) ?? defaultValue.request
-    requestType = try container.decodeIfPresent(String.self, forKey: .requestType) ?? defaultValue.requestType
-    requestParameter = try container.decodeIfPresent(String.self, forKey: .requestParameter) ?? defaultValue.requestParameter
-
-    response = try container.decodeIfPresent(String.self, forKey: .response) ?? defaultValue.response
-
-    selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? defaultValue.selection
-    selections = try container.decodeIfPresent(String.self, forKey: .selections) ?? defaultValue.selections
-
-    query = try container.decodeIfPresent(String.self, forKey: .query) ?? defaultValue.query
-    mutation = try container.decodeIfPresent(String.self, forKey: .mutation) ?? defaultValue.mutation
-    subscription = try container.decodeIfPresent(String.self, forKey: .subscription) ?? defaultValue.subscription
-
-    object = try container.decodeIfPresent(String.self, forKey: .object) ?? defaultValue.object
-    inputObject = try container.decodeIfPresent(String.self, forKey: .inputObject) ?? defaultValue.inputObject
-    interface = try container.decodeIfPresent(String.self, forKey: .interface) ?? defaultValue.interface
-    union = try container.decodeIfPresent(String.self, forKey: .union) ?? defaultValue.union
-    `enum` = try container.decodeIfPresent(String.self, forKey: .`enum`) ?? defaultValue.`enum`
-
-    apiClientPrefix = try container.decodeIfPresent(String.self, forKey: .apiClientPrefix) ?? defaultValue.apiClientPrefix
+    self.init(
+      request: response.request ?? defaultValue.request,
+      requestType: response.requestType ?? defaultValue.requestType,
+      requestParameter: response.requestParameter ?? defaultValue.requestParameter,
+      response: response.response ?? defaultValue.response,
+      selection: response.selection ?? defaultValue.selection,
+      selections: response.selections ?? defaultValue.selections,
+      query: response.query ?? defaultValue.query,
+      mutation: response.mutation ?? defaultValue.mutation,
+      subscription: response.subscription ?? defaultValue.subscription,
+      object: response.object ?? defaultValue.object,
+      inputObject: response.inputObject ?? defaultValue.inputObject,
+      interface: response.interface ?? defaultValue.interface,
+      union: response.union ?? defaultValue.union,
+      enum: response.enum ?? defaultValue.enum,
+      apiClientPrefix: response.apiClientPrefix ?? defaultValue.apiClientPrefix
+    )
   }
 }
 

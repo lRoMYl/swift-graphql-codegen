@@ -25,8 +25,8 @@ public enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
 public struct GraphQLCodegenEntitySwift {
   private let entityNameMap: EntityNameMap
 
-  public init(entityNameMap: EntityNameMap?) {
-    self.entityNameMap = entityNameMap ?? EntityNameMap.default
+  public init(entityNameMap: EntityNameMap) {
+    self.entityNameMap = entityNameMap
   }
 
   public func code(schema: Schema) throws -> String {
