@@ -1,15 +1,15 @@
 {
   "entityNameMap": {
-    "request":          "GraphQLRequestCodableWrapper",
+    "request":          "GraphQLRequest",
     "requestParameter": "GraphQLRequesting",
     "query":            "QueryRequest",
     "mutation":         "MutationRequest",
     "subscription":     "SubscriptionRequest",
     "object":           "ResponseModel",
     "inputObject":      "RequestModel",
-    "interface":        "Interface",
-    "union":            "Union",
-    "enum":             "Enum",
+    "interface":        "InterfaceResponseModel",
+    "union":            "UnionResponseModel",
+    "enum":             "EnumResponseModel",
     "apiClientPrefix":  "Groceries"
   }
 }

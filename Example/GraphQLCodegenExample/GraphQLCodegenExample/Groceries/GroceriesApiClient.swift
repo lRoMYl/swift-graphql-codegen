@@ -85,7 +85,7 @@ struct GroceriesResourceParameters: ResourceParameters {
 
     private func bodyParameters<T>(parameters: T) -> [String: Any] where T: GraphQLRequesting {
       guard
-        let data = try? JSONEncoder().encode(GraphQLRequestCodableWrapper(parameters: parameters))
+        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters))
       else { return [:] }
 
       return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

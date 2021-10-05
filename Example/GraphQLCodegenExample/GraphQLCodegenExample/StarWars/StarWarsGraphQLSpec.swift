@@ -4,10 +4,10 @@
 
 import Foundation
 
-// MARK: - StarWarsEnums
+// MARK: - StarWarsEnumModel
 
 /// One of the films in the Star Wars Trilogy
-enum EpisodeStarWarsEnums: RawRepresentable, Codable {
+enum EpisodeStarWarsEnumModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   /// Released in 1977.
@@ -40,7 +40,7 @@ enum EpisodeStarWarsEnums: RawRepresentable, Codable {
     }
   }
 
-  static func == (lhs: EpisodeStarWarsEnums, rhs: EpisodeStarWarsEnums) -> Bool {
+  static func == (lhs: EpisodeStarWarsEnumModel, rhs: EpisodeStarWarsEnumModel) -> Bool {
     switch (lhs, rhs) {
     case (.newhope, .newhope): return true
     case (.empire, .empire): return true
@@ -52,7 +52,7 @@ enum EpisodeStarWarsEnums: RawRepresentable, Codable {
 }
 
 /// Language
-enum LanguageStarWarsEnums: RawRepresentable, Codable {
+enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case en
@@ -78,7 +78,7 @@ enum LanguageStarWarsEnums: RawRepresentable, Codable {
     }
   }
 
-  static func == (lhs: LanguageStarWarsEnums, rhs: LanguageStarWarsEnums) -> Bool {
+  static func == (lhs: LanguageStarWarsEnumModel, rhs: LanguageStarWarsEnumModel) -> Bool {
     switch (lhs, rhs) {
     case (.en, .en): return true
     case (.sl, .sl): return true
@@ -88,9 +88,9 @@ enum LanguageStarWarsEnums: RawRepresentable, Codable {
   }
 }
 
-// MARK: - StarWarsObject
+// MARK: - StarWarsModel
 
-struct MutationStarWarsObject: Codable {
+struct MutationStarWarsModel: Codable {
   let mutate: Bool
 
   // MARK: - CodingKeys
@@ -100,8 +100,8 @@ struct MutationStarWarsObject: Codable {
   }
 }
 
-struct DroidStarWarsObject: Codable {
-  let appearsIn: [EpisodeStarWarsEnums]
+struct DroidStarWarsModel: Codable {
+  let appearsIn: [EpisodeStarWarsEnumModel]
 
   let id: String
 
@@ -119,45 +119,39 @@ struct DroidStarWarsObject: Codable {
   }
 }
 
-struct HumanStarWarsObject: Codable {
-  let appearsIn: [EpisodeStarWarsEnums]
-
+struct HumanStarWarsModel: Codable {
   /// The home planet of the human, or null if unknown.
   let homePlanet: String?
 
   let id: String
 
-  let infoUrl: String?
-
-  let name: String
+  let name: String?
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case appearsIn
     case homePlanet
     case id
-    case infoUrl = "infoURL"
     case name
   }
 }
 
-struct QueryStarWarsObject: Codable {
-  let character: CharacterUnionStarWarsUnions?
+struct QueryStarWarsModel: Codable {
+  let character: CharacterUnionStarWarsUnionModel?
 
-  let characters: [CharacterStarWarsInterface]
+  let characters: [CharacterStarWarsInterfaceModel]
 
-  let droid: DroidStarWarsObject?
+  let droid: DroidStarWarsModel?
 
-  let droids: [DroidStarWarsObject]
+  let droids: [DroidStarWarsModel]
 
   let greeting: String
 
-  let human: HumanStarWarsObject?
+  let human: HumanStarWarsModel?
 
-  let humans: [HumanStarWarsObject]
+  let humans: [HumanStarWarsModel]
 
-  let luke: HumanStarWarsObject?
+  let luke: HumanStarWarsModel?
 
   let time: DateTimeInterval
 
@@ -179,7 +173,7 @@ struct QueryStarWarsObject: Codable {
   }
 }
 
-struct SubscriptionStarWarsObject: Codable {
+struct SubscriptionStarWarsModel: Codable {
   /// Returns a random number every second. You should see it changing if your subscriptions work right.
   let number: Int
 
@@ -192,8 +186,8 @@ struct SubscriptionStarWarsObject: Codable {
 
 // MARK: - Input Objects
 
-struct GreetingStarWarsInputObject: Codable {
-  let language: LanguageStarWarsEnums?
+struct GreetingStarWarsInputModel: Codable {
+  let language: LanguageStarWarsEnumModel?
 
   let name: String
 
@@ -205,7 +199,7 @@ struct GreetingStarWarsInputObject: Codable {
   }
 }
 
-struct GreetingOptionsStarWarsInputObject: Codable {
+struct GreetingOptionsStarWarsInputModel: Codable {
   let prefix: String?
 
   // MARK: - CodingKeys
@@ -215,51 +209,48 @@ struct GreetingOptionsStarWarsInputObject: Codable {
   }
 }
 
-// MARK: - StarWarsInterface
+// MARK: - StarWarsInterfaceModel
 
-struct CharacterStarWarsInterface: Codable {
-  enum Object {
-    case droid(DroidStarWarsObject)
-    case human(HumanStarWarsObject)
-  }
+enum CharacterStarWarsInterfaceModel: Codable {
+  case droid(DroidStarWarsModel)
+  case human(HumanStarWarsModel)
 
-  enum ObjectType: String, Decodable {
+  enum Typename: String, Decodable {
     case droid = "Droid"
     case human = "Human"
   }
 
-  let __typename: ObjectType
-  let data: Object
-
-  enum CodingKeys: String, CodingKey {
+  private enum CodingKeys: String, CodingKey {
     case __typename
-    case data
+    case id
+    case name
   }
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let singleContainer = try decoder.singleValueContainer()
+    let singleValueContainer = try decoder.singleValueContainer()
+    let type = try container.decode(Typename.self, forKey: .__typename)
 
-    __typename = try container.decode(ObjectType.self, forKey: .__typename)
-
-    switch __typename {
+    switch type {
     case .droid:
-      data = .droid(try singleContainer.decode(DroidStarWarsObject.self))
+      let value = try singleValueContainer.decode(DroidStarWarsModel.self)
+      self = .droid(value)
     case .human:
-      data = .human(try singleContainer.decode(HumanStarWarsObject.self))
+      let value = try singleValueContainer.decode(HumanStarWarsModel.self)
+      self = .human(value)
     }
   }
 
   func encode(to _: Encoder) throws {
-    fatalError("Not implemented")
+    assertionFailure("Not implemented yet")
   }
 }
 
-// MARK: - StarWarsUnions
+// MARK: - StarWarsUnionModel
 
-enum CharacterUnionStarWarsUnions: Codable {
-  case human(HumanStarWarsObject)
-  case droid(DroidStarWarsObject)
+enum CharacterUnionStarWarsUnionModel: Codable {
+  case human(HumanStarWarsModel)
+  case droid(DroidStarWarsModel)
 
   enum Typename: String, Decodable {
     case human = "Human"
@@ -269,7 +260,7 @@ enum CharacterUnionStarWarsUnions: Codable {
   private enum CodingKeys: String, CodingKey {
     case __typename
     case homePlanet
-    case infoUrl
+    case name
   }
 
   init(from decoder: Decoder) throws {
@@ -279,10 +270,10 @@ enum CharacterUnionStarWarsUnions: Codable {
 
     switch type {
     case .human:
-      let value = try singleValueContainer.decode(HumanStarWarsObject.self)
+      let value = try singleValueContainer.decode(HumanStarWarsModel.self)
       self = .human(value)
     case .droid:
-      let value = try singleValueContainer.decode(DroidStarWarsObject.self)
+      let value = try singleValueContainer.decode(DroidStarWarsModel.self)
       self = .droid(value)
     }
   }
@@ -338,7 +329,7 @@ struct HumanStarWarsQuery: GraphQLRequesting {
 
     enum HumanSelection: String, GraphQLSelection {
       case homePlanet
-      case infoURL
+      case name
     }
 
     init(
@@ -350,9 +341,7 @@ struct HumanStarWarsQuery: GraphQLRequesting {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {
-      	appearsIn
       	id
-      	name
       	\(humanSelections.declaration)
       }
       """
@@ -497,7 +486,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
 
     enum HumanSelection: String, GraphQLSelection {
       case homePlanet
-      case infoURL
+      case name
     }
 
     init(
@@ -526,9 +515,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
 
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {
-      	appearsIn
       	id
-      	name
       	\(humanSelections.declaration)
       }
       """
@@ -592,7 +579,7 @@ struct LukeStarWarsQuery: GraphQLRequesting {
 
     enum HumanSelection: String, GraphQLSelection {
       case homePlanet
-      case infoURL
+      case name
     }
 
     init(
@@ -604,9 +591,7 @@ struct LukeStarWarsQuery: GraphQLRequesting {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {
-      	appearsIn
       	id
-      	name
       	\(humanSelections.declaration)
       }
       """
@@ -663,7 +648,7 @@ struct HumansStarWarsQuery: GraphQLRequesting {
 
     enum HumanSelection: String, GraphQLSelection {
       case homePlanet
-      case infoURL
+      case name
     }
 
     init(
@@ -675,9 +660,7 @@ struct HumansStarWarsQuery: GraphQLRequesting {
     func declaration() -> String {
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {
-      	appearsIn
       	id
-      	name
       	\(humanSelections.declaration)
       }
       """
@@ -794,7 +777,7 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
 
     enum HumanSelection: String, GraphQLSelection {
       case homePlanet
-      case infoURL
+      case name
     }
 
     init(
@@ -825,9 +808,7 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
 
       let humanSelectionsDeclaration = """
       fragment HumanFragment on Human {
-      	appearsIn
       	id
-      	name
       	\(humanSelections.declaration)
       }
       """
@@ -881,7 +862,7 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Arguments
 
-  let input: GreetingStarWarsInputObject?
+  let input: GreetingStarWarsInputModel?
 
   // MARK: - Selections
 
@@ -898,7 +879,7 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
   }
 
   init(
-    input: GreetingStarWarsInputObject?,
+    input: GreetingStarWarsInputModel?,
     selections: Selections = .init()
   ) {
     self.input = input
@@ -1079,31 +1060,31 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 }
 
 struct HumanQueryResponse: Codable {
-  let human: HumanStarWarsObject?
+  let human: HumanStarWarsModel?
 }
 
 struct DroidQueryResponse: Codable {
-  let droid: DroidStarWarsObject?
+  let droid: DroidStarWarsModel?
 }
 
 struct CharacterQueryResponse: Codable {
-  let character: CharacterUnionStarWarsUnions?
+  let character: CharacterUnionStarWarsUnionModel?
 }
 
 struct LukeQueryResponse: Codable {
-  let luke: HumanStarWarsObject?
+  let luke: HumanStarWarsModel?
 }
 
 struct HumansQueryResponse: Codable {
-  let humans: [HumanStarWarsObject]
+  let humans: [HumanStarWarsModel]
 }
 
 struct DroidsQueryResponse: Codable {
-  let droids: [DroidStarWarsObject]
+  let droids: [DroidStarWarsModel]
 }
 
 struct CharactersQueryResponse: Codable {
-  let characters: [CharacterStarWarsInterface]
+  let characters: [CharacterStarWarsInterfaceModel]
 }
 
 struct GreetingQueryResponse: Codable {

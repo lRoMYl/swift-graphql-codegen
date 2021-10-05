@@ -21,7 +21,7 @@ final class StarWarsRepository {
 
   func characters(
     with parameters: CharactersStarWarsQuery
-  ) -> Single<[CharacterStarWarsInterface]> {
+  ) -> Single<[CharacterStarWarsInterfaceModel]> {
     apiClient.characters(with: parameters)
       .map {
         guard let data = $0.data?.characters else {
@@ -34,7 +34,7 @@ final class StarWarsRepository {
 
   func character(
     with parameters: CharacterStarWarsQuery
-  ) -> Single<CharacterUnionStarWarsUnions?> {
+  ) -> Single<CharacterUnionStarWarsUnionModel?> {
     apiClient.character(with: parameters)
       .map {
         guard let data = $0.data?.character else {

@@ -4,9 +4,9 @@
 
 import Foundation
 
-// MARK: - Enum
+// MARK: - EnumResponseModel
 
-enum CampaignSourceEnum: RawRepresentable, Codable {
+enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case djini
@@ -28,7 +28,7 @@ enum CampaignSourceEnum: RawRepresentable, Codable {
     }
   }
 
-  static func == (lhs: CampaignSourceEnum, rhs: CampaignSourceEnum) -> Bool {
+  static func == (lhs: CampaignSourceEnumResponseModel, rhs: CampaignSourceEnumResponseModel) -> Bool {
     switch (lhs, rhs) {
     case (.djini, .djini): return true
     case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
@@ -37,7 +37,7 @@ enum CampaignSourceEnum: RawRepresentable, Codable {
   }
 }
 
-enum CampaignTypeEnum: RawRepresentable, Codable {
+enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case strikeThrough
@@ -71,7 +71,7 @@ enum CampaignTypeEnum: RawRepresentable, Codable {
     }
   }
 
-  static func == (lhs: CampaignTypeEnum, rhs: CampaignTypeEnum) -> Bool {
+  static func == (lhs: CampaignTypeEnumResponseModel, rhs: CampaignTypeEnumResponseModel) -> Bool {
     switch (lhs, rhs) {
     case (.strikeThrough, .strikeThrough): return true
     case (.sameItemBundle, .sameItemBundle): return true
@@ -83,7 +83,7 @@ enum CampaignTypeEnum: RawRepresentable, Codable {
   }
 }
 
-enum DiscountTypeEnum: RawRepresentable, Codable {
+enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case free
@@ -113,7 +113,7 @@ enum DiscountTypeEnum: RawRepresentable, Codable {
     }
   }
 
-  static func == (lhs: DiscountTypeEnum, rhs: DiscountTypeEnum) -> Bool {
+  static func == (lhs: DiscountTypeEnumResponseModel, rhs: DiscountTypeEnumResponseModel) -> Bool {
     switch (lhs, rhs) {
     case (.free, .free): return true
     case (.absolute, .absolute): return true
@@ -144,7 +144,7 @@ struct CampaignAttributeResponseModel: Codable {
 
   let benefits: [BenefitResponseModel]?
 
-  let campaignType: CampaignTypeEnum
+  let campaignType: CampaignTypeEnumResponseModel
 
   let description: String
 
@@ -154,7 +154,7 @@ struct CampaignAttributeResponseModel: Codable {
 
   let redemptionLimit: Double
 
-  let source: CampaignSourceEnum
+  let source: CampaignSourceEnumResponseModel
 
   // MARK: - CodingKeys
 

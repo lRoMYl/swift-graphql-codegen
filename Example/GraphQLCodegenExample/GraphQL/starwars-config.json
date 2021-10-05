@@ -9,11 +9,17 @@
         "query":            "StarWarsQuery",
         "mutation":         "StarWarsMutation",
         "subscription":     "StarWarsSubscription",
-        "object":           "StarWarsObject",
-        "inputObject":      "StarWarsInputObject",
-        "interface":        "StarWarsInterface",
-        "union":            "StarWarsUnions",
-        "enum":             "StarWarsEnums",
+        "object":           "StarWarsModel",
+        "inputObject":      "StarWarsInputModel",
+        "interface":        "StarWarsInterfaceModel",
+        "union":            "StarWarsUnionModel",
+        "enum":             "StarWarsEnumModel",
         "apiClientPrefix":  "StarWars"
+    },
+    "selectionMap": {
+        "Human": {
+            "required": ["id"],
+            "selectable": ["name", "homePlanet"]
+        }
     }
 }

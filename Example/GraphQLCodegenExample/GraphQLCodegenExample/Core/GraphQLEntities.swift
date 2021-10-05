@@ -27,9 +27,9 @@ enum GraphQLRequestType {
   case subscription
 }
 
-// MARK: GraphQLRequestCodableWrapper
+// MARK: GraphQLRequest
 
-struct GraphQLRequestCodableWrapper<RequestParameters: GraphQLRequesting>: Encodable {
+struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
   let parameters: RequestParameters
 
   enum CodingKeys: String, CodingKey {

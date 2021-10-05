@@ -151,9 +151,9 @@ public extension EntityNameMap {
       subscription: "GraphQLSubscription",
       object: "GraphQLObject",
       inputObject: "GraphQLInputObject",
-      interface: "Interface",
-      union: "Union",
-      enum: "Enum",
+      interface: "GraphQLInterfaceObject",
+      union: "GraphQLUnionObject",
+      enum: "GraphQLEnumObject",
       apiClientPrefix: "GraphQL"
     )
   }()

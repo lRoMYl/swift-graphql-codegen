@@ -83,15 +83,13 @@ extension GraphQLCodegenExampleApp {
 
   func testStarWarsInterfaceGraphQL() {
     let parameters = CharactersStarWarsQuery(
-      selections: .init(
-        humanSelections: [.homePlanet]
-      )
+      selections: .init()
     )
 
     let expected = Array(
       [
-        Array(repeating: String(describing: HumanStarWarsObject.self), count: 5),
-        Array(repeating: String(describing: DroidStarWarsObject.self), count: 2)
+        Array(repeating: String(describing: HumanStarWarsModel.self), count: 5),
+        Array(repeating: String(describing: DroidStarWarsModel.self), count: 2)
       ]
       .joined()
     )
@@ -111,11 +109,11 @@ extension GraphQLCodegenExampleApp {
             let modelType: String
             let expectedType = enumeration.element.1
 
-            switch enumeration.element.0.data {
+            switch enumeration.element.0 {
             case .human:
-              modelType = String(describing: HumanStarWarsObject.self)
+              modelType = String(describing: HumanStarWarsModel.self)
             case .droid:
-              modelType = String(describing: DroidStarWarsObject.self)
+              modelType = String(describing: DroidStarWarsModel.self)
             }
 
             if modelType != expectedType {
@@ -134,7 +132,6 @@ extension GraphQLCodegenExampleApp {
     let parameters = CharacterStarWarsQuery(
       id: "1000",
       selections: .init(
-        humanSelections: [.infoURL]
       )
     )
 
@@ -161,9 +158,7 @@ extension GraphQLCodegenExampleApp {
   func testStarWarsUnionDroidGraphQL() {
     let parameters = CharacterStarWarsQuery(
       id: "2000",
-      selections: .init(
-        humanSelections: []
-      )
+      selections: .init(humanSelections: [.homePlanet])
     )
 
     starWarsRepository

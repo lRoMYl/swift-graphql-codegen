@@ -19,7 +19,7 @@ codegen-groceries:
 
 	# Generate common entity class for all GraphQL microservices. 
 	# If you have multiple endpoint for GraphQL, do not regenerate this.
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "entity" --output "GraphQLCodegenExample/core/GraphQLEntities.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "entity" --output "GraphQLCodegenExample/Core/GraphQLEntities.swift" --config-path $(GROCERIES_CONFIG)
 
 	# Generate groceries GraphQL specification file from local schema
 	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --action "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLNetworkModels.swift" --config-path $(GROCERIES_CONFIG)

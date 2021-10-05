@@ -36,7 +36,7 @@ GraphQLCodegenCLI.main(
   [
     groceriesSchema,
     "--action", "entity",
-    "--output", "\(examplePath)/GraphQLCodegenExample/GraphQLEntities.swift",
+    "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
     "--config-path", groceriesConfig
   ]
 )
@@ -192,7 +192,11 @@ struct GraphQLCodegenCLI: ParsableCommand {
       generatedCodeData = generatedCode.data(using: .utf8)
     }
 
-    FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
+    let success = FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
+
+    if !success {
+      print("Failed to create file at \(output)")
+    }
   }
 }
 

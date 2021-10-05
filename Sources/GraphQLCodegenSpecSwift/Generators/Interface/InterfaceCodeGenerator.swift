@@ -58,51 +58,38 @@ extension InterfaceCodeGenerator {
     )
 
     return """
-      struct \(try entityNameProvider.name(for: interface)): Codable {
-        enum Object {
-          \(
-            try possibleObjectTypes.map {
-              "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))"
-            }.lines
-          )
+      enum \(try entityNameProvider.name(for: interface)): Codable {
+        \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
+
+        enum Typename: String, Decodable {
+          \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
         }
 
-        enum ObjectType: String, Decodable {
-          \(
-            possibleObjectTypes.map {
-              "case \($0.name.camelCase) = \"\($0.name)\""
-            }.lines
-          )
-        }
-
-        let __typename: ObjectType
-        let data: Object
-
-        enum CodingKeys: String, CodingKey {
+        private enum CodingKeys: String, CodingKey {
           case __typename
-          case data
+          \(interface.fields.map { "case \($0.name.camelCase)" }.lines)
         }
 
         init(from decoder: Decoder) throws {
           let container = try decoder.container(keyedBy: CodingKeys.self)
-          let singleContainer = try decoder.singleValueContainer()
+          let singleValueContainer = try decoder.singleValueContainer()
+          let type = try container.decode(Typename.self, forKey: .__typename)
 
-          __typename = try container.decode(ObjectType.self, forKey: .__typename)
-
-          switch __typename {
+          switch type {
           \(
             try possibleObjectTypes.map {
-              """
-              case .\($0.name.camelCase):
-                data = .\($0.name.camelCase)(try singleContainer.decode(\(try entityNameProvider.name(for: $0)).self))
+              return """
+                case .\($0.name.camelCase):
+                let value = try singleValueContainer.decode(\(try entityNameProvider.name(for: $0)).self)
+                self = .\($0.name.camelCase)(value)
               """
             }.lines
           )
           }
         }
 
-        func encode(to _: Encoder) throws {
-          fatalError("Not implemented")
+        func encode(to encoder: Encoder) throws {
+          assertionFailure("Not implemented yet")
         }
       }
       """
