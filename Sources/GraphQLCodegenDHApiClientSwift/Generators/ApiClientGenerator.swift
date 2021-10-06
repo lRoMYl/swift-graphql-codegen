@@ -54,7 +54,7 @@ struct ApiClientGenerator: Generating {
       init(
         restClient: RestClient,
         scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-        resourceParametersProvider: \(resourceParametersProviding)?
+        resourceParametersProvider: \(resourceParametersProviding)? = nil
       ) {
         self.restClient = restClient
         self.scheduler = scheduler
@@ -104,7 +104,7 @@ extension ApiClientGenerator {
       \(funcSignature) {
         let resource = \(resourceParameterName)(
           provider: resourceParametersProvider,
-          resourceBodyParameters: .\(enumName)(parameters: parameters, selections: selections)
+          resourceBodyParameters: .\(enumName)(request: request, selections: selections)
         )
 
         return executeGraphQL\(operationName)(
@@ -125,7 +125,7 @@ extension ApiClientGenerator {
 
     return """
     func \(field.funcName(with: operation))(
-      with parameters: \(parametersName),
+      with request: \(parametersName),
       selections: \(selectionsName)
     ) -> \(responseGenericCode(text: responseDataText))
     """

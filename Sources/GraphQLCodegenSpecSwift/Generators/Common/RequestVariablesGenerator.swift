@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 
-struct RequestParameterVariablesGenerator {
+struct RequestVariablesGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding

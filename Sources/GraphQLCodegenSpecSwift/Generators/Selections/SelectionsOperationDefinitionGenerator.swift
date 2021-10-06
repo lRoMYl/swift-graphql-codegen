@@ -11,9 +11,9 @@ import GraphQLCodegenConfig
 
 struct SelectionsOperationDefinitionGenerator {
   private let scalarMap: ScalarMap
-  private let variablesGenerator: RequestParameterVariablesGenerator
+  private let variablesGenerator: RequestVariablesGenerator
 
-  init(scalarMap: ScalarMap, variablesGenerator: RequestParameterVariablesGenerator) {
+  init(scalarMap: ScalarMap, variablesGenerator: RequestVariablesGenerator) {
     self.scalarMap = scalarMap
     self.variablesGenerator = variablesGenerator
   }

@@ -46,11 +46,11 @@ struct ResourceParametersGenerator: Generating {
     // MARK: - \(resourceParametersName)
 
     protocol \(resourceParameterProviding) {
-      func servicePath(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> String
-      func headers(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> [String: String]?
-      func timeoutInterval(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> TimeInterval?
-      func preventRetry(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
-      func preventAddingLanguageParameters(with resourceParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
+      func servicePath(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> String
+      func headers(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> [String: String]?
+      func timeoutInterval(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> TimeInterval?
+      func preventRetry(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
+      func preventAddingLanguageParameters(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> Bool
     }
 
     struct \(resourceParametersName): ResourceParameters {
@@ -63,9 +63,9 @@ struct ResourceParametersGenerator: Generating {
           }
         }
 
-        private func bodyParameters<T>(parameters: T, selections: \(selectionsName)) -> [String: Any] where T: \(requestParameterName) {
+        private func bodyParameters<T>(request: T, selections: \(selectionsName)) -> [String: Any] where T: \(requestParameterName) {
           guard
-            let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: parameters, selections: selections))
+            let data = try? JSONEncoder().encode(\(entityNameMap.request)(parameters: request, selections: selections))
           else { return [:] }
 
           return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
@@ -130,7 +130,7 @@ extension ResourceParametersGenerator {
       let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
 
       return """
-      case \(enumName)(parameters: \(requestParameterName), selections: \(selectionsName))
+      case \(enumName)(request: \(requestParameterName), selections: \(selectionsName))
       """
     }
 
@@ -143,8 +143,8 @@ extension ResourceParametersGenerator {
       let selectionsName = entityNameMap.selections
 
       return """
-      case let .\(enumName)(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as \(selectionsName))
+      case let .\(enumName)(request, selections):
+        return bodyParameters(request: request, selections: selections as \(selectionsName))
       """
     }
 

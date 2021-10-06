@@ -8,7 +8,7 @@ import RxSwift
 
 protocol GroceriesApiClientProtocol {
   func campaigns(
-    with parameters: CampaignsQueryRequest,
+    with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestGraphQLSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
@@ -23,7 +23,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   init(
     restClient: RestClient,
     scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-    resourceParametersProvider: GroceriesResourceParametersProviding?
+    resourceParametersProvider: GroceriesResourceParametersProviding? = nil
   ) {
     self.restClient = restClient
     self.scheduler = scheduler
@@ -31,12 +31,12 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   }
 
   func campaigns(
-    with parameters: CampaignsQueryRequest,
+    with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestGraphQLSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>> {
     let resource = GroceriesResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryCampaigns(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryCampaigns(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -67,27 +67,27 @@ private extension GroceriesApiClient {
 // MARK: - GroceriesResourceParameters
 
 protocol GroceriesResourceParametersProviding {
-  func servicePath(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> String
-  func headers(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: GroceriesResourceParameters.BodyParameters) -> Bool
+  func servicePath(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> String
+  func headers(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]?
+  func timeoutInterval(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval?
+  func preventRetry(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
 }
 
 struct GroceriesResourceParameters: ResourceParameters {
   enum BodyParameters {
-    case queryCampaigns(parameters: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
+    case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
 
     func bodyParameters() -> Any? {
       switch self {
-      case let .queryCampaigns(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
+      case let .queryCampaigns(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
       }
     }
 
-    private func bodyParameters<T>(parameters: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
+    private func bodyParameters<T>(request: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
       guard
-        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters, selections: selections))
+        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: request, selections: selections))
       else { return [:] }
 
       return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

@@ -8,51 +8,51 @@ import RxSwift
 
 protocol StarWarsApiClientProtocol {
   func human(
-    with parameters: HumanStarWarsQuery,
+    with request: HumanStarWarsQuery,
     selections: HumanStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<HumanQueryResponse>>
   func droid(
-    with parameters: DroidStarWarsQuery,
+    with request: DroidStarWarsQuery,
     selections: DroidStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<DroidQueryResponse>>
   func character(
-    with parameters: CharacterStarWarsQuery,
+    with request: CharacterStarWarsQuery,
     selections: CharacterStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<CharacterQueryResponse>>
   func luke(
-    with parameters: LukeStarWarsQuery,
+    with request: LukeStarWarsQuery,
     selections: LukeStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<LukeQueryResponse>>
   func humans(
-    with parameters: HumansStarWarsQuery,
+    with request: HumansStarWarsQuery,
     selections: HumansStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<HumansQueryResponse>>
   func droids(
-    with parameters: DroidsStarWarsQuery,
+    with request: DroidsStarWarsQuery,
     selections: DroidsStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<DroidsQueryResponse>>
   func characters(
-    with parameters: CharactersStarWarsQuery,
+    with request: CharactersStarWarsQuery,
     selections: CharactersStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<CharactersQueryResponse>>
   func greeting(
-    with parameters: GreetingStarWarsQuery,
+    with request: GreetingStarWarsQuery,
     selections: GreetingStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<GreetingQueryResponse>>
   func whoami(
-    with parameters: WhoamiStarWarsQuery,
+    with request: WhoamiStarWarsQuery,
     selections: WhoamiStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<WhoamiQueryResponse>>
   func time(
-    with parameters: TimeStarWarsQuery,
+    with request: TimeStarWarsQuery,
     selections: TimeStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<TimeQueryResponse>>
   func mutate(
-    with parameters: MutateStarWarsMutation,
+    with request: MutateStarWarsMutation,
     selections: MutateStarWarsMutationGraphQLSelections
   ) -> Single<ApiResponse<MutateMutationResponse>>
   func number(
-    with parameters: NumberStarWarsSubscription,
+    with request: NumberStarWarsSubscription,
     selections: NumberStarWarsSubscriptionGraphQLSelections
   ) -> Single<ApiResponse<NumberSubscriptionResponse>>
 }
@@ -67,7 +67,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   init(
     restClient: RestClient,
     scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-    resourceParametersProvider: StarWarsResourceParametersProviding?
+    resourceParametersProvider: StarWarsResourceParametersProviding? = nil
   ) {
     self.restClient = restClient
     self.scheduler = scheduler
@@ -75,12 +75,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func human(
-    with parameters: HumanStarWarsQuery,
+    with request: HumanStarWarsQuery,
     selections: HumanStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<HumanQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryHuman(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryHuman(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -89,12 +89,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func droid(
-    with parameters: DroidStarWarsQuery,
+    with request: DroidStarWarsQuery,
     selections: DroidStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<DroidQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryDroid(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryDroid(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -103,12 +103,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func character(
-    with parameters: CharacterStarWarsQuery,
+    with request: CharacterStarWarsQuery,
     selections: CharacterStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<CharacterQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryCharacter(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryCharacter(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -117,12 +117,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func luke(
-    with parameters: LukeStarWarsQuery,
+    with request: LukeStarWarsQuery,
     selections: LukeStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<LukeQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryLuke(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryLuke(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -131,12 +131,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func humans(
-    with parameters: HumansStarWarsQuery,
+    with request: HumansStarWarsQuery,
     selections: HumansStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<HumansQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryHumans(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryHumans(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -145,12 +145,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func droids(
-    with parameters: DroidsStarWarsQuery,
+    with request: DroidsStarWarsQuery,
     selections: DroidsStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<DroidsQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryDroids(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryDroids(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -159,12 +159,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func characters(
-    with parameters: CharactersStarWarsQuery,
+    with request: CharactersStarWarsQuery,
     selections: CharactersStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<CharactersQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryCharacters(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryCharacters(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -173,12 +173,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func greeting(
-    with parameters: GreetingStarWarsQuery,
+    with request: GreetingStarWarsQuery,
     selections: GreetingStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<GreetingQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryGreeting(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryGreeting(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -187,12 +187,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func whoami(
-    with parameters: WhoamiStarWarsQuery,
+    with request: WhoamiStarWarsQuery,
     selections: WhoamiStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<WhoamiQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryWhoami(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryWhoami(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -201,12 +201,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func time(
-    with parameters: TimeStarWarsQuery,
+    with request: TimeStarWarsQuery,
     selections: TimeStarWarsQueryGraphQLSelections
   ) -> Single<ApiResponse<TimeQueryResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .queryTime(parameters: parameters, selections: selections)
+      resourceBodyParameters: .queryTime(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -215,12 +215,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func mutate(
-    with parameters: MutateStarWarsMutation,
+    with request: MutateStarWarsMutation,
     selections: MutateStarWarsMutationGraphQLSelections
   ) -> Single<ApiResponse<MutateMutationResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .updateMutate(parameters: parameters, selections: selections)
+      resourceBodyParameters: .updateMutate(request: request, selections: selections)
     )
 
     return executeGraphQLMutation(
@@ -229,12 +229,12 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func number(
-    with parameters: NumberStarWarsSubscription,
+    with request: NumberStarWarsSubscription,
     selections: NumberStarWarsSubscriptionGraphQLSelections
   ) -> Single<ApiResponse<NumberSubscriptionResponse>> {
     let resource = StarWarsResourceParameters(
       provider: resourceParametersProvider,
-      resourceBodyParameters: .subscribeNumber(parameters: parameters, selections: selections)
+      resourceBodyParameters: .subscribeNumber(request: request, selections: selections)
     )
 
     return executeGraphQLSubscription(
@@ -299,60 +299,60 @@ private extension StarWarsApiClient {
 // MARK: - StarWarsResourceParameters
 
 protocol StarWarsResourceParametersProviding {
-  func servicePath(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> String
-  func headers(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> [String: String]?
-  func timeoutInterval(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> TimeInterval?
-  func preventRetry(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> Bool
-  func preventAddingLanguageParameters(with resourceParameters: StarWarsResourceParameters.BodyParameters) -> Bool
+  func servicePath(with bodyParameters: StarWarsResourceParameters.BodyParameters) -> String
+  func headers(with bodyParameters: StarWarsResourceParameters.BodyParameters) -> [String: String]?
+  func timeoutInterval(with bodyParameters: StarWarsResourceParameters.BodyParameters) -> TimeInterval?
+  func preventRetry(with bodyParameters: StarWarsResourceParameters.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with bodyParameters: StarWarsResourceParameters.BodyParameters) -> Bool
 }
 
 struct StarWarsResourceParameters: ResourceParameters {
   enum BodyParameters {
-    case queryHuman(parameters: HumanStarWarsQuery, selections: HumanStarWarsQueryGraphQLSelections)
-    case queryDroid(parameters: DroidStarWarsQuery, selections: DroidStarWarsQueryGraphQLSelections)
-    case queryCharacter(parameters: CharacterStarWarsQuery, selections: CharacterStarWarsQueryGraphQLSelections)
-    case queryLuke(parameters: LukeStarWarsQuery, selections: LukeStarWarsQueryGraphQLSelections)
-    case queryHumans(parameters: HumansStarWarsQuery, selections: HumansStarWarsQueryGraphQLSelections)
-    case queryDroids(parameters: DroidsStarWarsQuery, selections: DroidsStarWarsQueryGraphQLSelections)
-    case queryCharacters(parameters: CharactersStarWarsQuery, selections: CharactersStarWarsQueryGraphQLSelections)
-    case queryGreeting(parameters: GreetingStarWarsQuery, selections: GreetingStarWarsQueryGraphQLSelections)
-    case queryWhoami(parameters: WhoamiStarWarsQuery, selections: WhoamiStarWarsQueryGraphQLSelections)
-    case queryTime(parameters: TimeStarWarsQuery, selections: TimeStarWarsQueryGraphQLSelections)
-    case updateMutate(parameters: MutateStarWarsMutation, selections: MutateStarWarsMutationGraphQLSelections)
-    case subscribeNumber(parameters: NumberStarWarsSubscription, selections: NumberStarWarsSubscriptionGraphQLSelections)
+    case queryHuman(request: HumanStarWarsQuery, selections: HumanStarWarsQueryGraphQLSelections)
+    case queryDroid(request: DroidStarWarsQuery, selections: DroidStarWarsQueryGraphQLSelections)
+    case queryCharacter(request: CharacterStarWarsQuery, selections: CharacterStarWarsQueryGraphQLSelections)
+    case queryLuke(request: LukeStarWarsQuery, selections: LukeStarWarsQueryGraphQLSelections)
+    case queryHumans(request: HumansStarWarsQuery, selections: HumansStarWarsQueryGraphQLSelections)
+    case queryDroids(request: DroidsStarWarsQuery, selections: DroidsStarWarsQueryGraphQLSelections)
+    case queryCharacters(request: CharactersStarWarsQuery, selections: CharactersStarWarsQueryGraphQLSelections)
+    case queryGreeting(request: GreetingStarWarsQuery, selections: GreetingStarWarsQueryGraphQLSelections)
+    case queryWhoami(request: WhoamiStarWarsQuery, selections: WhoamiStarWarsQueryGraphQLSelections)
+    case queryTime(request: TimeStarWarsQuery, selections: TimeStarWarsQueryGraphQLSelections)
+    case updateMutate(request: MutateStarWarsMutation, selections: MutateStarWarsMutationGraphQLSelections)
+    case subscribeNumber(request: NumberStarWarsSubscription, selections: NumberStarWarsSubscriptionGraphQLSelections)
 
     func bodyParameters() -> Any? {
       switch self {
-      case let .queryHuman(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryDroid(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryCharacter(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryLuke(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryHumans(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryDroids(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryCharacters(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryGreeting(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryWhoami(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .queryTime(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .updateMutate(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
-      case let .subscribeNumber(parameters, selections):
-        return bodyParameters(parameters: parameters, selections: selections as GraphQLSelections)
+      case let .queryHuman(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryDroid(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryCharacter(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryLuke(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryHumans(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryDroids(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryCharacters(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryGreeting(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryWhoami(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryTime(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .updateMutate(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .subscribeNumber(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
       }
     }
 
-    private func bodyParameters<T>(parameters: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
+    private func bodyParameters<T>(request: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
       guard
-        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: parameters, selections: selections))
+        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: request, selections: selections))
       else { return [:] }
 
       return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))

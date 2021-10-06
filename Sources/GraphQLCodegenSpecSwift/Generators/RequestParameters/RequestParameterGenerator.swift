@@ -28,7 +28,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityNameProvider: EntityNameProviding
 
   private let codingKeysGenerator: RequestParameterEncodableGenerator
-  private let variablesGenerator: RequestParameterVariablesGenerator
+  private let variablesGenerator: RequestVariablesGenerator
   private let initializerGenerator: RequestParameterInitializerGenerator
 
   init(
@@ -43,7 +43,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.entityNameProvider = entityNameProvider
 
     self.codingKeysGenerator = RequestParameterEncodableGenerator()
-    self.variablesGenerator = RequestParameterVariablesGenerator(
+    self.variablesGenerator = RequestVariablesGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
       entityNameProvider: entityNameProvider
