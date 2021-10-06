@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "dh-graphql-codegen-ios",
+  name: "DHGraphQLCodegen",
   platforms: [.macOS(.v10_15)],
   products: [
     .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
@@ -15,7 +15,7 @@ let package = Package(
     .library(name: "GraphQLCodegenSpecSwift", targets: ["GraphQLCodegenSpecSwift"]),
     .library(name: "GraphQLCodegenEntitySwift", targets: ["GraphQLCodegenEntitySwift"]),
     .library(name: "GraphQLCodegenDHApiClientSwift", targets: ["GraphQLCodegenDHApiClientSwift"]),
-    .executable(name: "dh-graphql-codegen-ios", targets: ["GraphQLCodegenCLI"])
+    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),

@@ -24,7 +24,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     SelectionsGenerator(
       scalarMap: ScalarMap.default,
       selectionMap: nil,
-      entityNameMap: EntityNameMapResponse.default,
+      entityNameMap: EntityNameMap.default,
       entityNameProvider: entityNameStrategy
     )
   }()
@@ -39,9 +39,14 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
+    let operation = GraphQLAST.Operation.query(
+      ObjectType(name: "Campaigns", description: nil, fields: [], interfaces: [])
+    )
+
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let declaration = try generator.code(
+      operation: operation,
       field: campaignRequestField,
       schema: schema
     ).format()
@@ -166,9 +171,14 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
+    let operation = GraphQLAST.Operation.query(
+      ObjectType(name: "Campaigns", description: nil, fields: [], interfaces: [])
+    )
+
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let declaration = try generator.objectDeclaration(
+      operation: operation,
       field: campaignRequestField,
       schemaMap: SchemaMap(schema: schema)
     )
@@ -236,7 +246,12 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
     let queryOperation = schema.operations.first(where: { $0.type.name == "Query" })!
     let charactersField = queryOperation.type.fields.first(where: { $0.name == "characters" })!
 
+    let operation = GraphQLAST.Operation.query(
+      ObjectType(name: "Campaigns", description: nil, fields: [], interfaces: [])
+    )
+
     let code = try generator.code(
+      operation: operation,
       field: charactersField,
       schema: schema
     )

@@ -1,0 +1,426 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */; };
+		F8580796270D54AA00947AD3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580795270D54AA00947AD3 /* ContentView.swift */; };
+		F8580798270D54AA00947AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8580797270D54AA00947AD3 /* Assets.xcassets */; };
+		F858079B270D54AA00947AD3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F858079A270D54AA00947AD3 /* Preview Assets.xcassets */; };
+		F85807B6270D669B00947AD3 /* GraphQLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807B3270D669B00947AD3 /* GraphQLEntities.swift */; };
+		F85807BE270D67EF00947AD3 /* GroceriesApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */; };
+		F85807BF270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */; };
+		F85807CB270D690700947AD3 /* ApiClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85807C2270D682400947AD3 /* ApiClient.framework */; };
+		F85807CC270D690700947AD3 /* ApiClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F85807C2270D682400947AD3 /* ApiClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F85807CF270D693400947AD3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85807CE270D693400947AD3 /* Alamofire.framework */; };
+		F85807D0270D693400947AD3 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F85807CE270D693400947AD3 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F85807D2270D6AAD00947AD3 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85807D1270D6AAD00947AD3 /* RxSwift.framework */; };
+		F85807D3270D6AAD00947AD3 /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F85807D1270D6AAD00947AD3 /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F85807D5270D6AE800947AD3 /* GroceriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */; };
+		F85807D7270D6B2200947AD3 /* GroceriesWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F85807CD270D690700947AD3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F85807CC270D690700947AD3 /* ApiClient.framework in Embed Frameworks */,
+				F85807D0270D693400947AD3 /* Alamofire.framework in Embed Frameworks */,
+				F85807D3270D6AAD00947AD3 /* RxSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F8580790270D54AA00947AD3 /* GroceriesExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceriesExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesExampleApp.swift; sourceTree = "<group>"; };
+		F8580795270D54AA00947AD3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F8580797270D54AA00947AD3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F858079A270D54AA00947AD3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F858079C270D54AA00947AD3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F85807B3270D669B00947AD3 /* GraphQLEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntities.swift; sourceTree = "<group>"; };
+		F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.swift; sourceTree = "<group>"; };
+		F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLNetworkModels.swift; sourceTree = "<group>"; };
+		F85807C2270D682400947AD3 /* ApiClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApiClient.framework; path = Carthage/Build/iOS/ApiClient.framework; sourceTree = "<group>"; };
+		F85807CE270D693400947AD3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		F85807D1270D6AAD00947AD3 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesRepository.swift; sourceTree = "<group>"; };
+		F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesWebService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F858078D270D54AA00947AD3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F85807CB270D690700947AD3 /* ApiClient.framework in Frameworks */,
+				F85807CF270D693400947AD3 /* Alamofire.framework in Frameworks */,
+				F85807D2270D6AAD00947AD3 /* RxSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F8580787270D54AA00947AD3 = {
+			isa = PBXGroup;
+			children = (
+				F8580792270D54AA00947AD3 /* GroceriesExample */,
+				F8580791270D54AA00947AD3 /* Products */,
+				F85807C1270D682400947AD3 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F8580791270D54AA00947AD3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8580790270D54AA00947AD3 /* GroceriesExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F8580792270D54AA00947AD3 /* GroceriesExample */ = {
+			isa = PBXGroup;
+			children = (
+				F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */,
+				F85807B0270D669B00947AD3 /* API */,
+				F8580795270D54AA00947AD3 /* ContentView.swift */,
+				F8580797270D54AA00947AD3 /* Assets.xcassets */,
+				F858079C270D54AA00947AD3 /* Info.plist */,
+				F8580799270D54AA00947AD3 /* Preview Content */,
+			);
+			path = GroceriesExample;
+			sourceTree = "<group>";
+		};
+		F8580799270D54AA00947AD3 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F858079A270D54AA00947AD3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F85807B0270D669B00947AD3 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				F85807BB270D66C800947AD3 /* Groceries */,
+				F85807B2270D669B00947AD3 /* Core */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		F85807B2270D669B00947AD3 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				F85807B3270D669B00947AD3 /* GraphQLEntities.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		F85807BB270D66C800947AD3 /* Groceries */ = {
+			isa = PBXGroup;
+			children = (
+				F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */,
+				F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */,
+				F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */,
+				F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */,
+			);
+			path = Groceries;
+			sourceTree = "<group>";
+		};
+		F85807C1270D682400947AD3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F85807D1270D6AAD00947AD3 /* RxSwift.framework */,
+				F85807CE270D693400947AD3 /* Alamofire.framework */,
+				F85807C2270D682400947AD3 /* ApiClient.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F858078F270D54AA00947AD3 /* GroceriesExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F858079F270D54AA00947AD3 /* Build configuration list for PBXNativeTarget "GroceriesExample" */;
+			buildPhases = (
+				F858078C270D54AA00947AD3 /* Sources */,
+				F858078D270D54AA00947AD3 /* Frameworks */,
+				F858078E270D54AA00947AD3 /* Resources */,
+				F85807CD270D690700947AD3 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GroceriesExample;
+			productName = GroceriesExample;
+			productReference = F8580790270D54AA00947AD3 /* GroceriesExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F8580788270D54AA00947AD3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					F858078F270D54AA00947AD3 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = F858078B270D54AA00947AD3 /* Build configuration list for PBXProject "GroceriesExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F8580787270D54AA00947AD3;
+			productRefGroup = F8580791270D54AA00947AD3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F858078F270D54AA00947AD3 /* GroceriesExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F858078E270D54AA00947AD3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F858079B270D54AA00947AD3 /* Preview Assets.xcassets in Resources */,
+				F8580798270D54AA00947AD3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F858078C270D54AA00947AD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F85807B6270D669B00947AD3 /* GraphQLEntities.swift in Sources */,
+				F85807D7270D6B2200947AD3 /* GroceriesWebService.swift in Sources */,
+				F85807D5270D6AE800947AD3 /* GroceriesRepository.swift in Sources */,
+				F8580796270D54AA00947AD3 /* ContentView.swift in Sources */,
+				F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */,
+				F85807BF270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift in Sources */,
+				F85807BE270D67EF00947AD3 /* GroceriesApiClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F858079D270D54AA00947AD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F858079E270D54AA00947AD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F85807A0270D54AA00947AD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"GroceriesExample/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GroceriesExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deliveryhero.GroceriesExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+				VALIDATE_WORKSPACE = NO;
+			};
+			name = Debug;
+		};
+		F85807A1270D54AA00947AD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"GroceriesExample/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GroceriesExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.deliveryhero.GroceriesExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F858078B270D54AA00947AD3 /* Build configuration list for PBXProject "GroceriesExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F858079D270D54AA00947AD3 /* Debug */,
+				F858079E270D54AA00947AD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F858079F270D54AA00947AD3 /* Build configuration list for PBXNativeTarget "GroceriesExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F85807A0270D54AA00947AD3 /* Debug */,
+				F85807A1270D54AA00947AD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F8580788270D54AA00947AD3 /* Project object */;
+}

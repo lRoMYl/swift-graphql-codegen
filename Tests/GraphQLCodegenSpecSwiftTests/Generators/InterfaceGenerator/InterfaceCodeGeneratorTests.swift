@@ -15,7 +15,7 @@ final class InterfaceCodeGeneratorTests: XCTestCase {
   func testGeneratedCode() throws {
     let scalarMap = ScalarMap.default
     let selectionMap: SelectionMap? = nil
-    let entityNameMap = EntityNameMapResponse.default
+    let entityNameMap = EntityNameMap.default
     let entityNameProvider = DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     let interfaceCodeGenerator = InterfaceCodeGenerator(
