@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 3/10/21.
 //
@@ -23,7 +23,7 @@ struct InterfaceTypeMap {
   private let interfaceTypeMap: [String: InterfaceType]
 
   init(schema: Schema) {
-    interfaceTypeMap = Dictionary(
+    self.interfaceTypeMap = Dictionary(
       uniqueKeysWithValues: schema.interfaces.map {
         ($0.name, $0)
       }

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 28/9/21.
 //
@@ -22,7 +22,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
-    
+
     self.fieldSpecificationGenerator = FieldCodeGenerator(
       scalarMap: scalarMap,
       selectionMap: selectionMap,
@@ -64,7 +64,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
           switch type {
           \(
             try possibleObjectTypes.map {
-              return """
+              """
                 case .\($0.name.camelCase):
                 let value = try singleValueContainer.decode(\(try entityNameProvider.name(for: $0)).self)
                 self = .\($0.name.camelCase)(value)

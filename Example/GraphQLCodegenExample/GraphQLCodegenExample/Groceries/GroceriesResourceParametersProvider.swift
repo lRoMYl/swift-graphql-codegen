@@ -8,23 +8,23 @@
 import Foundation
 
 class GroceriesResourceParametersProvider: GroceriesResourceParametersProviding {
-  func servicePath(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> String {
+  func servicePath(with _: GroceriesResourceParameters.BodyParameters) -> String {
     ""
   }
 
-  func headers(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]? {
+  func headers(with _: GroceriesResourceParameters.BodyParameters) -> [String: String]? {
     nil
   }
 
-  func timeoutInterval(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval? {
+  func timeoutInterval(with _: GroceriesResourceParameters.BodyParameters) -> TimeInterval? {
     nil
   }
 
-  func preventRetry(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool {
+  func preventRetry(with _: GroceriesResourceParameters.BodyParameters) -> Bool {
     true
   }
 
-  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool {
+  func preventAddingLanguageParameters(with _: GroceriesResourceParameters.BodyParameters) -> Bool {
     false
   }
 }

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 3/10/21.
 //
@@ -23,7 +23,7 @@ struct UnionTypeMap {
   private let unionTypeMap: [String: UnionType]
 
   init(schema: Schema) {
-    unionTypeMap = Dictionary(
+    self.unionTypeMap = Dictionary(
       uniqueKeysWithValues: schema.unions.map {
         ($0.name, $0)
       }

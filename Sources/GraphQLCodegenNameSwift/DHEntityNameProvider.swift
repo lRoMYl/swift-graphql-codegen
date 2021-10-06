@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 28/9/21.
 //
@@ -44,8 +44,8 @@ public final class DHEntityNameProvider: EntityNameProviding {
       return refType.name + entityNameMap.interface
     case let .union(refType):
       return refType.name + entityNameMap.union
-    case let .`enum`(refType):
-      return refType.name + entityNameMap.`enum`
+    case let .enum(refType):
+      return refType.name + entityNameMap.enum
     case let .inputObject(refType):
       return refType.name + entityNameMap.inputObject
     }
@@ -62,7 +62,7 @@ public final class DHEntityNameProvider: EntityNameProviding {
     case .union:
       return namedTypeProtocol.name + entityNameMap.union
     case .enumeration:
-      return namedTypeProtocol.name + entityNameMap.`enum`
+      return namedTypeProtocol.name + entityNameMap.enum
     case .inputObject:
       return namedTypeProtocol.name + entityNameMap.inputObject
     }

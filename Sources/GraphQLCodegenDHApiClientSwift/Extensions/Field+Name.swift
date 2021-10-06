@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -16,7 +16,7 @@ extension Field {
     return enumPrefix.isEmpty ? name.camelCase : "\(enumPrefix)\(name.pascalCase)"
   }
 
-  func funcName(with operation: GraphQLAST.Operation) -> String {
+  func funcName() -> String {
     return name.camelCase
   }
 }

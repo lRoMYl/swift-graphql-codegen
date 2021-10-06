@@ -5,8 +5,8 @@
 //  Created by Romy Cheah on 9/9/21.
 //
 
-import SwiftFormat
 import Foundation
+import SwiftFormat
 
 public extension String {
   /// Formats the given Swift source code.
@@ -15,7 +15,7 @@ public extension String {
       in: CharacterSet.newlines.union(.whitespaces)
     )
 
-    // Todo: Read configurtion from .swiftformat
+    // TODO: Read configurtion from .swiftformat
     var formatOptions = FormatOptions.default
     formatOptions.indent = "  "
     formatOptions.trailingCommas = false

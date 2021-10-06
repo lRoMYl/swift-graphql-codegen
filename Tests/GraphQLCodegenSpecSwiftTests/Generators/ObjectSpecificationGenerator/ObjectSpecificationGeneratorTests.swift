@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 18/9/21.
 //
@@ -165,4 +165,3 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     XCTAssertEqual(formattedCode, expected)
   }
 }
-

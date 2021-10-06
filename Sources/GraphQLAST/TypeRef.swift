@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - Types
+
 public enum IntrospectionTypeKind: String, Codable, Equatable {
   case scalar = "SCALAR"
   case object = "OBJECT"
@@ -20,6 +21,7 @@ public enum IntrospectionTypeKind: String, Codable, Equatable {
 }
 
 // MARK: - Reference Type
+
 /// Represents a GraphQL type reference.
 public indirect enum TypeRef<Type> {
   case named(Type)
@@ -27,6 +29,7 @@ public indirect enum TypeRef<Type> {
   case nonNull(TypeRef)
 
   // MARK: - Calculated properties
+
   /// Returns the non nullable self.
   public var nonNullable: TypeRef<Type> {
     inverted.nonNullable.inverted
@@ -44,6 +47,7 @@ public indirect enum TypeRef<Type> {
 }
 
 // MARK: - Possible Type References
+
 public enum NamedRef: Equatable {
   case scalar(String)
   case object(String)
@@ -113,6 +117,7 @@ public enum InputRef: Equatable {
 }
 
 // MARK: - Extensions
+
 extension TypeRef: Decodable where Type: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -296,6 +301,7 @@ extension InputRef: Decodable {
 }
 
 // MARK: - Type Alias
+
 public typealias NamedTypeRef = TypeRef<NamedRef>
 public typealias OutputTypeRef = TypeRef<OutputRef>
 public typealias InputTypeRef = TypeRef<InputRef>

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 18/9/21.
 //
@@ -50,7 +50,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       entityNameProvider: entityNameProvider
     )
 
-    self.operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
+    operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
       scalarMap: scalarMap,
       variablesGenerator: requestParameterVariablesGenerator
     )
@@ -107,7 +107,7 @@ extension SelectionsGenerator {
 
     let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
     var fieldMap: FieldMap = [fieldScalarType: field]
-    fieldMap.merge(try returnObjectType.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { (_, new) in new }
+    fieldMap.merge(try returnObjectType.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -127,36 +127,36 @@ extension SelectionsGenerator {
   ) throws -> String {
     guard
       let returnInterfaceType = try schemaMap.interfaceTypeMap.value(from: field.type.namedType),
-			let possibleObjectTypes = try field.possibleObjectTypes(
+      let possibleObjectTypes = try field.possibleObjectTypes(
         schemaMap: schemaMap
-			)
+      )
     else {
       throw SelectionsGeneratorError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
     }
 
-		var fieldMap = FieldMap()
+    var fieldMap = FieldMap()
 
-		fieldMap[returnInterfaceType.name] = Field(
-			name: returnInterfaceType.name,
-			description: returnInterfaceType.description,
-			args: [],
-			type: .named(.interface(returnInterfaceType.name)),
-			isDeprecated: false,
-			deprecationReason: nil
-		)
+    fieldMap[returnInterfaceType.name] = Field(
+      name: returnInterfaceType.name,
+      description: returnInterfaceType.description,
+      args: [],
+      type: .named(.interface(returnInterfaceType.name)),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
 
-		try possibleObjectTypes.forEach {
-			fieldMap[$0.name] = Field(
-				name: $0.name,
-				description: $0.description,
-				args: [],
-				type: .named(.object($0.name)),
-				isDeprecated: false,
-				deprecationReason: nil
-			)
+    try possibleObjectTypes.forEach {
+      fieldMap[$0.name] = Field(
+        name: $0.name,
+        description: $0.description,
+        args: [],
+        type: .named(.object($0.name)),
+        isDeprecated: false,
+        deprecationReason: nil
+      )
 
       fieldMap.merge(try $0.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
-		}
+    }
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -219,7 +219,7 @@ extension SelectionsGenerator {
   }
 
   func emptyDeclaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
-    let operationDefinition = try self.operationDefinitionGenerator.declaration(
+    let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,
       field: field
     )
@@ -246,7 +246,7 @@ extension SelectionsGenerator {
   ) throws -> String {
     let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
 
-    let operationDefinition = try self.operationDefinitionGenerator.declaration(
+    let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,
       field: field
     )
@@ -286,10 +286,10 @@ extension SelectionsGenerator {
       throw SelectionsGeneratorError
         .formatError(
           context: """
-            \(error)
-            Raw text:
-            \(code)
-            """
+          \(error)
+          Raw text:
+          \(code)
+          """
         )
     }
 
@@ -301,7 +301,7 @@ extension SelectionsGenerator {
 
 private extension ObjectType {
   func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
-    let fieldMap = try self.fields.flatMap {
+    let fieldMap = try fields.flatMap {
       try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
 

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 5/10/21.
 //
@@ -71,7 +71,7 @@ public struct EntityNameMapResponse: Decodable {
     inputObject: String? = nil,
     interface: String? = nil,
     union: String? = nil,
-    `enum`: String? = nil,
+    enum: String? = nil,
     apiClientPrefix: String? = nil
   ) {
     self.request = request

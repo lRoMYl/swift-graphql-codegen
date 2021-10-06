@@ -16,7 +16,7 @@ enum ObjectCodeGeneratorError: Error, LocalizedError {
   var errorDescription: String? {
     switch self {
     case let .emptyFields(name):
-    return "\(Self.self): No fields was whitelisted for \(name) object"
+      return "\(Self.self): No fields was whitelisted for \(name) object"
     }
   }
 }
@@ -73,8 +73,8 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 
 private extension ObjectType {
   func declaration(
-    objects: [ObjectType],
-    scalarMap: ScalarMap,
+    objects _: [ObjectType],
+    scalarMap _: ScalarMap,
     fieldSpecificationGenerator: FieldCodeGenerator,
     entityNameProvider: EntityNameProviding
   ) throws -> String {
@@ -88,7 +88,7 @@ private extension ObjectType {
       .lines
 
     guard !fieldsCodingKey.isEmpty || !fieldsCodingKey.isEmpty else {
-      throw ObjectCodeGeneratorError.emptyFields(name: self.name)
+      throw ObjectCodeGeneratorError.emptyFields(name: name)
     }
 
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object

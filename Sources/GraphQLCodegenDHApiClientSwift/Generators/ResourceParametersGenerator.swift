@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -59,7 +59,7 @@ struct ResourceParametersGenerator: Generating {
 
         func bodyParameters() -> Any? {
           switch self {
-          \(try schema.operations.map{ try bodyParametersCases(with: $0).lines }.lines)
+          \(try schema.operations.map { try bodyParametersCases(with: $0).lines }.lines)
           }
         }
 

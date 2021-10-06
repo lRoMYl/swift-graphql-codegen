@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 26/9/21.
 //
@@ -29,7 +29,7 @@ public struct GraphQLCodegenEntitySwift {
     self.entityNameMap = entityNameMap
   }
 
-  public func code(schema: Schema) throws -> String {
+  public func code(schema _: Schema) throws -> String {
     let code = """
     // @generated
     // Do not edit this generated file
@@ -151,10 +151,10 @@ public struct GraphQLCodegenEntitySwift {
       throw GraphQLCodegenEntitySwiftError
         .formatError(
           context: """
-            \(error)
-            Raw text:
-            \(code)
-            """
+          \(error)
+          Raw text:
+          \(code)
+          """
         )
     }
 

@@ -9,6 +9,7 @@ import Foundation
 
 public extension String {
   // MARK: - Public properties
+
   // Returns the string PascalCased.
   var pascalCase: String {
     let specialChars = CharacterSet.alphanumerics.inverted
@@ -21,24 +22,24 @@ public extension String {
     var words = [Range<String.Index>]()
 
     var wordStart = startIndex
-    var searchRange: Range<String.Index> = wordStart ..< endIndex
+    var searchRange: Range<String.Index> = wordStart..<endIndex
 
     while let delimiterRange = rangeOfCharacter(from: upperDelimiters, options: [], range: searchRange) {
-      let range = wordStart ..< delimiterRange.lowerBound
+      let range = wordStart..<delimiterRange.lowerBound
 
       // We hit a special character. If there's something to capture, capture it.
       // Move one up and continue in the next cycle.
       guard self[delimiterRange.lowerBound].isLetter else {
         if !range.isEmpty { words.append(range) }
         wordStart = index(after: range.upperBound)
-        searchRange = wordStart ..< searchRange.upperBound
+        searchRange = wordStart..<searchRange.upperBound
         continue
       }
 
       // We know that we hit an uppercase character.
       // Set the word start to that character, and search from the next character onwards.
       wordStart = delimiterRange.lowerBound
-      searchRange = index(after: wordStart) ..< searchRange.upperBound
+      searchRange = index(after: wordStart)..<searchRange.upperBound
 
       if !range.isEmpty {
         words.append(range)
@@ -61,22 +62,22 @@ public extension String {
         // If the next character after the capital letters is not a letter, turn all the capital letters into a word.
         // Else turn all the capital letters up the second last index into a word.
         if !self[lowerCaseRange.lowerBound].isLetter {
-          words.append(wordStart ..< lowerCaseRange.lowerBound)
+          words.append(wordStart..<lowerCaseRange.lowerBound)
 
           // Next word starts after capital letters we just found
           wordStart = lowerCaseRange.lowerBound
         } else {
-          words.append(wordStart ..< index(before: lowerCaseRange.lowerBound))
+          words.append(wordStart..<index(before: lowerCaseRange.lowerBound))
 
           // Next word starts at the last capital letters we just found
           wordStart = index(before: lowerCaseRange.lowerBound)
         }
 
-        searchRange = wordStart ..< searchRange.upperBound
+        searchRange = wordStart..<searchRange.upperBound
       }
     }
 
-    let remaining = wordStart ..< searchRange.upperBound
+    let remaining = wordStart..<searchRange.upperBound
     if !remaining.isEmpty {
       // Append the last part of the word.
       words.append(remaining)
@@ -89,7 +90,7 @@ public extension String {
   // Returns the string camelCased.
   var camelCase: String {
     guard count > 0 else { return self }
-    
+
     let pascal = pascalCase
     return pascal[pascal.startIndex].lowercased() + pascal.dropFirst()
   }

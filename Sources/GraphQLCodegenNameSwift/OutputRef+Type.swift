@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 28/9/21.
 //
@@ -36,7 +36,7 @@ extension OutputRef {
     case let .scalar(scalar):
       return try scalarMap.scalar(scalar)
     case let .enum(enm):
-      return "\(enm.pascalCase)\(entityNameMap.`enum`)"
+      return "\(enm.pascalCase)\(entityNameMap.enum)"
     case let .object(type):
       return "\(type.pascalCase)\(entityNameMap.object)"
     case let .interface(type):

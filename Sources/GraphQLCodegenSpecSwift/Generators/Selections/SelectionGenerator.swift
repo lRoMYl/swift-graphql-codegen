@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 5/10/21.
 //
@@ -47,7 +47,7 @@ struct SelectionGenerator: GraphQLCodeGenerating {
 }
 
 extension SelectionGenerator {
-  func selectionDeclaration(objectType: ObjectType, schemaMap: SchemaMap) throws -> String {
+  func selectionDeclaration(objectType: ObjectType, schemaMap _: SchemaMap) throws -> String {
     let fields = objectType.selectableFields(selectionMap: selectionMap)
 
     guard !objectType.isOperation, !fields.isEmpty else {
@@ -82,7 +82,7 @@ extension SelectionGenerator {
         \"\"\"
         """
       case .union:
-        // TODO
+        // TODO:
         return ""
       }
     }

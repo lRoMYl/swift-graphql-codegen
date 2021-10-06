@@ -105,10 +105,10 @@ public struct GraphQLCodegenSpecSwift {
       throw GraphQLCodegenSpecSwiftError
         .formatError(
           context: """
-            \(error)
-            Raw text:
-            \(code)
-            """
+          \(error)
+          Raw text:
+          \(code)
+          """
         )
     }
     return formattedCode

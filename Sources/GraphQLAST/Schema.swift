@@ -17,9 +17,9 @@ public struct Schema: Decodable, Equatable {
   public init(types: [NamedType], query: String, mutation: String? = nil, subscription: String? = nil) {
     self.types = types
 
-    _query = query
-    _mutation = mutation
-    _subscription = subscription
+    self._query = query
+    self._mutation = mutation
+    self._subscription = subscription
   }
 
   public init(from decoder: Decoder) throws {
@@ -27,8 +27,8 @@ public struct Schema: Decodable, Equatable {
 
     types = try container.decode([NamedType].self, forKey: .types)
     _query = try container.decode(_Operation.self, forKey: .query).name
-    _mutation = try container.decode(_Operation?.self, forKey: .mutation)?.name
-    _subscription = try container.decode(_Operation?.self, forKey: .subscription)?.name
+    self._mutation = try container.decode(_Operation?.self, forKey: .mutation)?.name
+    self._subscription = try container.decode(_Operation?.self, forKey: .subscription)?.name
   }
 
   private enum CodingKeys: String, CodingKey {
@@ -55,6 +55,7 @@ public extension Schema {
   }
 
   // MARK: - Operations
+
   /// Query operation type in the schema.
   var query: Operation {
     .query(object(name: _query)!)
@@ -84,6 +85,7 @@ public extension Schema {
   }
 
   // MARK: - Named types
+
   /// Returns object definitions from schema.
   var objects: [ObjectType] {
     types.compactMap {

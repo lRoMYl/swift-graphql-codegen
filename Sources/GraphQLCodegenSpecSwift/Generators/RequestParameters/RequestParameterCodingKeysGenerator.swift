@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 18/9/21.
 //
@@ -9,7 +9,7 @@ import GraphQLAST
 
 struct RequestParameterEncodableGenerator {
   func declaration(field: Field) throws -> String {
-    field.args.count == 0
+    field.args.isEmpty
       ? emptyEncoder()
       : try codingKeys(with: field)
   }

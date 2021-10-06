@@ -10,21 +10,21 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenDHApiClientSwift
-import GraphQLCodegenNameSwift
 import GraphQLCodegenEntitySwift
+import GraphQLCodegenNameSwift
 import GraphQLCodegenSpecSwift
 import GraphQLDownloader
 
-//GraphQLCodegenCLI.main()
+// GraphQLCodegenCLI.main()
 
-//GraphQLCodegenCLI.main(
+// GraphQLCodegenCLI.main(
 //  [
 //    "https://sg-st.fd-api.com/groceries-product-service/query",
 //    "--action", "introspection",
 //    "--schema-source", "remote",
 //    "--output", "/Users/r.cheah/Desktop/schema.json"
 //  ]
-//)
+// )
 //
 let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample"
 
@@ -221,7 +221,7 @@ private extension GraphQLCodegenCLI {
 
     if let introspectionResponse = try? JSONDecoder().decode(IntrospectionResponse.self, from: jsonData) {
       schema = introspectionResponse.schema.schema
-    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: jsonData)  {
+    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: jsonData) {
       schema = response.schema
     } else {
       throw GraphQLCodegenCLIError.invalidSchema
@@ -338,7 +338,7 @@ private extension GraphQLCodegenCLI {
   func scalarMap(config: Config?) -> ScalarMap {
     ScalarMap.default.merging(
       config?.scalarMap ?? [:],
-      uniquingKeysWith: { (_, new) in new }
+      uniquingKeysWith: { _, new in new }
     )
   }
 

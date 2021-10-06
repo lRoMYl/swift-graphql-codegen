@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 20/9/21.
 //
@@ -63,7 +63,7 @@ struct SelectionsOperationDefinitionGenerator {
 
 private extension Field {
   var isFragment: Bool {
-    switch self.type.namedType {
+    switch type.namedType {
     case .enum, .scalar:
       return false
     case .object:

@@ -1,12 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 30/9/21.
 //
 
-import GraphQLCodegenUtil
 import Foundation
+import GraphQLCodegenUtil
 import XCTest
 
 final class StringCaseTests: XCTestCase {

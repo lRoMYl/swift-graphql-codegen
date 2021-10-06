@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 22/9/21.
 //
@@ -11,7 +11,7 @@ import GraphQLCodegenConfig
 
 extension Field {
   var isOptional: Bool {
-    switch self.type {
+    switch type {
     case .nonNull:
       return false
     default:
@@ -43,13 +43,13 @@ extension Structure {
    */
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
-      return isSelectable(field: field, selectionMap: selectionMap)
+      isSelectable(field: field, selectionMap: selectionMap)
     }.sorted(by: { $0.name < $1.name })
   }
 
-	func requiredFields(selectionMap: SelectionMap?) -> [Field] {
+  func requiredFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
-			return isRequired(field: field, selectionMap: selectionMap)
-		}.sorted(by: { $0.name < $1.name })
-	}
+      isRequired(field: field, selectionMap: selectionMap)
+    }.sorted(by: { $0.name < $1.name })
+  }
 }

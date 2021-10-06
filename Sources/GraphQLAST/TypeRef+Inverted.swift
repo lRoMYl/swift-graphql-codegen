@@ -13,6 +13,7 @@ public indirect enum InvertedTypeRef<Type> {
   case list(InvertedTypeRef)
 
   // MARK: - Calculated properties
+
   /// Returns a nullable instance of self.
   public var nullable: InvertedTypeRef<Type> {
     inverted.nullable.inverted
@@ -44,6 +45,7 @@ public extension InvertedTypeRef {
 extension InvertedTypeRef: Equatable where Type: Equatable {}
 
 // MARK: - Conversion
+
 public extension TypeRef {
   var inverted: InvertedTypeRef<Type> {
     switch self {
@@ -83,6 +85,7 @@ public extension InvertedTypeRef {
 }
 
 // MARK: - Type Alias
+
 public typealias InvertedNamedTypeRef = InvertedTypeRef<NamedRef>
 public typealias InvertedOutputTypeRef = InvertedTypeRef<OutputRef>
 public typealias InvertedInputTypeRef = InvertedTypeRef<InputRef>

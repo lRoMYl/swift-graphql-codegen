@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 18/9/21.
 //
@@ -209,7 +209,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.codingKeyDeclaration(field: field)
+    let declaration = try codingKeyDeclaration(field: field)
     let expecation = try """
     case benefits = "benefits"
     """.format()
@@ -227,7 +227,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.codingKeyDeclaration(field: field)
+    let declaration = try codingKeyDeclaration(field: field)
     let expecation = try """
     case benefits = "Benefits"
     """.format()

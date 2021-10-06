@@ -27,6 +27,7 @@ public let OperationList = [
 ]
 
 // MARK: - Named Type Protocol
+
 public enum NamedTypeKind: String, Codable, Equatable {
   case scalar = "SCALAR"
   case object = "OBJECT"
@@ -53,6 +54,7 @@ public extension NamedTypeProtocol {
 }
 
 // MARK: - Named Types
+
 public struct ScalarType: NamedTypeProtocol, Decodable, Equatable {
   public var kind: NamedTypeKind = .scalar
   public let name: String
@@ -103,6 +105,7 @@ public struct InputObjectType: NamedTypeProtocol, Decodable, Equatable {
 }
 
 // MARK: - Collection Types
+
 public enum NamedType: Equatable {
   case scalar(ScalarType)
   case object(ObjectType)

@@ -60,7 +60,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let responseParameters = try schema.operations.map {
-      return """
+      """
       \(try operation($0, schema: schema).lines)
       """
     }.lines
@@ -85,7 +85,7 @@ private extension RequestParameterGenerator {
     let returnObject = try operation.returnObject()
 
     let result: [String] = try returnObject.fields.map { field in
-      return try requestParameterDeclaration(
+      try requestParameterDeclaration(
         operation: operation,
         schema: schema,
         scalarMap: scalarMap,
@@ -99,8 +99,8 @@ private extension RequestParameterGenerator {
 
   func requestParameterDeclaration(
     operation: GraphQLAST.Operation,
-    schema: Schema,
-    scalarMap: ScalarMap,
+    schema _: Schema,
+    scalarMap _: ScalarMap,
     entityNameMap: EntityNameMap,
     field: Field
   ) throws -> String {
@@ -115,20 +115,20 @@ private extension RequestParameterGenerator {
     let initializer = try initializerGenerator.declaration(field: field)
 
     let text = """
-      // MARK: - \(requestParameterName)
+    // MARK: - \(requestParameterName)
 
-      struct \(requestParameterName): \(entityName) {
-        // MARK: - \(entityNameMap.requestType)
+    struct \(requestParameterName): \(entityName) {
+      // MARK: - \(entityNameMap.requestType)
 
-        let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+      let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
 
-        \(argumentVariables)
+      \(argumentVariables)
 
-        \(codingKeys)
+      \(codingKeys)
 
-        \(initializer)
-      }
-      """
+      \(initializer)
+    }
+    """
 
     return text
   }

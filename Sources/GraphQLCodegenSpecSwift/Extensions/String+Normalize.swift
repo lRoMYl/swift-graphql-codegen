@@ -80,6 +80,6 @@ let reservedWords = [
   "and",
   "or",
   /* Keywords used in patterns */
-  "_",
+  "_"
   // NOTE: There are other reserved keywords, but they aren't important in context.
 ]

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 20/9/21.
 //
@@ -22,7 +22,7 @@ public final class APIClient {
     request: IntroSpectionRequest,
     url: URL,
     headers: [String: String],
-    _ completion: @escaping (Result<Schema, Error>, Data?) -> ()
+    _ completion: @escaping (Result<Schema, Error>, Data?) -> Void
   ) {
     var urlRequest = URLRequest(url: url)
 
@@ -39,7 +39,7 @@ public final class APIClient {
       completion(.failure(error), nil)
     }
 
-    URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, error in
+    URLSession.shared.dataTask(with: urlRequest) { data, _, error in
       guard error == nil else {
         completion(.failure(error!), nil)
         return

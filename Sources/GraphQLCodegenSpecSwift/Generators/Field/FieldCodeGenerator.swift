@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 18/9/21.
 //
@@ -35,7 +35,7 @@ struct FieldCodeGenerator {
     if isRequired || isSelectable {
       var type: String = try entityNameProvider.name(for: field.type)
 
-      if isSelectable && !type.contains("?") {
+      if isSelectable, !type.contains("?") {
         type.append("?")
       }
 

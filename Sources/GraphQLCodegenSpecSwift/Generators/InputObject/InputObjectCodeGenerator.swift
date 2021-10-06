@@ -1,14 +1,14 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 21/9/21.
 //
 
-import GraphQLCodegenUtil
 import GraphQLAST
-import GraphQLCodegenNameSwift
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
@@ -74,4 +74,3 @@ private extension InputObjectCodeGenerator {
     """
   }
 }
-

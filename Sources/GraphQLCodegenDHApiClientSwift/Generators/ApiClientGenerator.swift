@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -42,7 +42,7 @@ struct ApiClientGenerator: Generating {
     let resourceParametersProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
 
     return """
-    \(try self.protocolCode(with: schema.operations))
+    \(try protocolCode(with: schema.operations))
 
     // MARK: - \(apiClientProtocolName)
 
@@ -124,7 +124,7 @@ extension ApiClientGenerator {
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
 
     return """
-    func \(field.funcName(with: operation))(
+    func \(field.funcName())(
       with request: \(parametersName),
       selections: \(selectionsName)
     ) -> \(responseGenericCode(text: responseDataText))
@@ -134,7 +134,7 @@ extension ApiClientGenerator {
   /// Executation for operation type is generated only if its defined in the schema
   /// E.g. If the schema have no mutation, no mutation object will be present in the schema, thus executeGraphQL cannot be generated respectively
   func executeCode(with operation: GraphQLAST.Operation) throws -> String {
-    let operationName =  operation.type.name.pascalCase
+    let operationName = operation.type.name.pascalCase
     let genericResponse = "Response"
     let responseDataText = "\(entityNameMap.response)<\(genericResponse)>"
     let responseGenericCode = self.responseGenericCode(text: genericResponse)

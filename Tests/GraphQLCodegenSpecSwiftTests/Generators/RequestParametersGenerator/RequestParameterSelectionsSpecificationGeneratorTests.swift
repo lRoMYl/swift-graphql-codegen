@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 23/9/21.
 //
@@ -19,6 +19,7 @@ final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
       entityNameMap: .default
     )
   }()
+
   private lazy var generator: SelectionsGenerator = {
     SelectionsGenerator(
       scalarMap: ScalarMap.default,

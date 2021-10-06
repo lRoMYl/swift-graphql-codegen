@@ -28,7 +28,7 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
     guard !code.isEmpty else { return "" }
 
     return """
-    // MARK: - \(entityNameMap.`enum`)
+    // MARK: - \(entityNameMap.enum)
 
     \(code)
     """

@@ -15,7 +15,7 @@ struct HeaderCodeGenerator: GraphQLCodeGenerating {
     self.entityNameMap = entityNameMap
   }
 
-  func code(schema: Schema) throws -> String {
+  func code(schema _: Schema) throws -> String {
     return """
     // @generated
     // Do not edit this generated file

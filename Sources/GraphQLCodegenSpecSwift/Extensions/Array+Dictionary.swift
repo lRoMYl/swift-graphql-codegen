@@ -1,14 +1,14 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 22/9/21.
 //
 
 import Foundation
 
-extension Array {
-  public func toDictionary<Key: Hashable>(with selectKey: (Element) -> Key) -> [Key: Element] {
+public extension Array {
+  func toDictionary<Key: Hashable>(with selectKey: (Element) -> Key) -> [Key: Element] {
     var dict = [Key: Element]()
 
     for element in self {

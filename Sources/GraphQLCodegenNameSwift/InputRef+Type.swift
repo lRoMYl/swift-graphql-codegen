@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 28/9/21.
 //
@@ -24,7 +24,7 @@ extension InvertedInputTypeRef {
       case let .scalar(scalar):
         return try scalarMap.scalar(scalar)
       case let .enum(enm):
-        return "\(enm.pascalCase)\(entityNameMap.`enum`)"
+        return "\(enm.pascalCase)\(entityNameMap.enum)"
       case let .inputObject(inputObject):
         return "\(inputObject.pascalCase)\(entityNameMap.inputObject)"
       }

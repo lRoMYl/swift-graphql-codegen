@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -9,10 +9,9 @@ import Foundation
 import GraphQLAST
 
 struct HeaderGenerator: Generating {
-  init() {
-  }
+  init() {}
 
-  func code(schema: Schema) throws -> String {
+  func code(schema _: Schema) throws -> String {
     #"""
     // @generated
     // Do not edit this generated file

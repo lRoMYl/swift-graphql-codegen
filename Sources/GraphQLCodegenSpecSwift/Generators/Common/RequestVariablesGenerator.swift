@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 19/9/21.
 //
@@ -71,7 +71,7 @@ struct RequestVariablesGenerator {
    */
   func operationArgumentsDeclaration(with field: Field) -> String {
     field.args.compactMap {
-      return "    \($0.name): $\($0.name)"
+      "    \($0.name): $\($0.name)"
     }.lines
   }
 

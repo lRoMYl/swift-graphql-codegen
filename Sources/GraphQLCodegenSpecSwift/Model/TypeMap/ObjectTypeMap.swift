@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 3/10/21.
 //
@@ -23,7 +23,7 @@ struct ObjectTypeMap {
   private let objectTypeMap: [String: ObjectType]
 
   init(schema: Schema) {
-    objectTypeMap = Dictionary(
+    self.objectTypeMap = Dictionary(
       uniqueKeysWithValues: schema.objects.map {
         ($0.name, $0)
       }

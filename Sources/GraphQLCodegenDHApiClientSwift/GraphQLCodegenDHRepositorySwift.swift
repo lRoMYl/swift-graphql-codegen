@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -61,10 +61,10 @@ public struct GraphQLCodegenDHApiClientSwift {
       throw GraphQLCodegenDHApiClientSwiftError
         .formatError(
           context: """
-            \(error)
-            Raw text:
-            \(code)
-            """
+          \(error)
+          Raw text:
+          \(code)
+          """
         )
     }
 

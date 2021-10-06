@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 5/10/21.
 //
@@ -34,7 +34,7 @@ public extension Schema {
 
     if let introspectionResponse = try? JSONDecoder().decode(IntrospectionResponse.self, from: data) {
       return introspectionResponse.schema.schema
-    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: data)  {
+    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: data) {
       return response.schema
     } else {
       throw SchemaError.serializationError

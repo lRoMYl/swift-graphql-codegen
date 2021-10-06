@@ -44,7 +44,7 @@ struct GraphQLCodegenExampleApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView().onAppear() {
+      ContentView().onAppear {
         testGroceriesGraphQL()
         testStarWarsInterfaceGraphQL()
         testStarWarsUnionHumanGraphQL()
@@ -70,7 +70,7 @@ extension GraphQLCodegenExampleApp {
     groceriesRepository
       .campaigns(with: parameters)
       .subscribe(
-        onSuccess: { response in
+        onSuccess: { _ in
           print("Groceries campaign query request success")
           // print(String(describing: response))
         },
@@ -138,7 +138,7 @@ extension GraphQLCodegenExampleApp {
           switch response {
           case .human:
             print("Starwars character union query request as human success")
-          default :
+          default:
             print("Starwars character union query request as human failed xxxx")
           }
 
@@ -163,7 +163,7 @@ extension GraphQLCodegenExampleApp {
           switch response {
           case .droid:
             print("Starwars character union query request as droid success")
-          default :
+          default:
             print("Starwars character union query request as droid failed xxxx")
           }
 

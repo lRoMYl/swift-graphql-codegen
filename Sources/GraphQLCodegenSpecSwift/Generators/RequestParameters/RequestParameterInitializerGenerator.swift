@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 26/9/21.
 //
@@ -39,5 +39,4 @@ struct RequestParameterInitializerGenerator {
     }
     """
   }
-  
 }

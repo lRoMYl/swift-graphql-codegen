@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Romy Cheah on 24/9/21.
 //
@@ -15,7 +15,7 @@ public enum EntityNameMapError: Error, LocalizedError {
     switch self {
     case let .missingValue(context),
          let .emptyValue(context):
-      return  "\(Self.self): \(context)"
+      return "\(Self.self): \(context)"
     }
   }
 }
@@ -103,7 +103,7 @@ public struct EntityNameMap {
     self.inputObject = inputObject
     self.interface = interface
     self.union = union
-    self.`enum` = `enum`
+    self.enum = `enum`
     self.apiClientPrefix = apiClientPrefix
   }
 
