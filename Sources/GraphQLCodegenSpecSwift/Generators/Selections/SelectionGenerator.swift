@@ -82,7 +82,7 @@ extension SelectionGenerator {
         \"\"\"
         """
       case .union:
-        // TODO:
+        print("Warning, union not implemented for enumCaseDeclaration in SelectionGenerator")
         return ""
       }
     }

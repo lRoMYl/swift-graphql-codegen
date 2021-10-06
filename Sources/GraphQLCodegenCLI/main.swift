@@ -17,74 +17,117 @@ import GraphQLDownloader
 
 // GraphQLCodegenCLI.main()
 
-// GraphQLCodegenCLI.main(
-//  [
-//    "https://sg-st.fd-api.com/groceries-product-service/query",
-//    "--action", "introspection",
-//    "--schema-source", "remote",
-//    "--output", "/Users/r.cheah/Desktop/schema.json"
-//  ]
-// )
-//
-let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample"
 
-let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
-let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
-let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
 
-GraphQLCodegenCLI.main(
-  [
-    groceriesSchema,
-    "--action", "entity",
-    "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
-    "--config-path", groceriesConfig
-  ]
-)
+private func mockGraphQLExample() {
+  // GraphQLCodegenCLI.main(
+  //  [
+  //    "https://sg-st.fd-api.com/groceries-product-service/query",
+  //    "--action", "introspection",
+  //    "--schema-source", "remote",
+  //    "--output", "/Users/r.cheah/Desktop/schema.json"
+  //  ]
+  // )
+  //
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample (Advanced)"
 
-GraphQLCodegenCLI.main(
-  [
-    groceriesSchema,
-    "--action", "specification",
-    "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
-    "--config-path", groceriesConfig
-  ]
-)
-GraphQLCodegenCLI.main(
-  [
-    groceriesSchema,
-    "--action", "dh-repository",
-    "--output", "\(groceriesOutputPath)ApiClient.swift",
-    "--config-path", groceriesConfig
-  ]
-)
+  let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
+  let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
+  let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
 
-let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
-let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
-let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
-GraphQLCodegenCLI.main(
-  [
-    starwarsSchema,
-    "--action", "specification",
-    "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
-    "--config-path", starwarsConfig
-  ]
-)
-GraphQLCodegenCLI.main(
-  [
-    starwarsSchema,
-    "--action", "dh-repository",
-    "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
-    "--config-path", starwarsConfig
-  ]
-)
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "entity",
+      "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "specification",
+      "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "dh-apiclient",
+      "--output", "\(groceriesOutputPath)ApiClient.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+
+  let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
+  let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
+  let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
+
+  GraphQLCodegenCLI.main(
+    [
+      starwarsSchema,
+      "--target", "specification",
+      "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
+      "--config-path", starwarsConfig
+    ]
+  )
+  GraphQLCodegenCLI.main(
+    [
+      starwarsSchema,
+      "--target", "dh-apiclient",
+      "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
+      "--config-path", starwarsConfig
+    ]
+  )
+}
+
+private func mockGroceriesExample() {
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
+
+  let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
+  let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
+  let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
+
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "entity",
+      "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "specification",
+      "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+  GraphQLCodegenCLI.main(
+    [
+      groceriesSchema,
+      "--target", "dh-apiclient",
+      "--output", "\(groceriesOutputPath)ApiClient.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+}
+
+enum Platform: String, ExpressibleByArgument {
+  case swift
+}
 
 enum SchemaSource: String, ExpressibleByArgument {
   case local
   case remote
 }
 
-enum CodegenAction: String, ExpressibleByArgument {
-  case dhrepository = "dh-repository"
+enum CodegenTarget: String, ExpressibleByArgument {
+  case dhApiClient = "dh-apiclient"
   case specification
   /**
    Abstract Syntax Tree (AST, Introspection), this is the nested object json created from Schema Definition Language
@@ -116,15 +159,24 @@ struct GraphQLCodegenCLI: ParsableCommand {
   )
   var schemaPath: String
 
-  @Option(
+  @Argument(
     help: """
-    Define the codegeneration action
-    - dhapiclient: Generate ApiClient specific to DH specification
-    - graphqlspec: Generate GraphQL specification
-    - introspection: Generate Abstract Syntax Tree from the graphql schema url, local schema source is not supported
+    Platform for the generated code
+    Atm, the platform is only swift
     """
   )
-  var action: CodegenAction
+  var platform: Platform = .swift
+
+  @Option(
+    help: """
+    Define the codegeneration target
+    - dh-apiclient: Generate ApiClient specific to DH specification
+    - specification: Generate GraphQL specification
+    - introspection: Generate Abstract Syntax Tree from the graphql schema url, local schema source is not supported
+    - entity: Generate GraphQL entities/base classes
+    """
+  )
+  var target: CodegenTarget
 
   @Option(help: "Source of the schema path, \"local\" or \"remote\"")
   var schemaSource: SchemaSource = .local
@@ -164,10 +216,10 @@ struct GraphQLCodegenCLI: ParsableCommand {
 
     let entityNameProvider = self.entityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
-    switch action {
+    switch target {
     case .introspection:
       generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.apiHeaders).1
-    case .dhrepository:
+    case .dhApiClient:
       let schema = try fetchSchema(with: config)
       let generatedCode = try repositorySwiftCode(
         schema: schema,
