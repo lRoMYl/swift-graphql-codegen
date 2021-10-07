@@ -5,8 +5,6 @@
 //  Created by Romy Cheah on 6/10/21.
 //
 
-import GraphQLCodegenCLICore
-
 func mockBasicExample() throws {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
 
