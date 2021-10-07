@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 
-enum GraphQLCodegenSpecSwiftError: Error, LocalizedError {
+enum GraphQLCodegenModelSwiftError: Error, LocalizedError {
   case formatError(context: String)
 
   var errorDescription: String? {
@@ -21,7 +21,7 @@ enum GraphQLCodegenSpecSwiftError: Error, LocalizedError {
   }
 }
 
-public struct GraphQLCodegenSpecSwift {
+public struct GraphQLCodegenModelSwift {
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
@@ -102,7 +102,7 @@ public struct GraphQLCodegenSpecSwift {
     do {
       formattedCode = try code.format()
     } catch {
-      throw GraphQLCodegenSpecSwiftError
+      throw GraphQLCodegenModelSwiftError
         .formatError(
           context: """
           \(error)

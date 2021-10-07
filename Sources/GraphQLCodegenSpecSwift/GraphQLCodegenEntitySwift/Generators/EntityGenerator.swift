@@ -1,36 +1,23 @@
 //
 //  File.swift
+//  
 //
-//
-//  Created by Romy Cheah on 26/9/21.
+//  Created by Romy Cheah on 7/10/21.
 //
 
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
-import GraphQLCodegenUtil
-import SwiftFormat
 
-public enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
-  case formatError(context: String)
-
-  public var errorDescription: String? {
-    switch self {
-    case let .formatError(context):
-      return "\(Self.self): \(context)"
-    }
-  }
-}
-
-public struct GraphQLCodegenEntitySwift {
+struct EntityGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
 
-  public init(entityNameMap: EntityNameMap) {
+  init(entityNameMap: EntityNameMap) {
     self.entityNameMap = entityNameMap
   }
 
-  public func code(schema _: Schema) throws -> String {
-    let code = """
+  func code(schema _: Schema) throws -> String {
+    """
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
@@ -142,22 +129,5 @@ public struct GraphQLCodegenEntitySwift {
       }
     }
     """
-
-    let formattedCode: String
-
-    do {
-      formattedCode = try code.format()
-    } catch {
-      throw GraphQLCodegenEntitySwiftError
-        .formatError(
-          context: """
-          \(error)
-          Raw text:
-          \(code)
-          """
-        )
-    }
-
-    return formattedCode
   }
 }

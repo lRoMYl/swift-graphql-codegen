@@ -7,15 +7,8 @@ let package = Package(
   name: "DHGraphQLCodegen",
   platforms: [.macOS(.v10_15)],
   products: [
-    .library(name: "GraphQLAST", targets: ["GraphQLAST"]),
-    .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
-    .library(name: "GraphQLCodegenConfig", targets: ["GraphQLCodegenConfig"]),
-    .library(name: "GraphQLCodegenUtil", targets: ["GraphQLCodegenUtil"]),
-    .library(name: "GraphQLCodegenNameSwift", targets: ["GraphQLCodegenNameSwift"]),
-    .library(name: "GraphQLCodegenSpecSwift", targets: ["GraphQLCodegenSpecSwift"]),
-    .library(name: "GraphQLCodegenEntitySwift", targets: ["GraphQLCodegenEntitySwift"]),
-    .library(name: "GraphQLCodegenDHApiClientSwift", targets: ["GraphQLCodegenDHApiClientSwift"]),
-    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"])
+    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"]),
+    .executable(name: "dh-graphql-codegen-swift", targets: ["GraphQLCodegenCLISwift"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),
@@ -39,10 +32,6 @@ let package = Package(
       dependencies: ["GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
     ),
     .target(
-      name: "GraphQLCodegenEntitySwift",
-      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil"]
-    ),
-    .target(
       name: "GraphQLCodegenSpecSwift",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"],
       resources: [
@@ -54,12 +43,25 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
-      name: "GraphQLCodegenCLI",
+      name: "GraphQLCodegenCLICore",
       dependencies: [
         "GraphQLCodegenSpecSwift",
         "GraphQLCodegenDHApiClientSwift",
-        "GraphQLCodegenEntitySwift",
         "GraphQLDownloader",
+        .product(name: "ArgumentParser", package: "swift-argument-parser")
+      ]
+    ),
+    .target(
+      name: "GraphQLCodegenCLI",
+      dependencies: [
+        "GraphQLCodegenCLICore",
+        .product(name: "ArgumentParser", package: "swift-argument-parser")
+      ]
+    ),
+    .target(
+      name: "GraphQLCodegenCLISwift",
+      dependencies: [
+        "GraphQLCodegenCLICore",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
     ),

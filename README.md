@@ -136,3 +136,16 @@ networkLibrary.fetch(with: parameter) { ... }
 - run `make install` to install dh-graphlq-codegen-ios
 - Build the example app, it will attempt to run the make script on each build phases to generate the latest GraphQL specification
 - Look at example app `Makefile` for more examples to use the dh-graphql-codegen-ios
+
+# Troubleshooting
+
+```
+Xcode Swift Package Manager error - The repository could not be found
+```
+
+HTTPS connection failed due to proxy configuration, check your `~/.gitconfig` and remove the following statement temporarily
+
+```
+[url "git@github.com:"]
+insteadOf = https://github.com/
+```

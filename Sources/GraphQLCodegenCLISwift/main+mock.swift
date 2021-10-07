@@ -5,9 +5,9 @@
 //  Created by Romy Cheah on 6/10/21.
 //
 
-import Foundation
+import GraphQLCodegenCLICore
 
-func mockGroceriesExample() {
+func mockGroceriesExample() throws {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
 
   let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
@@ -15,7 +15,7 @@ func mockGroceriesExample() {
   let entityOutputPath = "\(examplePath)/GroceriesExample/API/Core/"
   let groceriesOutputPath = "\(examplePath)/GroceriesExample/API/Groceries/Groceries"
 
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "entity",
@@ -24,7 +24,7 @@ func mockGroceriesExample() {
     ]
   )
 
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "specification",
@@ -32,7 +32,7 @@ func mockGroceriesExample() {
       "--config-path", groceriesConfig
     ]
   )
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "dh-apiclient",
@@ -58,7 +58,7 @@ func mockGraphQLExample() {
   let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
   let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
 
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "entity",
@@ -67,7 +67,7 @@ func mockGraphQLExample() {
     ]
   )
 
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "specification",
@@ -75,7 +75,7 @@ func mockGraphQLExample() {
       "--config-path", groceriesConfig
     ]
   )
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
       "--target", "dh-apiclient",
@@ -88,7 +88,7 @@ func mockGraphQLExample() {
   let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
   let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
 
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       starwarsSchema,
       "--target", "specification",
@@ -96,7 +96,7 @@ func mockGraphQLExample() {
       "--config-path", starwarsConfig
     ]
   )
-  GraphQLCodegenCLI.main(
+  GraphQLCodegenCLICore.main(
     [
       starwarsSchema,
       "--target", "dh-apiclient",
