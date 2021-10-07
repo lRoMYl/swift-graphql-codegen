@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLDownloader
 
-extension GraphQLCodegenCLI {
+extension GraphQLCodegenCLI.GraphQLCodegen {
   func fetchSchema(with config: Config?) throws -> Schema {
     switch schemaSource {
     case .local:
@@ -21,7 +21,7 @@ extension GraphQLCodegenCLI {
   }
 
   func fetchLocalSchema() throws -> Schema {
-    guard let jsonData = try String(contentsOfFile: schemaPath).data(using: .utf8) else {
+    guard let jsonData = try String(contentsOfFile: schema).data(using: .utf8) else {
       throw GraphQLCodegenCLIError.invalidSchemaPath
     }
 
@@ -41,7 +41,7 @@ extension GraphQLCodegenCLI {
   func fetchRemoteSchema(apiHeaders: [String: String]?) throws -> (Schema, Data) {
     let semaphore = DispatchSemaphore(value: 0)
 
-    guard let url = URL(string: schemaPath) else {
+    guard let url = URL(string: schema) else {
       throw GraphQLCodegenCLIError.invalidSchemaPath
     }
 

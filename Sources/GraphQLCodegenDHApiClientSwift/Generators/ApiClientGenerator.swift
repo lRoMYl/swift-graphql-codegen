@@ -155,7 +155,7 @@ extension ApiClientGenerator {
             metaData: apiResponse.metaData
           )
         }
-        .subscribeOn(scheduler)
+        .subscribe(on: scheduler)
     }
     """
   }

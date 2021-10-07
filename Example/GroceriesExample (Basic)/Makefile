@@ -1,24 +1,17 @@
-GROCERIES_URL = "https://sg-st.fd-api.com/groceries-product-service/query"
-GROCERIES_SCHEMA = "GraphQL/groceries-schema.json"
-GROCERIES_CONFIG = "GraphQL/groceries-config.json"
-GROCERIES_OUTPUT_PREFIX = "GroceriesExample (Basic)/Groceries/Groceries"
+SCHEMA_URL = "https://sg-st.fd-api.com/groceries-product-service/query"
+SCHEMA = "GraphQL/schema.json"
+CONFIG = "GraphQL/config.json"
+OUTPUT_PATH = "GroceriesExample/API/"
+INTROSPECTION_PATH = "GraphQL/"
+API_CLIENT_PREFIX = "Groceries"
 
 install:
 	sh scripts/carthage-update.sh bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
 	brew tap lromyl/tap
 	brew install dh-graphql-codegen-ios
 
-codegen-entity:
-	# Generate common entity class for all GraphQL microservices. 
-	# If you have multiple endpoint for GraphQL, do not regenerate this.
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --target "entity" --output "GroceriesExample/Core/GraphQLEntities.swift" --config-path $(GROCERIES_CONFIG)
+codegen-introspection:
+	dh-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_PATH)
 
 codegen-groceries:
-	# Generate GraphQL introspection file from remote url
-	dh-graphql-codegen-ios $(GROCERIES_URL) --target "introspection" --schema-source "remote" --output $(GROCERIES_SCHEMA) --config-path $(GROCERIES_CONFIG)
-
-	# Generate groceries GraphQL specification file from local schema
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --target "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLNetworkModels.swift" --config-path $(GROCERIES_CONFIG)
-
-	# Generate groceries ApiClient file from local schema
-	dh-graphql-codegen-ios $(GROCERIES_SCHEMA) --target "dh-apiclient" --output "$(GROCERIES_OUTPUT_PREFIX)ApiClient.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen dh-swift $(SCHEMA) --output-path $(OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)

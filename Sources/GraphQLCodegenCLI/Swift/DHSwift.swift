@@ -21,7 +21,7 @@ extension GraphQLCodegenCLI {
       - Atm, only the AST generated from Apollo and this code generator is supported.
       """
     )
-    var schemaPath: String
+    var schema: String
 
     @Option
     var schemaSource: SchemaSource = .local
@@ -65,7 +65,7 @@ extension GraphQLCodegenCLI {
     }
 
     func generateCode(with target: CodegenTarget) {
-      var arguments = [schemaPath]
+      var arguments = [schema]
 
       // If target type is introspection, ignore the schema source and use remote only
       if target == .introspection {
@@ -91,7 +91,7 @@ extension GraphQLCodegenCLI {
           ]
         )
 
-        GraphQLCodegenCLI.main(arguments)
+        GraphQLCodegenCLI.GraphQLCodegen.main(arguments)
       case .introspection:
         print("Warning, introspection target is not valid for `dh-swift` subcommand")
         break
@@ -103,7 +103,7 @@ extension GraphQLCodegenCLI {
           "--output", "\(basePath)\(apiClientOutput)"
         ]
 
-        GraphQLCodegenCLI.main(dhApiClientArguments)
+        GraphQLCodegenCLI.GraphQLCodegen.main(dhApiClientArguments)
       case .dhApiClient:
         let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
 
@@ -112,7 +112,7 @@ extension GraphQLCodegenCLI {
           "--output", "\(basePath)\(specificationOutput)"
         ]
 
-        GraphQLCodegenCLI.main(specificiationArguments)
+        GraphQLCodegenCLI.GraphQLCodegen.main(specificiationArguments)
       }
     }
   }

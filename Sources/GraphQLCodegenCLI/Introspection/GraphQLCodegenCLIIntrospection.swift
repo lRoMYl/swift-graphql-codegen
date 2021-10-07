@@ -12,16 +12,16 @@ extension GraphQLCodegenCLI {
   struct Introspection: ParsableCommand {
     @Argument(
       help: """
-    Location of the introspection file, it can be local or remote path.
-    e.g.
-    - local path: "/User/Download/schema.json"
-    - remote path: "https://www.somedomain.com"
+      Location of the introspection file, it can be local or remote path.
+      e.g.
+      - local path: "/User/Download/schema.json"
+      - remote path: "https://www.somedomain.com"
 
-    - Introspection/AST/JSON format generated from vendor console differ from one another.
-    - Atm, only the AST generated from Apollo and this code generator is supported.
-    """
+      - Introspection/AST/JSON format generated from vendor console differ from one another.
+      - Atm, only the AST generated from Apollo and this code generator is supported.
+      """
     )
-    var schemaPath: String
+    var schema: String
 
     @Option
     var outputPath: String
@@ -35,7 +35,7 @@ extension GraphQLCodegenCLI {
 
     func generateCode() {
       var arguments = [
-        schemaPath,
+        schema,
         "--schema-source", SchemaSource.remote.rawValue
       ]
 
@@ -46,7 +46,7 @@ extension GraphQLCodegenCLI {
         ]
       )
 
-      GraphQLCodegenCLI.main(arguments)
+      GraphQLCodegenCLI.GraphQLCodegen.main(arguments)
     }
   }
 }
