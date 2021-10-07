@@ -12,7 +12,7 @@ import GraphQLCodegenNameSwift
 import GraphQLCodegenSpecSwift
 import GraphQLCodegenDHApiClientSwift
 
-struct CodegenSwift {
+struct DHCodegeneratorSwift {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let selectionMap: SelectionMap?

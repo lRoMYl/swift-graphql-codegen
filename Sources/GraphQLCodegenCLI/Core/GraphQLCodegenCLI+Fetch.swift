@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLDownloader
 
-extension GraphQLCodegenCLICore {
+extension GraphQLCodegenCLI {
   func fetchSchema(with config: Config?) throws -> Schema {
     switch schemaSource {
     case .local:
@@ -77,7 +77,7 @@ extension GraphQLCodegenCLICore {
 
     switch platform {
     case .swift:
-      defaultConfigResponse = CodegenSwift.defaultConfigResponse
+      defaultConfigResponse = DHCodegeneratorSwift.defaultConfigResponse
     }
 
     // Config response from parameter

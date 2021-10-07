@@ -7,8 +7,7 @@ let package = Package(
   name: "DHGraphQLCodegen",
   platforms: [.macOS(.v10_15)],
   products: [
-    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"]),
-    .executable(name: "dh-graphql-codegen-swift", targets: ["GraphQLCodegenCLISwift"])
+    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),
@@ -43,25 +42,11 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
-      name: "GraphQLCodegenCLICore",
+      name: "GraphQLCodegenCLI",
       dependencies: [
         "GraphQLCodegenSpecSwift",
         "GraphQLCodegenDHApiClientSwift",
         "GraphQLDownloader",
-        .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]
-    ),
-    .target(
-      name: "GraphQLCodegenCLI",
-      dependencies: [
-        "GraphQLCodegenCLICore",
-        .product(name: "ArgumentParser", package: "swift-argument-parser")
-      ]
-    ),
-    .target(
-      name: "GraphQLCodegenCLISwift",
-      dependencies: [
-        "GraphQLCodegenCLICore",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]
     ),

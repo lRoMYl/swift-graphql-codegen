@@ -45,7 +45,14 @@ enum GraphQLCodegenCLIError: Error {
   case fetchSchemaTimeout
 }
 
-public struct GraphQLCodegenCLICore: ParsableCommand {
+public struct GraphQLCodegenCLI: ParsableCommand {
+  public static var configuration = CommandConfiguration(
+    commandName: "dh-graphql-codegen",
+    abstract: "DH GraphQL Codegeneration Tool",
+    version: "0.0.1",
+    subcommands: [Introspection.self, DHSwift.self]
+  )
+
   @Argument(
     help: """
     Location of the introspection file, it can be local or remote path.
@@ -99,10 +106,6 @@ public struct GraphQLCodegenCLICore: ParsableCommand {
   @Flag(help: "Show extra logging for debugging purposes")
   var verbose: Bool = false
 
-  public static var configuration = CommandConfiguration(
-    commandName: "dh-graphql-codegen-ios"
-  )
-
   public init() {
   }
 
@@ -137,7 +140,7 @@ public struct GraphQLCodegenCLICore: ParsableCommand {
 
 // MARK: Codegen + Swift
 
-private extension GraphQLCodegenCLICore {
+private extension GraphQLCodegenCLI {
   func swiftCodeData(
     config: Config?,
     scalarMap: ScalarMap,
@@ -146,7 +149,7 @@ private extension GraphQLCodegenCLICore {
   ) throws -> Data? {
     let generatedCodeData: Data?
 
-    let codegen = CodegenSwift(
+    let codegen = DHCodegeneratorSwift(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
       selectionMap: selectionMap
@@ -175,7 +178,7 @@ private extension GraphQLCodegenCLICore {
 
 // MARK: - Generators
 
-private extension GraphQLCodegenCLICore {
+private extension GraphQLCodegenCLI {
   func scalarMap(config: Config?) -> ScalarMap {
     ScalarMap.default.merging(
       config?.scalarMap ?? [:],
