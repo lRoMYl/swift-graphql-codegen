@@ -11,16 +11,16 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLDownloader
 
-enum Platform: String, ExpressibleByArgument {
+public enum Platform: String, ExpressibleByArgument {
   case swift
 }
 
-enum SchemaSource: String, ExpressibleByArgument {
+public enum SchemaSource: String, ExpressibleByArgument {
   case local
   case remote
 }
 
-enum CodegenTarget: String, ExpressibleByArgument {
+public enum CodegenTarget: String, ExpressibleByArgument {
   case dhApiClient = "dh-apiclient"
   /*
    Network models such as request and response inferred from the schema

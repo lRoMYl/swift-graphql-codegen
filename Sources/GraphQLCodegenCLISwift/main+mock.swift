@@ -7,7 +7,32 @@
 
 import GraphQLCodegenCLICore
 
-func mockGroceriesExample() throws {
+func mockBasicExample() throws {
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
+
+  // Generate schema.json from
+  let remoteGroceriesSchema = "https://sg-st.fd-api.com/groceries-product-service/query"
+  let introspectionOutputPath = examplePath + "/GraphQL/"
+
+  GraphQLCodegenCLISwift.Introspection.main([
+    remoteGroceriesSchema,
+    "--output-path", introspectionOutputPath
+  ])
+
+  // Generate GraphQL codes
+  let groceriesSchema = "\(examplePath)/GraphQL/schema.json"
+  let groceriesConfig = "\(examplePath)/GraphQL/config.json"
+  let outputPath = "\(examplePath)/GroceriesExample/API/"
+
+  GraphQLCodegenCLISwift.CodegenSwift.main([
+    groceriesSchema,
+    "--config-path", groceriesConfig,
+    "--output-path", outputPath,
+    "--api-client-prefix", "Groceries"
+  ])
+}
+
+func mockBasicCoreExample() throws {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
 
   let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
@@ -18,7 +43,7 @@ func mockGroceriesExample() throws {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "entity",
+      "--target", CodegenTarget.entity.rawValue,
       "--output", "\(entityOutputPath)GraphQLEntities.swift",
       "--config-path", groceriesConfig
     ]
@@ -27,7 +52,7 @@ func mockGroceriesExample() throws {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "specification",
+      "--target", CodegenTarget.specification.rawValue,
       "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
       "--config-path", groceriesConfig
     ]
@@ -35,14 +60,14 @@ func mockGroceriesExample() throws {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "dh-apiclient",
+      "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(groceriesOutputPath)ApiClient.swift",
       "--config-path", groceriesConfig
     ]
   )
 }
 
-func mockGraphQLExample() {
+func mockAdvancedCoreExample() {
   // GraphQLCodegenCLI.main(
   //  [
   //    "https://sg-st.fd-api.com/groceries-product-service/query",
@@ -61,7 +86,7 @@ func mockGraphQLExample() {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "entity",
+      "--target", CodegenTarget.entity.rawValue,
       "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
       "--config-path", groceriesConfig
     ]
@@ -70,7 +95,7 @@ func mockGraphQLExample() {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "specification",
+      "--target", CodegenTarget.specification.rawValue,
       "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
       "--config-path", groceriesConfig
     ]
@@ -78,7 +103,7 @@ func mockGraphQLExample() {
   GraphQLCodegenCLICore.main(
     [
       groceriesSchema,
-      "--target", "dh-apiclient",
+      "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(groceriesOutputPath)ApiClient.swift",
       "--config-path", groceriesConfig
     ]
@@ -91,7 +116,7 @@ func mockGraphQLExample() {
   GraphQLCodegenCLICore.main(
     [
       starwarsSchema,
-      "--target", "specification",
+      "--target", CodegenTarget.specification.rawValue,
       "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
       "--config-path", starwarsConfig
     ]
@@ -99,7 +124,7 @@ func mockGraphQLExample() {
   GraphQLCodegenCLICore.main(
     [
       starwarsSchema,
-      "--target", "dh-apiclient",
+      "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
       "--config-path", starwarsConfig
     ]
