@@ -9,7 +9,7 @@ STARWARS_CONFIG = "GraphQL/starwars-config.json"
 STARWARs_OUTPUT_PREFIX = "GraphQLCodegenExample (Advanced)/StarWars/StarWars"
 
 install:
-	carthage bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
+	sh scripts/carthage-update.sh bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
 	brew tap lromyl/tap
 	brew install dh-graphql-codegen-ios
 

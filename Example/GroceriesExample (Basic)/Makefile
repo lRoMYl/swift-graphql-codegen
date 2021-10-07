@@ -4,7 +4,7 @@ GROCERIES_CONFIG = "GraphQL/groceries-config.json"
 GROCERIES_OUTPUT_PREFIX = "GroceriesExample (Basic)/Groceries/Groceries"
 
 install:
-	carthage bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
+	sh scripts/carthage-update.sh bootstrap --platform ios --cache-builds --no-use-binaries --new-resolver --use-ssh
 	brew tap lromyl/tap
 	brew install dh-graphql-codegen-ios
 

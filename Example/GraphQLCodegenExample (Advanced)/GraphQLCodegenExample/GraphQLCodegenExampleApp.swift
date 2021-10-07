@@ -72,9 +72,8 @@ extension GraphQLCodegenExampleApp {
       .subscribe(
         onSuccess: { _ in
           print("Groceries campaign query request success")
-          // print(String(describing: response))
         },
-        onError: { error in
+        onFailure: { error in
           print(error)
         }
       )
@@ -119,7 +118,7 @@ extension GraphQLCodegenExampleApp {
             }
           }
         },
-        onError: { error in
+        onFailure: { error in
           print(error)
         }
       )
@@ -141,10 +140,8 @@ extension GraphQLCodegenExampleApp {
           default:
             print("Starwars character union query request as human failed xxxx")
           }
-
-          // print(response)
         },
-        onError: { error in
+        onFailure: { error in
           print(error)
         }
       )
@@ -166,10 +163,8 @@ extension GraphQLCodegenExampleApp {
           default:
             print("Starwars character union query request as droid failed xxxx")
           }
-
-          // print(response)
         },
-        onError: { error in
+        onFailure: { error in
           print(error)
         }
       )
@@ -182,7 +177,7 @@ extension GraphQLCodegenExampleApp {
         onSuccess: { response in
           print("Starwars time query request success: \(response.rawValue)")
         },
-        onError: { error in
+        onFailure: { error in
           print(error)
         }
       )

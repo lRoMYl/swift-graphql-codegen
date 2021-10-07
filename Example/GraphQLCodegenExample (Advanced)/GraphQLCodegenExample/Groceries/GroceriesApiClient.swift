@@ -60,7 +60,7 @@ private extension GroceriesApiClient {
           metaData: apiResponse.metaData
         )
       }
-      .subscribeOn(scheduler)
+      .subscribe(on: scheduler)
   }
 }
 

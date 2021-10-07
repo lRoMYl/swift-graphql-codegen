@@ -258,7 +258,7 @@ private extension StarWarsApiClient {
           metaData: apiResponse.metaData
         )
       }
-      .subscribeOn(scheduler)
+      .subscribe(on: scheduler)
   }
 
   func executeGraphQLMutation<Response>(
@@ -275,7 +275,7 @@ private extension StarWarsApiClient {
           metaData: apiResponse.metaData
         )
       }
-      .subscribeOn(scheduler)
+      .subscribe(on: scheduler)
   }
 
   func executeGraphQLSubscription<Response>(
@@ -292,7 +292,7 @@ private extension StarWarsApiClient {
           metaData: apiResponse.metaData
         )
       }
-      .subscribeOn(scheduler)
+      .subscribe(on: scheduler)
   }
 }
 
