@@ -103,7 +103,7 @@ make codegen-groceries
 make codegen-starwars
 ```
 
-In `Basix Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
+In `Basic Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
 ```
 make codegen-groceries
 ```
@@ -112,13 +112,12 @@ make codegen-groceries
 
 ### Sample Query Code
 ```
-let parameter = QueryParameter.VendorRequestParameter(
+let request = VendorQueryRequest(
   name: "vendor name", // Argument1 is code-generated
   country: .sg,  // Argument2 is code-generated
-  selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
 )
 
-networkLibrary.fetch(with: parameter) { ... }
+repository.vendor(with: request) { ... }
 ```
 
 ---
