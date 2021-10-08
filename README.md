@@ -1,20 +1,18 @@
 # DHGraphQLCodegen [WIP]
 
-DH Swift type-safe GraphQL query builder
+DH GraphQL Codegen Tool
 - Plain Swift Types without external dependencies
-- All permutation are generated up-front with type safety are generated as GraphQL specification (struct/class)
-- Network layer agnostic, the generated code will produce the GraphQL definition without dictating the network library to be used
-- Example App include with DH flavor networking layer
+- Network layer agnostic
+  - DH flavor APIClient code generation
 
 Usage example without writing a single line of GraphQL query
 ```
-let parameter = VendorRequestParameter(
+let request = VendorQueryRequest(
   name: "vendor name", // Argument1 is code-generated
   country: .sg,  // Argument2 is code-generated
-  selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
 )
 
-networkLibrary.fetch(with: parameter) { ... }
+repository.vendor(with: request) { ... }
 ```
 
 Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
@@ -46,8 +44,9 @@ Support DH Custom Feature
 - [ ] Custom query/mutation/subscription whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
-- [x] DH flavor Repository
-- [x] Provide service dependency injection for DH flavor Repository, this is helpful to inject custom header, retry and timeout handling which is not defined in the generated code 
+- [x] DH flavor APIClient
+- [x] Provide service dependency injection for DH flavor APIClient
+- [x] DHSwift subcommand to simplify code generation
 
 ## Installation
 ```
@@ -61,44 +60,67 @@ brew install lromyl/tap/dh-graphql-codegen-ios
 ## How to use
 
 ### CLI Codegen Syntax
-**Generate graphql specification from local schema.json**
-- `--schema-source` default value is `local`, thus the file is read from local file path
-```
-dh-graphql-codegen-ios "schema.json" --action "specification" --output "name.swift"
 
-// Specific path instead of relative path
-dh-graphql-codegen-ios "/User/Download/schema.json" --action "specification" --output "path/filename.swift"
+**Download remote schema as introspection file**
+
+| Type | Name | Optional | Description | 
+| - | - | - | - |
+| argument | `schema` | No | Path or URL of the GraphQL Schema |
+| option | `--output-path` | No | The directory to generate all the files |
+| option | `--output` | Yes | The file name, default is `schema.json` |
+
+Example command
+```
+dh-graphql-codegen introspection "https://www.domain.com" --output-path "directory_name"
 ```
 
-**Generate graphql specification from remote domain**
-- Provide a remote url to fetch the schema
-- Use `remote` for `--schema-source` to indicate the schema needs to be fetched remotely
-```
-dh-graphql-codegen-ios "https://sg-st.fd-api.com/groceries-product-service/query" --schema-source "remote" --action "specification" --output "name.swift"
-```
-There are 4 actions in total, `introspection`, `entity`, `specification`, and `dh-repository`
-- `introspection` download and store the schema locally in the path provided in `--output`
-- `entity` generate the base code for all GraphQL entities, if you have multiple namespace you only need to generate the entity code once as the code is shared across all classes
-- `specification` generate the GraphQL specification code
--  `dh-repository` generate custom dh-flavor repository code
+---
 
-**Providing custom config**
-- Use `--config-path` to provide the location of config file
-- Look at Sample Config file for more info 
+**Generate GraphQL files**
+
+| Type | Name | Optional | Description | 
+| - | - | - | - |
+| argument | schema | No | Path or URL of the GraphQL Schema |
+| option | `--output-path` | No | The directory to generate all the files |
+| option | `--api-client-prefix` | No | The prefix to generate ApiClient related files, this will affect the folders and class name |
+| option | `--schema-source`| Yes | Source of the schema, `local` and `remote` |
+| option | `--config-path` | Yes | File path of the configuration |
+
+There are other optional option that can be used to manipulate the generated file names, type `dh-graphql-codegen dh-swift --help` command to see the full list
+
+Example command
 ```
-dh-graphql-codegen-ios "schema.json" --config-path "config.json" --output "name.swift"
+dh-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
 ```
+---
+
+### Example App
+In both of the example app, just run `make install` command to install all the dependencies from carthage
+
+In `Advanced Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen graph-ql-codengen` using all the option to customize the output
+```
+make codegen-groceries
+make codegen-starwars
+```
+
+In `Basic Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
+```
+make codegen-groceries
+```
+
+---
 
 ### Sample Query Code
 ```
-let parameter = QueryParameter.VendorRequestParameter(
+let request = VendorQueryRequest(
   name: "vendor name", // Argument1 is code-generated
   country: .sg,  // Argument2 is code-generated
-  selections: .init(vendorSelection: [.name, .isOpen]) // Selections is code-generated for all request, you can use autocomplete for the argument
 )
 
-networkLibrary.fetch(with: parameter) { ... }
+repository.vendor(with: request) { ... }
 ```
+
+---
 
 ### Sample Config File
 - A JSON file that can be passed into the CLI using `--config-path` 
@@ -131,11 +153,16 @@ networkLibrary.fetch(with: parameter) { ... }
   }
 }
 ```
+
+---
+
 ### Sample App
 - install all dh carthage dependencies
 - run `make install` to install dh-graphlq-codegen-ios
 - Build the example app, it will attempt to run the make script on each build phases to generate the latest GraphQL specification
 - Look at example app `Makefile` for more examples to use the dh-graphql-codegen-ios
+
+---
 
 # Troubleshooting
 
