@@ -91,7 +91,7 @@ extension GraphQLCodegenCLI {
           ]
         )
 
-        GraphQLCodegenCLI.GraphQLCodegen.main(arguments)
+        GraphQLCodegenCLI.Codegen.main(arguments)
       case .introspection:
         print("Warning, introspection target is not valid for `dh-swift` subcommand")
         break
@@ -103,7 +103,7 @@ extension GraphQLCodegenCLI {
           "--output", "\(basePath)\(apiClientOutput)"
         ]
 
-        GraphQLCodegenCLI.GraphQLCodegen.main(dhApiClientArguments)
+        GraphQLCodegenCLI.Codegen.main(dhApiClientArguments)
       case .dhApiClient:
         let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
 
@@ -112,7 +112,7 @@ extension GraphQLCodegenCLI {
           "--output", "\(basePath)\(specificationOutput)"
         ]
 
-        GraphQLCodegenCLI.GraphQLCodegen.main(specificiationArguments)
+        GraphQLCodegenCLI.Codegen.main(specificiationArguments)
       }
     }
   }

@@ -46,7 +46,7 @@ extension GraphQLCodegenCLI {
         ]
       )
 
-      GraphQLCodegenCLI.GraphQLCodegen.main(arguments)
+      GraphQLCodegenCLI.Codegen.main(arguments)
     }
   }
 }
