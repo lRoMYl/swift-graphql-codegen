@@ -20,7 +20,7 @@ struct GraphQLCodegenExampleApp: App {
 
     let apiClient = GroceriesApiClient(
       restClient: restClient,
-      resourceParametersProvider: GroceriesResourceParametersProvider()
+      resourceParametersConfigurator: GroceriesResourceParametersConfigurator()
     )
     let repository = GroceriesRepository(apiClient: apiClient)
 
@@ -35,7 +35,7 @@ struct GraphQLCodegenExampleApp: App {
 
     let apiClient = StarWarsApiClient(
       restClient: restClient,
-      resourceParametersProvider: nil
+      resourceParametersConfigurator: nil
     )
     let repository = StarWarsRepository(apiClient: apiClient)
 
@@ -60,11 +60,7 @@ extension GraphQLCodegenExampleApp {
     let parameters = CampaignsQueryRequest(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
-      locale: "en_SG",
-      languageId: "1",
-      languageCode: "en",
-      apiKey: "iQis4oC8Y4DxHiO5",
-      discoClientId: "iOS"
+      locale: "en_SG"
     )
 
     groceriesRepository

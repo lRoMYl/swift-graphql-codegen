@@ -37,7 +37,8 @@ struct ResourceParametersGenerator: Generating {
     let resourceParametersName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
     let resourceBodyParametersName = entityNameMap.resourceBodyParametersName(apiClientPrefix: nil)
     let resourceBodyParametersNameWithPrefix = entityNameMap.resourceBodyParametersName(apiClientPrefix: apiClientPrefix)
-    let resourceParameterProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
+    let resourceParameterConfigurating = entityNameMap.resourceParametersConfiguratingName(apiClientPrefix: apiClientPrefix)
+    let resourceParameterConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
     let selectionsName = entityNameMap.selections
     let requestParameterName = entityNameMap.requestParameter
 
@@ -45,7 +46,7 @@ struct ResourceParametersGenerator: Generating {
 
     // MARK: - \(resourceParametersName)
 
-    protocol \(resourceParameterProviding) {
+    protocol \(resourceParameterConfigurating) {
       func servicePath(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> String
       func headers(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> [String: String]?
       func timeoutInterval(with bodyParameters: \(resourceBodyParametersNameWithPrefix)) -> TimeInterval?
@@ -75,14 +76,14 @@ struct ResourceParametersGenerator: Generating {
         }
       }
 
-      private let provider: \(resourceParameterProviding)?
+      private let \(resourceParameterConfiguratorVariable): \(resourceParameterConfigurating)?
       private let resourceBodyParameters: \(resourceBodyParametersName)
 
       init(
-        provider: \(resourceParameterProviding)?,
+        \(resourceParameterConfiguratorVariable): \(resourceParameterConfigurating)?,
         resourceBodyParameters: \(resourceBodyParametersName)
       ) {
-        self.provider = provider
+        self.\(resourceParameterConfiguratorVariable) = \(resourceParameterConfiguratorVariable)
         self.resourceBodyParameters = resourceBodyParameters
       }
 
@@ -95,23 +96,23 @@ struct ResourceParametersGenerator: Generating {
       }
 
       func servicePath() -> String {
-        provider?.servicePath(with: resourceBodyParameters) ?? ""
+        \(resourceParameterConfiguratorVariable)?.servicePath(with: resourceBodyParameters) ?? ""
       }
 
       func headers() -> [String: String]? {
-        provider?.headers(with: resourceBodyParameters) ?? nil
+        \(resourceParameterConfiguratorVariable)?.headers(with: resourceBodyParameters) ?? nil
       }
 
       func timeoutInterval() -> TimeInterval? {
-        provider?.timeoutInterval(with: resourceBodyParameters) ?? nil
+        \(resourceParameterConfiguratorVariable)?.timeoutInterval(with: resourceBodyParameters) ?? nil
       }
 
       func preventRetry() -> Bool {
-        provider?.preventRetry(with: resourceBodyParameters) ?? false
+        \(resourceParameterConfiguratorVariable)?.preventRetry(with: resourceBodyParameters) ?? false
       }
 
       func preventAddingLanguageParameters() -> Bool {
-        provider?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
+        \(resourceParameterConfiguratorVariable)?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
       }
 
       func bodyParameters() -> Any? {

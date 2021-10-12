@@ -9,7 +9,7 @@ import RxSwift
 protocol GroceriesApiClientProtocol {
   func campaigns(
     with request: CampaignsQueryRequest,
-    selections: CampaignsQueryRequestGraphQLSelections
+    selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
@@ -18,24 +18,24 @@ protocol GroceriesApiClientProtocol {
 final class GroceriesApiClient: GroceriesApiClientProtocol {
   private let restClient: RestClient
   private let scheduler: SchedulerType
-  private let resourceParametersProvider: GroceriesResourceParametersProviding?
+  private let resourceParametersConfigurator: GroceriesResourceParametersConfigurating?
 
   init(
     restClient: RestClient,
     scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-    resourceParametersProvider: GroceriesResourceParametersProviding? = nil
+    resourceParametersConfigurator: GroceriesResourceParametersConfigurating? = nil
   ) {
     self.restClient = restClient
     self.scheduler = scheduler
-    self.resourceParametersProvider = resourceParametersProvider
+    self.resourceParametersConfigurator = resourceParametersConfigurator
   }
 
   func campaigns(
     with request: CampaignsQueryRequest,
-    selections: CampaignsQueryRequestGraphQLSelections
+    selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>> {
-    let resource = GroceriesResourceParameters(
-      provider: resourceParametersProvider,
+    let resource = GroceriesResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
       resourceBodyParameters: .queryCampaigns(request: request, selections: selections)
     )
 
@@ -64,19 +64,19 @@ private extension GroceriesApiClient {
   }
 }
 
-// MARK: - GroceriesResourceParameters
+// MARK: - GroceriesResourceParametersProvider
 
-protocol GroceriesResourceParametersProviding {
-  func servicePath(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> String
-  func headers(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]?
-  func timeoutInterval(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval?
-  func preventRetry(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
-  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
+protocol GroceriesResourceParametersConfigurating {
+  func servicePath(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> String
+  func headers(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> [String: String]?
+  func timeoutInterval(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> TimeInterval?
+  func preventRetry(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> Bool
 }
 
-struct GroceriesResourceParameters: ResourceParameters {
+struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
-    case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
+    case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestSelections)
 
     func bodyParameters() -> Any? {
       switch self {
@@ -97,14 +97,14 @@ struct GroceriesResourceParameters: ResourceParameters {
     }
   }
 
-  private let provider: GroceriesResourceParametersProviding?
+  private let resourceParametersConfigurator: GroceriesResourceParametersConfigurating?
   private let resourceBodyParameters: BodyParameters
 
   init(
-    provider: GroceriesResourceParametersProviding?,
+    resourceParametersConfigurator: GroceriesResourceParametersConfigurating?,
     resourceBodyParameters: BodyParameters
   ) {
-    self.provider = provider
+    self.resourceParametersConfigurator = resourceParametersConfigurator
     self.resourceBodyParameters = resourceBodyParameters
   }
 
@@ -117,23 +117,23 @@ struct GroceriesResourceParameters: ResourceParameters {
   }
 
   func servicePath() -> String {
-    provider?.servicePath(with: resourceBodyParameters) ?? ""
+    resourceParametersConfigurator?.servicePath(with: resourceBodyParameters) ?? ""
   }
 
   func headers() -> [String: String]? {
-    provider?.headers(with: resourceBodyParameters) ?? nil
+    resourceParametersConfigurator?.headers(with: resourceBodyParameters) ?? nil
   }
 
   func timeoutInterval() -> TimeInterval? {
-    provider?.timeoutInterval(with: resourceBodyParameters) ?? nil
+    resourceParametersConfigurator?.timeoutInterval(with: resourceBodyParameters) ?? nil
   }
 
   func preventRetry() -> Bool {
-    provider?.preventRetry(with: resourceBodyParameters) ?? false
+    resourceParametersConfigurator?.preventRetry(with: resourceBodyParameters) ?? false
   }
 
   func preventAddingLanguageParameters() -> Bool {
-    provider?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
+    resourceParametersConfigurator?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
   }
 
   func bodyParameters() -> Any? {

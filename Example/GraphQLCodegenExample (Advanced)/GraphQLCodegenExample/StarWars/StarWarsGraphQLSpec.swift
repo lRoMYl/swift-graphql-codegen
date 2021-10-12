@@ -540,7 +540,7 @@ enum HumanSelection: String, GraphQLSelection {
 
 // MARK: - Selections
 
-struct HumanStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct HumanStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -590,7 +590,7 @@ struct HumanStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct DroidStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct DroidStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -636,7 +636,7 @@ struct DroidStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct CharacterStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct CharacterStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -705,7 +705,7 @@ struct CharacterStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct LukeStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct LukeStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -751,7 +751,7 @@ struct LukeStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct HumansStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct HumansStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -797,7 +797,7 @@ struct HumansStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct DroidsStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct DroidsStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -839,7 +839,7 @@ struct DroidsStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct CharactersStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct CharactersStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -906,7 +906,7 @@ struct CharactersStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct GreetingStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct GreetingStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -935,7 +935,7 @@ struct GreetingStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct WhoamiStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct WhoamiStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -960,7 +960,7 @@ struct WhoamiStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct TimeStarWarsQueryGraphQLSelections: GraphQLSelections {
+struct TimeStarWarsQuerySelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -985,7 +985,7 @@ struct TimeStarWarsQueryGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct MutateStarWarsMutationGraphQLSelections: GraphQLSelections {
+struct MutateStarWarsMutationSelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
@@ -1010,7 +1010,7 @@ struct MutateStarWarsMutationGraphQLSelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct NumberStarWarsSubscriptionGraphQLSelections: GraphQLSelections {
+struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """

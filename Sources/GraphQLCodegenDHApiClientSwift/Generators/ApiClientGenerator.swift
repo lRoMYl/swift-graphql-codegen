@@ -39,7 +39,8 @@ struct ApiClientGenerator: Generating {
   }
 
   func code(schema: Schema) throws -> String {
-    let resourceParametersProviding = entityNameMap.resourceParametersProvidingName(apiClientPrefix: apiClientPrefix)
+    let resourceParametersConfigurating = entityNameMap.resourceParametersConfiguratingName(apiClientPrefix: apiClientPrefix)
+    let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
 
     return """
     \(try protocolCode(with: schema.operations))
@@ -49,16 +50,16 @@ struct ApiClientGenerator: Generating {
     final class \(apiClientName): \(apiClientProtocolName) {
       private let restClient: RestClient
       private let scheduler: SchedulerType
-      private let resourceParametersProvider: \(resourceParametersProviding)?
+      private let \(resourceParametersConfiguratorVariable): \(resourceParametersConfigurating)?
 
       init(
         restClient: RestClient,
         scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-        resourceParametersProvider: \(resourceParametersProviding)? = nil
+        \(resourceParametersConfiguratorVariable): \(resourceParametersConfigurating)? = nil
       ) {
         self.restClient = restClient
         self.scheduler = scheduler
-        self.resourceParametersProvider = resourceParametersProvider
+        self.\(resourceParametersConfiguratorVariable) = \(resourceParametersConfiguratorVariable)
       }
 
       \(try schema.operations.map { try funcCode(with: $0).lines }.lines)
@@ -98,12 +99,13 @@ extension ApiClientGenerator {
     let codes: [String] = try operation.type.fields.map {
       let funcSignature = try funcSignatureCode(field: $0, operation: operation)
       let resourceParameterName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
+      let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
       let enumName = $0.enumName(with: operation)
 
       return """
       \(funcSignature) {
         let resource = \(resourceParameterName)(
-          provider: resourceParametersProvider,
+          \(resourceParametersConfiguratorVariable): \(resourceParametersConfiguratorVariable),
           resourceBodyParameters: .\(enumName)(request: request, selections: selections)
         )
 
