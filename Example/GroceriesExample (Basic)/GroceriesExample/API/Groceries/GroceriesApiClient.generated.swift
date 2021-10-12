@@ -34,7 +34,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestGraphQLSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>> {
-    let resource = GroceriesResourceParameters(
+    let resource = GroceriesResourceParametersProvider(
       provider: resourceParametersProvider,
       resourceBodyParameters: .queryCampaigns(request: request, selections: selections)
     )
@@ -64,17 +64,17 @@ private extension GroceriesApiClient {
   }
 }
 
-// MARK: - GroceriesResourceParameters
+// MARK: - GroceriesResourceParametersProvider
 
 protocol GroceriesResourceParametersProviding {
-  func servicePath(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> String
-  func headers(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> [String: String]?
-  func timeoutInterval(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> TimeInterval?
-  func preventRetry(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
-  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParameters.BodyParameters) -> Bool
+  func servicePath(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> String
+  func headers(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> [String: String]?
+  func timeoutInterval(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> TimeInterval?
+  func preventRetry(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> Bool
+  func preventAddingLanguageParameters(with bodyParameters: GroceriesResourceParametersProvider.BodyParameters) -> Bool
 }
 
-struct GroceriesResourceParameters: ResourceParameters {
+struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
     case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
 

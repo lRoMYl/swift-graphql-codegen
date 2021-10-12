@@ -12,7 +12,7 @@ extension EntityNameMap {
     // Prefix cannot be empty due to name collision with ApiClient.ResourceParameters
     let prefix = resourceParametersPrefix(apiClientPrefix: apiClientPrefix)
 
-    return "\(prefix)ResourceParameters"
+    return "\(prefix)ResourceParametersProvider"
   }
 
   func resourceParametersProvidingName(apiClientPrefix: String) -> String {

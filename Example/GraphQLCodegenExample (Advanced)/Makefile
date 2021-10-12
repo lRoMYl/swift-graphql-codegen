@@ -23,7 +23,7 @@ codegen-groceries:
 	dh-graphql-codegen graph-ql-codegen $(GROCERIES_URL) --target "introspection" --schema-source "remote" --output $(GROCERIES_SCHEMA) --config-path $(GROCERIES_CONFIG)
 
 	# Generate groceries GraphQL specification file from local schema
-	dh-graphql-codegen graph-ql-codegen $(GROCERIES_SCHEMA) --target "specification" --output "$(GROCERIES_OUTPUT_PREFIX)GraphQLNetworkModels.swift" --config-path $(GROCERIES_CONFIG)
+	dh-graphql-codegen graph-ql-codegen $(GROCERIES_SCHEMA) --target "specification" --output "$(GROCERIES_OUTPUT_PREFIX)NetworkModels.swift" --config-path $(GROCERIES_CONFIG)
 
 	# Generate groceries ApiClient file from local schema
 	dh-graphql-codegen graph-ql-codegen $(GROCERIES_SCHEMA) --target "dh-apiclient" --output "$(GROCERIES_OUTPUT_PREFIX)ApiClient.swift" --config-path $(GROCERIES_CONFIG)

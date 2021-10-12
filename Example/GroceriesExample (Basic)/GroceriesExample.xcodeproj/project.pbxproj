@@ -12,8 +12,6 @@
 		F8580798270D54AA00947AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8580797270D54AA00947AD3 /* Assets.xcassets */; };
 		F858079B270D54AA00947AD3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F858079A270D54AA00947AD3 /* Preview Assets.xcassets */; };
 		F85807B6270D669B00947AD3 /* GraphQLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807B3270D669B00947AD3 /* GraphQLEntities.swift */; };
-		F85807BE270D67EF00947AD3 /* GroceriesApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */; };
-		F85807BF270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */; };
 		F85807CB270D690700947AD3 /* ApiClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85807C2270D682400947AD3 /* ApiClient.framework */; };
 		F85807CC270D690700947AD3 /* ApiClient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F85807C2270D682400947AD3 /* ApiClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F85807CF270D693400947AD3 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85807CE270D693400947AD3 /* Alamofire.framework */; };
@@ -22,6 +20,8 @@
 		F85807D3270D6AAD00947AD3 /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F85807D1270D6AAD00947AD3 /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F85807D5270D6AE800947AD3 /* GroceriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */; };
 		F85807D7270D6B2200947AD3 /* GroceriesWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */; };
+		F8B5E9F02715319D00FD91BE /* GroceriesNetworkModels.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B5E9EE2715319D00FD91BE /* GroceriesNetworkModels.generated.swift */; };
+		F8B5E9F12715319D00FD91BE /* GroceriesApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B5E9EF2715319D00FD91BE /* GroceriesApiClient.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,13 +48,13 @@
 		F858079A270D54AA00947AD3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F858079C270D54AA00947AD3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F85807B3270D669B00947AD3 /* GraphQLEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntities.swift; sourceTree = "<group>"; };
-		F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.swift; sourceTree = "<group>"; };
-		F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLNetworkModels.swift; sourceTree = "<group>"; };
 		F85807C2270D682400947AD3 /* ApiClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApiClient.framework; path = Carthage/Build/iOS/ApiClient.framework; sourceTree = "<group>"; };
 		F85807CE270D693400947AD3 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		F85807D1270D6AAD00947AD3 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesRepository.swift; sourceTree = "<group>"; };
 		F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesWebService.swift; sourceTree = "<group>"; };
+		F8B5E9EE2715319D00FD91BE /* GroceriesNetworkModels.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesNetworkModels.generated.swift; sourceTree = "<group>"; };
+		F8B5E9EF2715319D00FD91BE /* GroceriesApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.generated.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,8 +131,8 @@
 			children = (
 				F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */,
 				F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */,
-				F85807BC270D67EF00947AD3 /* GroceriesApiClient.swift */,
-				F85807BD270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift */,
+				F8B5E9EF2715319D00FD91BE /* GroceriesApiClient.generated.swift */,
+				F8B5E9EE2715319D00FD91BE /* GroceriesNetworkModels.generated.swift */,
 			);
 			path = Groceries;
 			sourceTree = "<group>";
@@ -218,12 +218,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F85807B6270D669B00947AD3 /* GraphQLEntities.swift in Sources */,
+				F8B5E9F12715319D00FD91BE /* GroceriesApiClient.generated.swift in Sources */,
+				F8B5E9F02715319D00FD91BE /* GroceriesNetworkModels.generated.swift in Sources */,
 				F85807D7270D6B2200947AD3 /* GroceriesWebService.swift in Sources */,
 				F85807D5270D6AE800947AD3 /* GroceriesRepository.swift in Sources */,
 				F8580796270D54AA00947AD3 /* ContentView.swift in Sources */,
 				F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */,
-				F85807BF270D67EF00947AD3 /* GroceriesGraphQLNetworkModels.swift in Sources */,
-				F85807BE270D67EF00947AD3 /* GroceriesApiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

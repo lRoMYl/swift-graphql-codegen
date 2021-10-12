@@ -31,8 +31,8 @@ extension GraphQLCodegenCLI {
       Location of the output files
       e.g. outputPath = "root/"
       - entity will be generated in `Core` directory "root/Core/GraphhQLEntities.swift"
-      - ApiClient will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixApiClient.swift"
-      - NetworkModesl will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixGraphQLNetworkModels.swift"
+      - ApiClient will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixApiClient.generated.swift"
+      - NetworkModesl will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixNetworkModels.generated.swift"
       """
     )
     var outputPath: String
@@ -41,13 +41,13 @@ extension GraphQLCodegenCLI {
     var introspectionOutput: String = "schema.json"
 
     @Option
-    var entityOutput: String = "Core/GraphQLEntities.swift"
+    var entityOutput: String = "Core/GraphQLEntities.generated.swift"
 
     @Option
-    var specificationOutput: String = "GraphQLNetworkModels.swift"
+    var specificationOutput: String = "NetworkModels.generated.swift"
 
     @Option
-    var apiClientOutput: String = "ApiClient.swift"
+    var apiClientOutput: String = "ApiClient.generated.swift"
 
     @Option
     var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient]
