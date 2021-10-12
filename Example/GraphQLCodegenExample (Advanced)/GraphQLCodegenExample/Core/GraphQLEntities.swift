@@ -16,6 +16,16 @@ protocol GraphQLSelections {
   var operationDefinition: String { get }
 }
 
+extension Set where Element: GraphQLSelection {
+  static var requiredFields: Set<Element> {
+    []
+  }
+
+  static var allFields: Set<Element> {
+    Set(Element.allCases)
+  }
+}
+
 // MARK: - Enum
 
 enum GraphQLRequestType {

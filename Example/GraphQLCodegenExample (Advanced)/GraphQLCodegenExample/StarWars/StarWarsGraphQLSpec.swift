@@ -584,7 +584,10 @@ struct HumanStarWarsQuerySelections: GraphQLSelections {
       "HumanFragment": humanSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "HumanFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "HumanFragment"
+    )
   }
 }
 
@@ -630,7 +633,10 @@ struct DroidStarWarsQuerySelections: GraphQLSelections {
       "DroidFragment": droidSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "DroidFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "DroidFragment"
+    )
   }
 }
 
@@ -699,7 +705,10 @@ struct CharacterStarWarsQuerySelections: GraphQLSelections {
       "HumanFragment": humanSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterUnionFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "CharacterUnionFragment"
+    )
   }
 }
 
@@ -745,7 +754,10 @@ struct LukeStarWarsQuerySelections: GraphQLSelections {
       "HumanFragment": humanSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "HumanFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "HumanFragment"
+    )
   }
 }
 
@@ -791,7 +803,10 @@ struct HumansStarWarsQuerySelections: GraphQLSelections {
       "HumanFragment": humanSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "HumanFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "HumanFragment"
+    )
   }
 }
 
@@ -833,7 +848,10 @@ struct DroidsStarWarsQuerySelections: GraphQLSelections {
       "DroidFragment": droidSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "DroidFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "DroidFragment"
+    )
   }
 }
 
@@ -900,7 +918,10 @@ struct CharactersStarWarsQuerySelections: GraphQLSelections {
       "HumanFragment": humanSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CharacterFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "CharacterFragment"
+    )
   }
 }
 

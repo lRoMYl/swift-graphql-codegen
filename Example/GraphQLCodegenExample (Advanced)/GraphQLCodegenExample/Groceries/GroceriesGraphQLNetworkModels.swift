@@ -390,6 +390,9 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
       "ProductDealFragment": productDealSelectionsDeclaration
     ]
 
-    return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "CampaignsFragment")
+    return declaration(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKey: "CampaignsFragment"
+    )
   }
 }

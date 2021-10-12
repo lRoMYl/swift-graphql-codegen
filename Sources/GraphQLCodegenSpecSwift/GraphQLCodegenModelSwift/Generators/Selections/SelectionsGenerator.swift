@@ -275,7 +275,10 @@ extension SelectionsGenerator {
 
         \(selectionDeclarationMap)
 
-        return declaration(selectionDeclarationMap: selectionDeclarationMap, rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment")
+        return declaration(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment"
+        )
       }
     }
     """
@@ -357,12 +360,13 @@ extension SelectionsGenerator {
         schemaMap: schemaMap
       )
 
-      let requiredFields = structure?
-        .requiredFields(selectionMap: selectionMap)
-        .map {
-          "\t" + $0.name
-        }
-        .lines ?? ""
+//      let requiredFields = structure?
+//        .requiredFields(selectionMap: selectionMap)
+//        .map {
+//          "\t" + $0.name
+//        }
+//        .lines ?? ""
+      let requiredFields = "\t\\(\(try entityNameProvider.selectionName(for: $0.value)).requiredDeclaration)"
 
       let returnTypeSelectableFields = try $0.value.returnTypeSelectableFields(
         schemaMap: schemaMap,
@@ -430,7 +434,7 @@ extension SelectionsGenerator {
     let arguments = try filteredElements.map {
       let selectionName = try entityNameProvider.selectionName(for: $0.value)
       let variableName = try self.variableName(for: $0.value)
-      return "\(variableName): Set<\(selectionName)> = []"
+      return "\(variableName): Set<\(selectionName)> = .allFields"
     }.joined(separator: ",\n")
     let assignments = filteredElements.map {
       let argumentName = $0.key.camelCase

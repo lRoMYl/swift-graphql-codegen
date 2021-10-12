@@ -22,13 +22,16 @@ final class GroceriesRepository {
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<CampaignsResponseModel?> {
-    apiClient.campaigns(with: parameters, selections: .init())
-      .map {
-        guard let campaigns = $0.data?.campaigns else {
-          throw GroceriesRepositoryError.missingData
-        }
-
-        return campaigns
+    apiClient.campaigns(
+      with: parameters,
+      selections: .init()
+    )
+    .map {
+      guard let campaigns = $0.data?.campaigns else {
+        throw GroceriesRepositoryError.missingData
       }
+
+      return campaigns
+    }
   }
 }

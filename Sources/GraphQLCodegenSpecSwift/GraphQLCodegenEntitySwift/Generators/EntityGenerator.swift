@@ -30,7 +30,9 @@ struct EntityGenerator: GraphQLCodeGenerating {
       var requestType: \(entityNameMap.requestType) { get }
     }
 
-    protocol \(entityNameMap.selection): RawRepresentable, Hashable, CaseIterable where RawValue == String {}
+    protocol \(entityNameMap.selection): Hashable, CaseIterable {
+      static var requiredDeclaration: String { get }
+    }
     protocol \(entityNameMap.selections) {
       func declaration() -> String
       var operationDefinition: String { get }
@@ -88,13 +90,23 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     // MARK: - \(entityNameMap.selection)+Declaration
 
-    extension Collection where Element: \(entityNameMap.selection) {
+    extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
       var declaration: String {
-        if count == 0 {
+        if Element.requiredDeclaration.isEmpty, count == 0 {
           return Element.allCases.reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
         } else {
           return reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
         }
+      }
+    }
+
+    extension Set where Element: GraphQLSelection {
+      static var requiredFields: Set<Element> {
+        []
+      }
+
+      static var allFields: Set<Element> {
+        Set(Element.allCases)
       }
     }
 
