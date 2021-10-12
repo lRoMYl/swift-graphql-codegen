@@ -8,7 +8,7 @@
 import Foundation
 
 public struct ConfigResponse: Decodable {
-  public let apiHeaders: [String: String]?
+  public let schemaApiHeaders: [String: String]?
   public let scalarMap: ScalarMapResponse?
   public let selectionMap: SelectionMapResponse?
   public let entityNameMap: EntityNameMapResponse?
@@ -17,10 +17,10 @@ public struct ConfigResponse: Decodable {
 public extension ConfigResponse {
   /// Use current value as default and @configResponse parameter to override current value if it exists
   func merging(configResponse: ConfigResponse) -> ConfigResponse {
-    let mergedApiHeaders = apiHeaders?.merging(
-      configResponse.apiHeaders ?? [:],
+    let mergedSchemaApiHeaders = schemaApiHeaders?.merging(
+      configResponse.schemaApiHeaders ?? [:],
       uniquingKeysWith: { $1 }
-    ) ?? configResponse.apiHeaders
+    ) ?? configResponse.schemaApiHeaders
     let mergedScalarMap = scalarMap?.merging(
       configResponse.scalarMap ?? [:],
       uniquingKeysWith: { $1 }
@@ -36,7 +36,7 @@ public extension ConfigResponse {
     ) ?? configResponse.entityNameMap
 
     return ConfigResponse(
-      apiHeaders: mergedApiHeaders,
+      schemaApiHeaders: mergedSchemaApiHeaders,
       scalarMap: mergedScalarMap,
       selectionMap: mergedSelectionMap,
       entityNameMap: mergedEntityNameMap

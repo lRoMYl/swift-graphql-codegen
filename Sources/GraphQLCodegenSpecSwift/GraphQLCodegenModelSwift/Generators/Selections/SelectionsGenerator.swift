@@ -256,6 +256,7 @@ extension SelectionsGenerator {
     let selectionDeclarationMap = self.selectionDeclarationMap(fieldMaps: fieldMaps)
     let memberwiseInitializerDeclaration = try self.memberwiseInitializerDeclaration(
       fieldMaps: fieldMaps,
+      operation: operation,
       schemaMap: schemaMap
     )
 
@@ -313,8 +314,6 @@ private extension ObjectType {
 
 extension SelectionsGenerator {
   func selectionDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
-    let returnName = try field.type.namedType.scalarType(scalarMap: scalarMap)
-
     let fields = try field.returnTypeSelectableFields(
       schemaMap: schemaMap,
       selectionMap: selectionMap
@@ -324,8 +323,8 @@ extension SelectionsGenerator {
       return ""
     }
 
-    let selectionVariableName = "\(returnName.camelCase)Selections"
-    let selectionEnumName = "\(returnName.pascalCase)Selection"
+    let selectionVariableName = try variableName(for: field)
+    let selectionEnumName = try entityNameProvider.selectionName(for: field)
 
     let result = """
     let \(selectionVariableName): Set<\(selectionEnumName)>
@@ -410,6 +409,7 @@ extension SelectionsGenerator {
 
   func memberwiseInitializerDeclaration(
     fieldMaps: [FieldMap.Element],
+    operation: GraphQLAST.Operation,
     schemaMap: SchemaMap
   ) throws -> String {
     let filteredElements = try fieldMaps.compactMap { element -> FieldMap.Element? in
@@ -427,8 +427,10 @@ extension SelectionsGenerator {
       return "init() {}"
     }
 
-    let arguments = filteredElements.map {
-      "\($0.key.camelCase)Selections: Set<\($0.value.type.namedType.name)Selection> = []"
+    let arguments = try filteredElements.map {
+      let selectionName = try entityNameProvider.selectionName(for: $0.value)
+      let variableName = try self.variableName(for: $0.value)
+      return "\(variableName): Set<\(selectionName)> = []"
     }.joined(separator: ",\n")
     let assignments = filteredElements.map {
       let argumentName = $0.key.camelCase
@@ -460,5 +462,15 @@ extension SelectionsGenerator {
       \(selectionDeclarationMapValues)
     ]
     """
+  }
+}
+
+// MARK: - Naming
+
+private extension SelectionsGenerator {
+  func variableName(for field: Field) throws -> String {
+    let returnName = try field.type.namedType.scalarType(scalarMap: scalarMap)
+
+    return "\(returnName.camelCase)Selections"
   }
 }

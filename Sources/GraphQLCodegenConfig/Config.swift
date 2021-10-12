@@ -8,18 +8,18 @@
 import Foundation
 
 public struct Config {
-  public let apiHeaders: [String: String]?
+  public let schemaApiHeaders: [String: String]?
   public let scalarMap: ScalarMap?
   public let selectionMap: SelectionMap?
   public let entityNameMap: EntityNameMap?
 
   public init(
-    apiHeaders: [String: String]?,
+    schemaApiHeaders: [String: String]?,
     scalarMap: ScalarMap?,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap?
   ) {
-    self.apiHeaders = apiHeaders
+    self.schemaApiHeaders = schemaApiHeaders
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
@@ -28,7 +28,7 @@ public struct Config {
   public init(
     response: ConfigResponse
   ) {
-    let apiHeaders = response.apiHeaders
+    let schemaApiHeaders = response.schemaApiHeaders
     let scalarMap: ScalarMap?
     let selectionMap: SelectionMap?
     let entityNameMap: EntityNameMap?
@@ -52,7 +52,7 @@ public struct Config {
     }
 
     self.init(
-      apiHeaders: apiHeaders,
+      schemaApiHeaders: schemaApiHeaders,
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap

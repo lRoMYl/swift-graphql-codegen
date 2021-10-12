@@ -117,7 +117,7 @@ private extension GraphQLCodegenCLI.Codegen {
 
     switch target {
     case .introspection:
-      generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.apiHeaders).1
+      generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.schemaApiHeaders).1
     case .dhApiClient:
       let schema = try fetchSchema(with: config)
       let generatedCode = try codegen.repositoryCode(schema: schema)

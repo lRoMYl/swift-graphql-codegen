@@ -48,6 +48,7 @@ struct SelectionGenerator: GraphQLCodeGenerating {
 
 extension SelectionGenerator {
   func selectionDeclaration(objectType: ObjectType, schemaMap _: SchemaMap) throws -> String {
+    let selectionName = try entityNameProvider.selectionName(for: objectType)
     let fields = objectType.selectableFields(selectionMap: selectionMap)
 
     guard !objectType.isOperation, !fields.isEmpty else {
@@ -59,7 +60,7 @@ extension SelectionGenerator {
     }.lines
 
     return """
-    enum \(objectType.name.pascalCase)Selection: String, \(entityNameMap.selection) {
+    enum \(selectionName): String, \(entityNameMap.selection) {
       \(enumCasesCode)
     }
     """

@@ -9,7 +9,7 @@ import RxSwift
 protocol GroceriesApiClientProtocol {
   func campaigns(
     with request: CampaignsQueryRequest,
-    selections: CampaignsQueryRequestGraphQLSelections
+    selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
@@ -32,7 +32,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 
   func campaigns(
     with request: CampaignsQueryRequest,
-    selections: CampaignsQueryRequestGraphQLSelections
+    selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>> {
     let resource = GroceriesResourceParametersProvider(
       provider: resourceParametersProvider,
@@ -76,7 +76,7 @@ protocol GroceriesResourceParametersProviding {
 
 struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
-    case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestGraphQLSelections)
+    case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestSelections)
 
     func bodyParameters() -> Any? {
       switch self {

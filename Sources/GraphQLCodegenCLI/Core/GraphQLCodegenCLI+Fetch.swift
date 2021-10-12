@@ -16,7 +16,7 @@ extension GraphQLCodegenCLI.Codegen {
     case .local:
       return try fetchLocalSchema()
     case .remote:
-      return try fetchRemoteSchema(apiHeaders: config?.apiHeaders).0
+      return try fetchRemoteSchema(apiHeaders: config?.schemaApiHeaders).0
     }
   }
 

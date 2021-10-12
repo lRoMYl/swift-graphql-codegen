@@ -10,6 +10,12 @@ import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
 public final class DHEntityNameProvider: EntityNameProviding {
+  private enum Constants {
+    static let selectionPostFix = "Selection"
+    static let selectionsPostFix = "Selections"
+    static let responsePostFix = "Response"
+  }
+
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
 
@@ -73,13 +79,20 @@ public final class DHEntityNameProvider: EntityNameProviding {
   }
 
   public func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
-    "\(field.name.pascalCase)\(operation.type.name.pascalCase)Response"
+    "\(field.name.pascalCase)\(operation.type.name.pascalCase)\(Constants.responsePostFix)"
+  }
+
+  public func selectionName(for objectType: ObjectType) throws -> String {
+    "\(objectType.name.pascalCase)\(Constants.selectionPostFix)"
+  }
+
+  public func selectionName(for field: Field) throws -> String {
+    "\(field.type.namedType.name.pascalCase)\(Constants.selectionPostFix)"
   }
 
   public func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let entityName = entityNameMap.selections
     let operationTypeName = operation.type(entityNameMap: entityNameMap)
 
-    return "\(field.name.pascalCase)\(operationTypeName)\(entityName)"
+    return "\(field.name.pascalCase)\(operationTypeName)\(Constants.selectionsPostFix)"
   }
 }

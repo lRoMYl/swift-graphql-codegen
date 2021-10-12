@@ -321,7 +321,7 @@ enum ProductDealSelection: String, GraphQLSelection {
 
 // MARK: - Selections
 
-struct CampaignsQueryRequestGraphQLSelections: GraphQLSelections {
+struct CampaignsQueryRequestSelections: GraphQLSelections {
   // MARK: - Operation Definition
 
   private let operationDefinitionFormat: String = """
