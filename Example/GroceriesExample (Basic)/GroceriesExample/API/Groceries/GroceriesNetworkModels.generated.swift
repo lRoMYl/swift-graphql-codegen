@@ -241,46 +241,22 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   let locale: String
 
-  let languageId: String
-
-  let languageCode: String
-
-  let apiKey: String
-
-  let discoClientId: String
-
   private enum CodingKeys: String, CodingKey {
     case vendorId = "VendorID"
 
     case globalEntityId = "GlobalEntityID"
 
     case locale = "Locale"
-
-    case languageId = "LanguageID"
-
-    case languageCode = "LanguageCode"
-
-    case apiKey = "APIKey"
-
-    case discoClientId = "DiscoClientID"
   }
 
   init(
     vendorId: String,
     globalEntityId: String,
-    locale: String,
-    languageId: String,
-    languageCode: String,
-    apiKey: String,
-    discoClientId: String
+    locale: String
   ) {
     self.vendorId = vendorId
     self.globalEntityId = globalEntityId
     self.locale = locale
-    self.languageId = languageId
-    self.languageCode = languageCode
-    self.apiKey = apiKey
-    self.discoClientId = discoClientId
   }
 }
 
@@ -329,19 +305,11 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     $VendorID: String!
     $GlobalEntityID: String!
     $Locale: String!
-    $LanguageID: String!
-    $LanguageCode: String!
-    $APIKey: String!
-    $DiscoClientID: String!
   ) {
     campaigns(
       VendorID: $VendorID
       GlobalEntityID: $GlobalEntityID
       Locale: $Locale
-      LanguageID: $LanguageID
-      LanguageCode: $LanguageCode
-      APIKey: $APIKey
-      DiscoClientID: $DiscoClientID
   	) {
   		...CampaignsFragment
   	}

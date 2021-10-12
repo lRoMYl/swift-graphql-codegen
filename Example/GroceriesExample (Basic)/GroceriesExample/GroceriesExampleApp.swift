@@ -39,11 +39,7 @@ struct GroceriesExampleApp: App {
     let parameters = CampaignsQueryRequest(
       vendorId: "x1yy",
       globalEntityId: "FP_SG",
-      locale: "en_SG",
-      languageId: "1",
-      languageCode: "en",
-      apiKey: "iQis4oC8Y4DxHiO5",
-      discoClientId: "iOS"
+      locale: "en_SG"
     )
 
     groceriesRepository
