@@ -355,17 +355,6 @@ extension SelectionsGenerator {
   ) throws -> String {
     try fieldMaps.map {
       let interfaceFragmentCode: String
-
-      let structure = try $0.value.structure(
-        schemaMap: schemaMap
-      )
-
-//      let requiredFields = structure?
-//        .requiredFields(selectionMap: selectionMap)
-//        .map {
-//          "\t" + $0.name
-//        }
-//        .lines ?? ""
       let requiredFields = "\t\\(\(try entityNameProvider.selectionName(for: $0.value)).requiredDeclaration)"
 
       let returnTypeSelectableFields = try $0.value.returnTypeSelectableFields(

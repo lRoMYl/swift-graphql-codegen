@@ -226,8 +226,7 @@ struct QueryResponseModel: Codable {
 
 // MARK: - GraphQLRequesting
 
-// MARK: - CampaignsQueryRequest
-
+/// CampaignsQueryRequest
 struct CampaignsQueryRequest: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
@@ -267,26 +266,22 @@ struct CampaignsQueryResponse: Codable {
 // MARK: - GraphQLSelection
 
 enum BenefitSelection: GraphQLSelection {
-  static let requiredDeclaration = {
-    """
-    productID
-    quantity
-    """
-  }()
+  static let requiredDeclaration = """
+  productID
+  quantity
+  """
 }
 
 enum CampaignAttributeSelection: String, GraphQLSelection {
-  static let requiredDeclaration = {
-    """
-    autoApplied
-    campaignType
-    description
-    id
-    name
-    redemptionLimit
-    source
-    """
-  }()
+  static let requiredDeclaration = """
+  autoApplied
+  campaignType
+  description
+  id
+  name
+  redemptionLimit
+  source
+  """
 
   case benefits = """
   benefits {
@@ -296,11 +291,8 @@ enum CampaignAttributeSelection: String, GraphQLSelection {
 }
 
 enum CampaignsSelection: String, GraphQLSelection {
-  static let requiredDeclaration = {
-    """
-
-    """
-  }()
+  static let requiredDeclaration = """
+  """
 
   case campaignAttributes = """
   campaignAttributes {
@@ -315,21 +307,17 @@ enum CampaignsSelection: String, GraphQLSelection {
 }
 
 enum DealSelection: GraphQLSelection {
-  static let requiredDeclaration = {
-    """
-    campaignID
-    discountTag
-    triggerQuantity
-    """
-  }()
+  static let requiredDeclaration = """
+  campaignID
+  discountTag
+  triggerQuantity
+  """
 }
 
 enum ProductDealSelection: String, GraphQLSelection {
-  static let requiredDeclaration = {
-    """
-    productID
-    """
-  }()
+  static let requiredDeclaration = """
+  productID
+  """
 
   case deals = """
   deals {

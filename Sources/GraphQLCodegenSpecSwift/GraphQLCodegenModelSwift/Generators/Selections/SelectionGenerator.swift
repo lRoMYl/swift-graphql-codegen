@@ -64,16 +64,15 @@ extension SelectionGenerator {
     let rawRepresentableCode = enumCasesCode.isEmpty
       ? " "
       : "String, "
+    let requiredDeclarationCode = requiredFields.isEmpty
+      ? ""
+      : "\n\(requiredFields.map { $0.name }.lines)"
 
     return """
     enum \(selectionName):\(rawRepresentableCode)\(entityNameMap.selection) {
-      static let requiredDeclaration = {
-        \"\"\"
-        \(
-          requiredFields.map { $0.name }.lines
-        )
-        \"\"\"
-      }()
+      static let requiredDeclaration = \"\"\"\(requiredDeclarationCode)
+      \"\"\"
+
       \(enumCasesCode)
     }
     """

@@ -226,8 +226,7 @@ struct QueryResponseModel: Codable {
 
 // MARK: - GraphQLRequesting
 
-// MARK: - CampaignsQueryRequest
-
+/// CampaignsQueryRequest
 struct CampaignsQueryRequest: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
@@ -266,7 +265,24 @@ struct CampaignsQueryResponse: Codable {
 
 // MARK: - GraphQLSelection
 
+enum BenefitSelection: GraphQLSelection {
+  static let requiredDeclaration = """
+  productID
+  quantity
+  """
+}
+
 enum CampaignAttributeSelection: String, GraphQLSelection {
+  static let requiredDeclaration = """
+  autoApplied
+  campaignType
+  description
+  id
+  name
+  redemptionLimit
+  source
+  """
+
   case benefits = """
   benefits {
     ...BenefitFragment
@@ -275,6 +291,9 @@ enum CampaignAttributeSelection: String, GraphQLSelection {
 }
 
 enum CampaignsSelection: String, GraphQLSelection {
+  static let requiredDeclaration = """
+  """
+
   case campaignAttributes = """
   campaignAttributes {
     ...CampaignAttributeFragment
@@ -287,7 +306,19 @@ enum CampaignsSelection: String, GraphQLSelection {
   """
 }
 
+enum DealSelection: GraphQLSelection {
+  static let requiredDeclaration = """
+  campaignID
+  discountTag
+  triggerQuantity
+  """
+}
+
 enum ProductDealSelection: String, GraphQLSelection {
+  static let requiredDeclaration = """
+  productID
+  """
+
   case deals = """
   deals {
     ...DealFragment
@@ -331,9 +362,9 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
   let productDealSelections: Set<ProductDealSelection>
 
   init(
-    campaignAttributeSelections: Set<CampaignAttributeSelection> = [],
-    campaignsSelections: Set<CampaignsSelection> = [],
-    productDealSelections: Set<ProductDealSelection> = []
+    campaignAttributeSelections: Set<CampaignAttributeSelection> = .allFields,
+    campaignsSelections: Set<CampaignsSelection> = .allFields,
+    productDealSelections: Set<ProductDealSelection> = .allFields
   ) {
     self.campaignAttributeSelections = campaignAttributeSelections
     self.campaignsSelections = campaignsSelections
@@ -343,41 +374,33 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
   func declaration() -> String {
     let benefitSelectionsDeclaration = """
     fragment BenefitFragment on Benefit {
-    	productID
-    	quantity
+    	\(BenefitSelection.requiredDeclaration)
     }
     """
 
     let campaignAttributeSelectionsDeclaration = """
     fragment CampaignAttributeFragment on CampaignAttribute {
-    	autoApplied
-    	campaignType
-    	description
-    	id
-    	name
-    	redemptionLimit
-    	source
+    	\(CampaignAttributeSelection.requiredDeclaration)
     	\(campaignAttributeSelections.declaration)
     }
     """
 
     let campaignsSelectionsDeclaration = """
     fragment CampaignsFragment on Campaigns {
+    	\(CampaignsSelection.requiredDeclaration)
     	\(campaignsSelections.declaration)
     }
     """
 
     let dealSelectionsDeclaration = """
     fragment DealFragment on Deal {
-    	campaignID
-    	discountTag
-    	triggerQuantity
+    	\(DealSelection.requiredDeclaration)
     }
     """
 
     let productDealSelectionsDeclaration = """
     fragment ProductDealFragment on ProductDeal {
-    	productID
+    	\(ProductDealSelection.requiredDeclaration)
     	\(productDealSelections.declaration)
     }
     """

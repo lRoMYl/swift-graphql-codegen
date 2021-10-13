@@ -115,8 +115,7 @@ private extension RequestParameterGenerator {
     let initializer = try initializerGenerator.declaration(field: field)
 
     let text = """
-    // MARK: - \(requestParameterName)
-
+    /// \(requestParameterName)
     struct \(requestParameterName): \(entityName) {
       // MARK: - \(entityNameMap.requestType)
 

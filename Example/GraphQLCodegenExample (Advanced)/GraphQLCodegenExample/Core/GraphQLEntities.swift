@@ -10,20 +10,13 @@ protocol GraphQLRequesting: Encodable {
   var requestType: GraphQLRequestType { get }
 }
 
-protocol GraphQLSelection: RawRepresentable, Hashable, CaseIterable where RawValue == String {}
+protocol GraphQLSelection: Hashable, CaseIterable {
+  static var requiredDeclaration: String { get }
+}
+
 protocol GraphQLSelections {
   func declaration() -> String
   var operationDefinition: String { get }
-}
-
-extension Set where Element: GraphQLSelection {
-  static var requiredFields: Set<Element> {
-    []
-  }
-
-  static var allFields: Set<Element> {
-    Set(Element.allCases)
-  }
 }
 
 // MARK: - Enum
@@ -78,13 +71,23 @@ struct GraphQLResponse<ResponseData: Codable>: Codable {
 
 // MARK: - GraphQLSelection+Declaration
 
-extension Collection where Element: GraphQLSelection {
+extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
   var declaration: String {
-    if count == 0 {
+    if Element.requiredDeclaration.isEmpty, count == 0 {
       return Element.allCases.reduce(into: "") { $0 += "\n  \($1.rawValue)" }
     } else {
       return reduce(into: "") { $0 += "\n  \($1.rawValue)" }
     }
+  }
+}
+
+extension Set where Element: GraphQLSelection {
+  static var requiredFields: Set<Element> {
+    []
+  }
+
+  static var allFields: Set<Element> {
+    Set(Element.allCases)
   }
 }
 
