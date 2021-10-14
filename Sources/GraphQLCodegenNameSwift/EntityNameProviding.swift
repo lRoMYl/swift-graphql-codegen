@@ -22,6 +22,6 @@ public protocol EntityNameProviding {
   func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
 
   func selectionName(for objectType: ObjectType) throws -> String
-  func selectionName(for field: Field) throws -> String
+  func selectionName(for field: Field) throws -> String?
   func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String
 }

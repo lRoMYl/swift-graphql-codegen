@@ -327,7 +327,9 @@ extension SelectionsGenerator {
     }
 
     let selectionVariableName = try variableName(for: field)
-    let selectionEnumName = try entityNameProvider.selectionName(for: field)
+    guard let selectionEnumName = try entityNameProvider.selectionName(for: field) else {
+      return ""
+    }
 
     let result = """
     let \(selectionVariableName): Set<\(selectionEnumName)>
@@ -355,7 +357,13 @@ extension SelectionsGenerator {
   ) throws -> String {
     try fieldMaps.map {
       let interfaceFragmentCode: String
-      let requiredFields = "\t\\(\(try entityNameProvider.selectionName(for: $0.value)).requiredDeclaration)"
+      let requiredFields: String
+
+      if let selectionName = try entityNameProvider.selectionName(for: $0.value) {
+        requiredFields = "\t\\(\(selectionName).requiredDeclaration)"
+      } else {
+        requiredFields = ""
+      }
 
       let returnTypeSelectableFields = try $0.value.returnTypeSelectableFields(
         schemaMap: schemaMap,
@@ -420,8 +428,8 @@ extension SelectionsGenerator {
       return "init() {}"
     }
 
-    let arguments = try filteredElements.map {
-      let selectionName = try entityNameProvider.selectionName(for: $0.value)
+    let arguments = try filteredElements.compactMap {
+      guard let selectionName = try entityNameProvider.selectionName(for: $0.value) else { return nil }
       let variableName = try self.variableName(for: $0.value)
       return "\(variableName): Set<\(selectionName)> = .allFields"
     }.joined(separator: ",\n")

@@ -675,7 +675,6 @@ struct CharacterStarWarsQuerySelections: GraphQLSelections {
   func declaration() -> String {
     let characterUnionSelectionsDeclaration = """
     fragment CharacterUnionFragment on CharacterUnion {
-    	\(CharacterUnionSelection.requiredDeclaration)
     	__typename
     	...HumanFragment
     	...DroidFragment
@@ -881,7 +880,6 @@ struct CharactersStarWarsQuerySelections: GraphQLSelections {
   func declaration() -> String {
     let characterSelectionsDeclaration = """
     fragment CharacterFragment on Character {
-    	\(CharacterSelection.requiredDeclaration)
     	__typename
     	...DroidFragment
     	...HumanFragment
