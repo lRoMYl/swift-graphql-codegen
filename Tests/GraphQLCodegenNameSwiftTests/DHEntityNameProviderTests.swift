@@ -7,7 +7,6 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenNameSwift
-@testable import GraphQLCodegenSpecSwift
 import XCTest
 
 final class DHEntityNameProviderTests: XCTestCase {

@@ -54,10 +54,10 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let declaration = try generator.code(schema: schema).format()
 
     let expected = try """
-    // MARK: - GraphQLObjects
+    // MARK: - GraphQLObject
 
-    struct DiscountGraphQLObjects: Codable {
-      let type: DiscountTypeGraphQLObjects
+    struct DiscountGraphQLObject: Codable {
+      let type: DiscountTypeGraphQLObject
 
       let value: Double
 
@@ -92,9 +92,9 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let formattedCode = try code.format()
 
     let expected = try """
-    // MARK: - GraphQLObjects
+    // MARK: - GraphQLObject
 
-    struct DroidGraphQLObjects: Codable {
+    struct DroidGraphQLObject: Codable {
       let appearsIn: [EpisodeEnum]
 
       let id: String
@@ -136,9 +136,9 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     let formattedCode = try code.format()
 
     let expected = try """
-    // MARK: - GraphQLObjects
+    // MARK: - GraphQLObject
 
-    struct HumanGraphQLObjects: Codable {
+    struct HumanGraphQLObject: Codable {
       let appearsIn: [EpisodeEnum]
 
       /// The home planet of the human, or null if unknown.
