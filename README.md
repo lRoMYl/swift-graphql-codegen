@@ -30,6 +30,7 @@ Supports GraphQL Native Feature
 - [x] Subscription; Partial support, request/response/respository/resource are generated but DH ApiClient doesn't have native support for WebSocket yet
 - [x] Introspection
 - [ ] Root level query
+- [ ] Directive, not supported as this is not possible to be done on codegen level.
 
 Support DH Custom Feature
 - [x] SPM package
