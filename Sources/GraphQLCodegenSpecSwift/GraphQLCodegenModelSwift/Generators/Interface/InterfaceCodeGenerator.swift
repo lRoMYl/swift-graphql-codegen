@@ -89,7 +89,7 @@ extension InterfaceCodeGenerator {
       }
 
       func encode(to encoder: Encoder) throws {
-        assertionFailure("Not implemented yet")
+        fatalError("Not implemented yet")
       }
     }
     """

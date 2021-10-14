@@ -95,7 +95,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     // MARK: - GraphQLObject
 
     struct DroidGraphQLObject: Codable {
-      let appearsIn: [EpisodeEnum]
+      let appearsIn: [EpisodeGraphQLEnumObject]
 
       let id: String
 
@@ -139,7 +139,7 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     // MARK: - GraphQLObject
 
     struct HumanGraphQLObject: Codable {
-      let appearsIn: [EpisodeEnum]
+      let appearsIn: [EpisodeGraphQLEnumObject]
 
       /// The home planet of the human, or null if unknown.
       let homePlanet: String?

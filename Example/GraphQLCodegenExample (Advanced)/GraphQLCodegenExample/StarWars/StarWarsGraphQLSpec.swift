@@ -242,7 +242,7 @@ enum CharacterStarWarsInterfaceModel: Codable {
   }
 
   func encode(to _: Encoder) throws {
-    assertionFailure("Not implemented yet")
+    fatalError("Not implemented yet")
   }
 }
 
@@ -279,7 +279,7 @@ enum CharacterUnionStarWarsUnionModel: Codable {
   }
 
   func encode(to _: Encoder) throws {
-    assertionFailure("Not implemented yet")
+    fatalError("Not implemented yet")
   }
 }
 
@@ -548,7 +548,7 @@ struct HumanStarWarsQuerySelections: GraphQLSelections {
   query(
     $id: ID!
   ) {
-    human(
+  	human(
       id: $id
   	) {
   		...HumanFragment
@@ -601,7 +601,7 @@ struct DroidStarWarsQuerySelections: GraphQLSelections {
   query(
     $id: ID!
   ) {
-    droid(
+  	droid(
       id: $id
   	) {
   		...DroidFragment
@@ -647,7 +647,7 @@ struct CharacterStarWarsQuerySelections: GraphQLSelections {
   query(
     $id: ID!
   ) {
-    character(
+  	character(
       id: $id
   	) {
   		...CharacterUnionFragment
@@ -714,7 +714,7 @@ struct LukeStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    luke {
+  	luke {
   		...HumanFragment
   	}
   }
@@ -763,7 +763,7 @@ struct HumansStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    humans {
+  	humans {
   		...HumanFragment
   	}
   }
@@ -812,7 +812,7 @@ struct DroidsStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    droids {
+  	droids {
   		...DroidFragment
   	}
   }
@@ -854,7 +854,7 @@ struct CharactersStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    characters {
+  	characters {
   		...CharacterFragment
   	}
   }
@@ -921,7 +921,7 @@ struct GreetingStarWarsQuerySelections: GraphQLSelections {
   query(
     $input: Greeting
   ) {
-    greeting(
+  	greeting(
       input: $input
   	)
   }
@@ -948,7 +948,7 @@ struct WhoamiStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    whoami
+  	whoami
   }
 
   %1$@
@@ -973,7 +973,7 @@ struct TimeStarWarsQuerySelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   query {
-    time
+  	time
   }
 
   %1$@
@@ -998,7 +998,7 @@ struct MutateStarWarsMutationSelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   mutation {
-    mutate
+  	mutate
   }
 
   %1$@
@@ -1023,7 +1023,7 @@ struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
 
   private let operationDefinitionFormat: String = """
   subscription {
-    number
+  	number
   }
 
   %1$@

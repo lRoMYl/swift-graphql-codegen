@@ -337,7 +337,7 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     $GlobalEntityID: String!
     $Locale: String!
   ) {
-    campaigns(
+  	campaigns(
       VendorID: $VendorID
       GlobalEntityID: $GlobalEntityID
       Locale: $Locale

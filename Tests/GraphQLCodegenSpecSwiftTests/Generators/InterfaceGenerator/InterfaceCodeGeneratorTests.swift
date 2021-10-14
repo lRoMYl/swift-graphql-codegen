@@ -31,43 +31,40 @@ final class InterfaceCodeGeneratorTests: XCTestCase {
     let formattedCode = try code.format()
 
     let expected = try """
-    // MARK: - Interfaces
+    // MARK: - GraphQLInterfaceObject
 
-    struct CharacterInterfaces: Codable {
-      enum Object {
-        case droid(DroidGraphQLObjects)
-        case human(HumanGraphQLObjects)
-      }
+    enum CharacterGraphQLInterfaceObject: Codable {
+      case droid(DroidGraphQLObject)
+      case human(HumanGraphQLObject)
 
-      enum ObjectType: String, Decodable {
+      enum Typename: String, Decodable {
         case droid = "Droid"
         case human = "Human"
       }
 
-      let __typename: ObjectType
-      let data: Object
-
-      enum CodingKeys: String, CodingKey {
+      private enum CodingKeys: String, CodingKey {
         case __typename
-        case data
+        case id
+        case name
       }
 
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let singleContainer = try decoder.singleValueContainer()
+        let singleValueContainer = try decoder.singleValueContainer()
+        let type = try container.decode(Typename.self, forKey: .__typename)
 
-        __typename = try container.decode(ObjectType.self, forKey: .__typename)
-
-        switch __typename {
+        switch type {
         case .droid:
-          data = .droid(try singleContainer.decode(DroidGraphQLObjects.self))
+          let value = try singleValueContainer.decode(DroidGraphQLObject.self)
+          self = .droid(value)
         case .human:
-          data = .human(try singleContainer.decode(HumanGraphQLObjects.self))
+          let value = try singleValueContainer.decode(HumanGraphQLObject.self)
+          self = .human(value)
         }
       }
 
-      func encode(to encoder: Encoder) throws {
-        fatalError("Not implemented")
+      func encode(to _: Encoder) throws {
+        fatalError("Not implemented yet")
       }
     }
     """.format()

@@ -22,22 +22,3 @@ enum SchemaError: Error, LocalizedError {
     }
   }
 }
-
-public extension Schema {
-  static func schema(from path: String?) throws -> Schema {
-    guard let schemaPath = path else {
-      throw SchemaError.notFound(context: path)
-    }
-
-    let url = NSURL.fileURL(withPath: schemaPath)
-    let data = try Data(contentsOf: url)
-
-    if let introspectionResponse = try? JSONDecoder().decode(IntrospectionResponse.self, from: data) {
-      return introspectionResponse.schema.schema
-    } else if let response = try? JSONDecoder().decode(SchemaResponse.self, from: data) {
-      return response.schema
-    } else {
-      throw SchemaError.serializationError
-    }
-  }
-}

@@ -39,11 +39,7 @@ struct SelectionsOperationDefinitionGenerator {
 
     private let operationDefinitionFormat: String = \"\"\"
     \(operationName)\(operationVariablesDeclaration) {
-      \(
-        """
-        \(field.name)\(operationArgumentsDeclaration)\(selection)
-        """
-      )
+    \t\("\(field.name)\(operationArgumentsDeclaration)\(selection)")
     }
 
     %1$@

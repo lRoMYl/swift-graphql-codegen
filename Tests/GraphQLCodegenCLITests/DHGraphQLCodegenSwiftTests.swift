@@ -12,9 +12,13 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
       return
     }
 
-    let fooBinary = productsDirectory.appendingPathComponent("DHGraphQLCodegenSwift")
+    let fooBinary = productsDirectory.appendingPathComponent("dh-graphql-codegen")
 
     let process = Process()
+
+    // TODO add test argument for `dh-swift`, `codegen` and `introspection`
+    //process.arguments = [""]
+
     process.executableURL = fooBinary
 
     let pipe = Pipe()
@@ -26,7 +30,12 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)
 
-    XCTAssertEqual(output, "Hello, world!\n")
+    XCTAssertEqual(
+      output,
+      """
+      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: dh-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  dh-swift\n\n  See \'dh-graphql-codegen help <subcommand>\' for detailed help.\n
+      """
+    )
   }
 
   /// Returns path to the built products directory.
