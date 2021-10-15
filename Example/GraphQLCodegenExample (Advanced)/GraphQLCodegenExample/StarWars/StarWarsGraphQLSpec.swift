@@ -91,7 +91,7 @@ enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
 // MARK: - StarWarsModel
 
 struct MutationStarWarsModel: Codable {
-  let mutate: Bool
+  let mutate: Bool?
 
   // MARK: - CodingKeys
 
@@ -139,23 +139,23 @@ struct HumanStarWarsModel: Codable {
 struct QueryStarWarsModel: Codable {
   let character: CharacterUnionStarWarsUnionModel?
 
-  let characters: [CharacterStarWarsInterfaceModel]
+  let characters: [CharacterStarWarsInterfaceModel]?
 
   let droid: DroidStarWarsModel?
 
-  let droids: [DroidStarWarsModel]
+  let droids: [DroidStarWarsModel]?
 
-  let greeting: String
+  let greeting: String?
 
   let human: HumanStarWarsModel?
 
-  let humans: [HumanStarWarsModel]
+  let humans: [HumanStarWarsModel]?
 
   let luke: HumanStarWarsModel?
 
-  let time: DateTimeInterval
+  let time: DateTimeInterval?
 
-  let whoami: String
+  let whoami: String?
 
   // MARK: - CodingKeys
 
@@ -174,8 +174,7 @@ struct QueryStarWarsModel: Codable {
 }
 
 struct SubscriptionStarWarsModel: Codable {
-  /// Returns a random number every second. You should see it changing if your subscriptions work right.
-  let number: Int
+  let number: Int?
 
   // MARK: - CodingKeys
 

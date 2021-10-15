@@ -29,25 +29,37 @@ struct FieldCodeGenerator {
   }
 
   func variableDeclaration(object: Structure, field: Field) throws -> String? {
-    let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
-    let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
-
-    if isRequired || isSelectable {
+    if object.isOperation {
+      // If structure is operation, all fields are generated with optional
       var type: String = try entityNameProvider.name(for: field.type)
 
-      if isSelectable, !type.contains("?") {
+      if type.last != "?" {
         type.append("?")
       }
 
-      let texts: [String] = [
-        field.docs,
-        field.availability,
-        "let \(field.name.camelCase): \(type)"
-      ]
-
-      return texts.filter { !$0.isEmpty }.lines
+      return "let \(field.name.camelCase): \(type)"
     } else {
-      return nil
+      // Else infer optionality from SelectionMap or Schema
+      let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
+      let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
+
+      if isRequired || isSelectable {
+        var type: String = try entityNameProvider.name(for: field.type)
+
+        if isSelectable, type.last != "?" {
+          type.append("?")
+        }
+
+        let texts: [String] = [
+          field.docs,
+          field.availability,
+          "let \(field.name.camelCase): \(type)"
+        ]
+
+        return texts.filter { !$0.isEmpty }.lines
+      } else {
+        return nil
+      }
     }
   }
 

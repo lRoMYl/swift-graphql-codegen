@@ -50,12 +50,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let code = try schema.objects.compactMap {
-      try $0.declaration(
-        objects: schema.objects,
-        scalarMap: scalarMap,
-        fieldSpecificationGenerator: fieldSpecificationGenerator,
-        entityNameProvider: entityNameProvider
-      )
+      try declaration($0)
     }.lines
 
     guard !code.isEmpty else { return "" }
@@ -69,32 +64,25 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   }
 }
 
-// MARK: - Structure
-
-private extension ObjectType {
-  func declaration(
-    objects _: [ObjectType],
-    scalarMap _: ScalarMap,
-    fieldSpecificationGenerator: FieldCodeGenerator,
-    entityNameProvider: EntityNameProviding
-  ) throws -> String {
-    let sortedFields = fields.sorted(by: { $0.name < $1.name })
+extension ObjectCodeGenerator {
+  func declaration(_ objectType: ObjectType) throws -> String {
+    let sortedFields = objectType.fields.sorted(by: { $0.name < $1.name })
 
     let fieldsVariable = try sortedFields
-      .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: self, field: $0) }
+      .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n\n")
     let fieldsCodingKey = sortedFields
-      .compactMap { fieldSpecificationGenerator.codingKeyDeclaration(object: self, field: $0) }
+      .compactMap { fieldSpecificationGenerator.codingKeyDeclaration(object: objectType, field: $0) }
       .lines
 
     guard !fieldsCodingKey.isEmpty || !fieldsCodingKey.isEmpty else {
-      throw ObjectCodeGeneratorError.emptyFields(name: name)
+      throw ObjectCodeGeneratorError.emptyFields(name: objectType.name)
     }
 
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
-    struct \(try entityNameProvider.name(for: self)): Codable {
+    struct \(try entityNameProvider.name(for: objectType)): Codable {
       \(fieldsVariable)
 
       // MARK: - CodingKeys
