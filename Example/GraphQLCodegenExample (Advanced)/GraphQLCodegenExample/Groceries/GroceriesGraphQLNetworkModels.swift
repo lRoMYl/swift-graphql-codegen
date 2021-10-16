@@ -215,7 +215,7 @@ struct ProductDealResponseModel: Codable {
 }
 
 struct QueryResponseModel: Codable {
-  let campaigns: CampaignsResponseModel?
+  let campaigns: Optional<CampaignsResponseModel?>
 
   // MARK: - CodingKeys
 
@@ -257,6 +257,12 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     self.globalEntityId = globalEntityId
     self.locale = locale
   }
+}
+
+struct QueryRequest: GraphQLRequesting {
+  let requestType: GraphQLRequestType = .query
+
+  let campaignsRequest: CampaignsQueryRequest?
 }
 
 struct CampaignsQueryResponse: Codable {
@@ -417,5 +423,22 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
       selectionDeclarationMap: selectionDeclarationMap,
       rootSelectionKey: "CampaignsFragment"
     )
+  }
+}
+
+struct QueryRequestSelections: GraphQLSelections {
+  let campaigns: CampaignsSelection
+
+  private let operationDefinitionFormat: String = ""
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  func declaration() -> String {
+    ""
   }
 }

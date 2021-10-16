@@ -91,7 +91,7 @@ enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
 // MARK: - StarWarsModel
 
 struct MutationStarWarsModel: Codable {
-  let mutate: Bool?
+  let mutate: Optional<Bool>
 
   // MARK: - CodingKeys
 
@@ -137,25 +137,25 @@ struct HumanStarWarsModel: Codable {
 }
 
 struct QueryStarWarsModel: Codable {
-  let character: CharacterUnionStarWarsUnionModel?
+  let character: Optional<CharacterUnionStarWarsUnionModel?>
 
-  let characters: [CharacterStarWarsInterfaceModel]?
+  let characters: Optional<[CharacterStarWarsInterfaceModel]>
 
-  let droid: DroidStarWarsModel?
+  let droid: Optional<DroidStarWarsModel?>
 
-  let droids: [DroidStarWarsModel]?
+  let droids: Optional<[DroidStarWarsModel]>
 
-  let greeting: String?
+  let greeting: Optional<String>
 
-  let human: HumanStarWarsModel?
+  let human: Optional<HumanStarWarsModel?>
 
-  let humans: [HumanStarWarsModel]?
+  let humans: Optional<[HumanStarWarsModel]>
 
-  let luke: HumanStarWarsModel?
+  let luke: Optional<HumanStarWarsModel?>
 
-  let time: DateTimeInterval?
+  let time: Optional<DateTimeInterval>
 
-  let whoami: String?
+  let whoami: Optional<String>
 
   // MARK: - CodingKeys
 
@@ -174,7 +174,7 @@ struct QueryStarWarsModel: Codable {
 }
 
 struct SubscriptionStarWarsModel: Codable {
-  let number: Int?
+  let number: Optional<Int>
 
   // MARK: - CodingKeys
 
@@ -446,6 +446,21 @@ struct TimeStarWarsQuery: GraphQLRequesting {
   ) {}
 }
 
+struct StarWarsQuery: GraphQLRequesting {
+  let requestType: GraphQLRequestType = .query
+
+  let humanRequest: HumanStarWarsQuery?
+  let droidRequest: DroidStarWarsQuery?
+  let characterRequest: CharacterStarWarsQuery?
+  let lukeRequest: LukeStarWarsQuery?
+  let humansRequest: HumansStarWarsQuery?
+  let droidsRequest: DroidsStarWarsQuery?
+  let charactersRequest: CharactersStarWarsQuery?
+  let greetingRequest: GreetingStarWarsQuery?
+  let whoamiRequest: WhoamiStarWarsQuery?
+  let timeRequest: TimeStarWarsQuery?
+}
+
 /// MutateStarWarsMutation
 struct MutateStarWarsMutation: GraphQLRequesting {
   // MARK: - GraphQLRequestType
@@ -458,6 +473,12 @@ struct MutateStarWarsMutation: GraphQLRequesting {
   ) {}
 }
 
+struct StarWarsMutation: GraphQLRequesting {
+  let requestType: GraphQLRequestType = .mutation
+
+  let mutateRequest: MutateStarWarsMutation?
+}
+
 /// NumberStarWarsSubscription
 struct NumberStarWarsSubscription: GraphQLRequesting {
   // MARK: - GraphQLRequestType
@@ -468,6 +489,12 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 
   init(
   ) {}
+}
+
+struct StarWarsSubscription: GraphQLRequesting {
+  let requestType: GraphQLRequestType = .subscription
+
+  let numberRequest: NumberStarWarsSubscription?
 }
 
 struct HumanQueryResponse: Codable {
@@ -990,6 +1017,27 @@ struct TimeStarWarsQuerySelections: GraphQLSelections {
   }
 }
 
+struct StarWarsQuerySelections: GraphQLSelections {
+  let human: HumanSelection
+  let droid: DroidSelection
+  let luke: HumanSelection
+  let humans: HumanSelection
+  let droids: DroidSelection
+
+  private let operationDefinitionFormat: String = ""
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  func declaration() -> String {
+    ""
+  }
+}
+
 // MARK: - Selections
 
 struct MutateStarWarsMutationSelections: GraphQLSelections {
@@ -1015,6 +1063,21 @@ struct MutateStarWarsMutationSelections: GraphQLSelections {
   }
 }
 
+struct StarWarsMutationSelections: GraphQLSelections {
+  private let operationDefinitionFormat: String = ""
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  func declaration() -> String {
+    ""
+  }
+}
+
 // MARK: - Selections
 
 struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
@@ -1027,6 +1090,21 @@ struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
 
   %1$@
   """
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  func declaration() -> String {
+    ""
+  }
+}
+
+struct StarWarsSubscriptionSelections: GraphQLSelections {
+  private let operationDefinitionFormat: String = ""
 
   var operationDefinition: String {
     String(

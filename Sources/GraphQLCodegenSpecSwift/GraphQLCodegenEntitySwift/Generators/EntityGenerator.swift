@@ -40,7 +40,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     // MARK: - Enum
 
-    enum \(entityNameMap.requestType) {
+    enum \(entityNameMap.requestType): String, Codable {
       case query
       case mutation
       case subscription

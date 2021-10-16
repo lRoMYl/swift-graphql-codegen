@@ -58,9 +58,39 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     try schema.operations.map { operation in
-      try operation.type.fields.map { field in
+      let fields = operation.type.fields
+      var selections = try fields.map { field in
         try code(operation: operation, field: field, schema: schema)
-      }.lines
+      }
+
+      selections.append("""
+      struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
+        \(
+          try fields.compactMap {
+            guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil}
+
+            return """
+            let \($0.name): \(selectionName)
+            """
+          }.lines
+        )
+
+        private let operationDefinitionFormat: String = ""
+
+        var operationDefinition: String {
+          String(
+            format: operationDefinitionFormat,
+            declaration()
+          )
+        }
+
+        func declaration() -> String {
+          ""
+        }
+      }
+      """)
+
+      return selections.lines
     }.lines
   }
 

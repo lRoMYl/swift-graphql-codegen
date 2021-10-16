@@ -43,6 +43,20 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
       resource: resource
     )
   }
+
+  func query(
+    request: QueryRequest,
+    selections: QueryRequestSelections
+  ) -> Single<ApiResponse<QueryResponseModel>> {
+    let resource = GroceriesResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .query(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
+      resource: resource
+    )
+  }
 }
 
 private extension GroceriesApiClient {
@@ -77,10 +91,13 @@ protocol GroceriesResourceParametersConfigurating {
 struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
     case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestSelections)
+    case query(request: QueryRequest, selections: QueryRequestSelections)
 
     func bodyParameters() -> Any? {
       switch self {
       case let .queryCampaigns(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .query(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       }
     }

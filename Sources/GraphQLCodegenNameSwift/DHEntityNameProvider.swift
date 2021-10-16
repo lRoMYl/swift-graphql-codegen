@@ -78,6 +78,10 @@ public final class DHEntityNameProvider: EntityNameProviding {
     field.name.pascalCase + operation.type(entityNameMap: entityNameMap)
   }
 
+  public func requestParameterName(with operation: GraphQLAST.Operation) throws -> String {
+    operation.type(entityNameMap: entityNameMap)
+  }
+
   public func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
     "\(field.name.pascalCase)\(operation.type.name.pascalCase)\(Constants.responsePostFix)"
   }
@@ -100,5 +104,11 @@ public final class DHEntityNameProvider: EntityNameProviding {
     let operationTypeName = operation.type(entityNameMap: entityNameMap)
 
     return "\(field.name.pascalCase)\(operationTypeName)\(Constants.selectionsPostFix)"
+  }
+
+  public func selectionsName(with operation: GraphQLAST.Operation) throws -> String {
+    let operationTypeName = operation.type(entityNameMap: entityNameMap)
+
+    return "\(operationTypeName)\(Constants.selectionsPostFix)"
   }
 }

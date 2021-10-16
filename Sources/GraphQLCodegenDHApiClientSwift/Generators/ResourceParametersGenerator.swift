@@ -125,7 +125,7 @@ struct ResourceParametersGenerator: Generating {
 
 extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
-    let enumCases = try operation.type.fields.map { field -> String in
+    var enumCases = try operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
       let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
@@ -135,19 +135,33 @@ extension ResourceParametersGenerator {
       """
     }
 
+    let requestName = try entityNameProvider.requestParameterName(with: operation)
+    let selectionsName = try entityNameProvider.selectionsName(with: operation)
+    enumCases.append(
+      "case \(operation.enumNamePrefix)(request: \(requestName), selections: \(selectionsName))"
+    )
+
     return enumCases
   }
 
   func bodyParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
-    let enumCases = operation.type.fields.map { field -> String in
+    let selectionsName = entityNameMap.selections
+
+    var enumCases = operation.type.fields.map { field -> String in
       let enumName = field.enumName(with: operation)
-      let selectionsName = entityNameMap.selections
 
       return """
       case let .\(enumName)(request, selections):
         return bodyParameters(request: request, selections: selections as \(selectionsName))
       """
     }
+
+    enumCases.append(
+      """
+      case let .\(operation.enumNamePrefix)(request, selections):
+        return bodyParameters(request: request, selections: selections as \(selectionsName))
+      """
+    )
 
     return enumCases
   }

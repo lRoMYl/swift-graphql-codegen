@@ -214,6 +214,20 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
     )
   }
 
+  func query(
+    request: StarWarsQuery,
+    selections: StarWarsQuerySelections
+  ) -> Single<ApiResponse<QueryStarWarsModel>> {
+    let resource = StarWarsResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .query(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
+      resource: resource
+    )
+  }
+
   func mutate(
     with request: MutateStarWarsMutation,
     selections: MutateStarWarsMutationSelections
@@ -228,6 +242,20 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
     )
   }
 
+  func update(
+    request: StarWarsMutation,
+    selections: StarWarsMutationSelections
+  ) -> Single<ApiResponse<MutationStarWarsModel>> {
+    let resource = StarWarsResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .update(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
+      resource: resource
+    )
+  }
+
   func number(
     with request: NumberStarWarsSubscription,
     selections: NumberStarWarsSubscriptionSelections
@@ -238,6 +266,20 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
     )
 
     return executeGraphQLSubscription(
+      resource: resource
+    )
+  }
+
+  func subscribe(
+    request: StarWarsSubscription,
+    selections: StarWarsSubscriptionSelections
+  ) -> Single<ApiResponse<SubscriptionStarWarsModel>> {
+    let resource = StarWarsResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .subscribe(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
       resource: resource
     )
   }
@@ -318,8 +360,11 @@ struct StarWarsResourceParametersProvider: ResourceParameters {
     case queryGreeting(request: GreetingStarWarsQuery, selections: GreetingStarWarsQuerySelections)
     case queryWhoami(request: WhoamiStarWarsQuery, selections: WhoamiStarWarsQuerySelections)
     case queryTime(request: TimeStarWarsQuery, selections: TimeStarWarsQuerySelections)
+    case query(request: StarWarsQuery, selections: StarWarsQuerySelections)
     case updateMutate(request: MutateStarWarsMutation, selections: MutateStarWarsMutationSelections)
+    case update(request: StarWarsMutation, selections: StarWarsMutationSelections)
     case subscribeNumber(request: NumberStarWarsSubscription, selections: NumberStarWarsSubscriptionSelections)
+    case subscribe(request: StarWarsSubscription, selections: StarWarsSubscriptionSelections)
 
     func bodyParameters() -> Any? {
       switch self {
@@ -343,9 +388,15 @@ struct StarWarsResourceParametersProvider: ResourceParameters {
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .queryTime(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .query(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .updateMutate(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .update(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .subscribeNumber(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .subscribe(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       }
     }

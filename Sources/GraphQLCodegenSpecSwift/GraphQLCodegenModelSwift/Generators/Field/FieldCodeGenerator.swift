@@ -31,13 +31,9 @@ struct FieldCodeGenerator {
   func variableDeclaration(object: Structure, field: Field) throws -> String? {
     if object.isOperation {
       // If structure is operation, all fields are generated with optional
-      var type: String = try entityNameProvider.name(for: field.type)
+      let type: String = try entityNameProvider.name(for: field.type)
 
-      if type.last != "?" {
-        type.append("?")
-      }
-
-      return "let \(field.name.camelCase): \(type)"
+      return "let \(field.name.camelCase): Optional<\(type)>"
     } else {
       // Else infer optionality from SelectionMap or Schema
       let isRequired = object.isRequired(field: field, selectionMap: selectionMap)

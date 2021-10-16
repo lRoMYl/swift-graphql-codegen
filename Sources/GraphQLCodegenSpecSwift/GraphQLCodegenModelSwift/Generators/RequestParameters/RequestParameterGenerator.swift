@@ -84,15 +84,15 @@ private extension RequestParameterGenerator {
   ) throws -> [String] {
     let returnObject = try operation.returnObject()
 
-    let result: [String] = try returnObject.fields.map { field in
+    var result: [String] = try returnObject.fields.map { field in
       try requestParameterDeclaration(
         operation: operation,
         schema: schema,
-        scalarMap: scalarMap,
-        entityNameMap: entityNameMap,
         field: field
       )
     }
+
+    result.append(try requestParameterDeclaration(operation: operation, schema: schema))
 
     return result
   }
@@ -100,8 +100,6 @@ private extension RequestParameterGenerator {
   func requestParameterDeclaration(
     operation: GraphQLAST.Operation,
     schema _: Schema,
-    scalarMap _: ScalarMap,
-    entityNameMap: EntityNameMap,
     field: Field
   ) throws -> String {
     let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
@@ -126,6 +124,32 @@ private extension RequestParameterGenerator {
       \(codingKeys)
 
       \(initializer)
+    }
+    """
+
+    return text
+  }
+
+  func requestParameterDeclaration(
+    operation: GraphQLAST.Operation,
+    schema _: Schema
+  ) throws -> String {
+    let returnObject = try operation.returnObject()
+    let fields = returnObject.fields
+
+    let requestParameterName = "\(try entityNameProvider.requestParameterName(with: operation))"
+
+    let fieldsCode: String = try fields.map { field in
+      let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
+
+      return "let \(field.name)Request: \(requestParameterName)?"
+    }.lines
+
+    let text = """
+    struct \(requestParameterName): \(entityName) {
+      let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+
+      \(fieldsCode)
     }
     """
 

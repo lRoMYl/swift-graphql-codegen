@@ -19,6 +19,7 @@ public extension String {
     var formatOptions = FormatOptions.default
     formatOptions.indent = "  "
     formatOptions.trailingCommas = false
+    formatOptions.shortOptionals = .exceptProperties
 
     let formatted = try SwiftFormat.format(trimmed, options: formatOptions)
     return formatted

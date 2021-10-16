@@ -95,11 +95,11 @@ extension ApiClientGenerator {
 
   func funcCode(with operation: GraphQLAST.Operation) throws -> [String] {
     let operationName = operation.type.name.pascalCase
+    let resourceParameterName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
+    let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
 
-    let codes: [String] = try operation.type.fields.map {
+    var codes: [String] = try operation.type.fields.map {
       let funcSignature = try funcSignatureCode(field: $0, operation: operation)
-      let resourceParameterName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
-      let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
       let enumName = $0.enumName(with: operation)
 
       return """
@@ -115,6 +115,22 @@ extension ApiClientGenerator {
       }
       """
     }
+
+    codes.append("""
+    func \(operation.enumNamePrefix) (
+      request: \(try entityNameProvider.requestParameterName(with: operation)),
+      selections: \(try entityNameProvider.selectionsName(with: operation))
+    ) -> \(responseGenericCode(text: try entityNameProvider.name(for: operation.type))) {
+      let resource = \(resourceParameterName)(
+        \(resourceParametersConfiguratorVariable): \(resourceParametersConfiguratorVariable),
+        resourceBodyParameters: .\(operation.enumNamePrefix)(request: request, selections: selections)
+      )
+
+      return executeGraphQLQuery(
+        resource: resource
+      )
+    }
+    """)
 
     return codes
   }

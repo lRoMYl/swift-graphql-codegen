@@ -18,10 +18,13 @@ public protocol EntityNameProviding {
   func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
 
   func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
+  func requestParameterName(with operation: GraphQLAST.Operation) throws -> String
 
   func responseDataName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
 
   func selectionName(for objectType: ObjectType) throws -> String
   func selectionName(for field: Field) throws -> String?
+  
   func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String
+  func selectionsName(with operation: GraphQLAST.Operation) throws -> String
 }
