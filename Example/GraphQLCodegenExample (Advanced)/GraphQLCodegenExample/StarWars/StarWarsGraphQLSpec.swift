@@ -449,16 +449,53 @@ struct TimeStarWarsQuery: GraphQLRequesting {
 struct StarWarsQuery: GraphQLRequesting {
   let requestType: GraphQLRequestType = .query
 
-  let humanRequest: HumanStarWarsQuery?
-  let droidRequest: DroidStarWarsQuery?
-  let characterRequest: CharacterStarWarsQuery?
-  let lukeRequest: LukeStarWarsQuery?
-  let humansRequest: HumansStarWarsQuery?
-  let droidsRequest: DroidsStarWarsQuery?
-  let charactersRequest: CharactersStarWarsQuery?
-  let greetingRequest: GreetingStarWarsQuery?
-  let whoamiRequest: WhoamiStarWarsQuery?
-  let timeRequest: TimeStarWarsQuery?
+  let human: HumanStarWarsQuery?
+  let droid: DroidStarWarsQuery?
+  let character: CharacterStarWarsQuery?
+  let luke: LukeStarWarsQuery?
+  let humans: HumansStarWarsQuery?
+  let droids: DroidsStarWarsQuery?
+  let characters: CharactersStarWarsQuery?
+  let greeting: GreetingStarWarsQuery?
+  let whoami: WhoamiStarWarsQuery?
+  let time: TimeStarWarsQuery?
+
+  init(
+    human: HumanStarWarsQuery? = nil,
+    droid: DroidStarWarsQuery? = nil,
+    character: CharacterStarWarsQuery? = nil,
+    luke: LukeStarWarsQuery? = nil,
+    humans: HumansStarWarsQuery? = nil,
+    droids: DroidsStarWarsQuery? = nil,
+    characters: CharactersStarWarsQuery? = nil,
+    greeting: GreetingStarWarsQuery? = nil,
+    whoami: WhoamiStarWarsQuery? = nil,
+    time: TimeStarWarsQuery? = nil
+  ) {
+    self.human = human
+    self.droid = droid
+    self.character = character
+    self.luke = luke
+    self.humans = humans
+    self.droids = droids
+    self.characters = characters
+    self.greeting = greeting
+    self.whoami = whoami
+    self.time = time
+  }
+
+  func encode(to encoder: Encoder) throws {
+    try human?.encode(to: encoder)
+    try droid?.encode(to: encoder)
+    try character?.encode(to: encoder)
+    try luke?.encode(to: encoder)
+    try humans?.encode(to: encoder)
+    try droids?.encode(to: encoder)
+    try characters?.encode(to: encoder)
+    try greeting?.encode(to: encoder)
+    try whoami?.encode(to: encoder)
+    try time?.encode(to: encoder)
+  }
 }
 
 /// MutateStarWarsMutation
@@ -476,7 +513,17 @@ struct MutateStarWarsMutation: GraphQLRequesting {
 struct StarWarsMutation: GraphQLRequesting {
   let requestType: GraphQLRequestType = .mutation
 
-  let mutateRequest: MutateStarWarsMutation?
+  let mutate: MutateStarWarsMutation?
+
+  init(
+    mutate: MutateStarWarsMutation? = nil
+  ) {
+    self.mutate = mutate
+  }
+
+  func encode(to encoder: Encoder) throws {
+    try mutate?.encode(to: encoder)
+  }
 }
 
 /// NumberStarWarsSubscription
@@ -494,7 +541,17 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 struct StarWarsSubscription: GraphQLRequesting {
   let requestType: GraphQLRequestType = .subscription
 
-  let numberRequest: NumberStarWarsSubscription?
+  let number: NumberStarWarsSubscription?
+
+  init(
+    number: NumberStarWarsSubscription? = nil
+  ) {
+    self.number = number
+  }
+
+  func encode(to encoder: Encoder) throws {
+    try number?.encode(to: encoder)
+  }
 }
 
 struct HumanQueryResponse: Codable {
@@ -563,6 +620,53 @@ enum HumanSelection: String, GraphQLSelection {
 
   case homePlanet
   case name
+}
+
+struct StarWarsQuerySelections: GraphQLSelections {
+  let droid: DroidStarWarsQuerySelections
+  let droids: Set<DroidSelection>
+  let human: HumanStarWarsQuerySelections
+  let humans: Set<HumanSelection>
+  let luke: Set<HumanSelection>
+
+  private let operationDefinitionFormat: String = """
+  query(
+    $id: ID!
+  ) {
+    human(
+      id: $id
+    ) {
+      ...HumanFragment
+    }
+  }
+
+  %@
+  """
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  init(
+    droid: DroidStarWarsQuerySelections = .init(),
+    droids: Set<DroidSelection> = .allFields,
+    human: HumanStarWarsQuerySelections = .init(humanSelections: .allFields),
+    humans: Set<HumanSelection> = .allFields,
+    luke: Set<HumanSelection> = .allFields
+  ) {
+    self.droid = droid
+    self.droids = droids
+    self.human = human
+    self.humans = humans
+    self.luke = luke
+  }
+
+  func declaration() -> String {
+    human.declaration()
+  }
 }
 
 // MARK: - Selections
@@ -1017,13 +1121,7 @@ struct TimeStarWarsQuerySelections: GraphQLSelections {
   }
 }
 
-struct StarWarsQuerySelections: GraphQLSelections {
-  let human: HumanSelection
-  let droid: DroidSelection
-  let luke: HumanSelection
-  let humans: HumanSelection
-  let droids: DroidSelection
-
+struct StarWarsMutationSelections: GraphQLSelections {
   private let operationDefinitionFormat: String = ""
 
   var operationDefinition: String {
@@ -1032,6 +1130,9 @@ struct StarWarsQuerySelections: GraphQLSelections {
       declaration()
     )
   }
+
+  init(
+  ) {}
 
   func declaration() -> String {
     ""
@@ -1063,7 +1164,7 @@ struct MutateStarWarsMutationSelections: GraphQLSelections {
   }
 }
 
-struct StarWarsMutationSelections: GraphQLSelections {
+struct StarWarsSubscriptionSelections: GraphQLSelections {
   private let operationDefinitionFormat: String = ""
 
   var operationDefinition: String {
@@ -1072,6 +1173,9 @@ struct StarWarsMutationSelections: GraphQLSelections {
       declaration()
     )
   }
+
+  init(
+  ) {}
 
   func declaration() -> String {
     ""
@@ -1090,21 +1194,6 @@ struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
 
   %1$@
   """
-
-  var operationDefinition: String {
-    String(
-      format: operationDefinitionFormat,
-      declaration()
-    )
-  }
-
-  func declaration() -> String {
-    ""
-  }
-}
-
-struct StarWarsSubscriptionSelections: GraphQLSelections {
-  private let operationDefinitionFormat: String = ""
 
   var operationDefinition: String {
     String(

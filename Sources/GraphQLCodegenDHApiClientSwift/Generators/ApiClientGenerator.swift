@@ -74,9 +74,11 @@ struct ApiClientGenerator: Generating {
 
 extension ApiClientGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
-    let funcDeclarations: [String] = try operation.type.fields.map {
+    var funcDeclarations: [String] = try operation.type.fields.map {
       try funcSignatureCode(field: $0, operation: operation)
     }
+
+    funcDeclarations.insert(try funcSignatureCode(operation: operation), at: 0)
 
     return funcDeclarations.lines
   }
@@ -117,13 +119,10 @@ extension ApiClientGenerator {
     }
 
     codes.append("""
-    func \(operation.enumNamePrefix) (
-      request: \(try entityNameProvider.requestParameterName(with: operation)),
-      selections: \(try entityNameProvider.selectionsName(with: operation))
-    ) -> \(responseGenericCode(text: try entityNameProvider.name(for: operation.type))) {
+    \(try funcSignatureCode(operation: operation)) {
       let resource = \(resourceParameterName)(
         \(resourceParametersConfiguratorVariable): \(resourceParametersConfiguratorVariable),
-        resourceBodyParameters: .\(operation.enumNamePrefix)(request: request, selections: selections)
+        resourceBodyParameters: .\(operation.funcName)(request: request, selections: selections)
       )
 
       return executeGraphQLQuery(
@@ -143,6 +142,20 @@ extension ApiClientGenerator {
 
     return """
     func \(field.funcName())(
+      with request: \(parametersName),
+      selections: \(selectionsName)
+    ) -> \(responseGenericCode(text: responseDataText))
+    """
+  }
+
+  func funcSignatureCode(operation: GraphQLAST.Operation) throws -> String {
+    let responseDataText = try entityNameProvider.responseDataName(with: operation)
+
+    let parametersName = try entityNameProvider.requestParameterName(with: operation)
+    let selectionsName = try entityNameProvider.selectionsName(with: operation)
+
+    return """
+    func \(operation.funcName)(
       with request: \(parametersName),
       selections: \(selectionsName)
     ) -> \(responseGenericCode(text: responseDataText))

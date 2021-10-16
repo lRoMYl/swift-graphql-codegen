@@ -16,4 +16,8 @@ extension GraphQLAST.Operation {
     case .subscription: return "subscribe"
     }
   }
+
+  var funcName: String {
+    enumNamePrefix
+  }
 }

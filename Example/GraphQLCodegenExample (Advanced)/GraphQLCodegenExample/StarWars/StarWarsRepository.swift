@@ -57,4 +57,17 @@ final class StarWarsRepository {
         return data
       }
   }
+
+  func query(
+    with parameters: StarWarsQuery
+  ) -> Single<QueryStarWarsModel> {
+    apiClient.query( with: parameters, selections: .init())
+      .map {
+        guard let data = $0.data else {
+          throw StarWarsRepositoryError.missingData
+        }
+
+        return data
+      }
+  }
 }

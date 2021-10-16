@@ -138,7 +138,7 @@ extension ResourceParametersGenerator {
     let requestName = try entityNameProvider.requestParameterName(with: operation)
     let selectionsName = try entityNameProvider.selectionsName(with: operation)
     enumCases.append(
-      "case \(operation.enumNamePrefix)(request: \(requestName), selections: \(selectionsName))"
+      "case \(operation.funcName)(request: \(requestName), selections: \(selectionsName))"
     )
 
     return enumCases
@@ -158,7 +158,7 @@ extension ResourceParametersGenerator {
 
     enumCases.append(
       """
-      case let .\(operation.enumNamePrefix)(request, selections):
+      case let .\(operation.funcName)(request, selections):
         return bodyParameters(request: request, selections: selections as \(selectionsName))
       """
     )

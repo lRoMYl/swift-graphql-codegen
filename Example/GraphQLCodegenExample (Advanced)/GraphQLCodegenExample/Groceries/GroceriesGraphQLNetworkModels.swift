@@ -262,7 +262,17 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 struct QueryRequest: GraphQLRequesting {
   let requestType: GraphQLRequestType = .query
 
-  let campaignsRequest: CampaignsQueryRequest?
+  let campaigns: CampaignsQueryRequest?
+
+  init(
+    campaigns: CampaignsQueryRequest? = nil
+  ) {
+    self.campaigns = campaigns
+  }
+
+  func encode(to encoder: Encoder) throws {
+    try campaigns?.encode(to: encoder)
+  }
 }
 
 struct CampaignsQueryResponse: Codable {
@@ -330,6 +340,29 @@ enum ProductDealSelection: String, GraphQLSelection {
     ...DealFragment
   }
   """
+}
+
+struct QueryRequestSelections: GraphQLSelections {
+  let campaigns: Set<CampaignsSelection>
+
+  private let operationDefinitionFormat: String = ""
+
+  var operationDefinition: String {
+    String(
+      format: operationDefinitionFormat,
+      declaration()
+    )
+  }
+
+  init(
+    campaigns: Set<CampaignsSelection> = .allFields
+  ) {
+    self.campaigns = campaigns
+  }
+
+  func declaration() -> String {
+    ""
+  }
 }
 
 // MARK: - Selections
@@ -423,22 +456,5 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
       selectionDeclarationMap: selectionDeclarationMap,
       rootSelectionKey: "CampaignsFragment"
     )
-  }
-}
-
-struct QueryRequestSelections: GraphQLSelections {
-  let campaigns: CampaignsSelection
-
-  private let operationDefinitionFormat: String = ""
-
-  var operationDefinition: String {
-    String(
-      format: operationDefinitionFormat,
-      declaration()
-    )
-  }
-
-  func declaration() -> String {
-    ""
   }
 }

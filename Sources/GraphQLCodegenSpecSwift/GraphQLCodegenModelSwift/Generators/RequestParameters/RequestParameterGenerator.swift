@@ -110,7 +110,7 @@ private extension RequestParameterGenerator {
 
     let codingKeys = try codingKeysGenerator.declaration(field: field)
 
-    let initializer = try initializerGenerator.declaration(field: field)
+    let initializer = try initializerGenerator.declaration(with: field)
 
     let text = """
     /// \(requestParameterName)
@@ -142,7 +142,13 @@ private extension RequestParameterGenerator {
     let fieldsCode: String = try fields.map { field in
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
 
-      return "let \(field.name)Request: \(requestParameterName)?"
+      return "let \(field.name): \(requestParameterName)?"
+    }.lines
+
+    let initializer = try initializerGenerator.declaration(with: operation)
+
+    let encodersCode = fields.map {
+      "try \($0.name)?.encode(to: encoder)"
     }.lines
 
     let text = """
@@ -150,6 +156,12 @@ private extension RequestParameterGenerator {
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
 
       \(fieldsCode)
+
+      \(initializer)
+
+      func encode(to encoder: Encoder) throws {
+        \(encodersCode)
+      }
     }
     """
 

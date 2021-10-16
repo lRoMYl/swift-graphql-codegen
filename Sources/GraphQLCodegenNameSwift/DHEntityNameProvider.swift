@@ -86,6 +86,10 @@ public final class DHEntityNameProvider: EntityNameProviding {
     "\(field.name.pascalCase)\(operation.type.name.pascalCase)\(Constants.responsePostFix)"
   }
 
+  public func responseDataName(with operation: GraphQLAST.Operation) throws -> String {
+    try name(for: operation.type)
+  }
+
   public func selectionName(for objectType: ObjectType) throws -> String {
     "\(objectType.name.pascalCase)\(Constants.selectionPostFix)"
   }

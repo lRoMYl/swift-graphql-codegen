@@ -7,6 +7,10 @@ import Foundation
 import RxSwift
 
 protocol GroceriesApiClientProtocol {
+  func query(
+    with request: QueryRequest,
+    selections: QueryRequestSelections
+  ) -> Single<ApiResponse<QueryResponseModel>>
   func campaigns(
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestSelections
@@ -45,7 +49,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   }
 
   func query(
-    request: QueryRequest,
+    with request: QueryRequest,
     selections: QueryRequestSelections
   ) -> Single<ApiResponse<QueryResponseModel>> {
     let resource = GroceriesResourceParametersProvider(

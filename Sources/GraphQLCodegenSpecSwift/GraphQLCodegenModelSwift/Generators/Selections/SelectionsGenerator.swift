@@ -63,32 +63,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         try code(operation: operation, field: field, schema: schema)
       }
 
-      selections.append("""
-      struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
-        \(
-          try fields.compactMap {
-            guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil}
-
-            return """
-            let \($0.name): \(selectionName)
-            """
-          }.lines
-        )
-
-        private let operationDefinitionFormat: String = ""
-
-        var operationDefinition: String {
-          String(
-            format: operationDefinitionFormat,
-            declaration()
-          )
-        }
-
-        func declaration() -> String {
-          ""
-        }
-      }
-      """)
+      selections.insert(try code(operation: operation, schema: schema), at: 0)
 
       return selections.lines
     }.lines
@@ -120,6 +95,67 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         schemaMap: schemaMap
       )
     }
+  }
+
+  func code(operation: GraphQLAST.Operation, schema: Schema) throws -> String {
+    let fields = operation.type.fields.sorted(by: { $0.name < $1.name })
+    var fieldMap = FieldMap()
+    fieldMap.merge(
+      Dictionary(
+        uniqueKeysWithValues: fields.map {
+          ($0.name, $0)
+        }
+      ),
+      uniquingKeysWith: { (_, new) in new }
+    )
+    let selections: [Field] = try fields.compactMap {
+      guard try entityNameProvider.selectionName(for: $0) != nil else { return nil }
+
+      return $0
+    }
+
+    let arguments = try selections.compactMap {
+      guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil }
+
+      return "\($0.name): Set<\(selectionName)> = .allFields"
+    }.joined(separator: ",\n")
+
+    let assignments = selections.map {
+      "self.\($0.name) = \($0.name)"
+    }.lines
+
+    return """
+    struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
+      \(
+        try fields.compactMap {
+          guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil}
+
+          return """
+          let \($0.name): Set<\(selectionName)>
+          """
+        }.lines
+      )
+
+      private let operationDefinitionFormat: String = ""
+
+      var operationDefinition: String {
+        String(
+          format: operationDefinitionFormat,
+          declaration()
+        )
+      }
+
+      init(
+        \(arguments)
+      ) {
+        \(assignments)
+      }
+
+      func declaration() -> String {
+        ""
+      }
+    }
+    """
   }
 }
 

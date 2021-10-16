@@ -7,6 +7,10 @@ import Foundation
 import RxSwift
 
 protocol StarWarsApiClientProtocol {
+  func query(
+    with request: StarWarsQuery,
+    selections: StarWarsQuerySelections
+  ) -> Single<ApiResponse<QueryStarWarsModel>>
   func human(
     with request: HumanStarWarsQuery,
     selections: HumanStarWarsQuerySelections
@@ -47,10 +51,18 @@ protocol StarWarsApiClientProtocol {
     with request: TimeStarWarsQuery,
     selections: TimeStarWarsQuerySelections
   ) -> Single<ApiResponse<TimeQueryResponse>>
+  func update(
+    with request: StarWarsMutation,
+    selections: StarWarsMutationSelections
+  ) -> Single<ApiResponse<MutationStarWarsModel>>
   func mutate(
     with request: MutateStarWarsMutation,
     selections: MutateStarWarsMutationSelections
   ) -> Single<ApiResponse<MutateMutationResponse>>
+  func subscribe(
+    with request: StarWarsSubscription,
+    selections: StarWarsSubscriptionSelections
+  ) -> Single<ApiResponse<SubscriptionStarWarsModel>>
   func number(
     with request: NumberStarWarsSubscription,
     selections: NumberStarWarsSubscriptionSelections
@@ -215,7 +227,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func query(
-    request: StarWarsQuery,
+    with request: StarWarsQuery,
     selections: StarWarsQuerySelections
   ) -> Single<ApiResponse<QueryStarWarsModel>> {
     let resource = StarWarsResourceParametersProvider(
@@ -243,7 +255,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func update(
-    request: StarWarsMutation,
+    with request: StarWarsMutation,
     selections: StarWarsMutationSelections
   ) -> Single<ApiResponse<MutationStarWarsModel>> {
     let resource = StarWarsResourceParametersProvider(
@@ -271,7 +283,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
   }
 
   func subscribe(
-    request: StarWarsSubscription,
+    with request: StarWarsSubscription,
     selections: StarWarsSubscriptionSelections
   ) -> Single<ApiResponse<SubscriptionStarWarsModel>> {
     let resource = StarWarsResourceParametersProvider(

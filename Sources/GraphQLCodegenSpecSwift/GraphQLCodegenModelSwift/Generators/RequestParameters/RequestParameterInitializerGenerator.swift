@@ -20,13 +20,34 @@ struct RequestParameterInitializerGenerator {
     self.entityNameProvider = entityNameProvider
   }
 
-  func declaration(field: Field) throws -> String {
+  func declaration(with field: Field) throws -> String {
     let arguments = try field.args.map {
       "\($0.name.camelCase): \(try entityNameProvider.name(for: $0.type))"
     }
     .joined(separator: ",\n")
 
     let assignments = field.args.map {
+      let argumentName = $0.name.camelCase
+      return "self.\(argumentName) = \(argumentName)"
+    }.lines
+
+    return """
+    init(
+      \(arguments)
+    ) {
+      \(assignments)
+    }
+    """
+  }
+
+  func declaration(with operation: GraphQLAST.Operation) throws -> String {
+    let fields = operation.type.fields
+    let arguments = try fields.map {
+      "\($0.name.camelCase): \(try entityNameProvider.requestParameterName(for: $0, with: operation))? = nil"
+    }
+    .joined(separator: ",\n")
+
+    let assignments = fields.map {
       let argumentName = $0.name.camelCase
       return "self.\(argumentName) = \(argumentName)"
     }.lines
