@@ -231,6 +231,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
+  let rootSelectionKeys: Set<String> = ["CampaignsFragment"]
 
   // MARK: - Arguments
 
@@ -261,6 +262,19 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
 struct QueryRequest: GraphQLRequesting {
   let requestType: GraphQLRequestType = .query
+  var rootSelectionKeys: Set<String> {
+    let requests: [GraphQLRequesting?] = [
+      campaigns
+    ]
+
+    return requests.reduce(into: Set<String>()) { result, request in
+      request.map {
+        $0.rootSelectionKeys.forEach {
+          result.insert($0)
+        }
+      }
+    }
+  }
 
   let campaigns: CampaignsQueryRequest?
 
@@ -343,25 +357,94 @@ enum ProductDealSelection: String, GraphQLSelection {
 }
 
 struct QueryRequestSelections: GraphQLSelections {
+  let benefit: Set<BenefitSelection>
+  let campaignAttribute: Set<CampaignAttributeSelection>
   let campaigns: Set<CampaignsSelection>
+  let deal: Set<DealSelection>
+  let productDeal: Set<ProductDealSelection>
 
-  private let operationDefinitionFormat: String = ""
+  private let operationDefinitionFormat: String = "%@"
 
-  var operationDefinition: String {
+  func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
     String(
       format: operationDefinitionFormat,
-      declaration()
+      declaration(with: rootSelectionKeys)
     )
   }
 
   init(
-    campaigns: Set<CampaignsSelection> = .allFields
+    benefit: Set<BenefitSelection> = .allFields,
+    campaignAttribute: Set<CampaignAttributeSelection> = .allFields,
+    campaigns: Set<CampaignsSelection> = .allFields,
+    deal: Set<DealSelection> = .allFields,
+    productDeal: Set<ProductDealSelection> = .allFields
   ) {
+    self.benefit = benefit
+    self.campaignAttribute = campaignAttribute
     self.campaigns = campaigns
+    self.deal = deal
+    self.productDeal = productDeal
   }
 
-  func declaration() -> String {
-    ""
+  func declaration(with rootSelectionKeys: Set<String>) -> String {
+    let benefitDeclaration = """
+    fragment BenefitFragment on Benefit {
+    	\(BenefitSelection.requiredDeclaration)
+    	__typename
+    	BenefitFragment
+    }
+    """
+    let campaignAttributeDeclaration = """
+    fragment CampaignAttributeFragment on CampaignAttribute {
+    	\(CampaignAttributeSelection.requiredDeclaration)
+    	\(campaignAttribute.declaration)
+    	__typename
+    	CampaignAttributeFragment
+    }
+    """
+    let campaignsDeclaration = """
+    fragment CampaignsFragment on Campaigns {
+    	\(campaigns.declaration)
+    	__typename
+    	CampaignsFragment
+    }
+    """
+    let dealDeclaration = """
+    fragment DealFragment on Deal {
+    	\(DealSelection.requiredDeclaration)
+    	__typename
+    	DealFragment
+    }
+    """
+    let productDealDeclaration = """
+    fragment ProductDealFragment on ProductDeal {
+    	\(ProductDealSelection.requiredDeclaration)
+    	\(productDeal.declaration)
+    	__typename
+    	ProductDealFragment
+    }
+    """
+
+    let selectionDeclarationMap = [
+      "BenefitFragment": benefitDeclaration,
+      "CampaignAttributeFragment": campaignAttributeDeclaration,
+      "CampaignsFragment": campaignsDeclaration,
+      "DealFragment": dealDeclaration,
+      "ProductDealFragment": productDealDeclaration
+    ]
+
+    let fragmentMaps = rootSelectionKeys
+      .map {
+        declaration(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKey: $0
+        )
+      }
+      .reduce([String: String]()) { old, new in
+        old.merging(new, uniquingKeysWith: { _, new in new })
+      }
+
+    return fragmentMaps.values.joined(separator: "\n")
   }
 }
 
@@ -388,10 +471,10 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
   %1$@
   """
 
-  var operationDefinition: String {
+  func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
     String(
       format: operationDefinitionFormat,
-      declaration()
+      declaration(with: rootSelectionKeys)
     )
   }
 
@@ -410,7 +493,7 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     self.productDealSelections = productDealSelections
   }
 
-  func declaration() -> String {
+  func declaration(with rootSelectionKeys: Set<String>) -> String {
     let benefitSelectionsDeclaration = """
     fragment BenefitFragment on Benefit {
     	\(BenefitSelection.requiredDeclaration)
@@ -452,9 +535,17 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
       "ProductDealFragment": productDealSelectionsDeclaration
     ]
 
-    return declaration(
-      selectionDeclarationMap: selectionDeclarationMap,
-      rootSelectionKey: "CampaignsFragment"
-    )
+    let fragmentMaps = rootSelectionKeys
+      .map {
+        declaration(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKey: $0
+        )
+      }
+      .reduce([String: String]()) { old, new in
+        old.merging(new, uniquingKeysWith: { _, new in new })
+      }
+
+    return fragmentMaps.values.joined(separator: "\n")
   }
 }

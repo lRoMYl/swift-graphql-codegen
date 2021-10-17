@@ -19,6 +19,8 @@ public protocol EntityNameProviding {
 
   func fragmentName(for outputRef: OutputRef) throws -> String?
   func fragmentName(for objectType: ObjectType) throws -> String
+  func fragmentName(for interfaceType: InterfaceType) throws -> String
+  func fragmentName(for unionType: UnionType) throws -> String
 
   func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
   func requestParameterName(with operation: GraphQLAST.Operation) throws -> String

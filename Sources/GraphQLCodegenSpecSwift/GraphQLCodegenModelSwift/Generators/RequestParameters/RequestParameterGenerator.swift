@@ -103,6 +103,7 @@ private extension RequestParameterGenerator {
     field: Field
   ) throws -> String {
     let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
+    let rootSelectionKey = try entityNameProvider.fragmentName(for: field.type.namedType).map { "\"\($0)\"" } ?? ""
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(
       field: field
@@ -118,6 +119,7 @@ private extension RequestParameterGenerator {
       // MARK: - \(entityNameMap.requestType)
 
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+      let rootSelectionKeys: Set<String> = [\(rootSelectionKey)]
 
       \(argumentVariables)
 
@@ -138,6 +140,9 @@ private extension RequestParameterGenerator {
     let fields = returnObject.fields
 
     let requestParameterName = "\(try entityNameProvider.requestParameterName(with: operation))"
+    let rootSelectionKeys = fields.map {
+      $0.name
+    }.joined(separator: ",\n")
 
     let fieldsCode: String = try fields.map { field in
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
@@ -154,6 +159,19 @@ private extension RequestParameterGenerator {
     let text = """
     struct \(requestParameterName): \(entityName) {
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+      var rootSelectionKeys: Set<String> {
+        let requests: [GraphQLRequesting?] = [
+          \(rootSelectionKeys)
+        ]
+
+        return requests.reduce(into: Set<String>()) { result, request in
+          request.map {
+            $0.rootSelectionKeys.forEach {
+              result.insert($0)
+            }
+          }
+        }
+      }
 
       \(fieldsCode)
 

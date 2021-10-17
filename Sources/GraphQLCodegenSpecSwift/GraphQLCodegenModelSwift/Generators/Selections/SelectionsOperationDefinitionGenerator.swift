@@ -67,10 +67,10 @@ struct SelectionsOperationDefinitionGenerator {
     %1$@
     \"\"\"
 
-    var operationDefinition: String {
+    func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
       String(
         format: operationDefinitionFormat,
-        declaration()
+        declaration(with: rootSelectionKeys)
       )
     }
     """

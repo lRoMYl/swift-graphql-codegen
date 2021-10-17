@@ -28,14 +28,15 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     protocol \(entityNameMap.requestParameter): Encodable {
       var requestType: \(entityNameMap.requestType) { get }
+      var rootSelectionKeys: Set<String> { get }
     }
 
     protocol \(entityNameMap.selection): Hashable, CaseIterable {
       static var requiredDeclaration: String { get }
     }
     protocol \(entityNameMap.selections) {
-      func declaration() -> String
-      var operationDefinition: String { get }
+      func declaration(with rootSelectionKeys: Set<String>) -> String
+      func operationDefinition(with rootSelectionKeys: Set<String>) -> String
     }
 
     // MARK: - Enum
@@ -69,7 +70,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
         try container.encode(parameters, forKey: .parameters)
 
-        let operationDefinition = selections.operationDefinition
+        let operationDefinition = selections.operationDefinition(with: parameters.rootSelectionKeys)
 
         switch parameters.requestType {
         case .query:
@@ -113,7 +114,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // MARK: - \(entityNameMap.selections)+Declaration
 
     extension \(entityNameMap.selections) {
-      func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
+      func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
         var dictionary = [String: String]()
         dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
@@ -137,7 +138,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
           }
         }
 
-        return dictionary.values.joined(separator: "\\n")
+        return dictionary
       }
     }
     """

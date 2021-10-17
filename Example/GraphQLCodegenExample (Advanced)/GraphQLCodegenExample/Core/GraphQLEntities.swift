@@ -8,6 +8,7 @@ import Foundation
 
 protocol GraphQLRequesting: Encodable {
   var requestType: GraphQLRequestType { get }
+  var rootSelectionKeys: Set<String> { get }
 }
 
 protocol GraphQLSelection: Hashable, CaseIterable {
@@ -15,8 +16,8 @@ protocol GraphQLSelection: Hashable, CaseIterable {
 }
 
 protocol GraphQLSelections {
-  func declaration() -> String
-  var operationDefinition: String { get }
+  func declaration(with rootSelectionKeys: Set<String>) -> String
+  func operationDefinition(with rootSelectionKeys: Set<String>) -> String
 }
 
 // MARK: - Enum
@@ -50,7 +51,7 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
 
     try container.encode(parameters, forKey: .parameters)
 
-    let operationDefinition = selections.operationDefinition
+    let operationDefinition = selections.operationDefinition(with: parameters.rootSelectionKeys)
 
     switch parameters.requestType {
     case .query:
@@ -94,7 +95,7 @@ extension Set where Element: GraphQLSelection {
 // MARK: - GraphQLSelections+Declaration
 
 extension GraphQLSelections {
-  func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
+  func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
     var dictionary = [String: String]()
     dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
@@ -118,6 +119,6 @@ extension GraphQLSelections {
       }
     }
 
-    return dictionary.values.joined(separator: "\n")
+    return dictionary
   }
 }

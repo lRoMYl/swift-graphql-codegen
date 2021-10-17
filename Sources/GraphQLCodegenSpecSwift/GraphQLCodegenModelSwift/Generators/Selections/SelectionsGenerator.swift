@@ -99,50 +99,98 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
   }
 
   func code(operation: GraphQLAST.Operation, schema: Schema) throws -> String {
-    let fields = operation.type.fields.sorted(by: { $0.name < $1.name })
-    var fieldMap = FieldMap()
-    fieldMap.merge(
-      Dictionary(
-        uniqueKeysWithValues: fields.map {
-          ($0.name, $0)
-        }
-      ),
-      uniquingKeysWith: { (_, new) in new }
-    )
-    let selections: [Field] = try fields.compactMap {
-      guard try entityNameProvider.selectionName(for: $0) != nil else { return nil }
+    let objectTypeMap = ObjectTypeMap(schema: schema)
+    let objects = schema.objects.filter { !$0.isOperation }.sorted(by: { $0.name < $1.name })
 
-      return $0
-    }
+    let arguments = try objects.compactMap {
+      let selectionName = try entityNameProvider.selectionName(for: $0)
 
-    let arguments = try selections.compactMap {
-      guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil }
-
-      return "\($0.name): Set<\(selectionName)> = .allFields"
+      return "\($0.name.camelCase): Set<\(selectionName)> = .allFields"
     }.joined(separator: ",\n")
 
-    let assignments = selections.map {
-      "self.\($0.name) = \($0.name)"
+    let assignments = objects.map {
+      "self.\($0.name.camelCase) = \($0.name.camelCase)"
     }.lines
+
+    let structures = schema.objects.filter { !$0.isOperation } as [Structure]
+      + schema.interfaces as [Structure]
+      + schema.unions as [Structure]
+
+    let selectionFragmentMap = try structures.map {
+      let possibleTypes = $0.possibleTypes
+      let requiredDeclaration: String
+      let selectableDeclaration = $0.selectableFields(selectionMap: selectionMap).isEmpty
+        ? ""
+        : "\t\\(\($0.name.camelCase).declaration)"
+      let fragmentDeclaration: String
+
+
+      if
+        !$0.requiredFields(selectionMap: selectionMap).isEmpty,
+        let selectionName = try entityNameProvider.selectionName(structure: $0)
+      {
+        requiredDeclaration = "\t\\(\(selectionName).requiredDeclaration)"
+      } else {
+        requiredDeclaration = ""
+      }
+
+      if !possibleTypes.isEmpty {
+        fragmentDeclaration = """
+        \t__typename
+        \(
+          try possibleTypes.map { possibleType in
+            let objectType = try possibleType.objectType(objectTypeMap: objectTypeMap)
+            return "\t\(try entityNameProvider.fragmentName(for: objectType))"
+          }.lines
+        )
+        """
+      } else {
+        fragmentDeclaration = ""
+      }
+
+      let fragmentContent: [String] = [
+        requiredDeclaration,
+        selectableDeclaration,
+        fragmentDeclaration
+      ].filter { !$0.isEmpty }
+
+      return """
+      let \($0.name.camelCase)Declaration = \"\"\"
+      fragment \(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
+      \(fragmentContent.lines)
+      }
+      \"\"\"
+      """
+    }.lines
+
+    let selectionDeclarationMap = """
+    let selectionDeclarationMap = [
+      \(
+        try structures.map {
+          "\"\(try entityNameProvider.fragmentName(for: $0))\": \($0.name.camelCase)Declaration"
+        }.joined(separator: ",\n")
+      )
+    ]
+    """
 
     return """
     struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
       \(
-        try fields.compactMap {
-          guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil}
+        try objects.compactMap {
+          let selectionName = try entityNameProvider.selectionName(for: $0)
 
           return """
-          let \($0.name): Set<\(selectionName)>
+          let \($0.name.camelCase): Set<\(selectionName)>
           """
         }.lines
       )
 
-      private let operationDefinitionFormat: String = ""
+      private let operationDefinitionFormat: String = "%@"
 
-      var operationDefinition: String {
+      func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
         String(
           format: operationDefinitionFormat,
-          declaration()
+          declaration(with: rootSelectionKeys)
         )
       }
 
@@ -152,8 +200,23 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         \(assignments)
       }
 
-      func declaration() -> String {
-        ""
+      func declaration(with rootSelectionKeys: Set<String>) -> String {
+        \(selectionFragmentMap)
+
+        \(selectionDeclarationMap)
+
+        let fragmentMaps = rootSelectionKeys
+          .map {
+            declaration(
+              selectionDeclarationMap: selectionDeclarationMap,
+              rootSelectionKey: $0
+            )
+          }
+          .reduce([String: String]()) { old, new in
+            old.merging(new, uniquingKeysWith: { _, new in new })
+          }
+
+        return fragmentMaps.values.joined(separator: "\\n")
       }
     }
     """
@@ -298,7 +361,7 @@ extension SelectionsGenerator {
     struct \(selectionsName): \(entityNameMap.selections) {
       \(operationDefinition)
 
-      func declaration() -> String {
+      func declaration(with _: Set<String>) -> String {
         \"\"
       }
     }
@@ -311,12 +374,6 @@ extension SelectionsGenerator {
     fieldMaps: [FieldMap.Element],
     schemaMap: SchemaMap
   ) throws -> String {
-    guard let fragmentName = try entityNameProvider.fragmentName(for: field.type.namedType) else {
-      throw SelectionGeneratorError.missingFragmentName(
-        context: "Expecting fragment name from \(field.type.namedType.name)"
-      )
-    }
-
     let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,
       field: field
@@ -341,15 +398,23 @@ extension SelectionsGenerator {
 
       \(memberwiseInitializerDeclaration)
 
-      func declaration() -> String {
+      func declaration(with rootSelectionKeys: Set<String>) -> String {
         \(selectionFragmentMap)
 
         \(selectionDeclarationMap)
 
-        return declaration(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: "\(fragmentName)"
-        )
+        let fragmentMaps = rootSelectionKeys
+          .map {
+            declaration(
+              selectionDeclarationMap: selectionDeclarationMap,
+              rootSelectionKey: $0
+            )
+          }
+          .reduce([String: String]()) { old, new in
+            old.merging(new, uniquingKeysWith: { _, new in new })
+          }
+
+        return fragmentMaps.values.joined(separator: "\\n")
       }
     }
     """
