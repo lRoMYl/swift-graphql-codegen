@@ -5,9 +5,21 @@
 //  Created by Romy Cheah on 5/10/21.
 //
 
+import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+
+enum SelectionGeneratorError: Error, LocalizedError {
+  case missingFragmentName(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    default:
+      return "\(Self.self).\(self)"
+    }
+  }
+}
 
 struct SelectionGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
@@ -86,17 +98,20 @@ extension SelectionGenerator {
       switch objectRef {
       case .scalar, .enum:
         return "case \(name) = \"\(name)\""
-      case .object, .interface:
+      case .object, .interface, .union:
+        guard let fragmentName = try entityNameProvider.fragmentName(for: objectRef) else {
+          throw SelectionGeneratorError.missingFragmentName(
+            context: "Expecting fragment name from \(objectRef.name)"
+          )
+        }
+
         return """
         case \(name) = \"\"\"
         \(name) {
-          ...\(try objectRef.scalarType(scalarMap: scalarMap))Fragment
+          ...\(fragmentName)
         }
         \"\"\"
         """
-      case .union:
-        print("Warning, union not implemented for enumCaseDeclaration in SelectionGenerator")
-        return ""
       }
     }
   }

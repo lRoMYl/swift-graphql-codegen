@@ -14,6 +14,7 @@ enum SelectionsGeneratorError: Error, LocalizedError {
   case missingReturnType(context: String)
   case notImplemented(context: String)
   case formatError(context: String)
+  case missingFragment(context: String)
 
   var errorDescription: String? {
     switch self {
@@ -51,8 +52,8 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     )
 
     operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
-      scalarMap: scalarMap,
-      variablesGenerator: requestParameterVariablesGenerator
+      variablesGenerator: requestParameterVariablesGenerator,
+      entityNameProvider: entityNameProvider
     )
   }
 
@@ -310,7 +311,11 @@ extension SelectionsGenerator {
     fieldMaps: [FieldMap.Element],
     schemaMap: SchemaMap
   ) throws -> String {
-    let operationFieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
+    guard let fragmentName = try entityNameProvider.fragmentName(for: field.type.namedType) else {
+      throw SelectionGeneratorError.missingFragmentName(
+        context: "Expecting fragment name from \(field.type.namedType.name)"
+      )
+    }
 
     let operationDefinition = try operationDefinitionGenerator.declaration(
       operation: operation,
@@ -343,7 +348,7 @@ extension SelectionsGenerator {
 
         return declaration(
           selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: "\(operationFieldScalarType.pascalCase)Fragment"
+          rootSelectionKey: "\(fragmentName)"
         )
       }
     }
@@ -441,9 +446,11 @@ extension SelectionsGenerator {
       ) {
         interfaceFragmentCode = """
         \t__typename\n\t\(
-          possibleObjectTypes.map {
-            """
-            ...\($0.name)Fragment
+          try possibleObjectTypes.compactMap {
+            let fragmentName = try entityNameProvider.fragmentName(for: $0)
+
+            return """
+            ...\(fragmentName)
             """
           }.joined(separator: "\n\t")
         )

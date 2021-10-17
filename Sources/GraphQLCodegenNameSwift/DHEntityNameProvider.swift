@@ -74,6 +74,19 @@ public final class DHEntityNameProvider: EntityNameProviding {
     }
   }
 
+  public func fragmentName(for outputRef: OutputRef) throws -> String? {
+    switch outputRef {
+    case let .object(name), let .interface(name), let .union(name):
+      return "\(name)Fragment"
+    default:
+      return nil
+    }
+  }
+
+  public func fragmentName(for objectType: ObjectType) throws -> String {
+    "\(objectType.name)Fragment"
+  }
+
   public func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String {
     field.name.pascalCase + operation.type(entityNameMap: entityNameMap)
   }

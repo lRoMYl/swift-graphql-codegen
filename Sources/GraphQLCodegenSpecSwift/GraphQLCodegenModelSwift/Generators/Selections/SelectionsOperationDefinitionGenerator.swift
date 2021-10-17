@@ -8,21 +8,43 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
+
+enum SelectionsOperationDefinitionError: Error, LocalizedError {
+  case missingFragment(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    default:
+      return "\(Self.self).\(self)"
+    }
+  }
+}
 
 struct SelectionsOperationDefinitionGenerator {
-  private let scalarMap: ScalarMap
   private let variablesGenerator: RequestVariablesGenerator
+  private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, variablesGenerator: RequestVariablesGenerator) {
-    self.scalarMap = scalarMap
+  init(variablesGenerator: RequestVariablesGenerator, entityNameProvider: EntityNameProviding) {
     self.variablesGenerator = variablesGenerator
+    self.entityNameProvider = entityNameProvider
   }
 
   func declaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
     let operationName = operation.type.name.lowercased()
-    let selection = field.isFragment
-      ? " {\n\t\t...\(try field.type.namedType.scalarType(scalarMap: scalarMap))Fragment\n\t}"
-      : ""
+    let selection: String
+
+    if field.isFragment {
+      guard let fragmentName = try entityNameProvider.fragmentName(for: field.type.namedType) else {
+        throw SelectionsOperationDefinitionError.missingFragment(
+          context: "Expecting fragment name from \(field.type.namedType.name)"
+        )
+      }
+
+      selection = " {\n\t\t...\(fragmentName)\n\t}"
+    } else {
+      selection = ""
+    }
 
     let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
     let operationVariablesDeclaration = operationVariables.isEmpty

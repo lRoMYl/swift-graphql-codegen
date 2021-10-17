@@ -17,6 +17,9 @@ public protocol EntityNameProviding {
   func name(for namedType: NamedType) throws -> String
   func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
 
+  func fragmentName(for outputRef: OutputRef) throws -> String?
+  func fragmentName(for objectType: ObjectType) throws -> String
+
   func requestParameterName(for field: Field, with operation: GraphQLAST.Operation) throws -> String
   func requestParameterName(with operation: GraphQLAST.Operation) throws -> String
 
