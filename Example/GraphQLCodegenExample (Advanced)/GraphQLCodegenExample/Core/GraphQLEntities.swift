@@ -9,6 +9,8 @@ import Foundation
 protocol GraphQLRequesting: Encodable {
   var requestType: GraphQLRequestType { get }
   var rootSelectionKeys: Set<String> { get }
+
+  func operationDefinition() -> String
 }
 
 protocol GraphQLSelection: Hashable, CaseIterable {
@@ -17,7 +19,6 @@ protocol GraphQLSelection: Hashable, CaseIterable {
 
 protocol GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String
-  func operationDefinition(with rootSelectionKeys: Set<String>) -> String
 }
 
 // MARK: - Enum
@@ -49,9 +50,13 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
   func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
-    try container.encode(parameters, forKey: .parameters)
+    let operationDefinition = """
+    \(parameters.requestType.rawValue) {
+      \(parameters.operationDefinition())
+    }
 
-    let operationDefinition = selections.operationDefinition(with: parameters.rootSelectionKeys)
+    \(selections.declaration(with: parameters.rootSelectionKeys))
+    """
 
     switch parameters.requestType {
     case .query:
@@ -115,6 +120,7 @@ extension GraphQLSelections {
 
           queue.append(value)
           dictionary[childSelectionKey] = value
+          selectionDeclarationMap[childSelectionKey] = nil
         }
       }
     }

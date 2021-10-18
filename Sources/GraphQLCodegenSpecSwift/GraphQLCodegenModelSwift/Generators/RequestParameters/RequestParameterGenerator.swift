@@ -30,6 +30,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let codingKeysGenerator: RequestParameterEncodableGenerator
   private let variablesGenerator: RequestVariablesGenerator
   private let initializerGenerator: RequestParameterInitializerGenerator
+  private let operationDefinitionGenerator: SelectionsOperationDefinitionGenerator
 
   init(
     scalarMap: ScalarMap,
@@ -51,6 +52,10 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.initializerGenerator = RequestParameterInitializerGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
+      entityNameProvider: entityNameProvider
+    )
+    self.operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
+      variablesGenerator: variablesGenerator,
       entityNameProvider: entityNameProvider
     )
 
@@ -113,6 +118,10 @@ private extension RequestParameterGenerator {
 
     let initializer = try initializerGenerator.declaration(with: field)
 
+    let operationDefinition = try operationDefinitionGenerator.declaration(
+      operation: operation, field: field
+    )
+
     let text = """
     /// \(requestParameterName)
     struct \(requestParameterName): \(entityName) {
@@ -126,6 +135,8 @@ private extension RequestParameterGenerator {
       \(codingKeys)
 
       \(initializer)
+
+      \(operationDefinition)
     }
     """
 
@@ -150,35 +161,45 @@ private extension RequestParameterGenerator {
       return "let \(field.name): \(requestParameterName)?"
     }.lines
 
-    let initializer = try initializerGenerator.declaration(with: operation)
+    let privateFieldsCode = """
+    private var requests: [GraphQLRequesting] {
+      let requests: [GraphQLRequesting?] = [
+        \(fields.map { $0.name }.joined(separator: ",\n"))
+      ]
 
-    let encodersCode = fields.map {
-      "try \($0.name)?.encode(to: encoder)"
-    }.lines
+      return requests.compactMap { $0 }
+    }
+    """
+
+    let initializer = try initializerGenerator.declaration(with: operation)
 
     let text = """
     struct \(requestParameterName): \(entityName) {
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
       var rootSelectionKeys: Set<String> {
-        let requests: [GraphQLRequesting?] = [
-          \(rootSelectionKeys)
-        ]
-
         return requests.reduce(into: Set<String>()) { result, request in
-          request.map {
-            $0.rootSelectionKeys.forEach {
-              result.insert($0)
-            }
+          request.rootSelectionKeys.forEach {
+            result.insert($0)
           }
         }
       }
 
       \(fieldsCode)
 
+      \(privateFieldsCode)
+
       \(initializer)
 
       func encode(to encoder: Encoder) throws {
-        \(encodersCode)
+        try requests.forEach {
+          try $0.encode(to: encoder)
+        }
+      }
+
+      func operationDefinition() -> String {
+        requests
+          .map { $0.operationDefinition() }
+          .joined(separator: "\\n")
       }
     }
     """

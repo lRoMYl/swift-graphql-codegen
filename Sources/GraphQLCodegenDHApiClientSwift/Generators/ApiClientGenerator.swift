@@ -23,6 +23,7 @@ struct ApiClientGenerator: Generating {
   private let apiClientPrefix: String
 
   private let apiClientName: String
+  private let apiClientErrorName: String
   private let apiClientProtocolName: String
 
   private let entityNameMap: EntityNameMap
@@ -32,6 +33,7 @@ struct ApiClientGenerator: Generating {
   init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
     self.apiClientPrefix = entityNameMap.apiClientPrefix
     self.apiClientName = entityNameMap.apiClientName(apiClientPrefix: apiClientPrefix)
+    self.apiClientErrorName = entityNameMap.apiClientErrorName(apiClientPrefix: apiClientPrefix)
     self.apiClientProtocolName = entityNameMap.apiClientProtocolName(apiClientPrefix: apiClientPrefix)
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
@@ -43,9 +45,20 @@ struct ApiClientGenerator: Generating {
     let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
 
     return """
+    // MARK: - \(apiClientProtocolName)
+
     \(try protocolCode(with: schema.operations))
 
-    // MARK: - \(apiClientProtocolName)
+    enum \(apiClientErrorName): Error, LocalizedError {
+      case missingData(context: String)
+
+      var errorDescription: String? {
+        switch self {
+        case let .missingData(context):
+          return "\\(Self.self): \\(context)"
+        }
+      }
+    }
 
     final class \(apiClientName): \(apiClientProtocolName) {
       private let restClient: RestClient
@@ -118,6 +131,8 @@ extension ApiClientGenerator {
       """
     }
 
+    // Root operation
+    let responseDataText = try entityNameProvider.responseDataName(with: operation)
     codes.append("""
     \(try funcSignatureCode(operation: operation)) {
       let resource = \(resourceParameterName)(
@@ -125,9 +140,28 @@ extension ApiClientGenerator {
         resourceBodyParameters: .\(operation.funcName)(request: request, selections: selections)
       )
 
-      return executeGraphQLQuery(
-        resource: resource
-      )
+      let response: \(responseGenericCode(text: responseDataText)) = executeGraphQLQuery(resource: resource)
+
+      return response
+        .map { result in
+          let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+            \(
+              operation.type.fields.map {
+                "(request.\($0.name), result.data?.\($0.name))"
+              }.joined(separator: ",\n")
+            )
+          ]
+
+          try responseExpectations.forEach {
+            if let request = $0.0, $0.1 == nil {
+              throw \(apiClientErrorName).missingData(
+                context: "Missing data for \\(request.requestType.rawValue) { \\(request.operationDefinition()) }"
+              )
+            }
+          }
+
+          return result
+        }
     }
     """)
 

@@ -80,14 +80,14 @@ extension SelectionGenerator {
       ? ""
       : "\n\(requiredFields.map { $0.name }.lines)"
 
-    return """
+    return try """
     enum \(selectionName):\(rawRepresentableCode)\(entityNameMap.selection) {
       static let requiredDeclaration = \"\"\"\(requiredDeclarationCode)
       \"\"\"
 
       \(enumCasesCode)
     }
-    """
+    """.format()
   }
 
   func enumCaseDeclaration(name: String, outputRef: OutputTypeRef, scalarMap: ScalarMap) throws -> String {

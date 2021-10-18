@@ -41,7 +41,7 @@ struct SelectionsOperationDefinitionGenerator {
         )
       }
 
-      selection = " {\n\t\t...\(fragmentName)\n\t}"
+      selection = " {\n     ...\(fragmentName)\n}"
     } else {
       selection = ""
     }
@@ -52,28 +52,20 @@ struct SelectionsOperationDefinitionGenerator {
       : "(\n\(operationVariables)\n)"
 
     let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
+      .joined(separator: "\n    ")
     let operationArgumentsDeclaration = operationArguments.isEmpty
       ? ""
-      : "(\n\(operationArguments)\n\t)"
+      : "(\n    \(operationArguments)\n)"
 
-    return """
+    return try """
     // MARK: - Operation Definition
 
-    private let operationDefinitionFormat: String = \"\"\"
-    \(operationName)\(operationVariablesDeclaration) {
-    \t\("\(field.name)\(operationArgumentsDeclaration)\(selection)")
+    func operationDefinition() -> String {
+      return \"\"\"
+      \("\(field.name)\(operationArgumentsDeclaration)\(selection)")
+      \"\"\"
     }
-
-    %1$@
-    \"\"\"
-
-    func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
-      String(
-        format: operationDefinitionFormat,
-        declaration(with: rootSelectionKeys)
-      )
-    }
-    """
+    """.format()
   }
 }
 

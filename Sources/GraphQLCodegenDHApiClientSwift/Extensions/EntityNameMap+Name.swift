@@ -45,6 +45,10 @@ extension EntityNameMap {
   func apiClientName(apiClientPrefix: String) -> String {
     apiClientPrefix + "ApiClient"
   }
+
+  func apiClientErrorName(apiClientPrefix: String) -> String {
+    apiClientName(apiClientPrefix: apiClientPrefix) + "Error"
+  }
 }
 
 private extension EntityNameMap {

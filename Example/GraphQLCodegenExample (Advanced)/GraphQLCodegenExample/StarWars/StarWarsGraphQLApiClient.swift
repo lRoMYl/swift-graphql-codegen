@@ -6,6 +6,8 @@ import ApiClient
 import Foundation
 import RxSwift
 
+// MARK: - StarWarsApiClientProtocol
+
 protocol StarWarsApiClientProtocol {
   func query(
     with request: StarWarsQuery,
@@ -69,7 +71,16 @@ protocol StarWarsApiClientProtocol {
   ) -> Single<ApiResponse<NumberSubscriptionResponse>>
 }
 
-// MARK: - StarWarsApiClientProtocol
+enum StarWarsApiClientError: Error, LocalizedError {
+  case missingData(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .missingData(context):
+      return "\(Self.self): \(context)"
+    }
+  }
+}
 
 final class StarWarsApiClient: StarWarsApiClientProtocol {
   private let restClient: RestClient
@@ -235,9 +246,33 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
       resourceBodyParameters: .query(request: request, selections: selections)
     )
 
-    return executeGraphQLQuery(
-      resource: resource
-    )
+    let response: Single<ApiResponse<QueryStarWarsModel>> = executeGraphQLQuery(resource: resource)
+
+    return response
+      .map { result in
+        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          (request.human, result.data?.human),
+          (request.droid, result.data?.droid),
+          (request.character, result.data?.character),
+          (request.luke, result.data?.luke),
+          (request.humans, result.data?.humans),
+          (request.droids, result.data?.droids),
+          (request.characters, result.data?.characters),
+          (request.greeting, result.data?.greeting),
+          (request.whoami, result.data?.whoami),
+          (request.time, result.data?.time)
+        ]
+
+        try responseExpectations.forEach {
+          if let request = $0.0, $0.1 == nil {
+            throw StarWarsApiClientError.missingData(
+              context: "Missing data for \(request.requestType.rawValue) { \(request.operationDefinition()) }"
+            )
+          }
+        }
+
+        return result
+      }
   }
 
   func mutate(
@@ -263,9 +298,24 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
       resourceBodyParameters: .update(request: request, selections: selections)
     )
 
-    return executeGraphQLQuery(
-      resource: resource
-    )
+    let response: Single<ApiResponse<MutationStarWarsModel>> = executeGraphQLQuery(resource: resource)
+
+    return response
+      .map { result in
+        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          (request.mutate, result.data?.mutate)
+        ]
+
+        try responseExpectations.forEach {
+          if let request = $0.0, $0.1 == nil {
+            throw StarWarsApiClientError.missingData(
+              context: "Missing data for \(request.requestType.rawValue) { \(request.operationDefinition()) }"
+            )
+          }
+        }
+
+        return result
+      }
   }
 
   func number(
@@ -291,9 +341,24 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
       resourceBodyParameters: .subscribe(request: request, selections: selections)
     )
 
-    return executeGraphQLQuery(
-      resource: resource
-    )
+    let response: Single<ApiResponse<SubscriptionStarWarsModel>> = executeGraphQLQuery(resource: resource)
+
+    return response
+      .map { result in
+        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          (request.number, result.data?.number)
+        ]
+
+        try responseExpectations.forEach {
+          if let request = $0.0, $0.1 == nil {
+            throw StarWarsApiClientError.missingData(
+              context: "Missing data for \(request.requestType.rawValue) { \(request.operationDefinition()) }"
+            )
+          }
+        }
+
+        return result
+      }
   }
 }
 

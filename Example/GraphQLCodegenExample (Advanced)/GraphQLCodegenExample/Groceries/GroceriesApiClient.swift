@@ -6,6 +6,8 @@ import ApiClient
 import Foundation
 import RxSwift
 
+// MARK: - GroceriesApiClientProtocol
+
 protocol GroceriesApiClientProtocol {
   func query(
     with request: QueryRequest,
@@ -17,7 +19,16 @@ protocol GroceriesApiClientProtocol {
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
-// MARK: - GroceriesApiClientProtocol
+enum GroceriesApiClientError: Error, LocalizedError {
+  case missingData(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .missingData(context):
+      return "\(Self.self): \(context)"
+    }
+  }
+}
 
 final class GroceriesApiClient: GroceriesApiClientProtocol {
   private let restClient: RestClient
@@ -57,9 +68,24 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
       resourceBodyParameters: .query(request: request, selections: selections)
     )
 
-    return executeGraphQLQuery(
-      resource: resource
-    )
+    let response: Single<ApiResponse<QueryResponseModel>> = executeGraphQLQuery(resource: resource)
+
+    return response
+      .map { result in
+        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          (request.campaigns, result.data?.campaigns)
+        ]
+
+        try responseExpectations.forEach {
+          if let request = $0.0, $0.1 == nil {
+            throw GroceriesApiClientError.missingData(
+              context: "Missing data for \(request.requestType.rawValue) { \(request.operationDefinition()) }"
+            )
+          }
+        }
+
+        return result
+      }
   }
 }
 

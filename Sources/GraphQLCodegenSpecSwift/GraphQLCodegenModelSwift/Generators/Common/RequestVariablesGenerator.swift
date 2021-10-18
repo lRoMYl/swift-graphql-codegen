@@ -69,10 +69,10 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
-  func operationArgumentsDeclaration(with field: Field) -> String {
+  func operationArgumentsDeclaration(with field: Field) -> [String] {
     field.args.compactMap {
-      "    \($0.name): $\($0.name)"
-    }.lines
+      "\($0.name): \\(\($0.name.camelCase))"
+    }
   }
 
   /**

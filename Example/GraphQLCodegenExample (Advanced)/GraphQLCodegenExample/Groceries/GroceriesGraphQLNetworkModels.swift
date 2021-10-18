@@ -258,25 +258,41 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     self.globalEntityId = globalEntityId
     self.locale = locale
   }
+
+  // MARK: - Operation Definition
+
+  func operationDefinition() -> String {
+    return """
+    campaigns(
+      VendorID: \(vendorId)
+      GlobalEntityID: \(globalEntityId)
+      Locale: \(locale)
+    ) {
+       ...CampaignsFragment
+    }
+    """
+  }
 }
 
 struct QueryRequest: GraphQLRequesting {
   let requestType: GraphQLRequestType = .query
   var rootSelectionKeys: Set<String> {
-    let requests: [GraphQLRequesting?] = [
-      campaigns
-    ]
-
     return requests.reduce(into: Set<String>()) { result, request in
-      request.map {
-        $0.rootSelectionKeys.forEach {
-          result.insert($0)
-        }
+      request.rootSelectionKeys.forEach {
+        result.insert($0)
       }
     }
   }
 
   let campaigns: CampaignsQueryRequest?
+
+  private var requests: [GraphQLRequesting] {
+    let requests: [GraphQLRequesting?] = [
+      campaigns
+    ]
+
+    return requests.compactMap { $0 }
+  }
 
   init(
     campaigns: CampaignsQueryRequest? = nil
@@ -285,7 +301,15 @@ struct QueryRequest: GraphQLRequesting {
   }
 
   func encode(to encoder: Encoder) throws {
-    try campaigns?.encode(to: encoder)
+    try requests.forEach {
+      try $0.encode(to: encoder)
+    }
+  }
+
+  func operationDefinition() -> String {
+    requests
+      .map { $0.operationDefinition() }
+      .joined(separator: "\n")
   }
 }
 
@@ -390,38 +414,32 @@ struct QueryRequestSelections: GraphQLSelections {
     let benefitDeclaration = """
     fragment BenefitFragment on Benefit {
     	\(BenefitSelection.requiredDeclaration)
-    	__typename
-    	BenefitFragment
     }
     """
+
     let campaignAttributeDeclaration = """
     fragment CampaignAttributeFragment on CampaignAttribute {
     	\(CampaignAttributeSelection.requiredDeclaration)
     	\(campaignAttribute.declaration)
-    	__typename
-    	CampaignAttributeFragment
     }
     """
+
     let campaignsDeclaration = """
     fragment CampaignsFragment on Campaigns {
     	\(campaigns.declaration)
-    	__typename
-    	CampaignsFragment
     }
     """
+
     let dealDeclaration = """
     fragment DealFragment on Deal {
     	\(DealSelection.requiredDeclaration)
-    	__typename
-    	DealFragment
     }
     """
+
     let productDealDeclaration = """
     fragment ProductDealFragment on ProductDeal {
     	\(ProductDealSelection.requiredDeclaration)
     	\(productDeal.declaration)
-    	__typename
-    	ProductDealFragment
     }
     """
 
@@ -451,33 +469,6 @@ struct QueryRequestSelections: GraphQLSelections {
 // MARK: - Selections
 
 struct CampaignsQueryRequestSelections: GraphQLSelections {
-  // MARK: - Operation Definition
-
-  private let operationDefinitionFormat: String = """
-  query(
-    $VendorID: String!
-    $GlobalEntityID: String!
-    $Locale: String!
-  ) {
-  	campaigns(
-      VendorID: $VendorID
-      GlobalEntityID: $GlobalEntityID
-      Locale: $Locale
-  	) {
-  		...CampaignsFragment
-  	}
-  }
-
-  %1$@
-  """
-
-  func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
-    String(
-      format: operationDefinitionFormat,
-      declaration(with: rootSelectionKeys)
-    )
-  }
-
   let campaignAttributeSelections: Set<CampaignAttributeSelection>
   let campaignsSelections: Set<CampaignsSelection>
 

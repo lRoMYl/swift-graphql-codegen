@@ -134,13 +134,13 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         requiredDeclaration = ""
       }
 
-      if !possibleTypes.isEmpty {
+      if possibleTypes.count > 1 {
         fragmentDeclaration = """
         \t__typename
         \(
           try possibleTypes.map { possibleType in
             let objectType = try possibleType.objectType(objectTypeMap: objectTypeMap)
-            return "\t\(try entityNameProvider.fragmentName(for: objectType))"
+            return "\t...\(try entityNameProvider.fragmentName(for: objectType))"
           }.lines
         )
         """
@@ -154,13 +154,13 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         fragmentDeclaration
       ].filter { !$0.isEmpty }
 
-      return """
+      return try """
       let \($0.name.camelCase)Declaration = \"\"\"
       fragment \(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
       \(fragmentContent.lines)
       }
       \"\"\"
-      """
+      """.format()
     }.lines
 
     let selectionDeclarationMap = """
@@ -349,18 +349,12 @@ extension SelectionsGenerator {
   }
 
   func emptyDeclaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
-    let operationDefinition = try operationDefinitionGenerator.declaration(
-      operation: operation,
-      field: field
-    )
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
 
     return """
     // MARK: - Selections
 
     struct \(selectionsName): \(entityNameMap.selections) {
-      \(operationDefinition)
-
       func declaration(with _: Set<String>) -> String {
         \"\"
       }
@@ -374,10 +368,6 @@ extension SelectionsGenerator {
     fieldMaps: [FieldMap.Element],
     schemaMap: SchemaMap
   ) throws -> String {
-    let operationDefinition = try operationDefinitionGenerator.declaration(
-      operation: operation,
-      field: field
-    )
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
     let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fieldMaps, schemaMap: schemaMap)
@@ -392,8 +382,6 @@ extension SelectionsGenerator {
     // MARK: - Selections
 
     struct \(selectionsName): \(entityNameMap.selections) {
-      \(operationDefinition)
-
       \(selectionDeclarations)
 
       \(memberwiseInitializerDeclaration)
@@ -536,13 +524,13 @@ extension SelectionsGenerator {
 
       let fragmentContentCode = fragmentContent.compactMap { $0 }.lines
 
-      return """
+      return try """
       let \($0.key.camelCase)SelectionsDeclaration = \"\"\"
       fragment \($0.key.pascalCase)Fragment on \($0.key.pascalCase) {
       \(fragmentContentCode)
       }
       \"\"\"\n
-      """
+      """.format()
     }.lines
   }
 
