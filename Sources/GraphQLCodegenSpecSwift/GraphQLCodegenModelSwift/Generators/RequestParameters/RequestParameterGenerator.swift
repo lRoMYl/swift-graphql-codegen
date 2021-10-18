@@ -122,6 +122,10 @@ private extension RequestParameterGenerator {
       operation: operation, field: field
     )
 
+    let operationArgumentCode = argumentVariables.isEmpty
+      ? ""
+      : "\n" + variablesGenerator.operationVariablesDeclaration(with: field)
+
     let text = """
     /// \(requestParameterName)
     struct \(requestParameterName): \(entityName) {
@@ -137,6 +141,11 @@ private extension RequestParameterGenerator {
       \(initializer)
 
       \(operationDefinition)
+
+      func operationArguments() -> String {
+        \"\"\"\(operationArgumentCode)
+        \"\"\"
+      }
     }
     """
 
@@ -151,10 +160,6 @@ private extension RequestParameterGenerator {
     let fields = returnObject.fields
 
     let requestParameterName = "\(try entityNameProvider.requestParameterName(with: operation))"
-    let rootSelectionKeys = fields.map {
-      $0.name
-    }.joined(separator: ",\n")
-
     let fieldsCode: String = try fields.map { field in
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
 
@@ -200,6 +205,12 @@ private extension RequestParameterGenerator {
         requests
           .map { $0.operationDefinition() }
           .joined(separator: "\\n")
+      }
+
+      func operationArguments() -> String {
+        requests
+        .map { $0.operationArguments() }
+        .joined(separator: "\\n")
       }
     }
     """

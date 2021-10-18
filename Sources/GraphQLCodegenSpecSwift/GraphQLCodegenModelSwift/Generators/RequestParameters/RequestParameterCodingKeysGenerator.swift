@@ -21,7 +21,7 @@ private extension RequestParameterEncodableGenerator {
   func codingKeys(with field: Field) throws -> String {
     """
     private enum CodingKeys: String, CodingKey {
-      \(try field.args.compactMap { try $0.codingKeysDeclaration() }.lines)
+      \(try field.args.compactMap { try $0.codingKeysDeclaration(with: field) }.lines)
     }
     """
   }
@@ -34,10 +34,11 @@ private extension RequestParameterEncodableGenerator {
 // MARK: - InputValue
 
 private extension InputValue {
-  func codingKeysDeclaration() throws -> String {
+  func codingKeysDeclaration(with field: Field) throws -> String {
+    let argumentName = (field.name + name.pascalCase).camelCase
     return """
     \(docs)
-    case \(name.camelCase) = \"\(name)\"
+    case \(name.camelCase) = \"\(argumentName)\"
     """
   }
 }

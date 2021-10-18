@@ -242,11 +242,11 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   let locale: String
 
   private enum CodingKeys: String, CodingKey {
-    case vendorId = "VendorID"
+    case vendorId = "campaignsVendorId"
 
-    case globalEntityId = "GlobalEntityID"
+    case globalEntityId = "campaignsGlobalEntityId"
 
-    case locale = "Locale"
+    case locale = "campaignsLocale"
   }
 
   init(
@@ -264,12 +264,20 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     campaigns(
-      VendorID: \(vendorId)
-      GlobalEntityID: \(globalEntityId)
-      Locale: \(locale)
+      VendorID: $campaignsVendorId
+      GlobalEntityID: $campaignsGlobalEntityId
+      Locale: $campaignsLocale
     ) {
        ...CampaignsFragment
     }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $campaignsVendorId: String!
+    $campaignsGlobalEntityId: String!
+    $campaignsLocale: String!
     """
   }
 }
@@ -309,6 +317,12 @@ struct QueryRequest: GraphQLRequesting {
   func operationDefinition() -> String {
     requests
       .map { $0.operationDefinition() }
+      .joined(separator: "\n")
+  }
+
+  func operationArguments() -> String {
+    requests
+      .map { $0.operationArguments() }
       .joined(separator: "\n")
   }
 }

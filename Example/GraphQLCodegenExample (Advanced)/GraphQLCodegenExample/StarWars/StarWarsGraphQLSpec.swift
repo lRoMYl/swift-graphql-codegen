@@ -298,7 +298,7 @@ struct HumanStarWarsQuery: GraphQLRequesting {
 
   private enum CodingKeys: String, CodingKey {
     /// id of the character
-    case id
+    case id = "humanId"
   }
 
   init(
@@ -312,10 +312,16 @@ struct HumanStarWarsQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     human(
-      id: \(id)
+      id: $humanId
     ) {
        ...HumanFragment
     }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $humanId: ID!
     """
   }
 }
@@ -334,7 +340,7 @@ struct DroidStarWarsQuery: GraphQLRequesting {
 
   private enum CodingKeys: String, CodingKey {
     /// id of the character
-    case id
+    case id = "droidId"
   }
 
   init(
@@ -348,10 +354,16 @@ struct DroidStarWarsQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     droid(
-      id: \(id)
+      id: $droidId
     ) {
        ...DroidFragment
     }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $droidId: ID!
     """
   }
 }
@@ -370,7 +382,7 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
 
   private enum CodingKeys: String, CodingKey {
     /// id of the character
-    case id
+    case id = "characterId"
   }
 
   init(
@@ -384,10 +396,16 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     character(
-      id: \(id)
+      id: $characterId
     ) {
        ...CharacterUnionFragment
     }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $characterId: ID!
     """
   }
 }
@@ -413,6 +431,11 @@ struct LukeStarWarsQuery: GraphQLRequesting {
     }
     """
   }
+
+  func operationArguments() -> String {
+    """
+    """
+  }
 }
 
 /// HumansStarWarsQuery
@@ -434,6 +457,11 @@ struct HumansStarWarsQuery: GraphQLRequesting {
     humans {
        ...HumanFragment
     }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
     """
   }
 }
@@ -459,6 +487,11 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
     }
     """
   }
+
+  func operationArguments() -> String {
+    """
+    """
+  }
 }
 
 /// CharactersStarWarsQuery
@@ -482,6 +515,11 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
     }
     """
   }
+
+  func operationArguments() -> String {
+    """
+    """
+  }
 }
 
 /// GreetingStarWarsQuery
@@ -496,7 +534,7 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
   let input: GreetingStarWarsInputModel?
 
   private enum CodingKeys: String, CodingKey {
-    case input
+    case input = "greetingInput"
   }
 
   init(
@@ -510,8 +548,14 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     greeting(
-      input: \(input)
+      input: $greetingInput
     )
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $greetingInput: Greeting
     """
   }
 }
@@ -535,6 +579,11 @@ struct WhoamiStarWarsQuery: GraphQLRequesting {
     whoami
     """
   }
+
+  func operationArguments() -> String {
+    """
+    """
+  }
 }
 
 /// TimeStarWarsQuery
@@ -554,6 +603,11 @@ struct TimeStarWarsQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     time
+    """
+  }
+
+  func operationArguments() -> String {
+    """
     """
   }
 }
@@ -631,6 +685,12 @@ struct StarWarsQuery: GraphQLRequesting {
       .map { $0.operationDefinition() }
       .joined(separator: "\n")
   }
+
+  func operationArguments() -> String {
+    requests
+      .map { $0.operationArguments() }
+      .joined(separator: "\n")
+  }
 }
 
 /// MutateStarWarsMutation
@@ -650,6 +710,11 @@ struct MutateStarWarsMutation: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     mutate
+    """
+  }
+
+  func operationArguments() -> String {
+    """
     """
   }
 }
@@ -691,6 +756,12 @@ struct StarWarsMutation: GraphQLRequesting {
       .map { $0.operationDefinition() }
       .joined(separator: "\n")
   }
+
+  func operationArguments() -> String {
+    requests
+      .map { $0.operationArguments() }
+      .joined(separator: "\n")
+  }
 }
 
 /// NumberStarWarsSubscription
@@ -710,6 +781,11 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     number
+    """
+  }
+
+  func operationArguments() -> String {
+    """
     """
   }
 }
@@ -749,6 +825,12 @@ struct StarWarsSubscription: GraphQLRequesting {
   func operationDefinition() -> String {
     requests
       .map { $0.operationDefinition() }
+      .joined(separator: "\n")
+  }
+
+  func operationArguments() -> String {
+    requests
+      .map { $0.operationArguments() }
       .joined(separator: "\n")
   }
 }

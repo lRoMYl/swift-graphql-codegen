@@ -70,4 +70,17 @@ final class StarWarsRepository {
         return data
       }
   }
+
+  func mutate(
+    with parameters: MutateStarWarsMutation
+  ) -> Single<MutateMutationResponse> {
+    apiClient.mutate(with: parameters, selections: .init())
+      .map {
+        guard let data = $0.data else {
+          throw StarWarsRepositoryError.missingData
+        }
+
+        return data
+      }
+  }
 }

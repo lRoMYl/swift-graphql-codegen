@@ -31,6 +31,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
       var rootSelectionKeys: Set<String> { get }
 
       func operationDefinition() -> String
+      func operationArguments() -> String
     }
 
     protocol \(entityNameMap.selection): Hashable, CaseIterable {
@@ -57,8 +58,6 @@ struct EntityGenerator: GraphQLCodeGenerating {
       enum CodingKeys: String, CodingKey {
         case parameters = "variables"
         case query
-        case mutation
-        case subscription
       }
 
       init(parameters: RequestParameters, selections: \(entityNameMap.selections)) {
@@ -69,22 +68,22 @@ struct EntityGenerator: GraphQLCodeGenerating {
       func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
+        let requestTypeCode = parameters.requestType.rawValue
+        let operationArguments = parameters.operationArguments()
+        let operationArgumentCode = operationArguments.isEmpty
+          ? ""
+          : " (\\(operationArguments))"
+
         let operationDefinition = \"\"\"
-        \\(parameters.requestType.rawValue) {
+        \\(requestTypeCode)\\(operationArgumentCode) {
           \\(parameters.operationDefinition())
         }
 
         \\(selections.declaration(with: parameters.rootSelectionKeys))
         \"\"\"
 
-        switch parameters.requestType {
-        case .query:
-          try container.encode(operationDefinition, forKey: .query)
-        case .mutation:
-          try container.encode(operationDefinition, forKey: .mutation)
-        case .subscription:
-          try container.encode(operationDefinition, forKey: .subscription)
-        }
+        try container.encode(parameters, forKey: .parameters)
+        try container.encode(operationDefinition, forKey: .query)
       }
     }
 

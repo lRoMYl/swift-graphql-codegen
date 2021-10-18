@@ -46,10 +46,12 @@ struct RequestVariablesGenerator {
         case let .enum(name), let .inputObject(name), let .scalar(name):
           typeName = name
         }
+        let argumentName = (field.name + $0.name.pascalCase).camelCase
 
-        return "  $\($0.name): \(typeName)"
+        return "$\(argumentName): \(typeName)"
       case let .nonNull(objectRef), let .list(objectRef):
-        return "  $\($0.name): \(objectRef.argument)!"
+        let argumentName = (field.name + $0.name.pascalCase).camelCase
+        return "$\(argumentName): \(objectRef.argument)!"
       }
     }.lines
   }
@@ -71,7 +73,8 @@ struct RequestVariablesGenerator {
    */
   func operationArgumentsDeclaration(with field: Field) -> [String] {
     field.args.compactMap {
-      "\($0.name): \\(\($0.name.camelCase))"
+      let argumentName = (field.name + $0.name.pascalCase).camelCase
+      return "\($0.name): $\(argumentName)"
     }
   }
 

@@ -50,6 +50,9 @@ struct GraphQLCodegenExampleApp: App {
         testStarWarsUnionHumanGraphQL()
         testStarWarsUnionDroidGraphQL()
         testStarWarsDateGraphQL()
+        testStarWarsQueryGraphQL()
+        testStarWarsGreetingQueryGraphQL()
+        testStarWarsMutationGraphQL()
       }
     }
   }
@@ -172,6 +175,57 @@ extension GraphQLCodegenExampleApp {
       .subscribe(
         onSuccess: { response in
           print("Starwars time query request success: \(response.rawValue)")
+        },
+        onFailure: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsQueryGraphQL() {
+    starWarsRepository
+      .query(
+        with: StarWarsQuery(
+          character: .init(id: "1000"),
+          characters: .init()
+        )
+      )
+      .subscribe(
+        onSuccess: { response in
+          print("Test StarWarsQuery success")
+        },
+        onFailure: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsGreetingQueryGraphQL() {
+    starWarsRepository
+      .query(
+        with: StarWarsQuery(
+          greeting: .init(input: .init(language: .en, name: "Name"))
+        )
+      )
+      .subscribe(
+        onSuccess: { response in
+          print("Test StarWarsQuery Greeting success")
+        },
+        onFailure: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testStarWarsMutationGraphQL() {
+    starWarsRepository
+      .mutate(with: .init())
+      .subscribe(
+        onSuccess: { response in
+          print("Test StarWarsMutate success")
         },
         onFailure: { error in
           print(error)
