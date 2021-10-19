@@ -53,9 +53,9 @@ Support DH Custom Feature
 ```
 brew tap lromyl/tap
 
-brew install dh-graphql-codegen-ios
+brew install dh-graphql-codegen
 # if there are conflict, use the command below instead 
-brew install lromyl/tap/dh-graphql-codegen-ios 
+brew install lromyl/tap/dh-graphql-codegen
 ```
 
 ## How to use
@@ -161,7 +161,7 @@ repository.vendor(with: request) { ... }
 - install all dh carthage dependencies
 - run `make install` to install dh-graphlq-codegen-ios
 - Build the example app, it will attempt to run the make script on each build phases to generate the latest GraphQL specification
-- Look at example app `Makefile` for more examples to use the dh-graphql-codegen-ios
+- Look at example app `Makefile` for more examples to use the dh-graphql-codegen
 
 ---
 
