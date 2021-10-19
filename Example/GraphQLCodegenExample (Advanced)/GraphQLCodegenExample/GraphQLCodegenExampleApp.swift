@@ -34,10 +34,21 @@ struct GraphQLCodegenExampleApp: App {
     )
 
     let apiClient = StarWarsApiClient(
-      restClient: restClient,
-      resourceParametersConfigurator: nil
+      restClient: restClient
     )
     let repository = StarWarsRepository(apiClient: apiClient)
+
+    return repository
+  }()
+
+  private let apolloRepository: ApolloRepository = {
+    let restClient = RestClientImpl(
+      webService: ApolloWebService(),
+      authProvider: nil
+    )
+
+    let apiClient = ApolloApiClient(restClient: restClient)
+    let repository = ApolloRepository(apiClient: apiClient)
 
     return repository
   }()
@@ -53,6 +64,7 @@ struct GraphQLCodegenExampleApp: App {
         testStarWarsQueryGraphQL()
         testStarWarsGreetingQueryGraphQL()
         testStarWarsMutationGraphQL()
+        testApolloMutationsGraphQL()
       }
     }
   }
@@ -226,6 +238,25 @@ extension GraphQLCodegenExampleApp {
       .subscribe(
         onSuccess: { response in
           print("Test StarWarsMutate success")
+        },
+        onFailure: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+  }
+
+  func testApolloMutationsGraphQL() {
+    apolloRepository
+      .update(
+        with: ApolloMutation(
+          cancelTrip: .init(launchId: "101"),
+          login: .init(email: "test@test.com")
+        )
+      )
+      .subscribe(
+        onSuccess: { response in
+          print("Test Apollo Mutation success")
         },
         onFailure: { error in
           print(error)

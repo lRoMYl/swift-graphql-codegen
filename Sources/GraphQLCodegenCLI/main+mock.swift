@@ -68,7 +68,7 @@ func mockBasicCoreExample() throws {
 func mockAdvancedCoreExample() {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample (Advanced)"
 
-  // ---
+  // --- Groceries Introspection
   let groceriesIntrospectionOutput = examplePath + "/GraphQL/groceries-schema.json"
 
   GraphQLCodegenCLI.Codegen.main(
@@ -80,7 +80,7 @@ func mockAdvancedCoreExample() {
     ]
   )
 
-  // ---
+  // --- Groceries
   let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
   let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
   let groceriesOutputPath = "\(examplePath)/GraphQLCodegenExample/Groceries/Groceries"
@@ -111,6 +111,7 @@ func mockAdvancedCoreExample() {
     ]
   )
 
+  // --- StarWars
   let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
   let starwarsConfig = "\(examplePath)/GraphQL/starwars-config.json"
   let starwarsOutputPath = "\(examplePath)/GraphQLCodegenExample/StarWars/StarWars"
@@ -129,6 +130,39 @@ func mockAdvancedCoreExample() {
       "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
       "--config-path", starwarsConfig
+    ]
+  )
+
+  // --- Apollo Introspection
+  let apolloSchema = examplePath + "/GraphQL/apollo-schema.json"
+  let apolloConfig = "\(examplePath)/GraphQL/apollo-config.json"
+  let apolloOutputPath = "\(examplePath)/GraphQLCodegenExample/Apollo/Apollo"
+
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      "https://apollo-fullstack-tutorial.herokuapp.com/",
+      "--target", CodegenTarget.introspection.rawValue,
+      "--schema-source", "remote",
+      "--output", apolloSchema
+    ]
+  )
+
+  // --- Apollo
+
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      apolloSchema,
+      "--target", CodegenTarget.specification.rawValue,
+      "--output", "\(apolloOutputPath)GraphQLSpec.swift",
+      "--config-path", apolloConfig
+    ]
+  )
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      apolloSchema,
+      "--target", CodegenTarget.dhApiClient.rawValue,
+      "--output", "\(apolloOutputPath)GraphQLApiClient.swift",
+      "--config-path", apolloConfig
     ]
   )
 }

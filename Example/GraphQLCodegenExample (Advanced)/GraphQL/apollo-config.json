@@ -1,0 +1,19 @@
+{
+	"scalarMap": {
+        "Upload": "String",
+        "Date": "DateTimeInterval"
+    },
+    "entityNameMap": {
+        "request":          "GraphQLRequest",
+        "requestParameter": "GraphQLRequesting",
+        "query":            "ApolloQuery",
+        "mutation":         "ApolloMutation",
+        "subscription":     "ApolloSubscription",
+        "object":           "ApolloModel",
+        "inputObject":      "ApolloInputModel",
+        "interface":        "ApolloInterfaceModel",
+        "union":            "ApolloUnionModel",
+        "enum":             "ApolloEnumModel",
+        "apiClientPrefix":  "Apollo"
+    }
+}
