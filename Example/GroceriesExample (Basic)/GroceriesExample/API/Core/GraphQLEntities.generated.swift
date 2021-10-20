@@ -8,6 +8,10 @@ import Foundation
 
 protocol GraphQLRequesting: Encodable {
   var requestType: GraphQLRequestType { get }
+  var rootSelectionKeys: Set<String> { get }
+
+  func operationDefinition() -> String
+  func operationArguments() -> String
 }
 
 protocol GraphQLSelection: Hashable, CaseIterable {
@@ -15,13 +19,12 @@ protocol GraphQLSelection: Hashable, CaseIterable {
 }
 
 protocol GraphQLSelections {
-  func declaration() -> String
-  var operationDefinition: String { get }
+  func declaration(with rootSelectionKeys: Set<String>) -> String
 }
 
 // MARK: - Enum
 
-enum GraphQLRequestType {
+enum GraphQLRequestType: String, Codable {
   case query
   case mutation
   case subscription
@@ -36,8 +39,6 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
   enum CodingKeys: String, CodingKey {
     case parameters = "variables"
     case query
-    case mutation
-    case subscription
   }
 
   init(parameters: RequestParameters, selections: GraphQLSelections) {
@@ -48,18 +49,22 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
   func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
-    try container.encode(parameters, forKey: .parameters)
+    let requestTypeCode = parameters.requestType.rawValue
+    let operationArguments = parameters.operationArguments()
+    let operationArgumentCode = operationArguments.isEmpty
+      ? ""
+      : " (\(operationArguments))"
 
-    let operationDefinition = selections.operationDefinition
-
-    switch parameters.requestType {
-    case .query:
-      try container.encode(operationDefinition, forKey: .query)
-    case .mutation:
-      try container.encode(operationDefinition, forKey: .mutation)
-    case .subscription:
-      try container.encode(operationDefinition, forKey: .subscription)
+    let operationDefinition = """
+    \(requestTypeCode)\(operationArgumentCode) {
+      \(parameters.operationDefinition())
     }
+
+    \(selections.declaration(with: parameters.rootSelectionKeys))
+    """
+
+    try container.encode(parameters, forKey: .parameters)
+    try container.encode(operationDefinition, forKey: .query)
   }
 }
 
@@ -94,7 +99,7 @@ extension Set where Element: GraphQLSelection {
 // MARK: - GraphQLSelections+Declaration
 
 extension GraphQLSelections {
-  func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> String {
+  func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
     var dictionary = [String: String]()
     dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
@@ -114,10 +119,11 @@ extension GraphQLSelections {
 
           queue.append(value)
           dictionary[childSelectionKey] = value
+          selectionDeclarationMap[childSelectionKey] = nil
         }
       }
     }
 
-    return dictionary.values.joined(separator: "\n")
+    return dictionary
   }
 }

@@ -127,9 +127,9 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
 // MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
-  let productId: String
+  let productId: Optional<String>
 
-  let quantity: Int
+  let quantity: Optional<Int>
 
   // MARK: - CodingKeys
 
@@ -140,21 +140,21 @@ struct BenefitResponseModel: Codable {
 }
 
 struct CampaignAttributeResponseModel: Codable {
-  let autoApplied: Bool
+  let autoApplied: Optional<Bool>
 
-  let benefits: [BenefitResponseModel]?
+  let benefits: Optional<[BenefitResponseModel]?>
 
-  let campaignType: CampaignTypeEnumResponseModel
+  let campaignType: Optional<CampaignTypeEnumResponseModel>
 
-  let description: String
+  let description: Optional<String>
 
-  let id: String
+  let id: Optional<String>
 
-  let name: String
+  let name: Optional<String>
 
-  let redemptionLimit: Double
+  let redemptionLimit: Optional<Double>
 
-  let source: CampaignSourceEnumResponseModel
+  let source: Optional<CampaignSourceEnumResponseModel>
 
   // MARK: - CodingKeys
 
@@ -171,9 +171,9 @@ struct CampaignAttributeResponseModel: Codable {
 }
 
 struct CampaignsResponseModel: Codable {
-  let campaignAttributes: [CampaignAttributeResponseModel?]?
+  let campaignAttributes: Optional<[CampaignAttributeResponseModel?]?>
 
-  let productDeals: [ProductDealResponseModel?]?
+  let productDeals: Optional<[ProductDealResponseModel?]?>
 
   // MARK: - CodingKeys
 
@@ -184,13 +184,13 @@ struct CampaignsResponseModel: Codable {
 }
 
 struct DealResponseModel: Codable {
-  let campaignId: String
+  let campaignId: Optional<String>
 
   /// things that would change across products for a campaign
-  let discountTag: String
+  let discountTag: Optional<String>
 
   /// buy 3 get 1 free
-  let triggerQuantity: Int
+  let triggerQuantity: Optional<Int>
 
   // MARK: - CodingKeys
 
@@ -202,9 +202,9 @@ struct DealResponseModel: Codable {
 }
 
 struct ProductDealResponseModel: Codable {
-  let deals: [DealResponseModel?]?
+  let deals: Optional<[DealResponseModel?]?>
 
-  let productId: String
+  let productId: Optional<String>
 
   // MARK: - CodingKeys
 
@@ -333,29 +333,30 @@ struct CampaignsQueryResponse: Codable {
 
 // MARK: - GraphQLSelection
 
-enum BenefitSelection: GraphQLSelection {
+enum BenefitSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  productID
-  quantity
   """
+
+  case productID
+  case quantity
 }
 
 enum CampaignAttributeSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  autoApplied
-  campaignType
-  description
-  id
-  name
-  redemptionLimit
-  source
   """
 
+  case autoApplied
   case benefits = """
   benefits {
     ...BenefitFragment
   }
   """
+  case campaignType
+  case description
+  case id
+  case name
+  case redemptionLimit
+  case source
 }
 
 enum CampaignsSelection: String, GraphQLSelection {
@@ -374,17 +375,17 @@ enum CampaignsSelection: String, GraphQLSelection {
   """
 }
 
-enum DealSelection: GraphQLSelection {
+enum DealSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  campaignID
-  discountTag
-  triggerQuantity
   """
+
+  case campaignID
+  case discountTag
+  case triggerQuantity
 }
 
 enum ProductDealSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  productID
   """
 
   case deals = """
@@ -392,6 +393,7 @@ enum ProductDealSelection: String, GraphQLSelection {
     ...DealFragment
   }
   """
+  case productID
 }
 
 struct QueryRequestSelections: GraphQLSelections {
@@ -427,13 +429,12 @@ struct QueryRequestSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let benefitDeclaration = """
     fragment BenefitFragment on Benefit {
-    	\(BenefitSelection.requiredDeclaration)
+    	\(benefit.declaration)
     }
     """
 
     let campaignAttributeDeclaration = """
     fragment CampaignAttributeFragment on CampaignAttribute {
-    	\(CampaignAttributeSelection.requiredDeclaration)
     	\(campaignAttribute.declaration)
     }
     """
@@ -446,13 +447,12 @@ struct QueryRequestSelections: GraphQLSelections {
 
     let dealDeclaration = """
     fragment DealFragment on Deal {
-    	\(DealSelection.requiredDeclaration)
+    	\(deal.declaration)
     }
     """
 
     let productDealDeclaration = """
     fragment ProductDealFragment on ProductDeal {
-    	\(ProductDealSelection.requiredDeclaration)
     	\(productDeal.declaration)
     }
     """
@@ -483,18 +483,23 @@ struct QueryRequestSelections: GraphQLSelections {
 // MARK: - Selections
 
 struct CampaignsQueryRequestSelections: GraphQLSelections {
+  let benefitSelections: Set<BenefitSelection>
   let campaignAttributeSelections: Set<CampaignAttributeSelection>
   let campaignsSelections: Set<CampaignsSelection>
-
+  let dealSelections: Set<DealSelection>
   let productDealSelections: Set<ProductDealSelection>
 
   init(
+    benefitSelections: Set<BenefitSelection> = .allFields,
     campaignAttributeSelections: Set<CampaignAttributeSelection> = .allFields,
     campaignsSelections: Set<CampaignsSelection> = .allFields,
+    dealSelections: Set<DealSelection> = .allFields,
     productDealSelections: Set<ProductDealSelection> = .allFields
   ) {
+    self.benefitSelections = benefitSelections
     self.campaignAttributeSelections = campaignAttributeSelections
     self.campaignsSelections = campaignsSelections
+    self.dealSelections = dealSelections
     self.productDealSelections = productDealSelections
   }
 
@@ -502,6 +507,7 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     let benefitSelectionsDeclaration = """
     fragment BenefitFragment on Benefit {
     	\(BenefitSelection.requiredDeclaration)
+    	\(benefitSelections.declaration)
     }
     """
 
@@ -522,6 +528,7 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     let dealSelectionsDeclaration = """
     fragment DealFragment on Deal {
     	\(DealSelection.requiredDeclaration)
+    	\(dealSelections.declaration)
     }
     """
 

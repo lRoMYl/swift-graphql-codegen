@@ -119,7 +119,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     let selectionFragmentMap = try structures.map {
       let possibleTypes = $0.possibleTypes
       let requiredDeclaration: String
-      let selectableDeclaration = $0.selectableFields(selectionMap: selectionMap).isEmpty
+      let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
         : "\t\\(\($0.name.camelCase).declaration)"
       let fragmentDeclaration: String
@@ -512,7 +512,7 @@ extension SelectionsGenerator {
         interfaceFragmentCode = ""
       }
 
-      let selectionDeclaration = returnTypeSelectableFields.isEmpty
+      let selectionDeclaration = $0.value.type.namedType.isCompositeType || returnTypeSelectableFields.isEmpty
         ? ""
         : "\t\\(\($0.key.camelCase)Selections.declaration)"
 
@@ -540,6 +540,10 @@ extension SelectionsGenerator {
     schemaMap: SchemaMap
   ) throws -> String {
     let filteredElements = try fieldMaps.compactMap { element -> FieldMap.Element? in
+      guard (try element.value.possibleObjectTypes(schemaMap: schemaMap)?.count ?? 1) <= 1 else {
+        return nil
+      }
+
       let fields = try element.value.returnTypeSelectableFields(
         schemaMap: schemaMap,
         selectionMap: selectionMap

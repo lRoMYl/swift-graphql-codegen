@@ -31,7 +31,6 @@ struct SelectionsOperationDefinitionGenerator {
   }
 
   func declaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
-    let operationName = operation.type.name.lowercased()
     let selection: String
 
     if field.isFragment {
@@ -45,11 +44,6 @@ struct SelectionsOperationDefinitionGenerator {
     } else {
       selection = ""
     }
-
-    let operationVariables = variablesGenerator.operationVariablesDeclaration(with: field)
-    let operationVariablesDeclaration = operationVariables.isEmpty
-      ? ""
-      : "(\n\(operationVariables)\n)"
 
     let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
       .joined(separator: "\n    ")

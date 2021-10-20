@@ -100,11 +100,11 @@ struct QueryApolloModel: Codable {
 }
 
 struct LaunchConnectionApolloModel: Codable {
-  let cursor: String
+  let cursor: Optional<String>
 
-  let hasMore: Bool
+  let hasMore: Optional<Bool>
 
-  let launches: [LaunchApolloModel?]
+  let launches: Optional<[LaunchApolloModel?]>
 
   // MARK: - CodingKeys
 
@@ -116,15 +116,15 @@ struct LaunchConnectionApolloModel: Codable {
 }
 
 struct LaunchApolloModel: Codable {
-  let id: String
+  let id: Optional<String>
 
-  let isBooked: Bool
+  let isBooked: Optional<Bool>
 
-  let mission: MissionApolloModel?
+  let mission: Optional<MissionApolloModel?>
 
-  let rocket: RocketApolloModel?
+  let rocket: Optional<RocketApolloModel?>
 
-  let site: String?
+  let site: Optional<String?>
 
   // MARK: - CodingKeys
 
@@ -138,9 +138,9 @@ struct LaunchApolloModel: Codable {
 }
 
 struct MissionApolloModel: Codable {
-  let missionPatch: String?
+  let missionPatch: Optional<String?>
 
-  let name: String?
+  let name: Optional<String?>
 
   // MARK: - CodingKeys
 
@@ -151,11 +151,11 @@ struct MissionApolloModel: Codable {
 }
 
 struct RocketApolloModel: Codable {
-  let id: String
+  let id: Optional<String>
 
-  let name: String?
+  let name: Optional<String?>
 
-  let type: String?
+  let type: Optional<String?>
 
   // MARK: - CodingKeys
 
@@ -167,13 +167,13 @@ struct RocketApolloModel: Codable {
 }
 
 struct UserApolloModel: Codable {
-  let email: String
+  let email: Optional<String>
 
-  let id: String
+  let id: Optional<String>
 
-  let profileImage: String?
+  let profileImage: Optional<String?>
 
-  let trips: [LaunchApolloModel?]
+  let trips: Optional<[LaunchApolloModel?]>
 
   // MARK: - CodingKeys
 
@@ -205,11 +205,11 @@ struct MutationApolloModel: Codable {
 }
 
 struct TripUpdateResponseApolloModel: Codable {
-  let launches: [LaunchApolloModel?]?
+  let launches: Optional<[LaunchApolloModel?]?>
 
-  let message: String?
+  let message: Optional<String?>
 
-  let success: Bool
+  let success: Optional<Bool>
 
   // MARK: - CodingKeys
 
@@ -757,20 +757,25 @@ struct TripsBookedSubscriptionResponse: Codable {
 
 // MARK: - GraphQLSelection
 
-enum LaunchConnectionSelection: GraphQLSelection {
+enum LaunchConnectionSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  cursor
-  hasMore
-  launches
+  """
+
+  case cursor
+  case hasMore
+  case launches = """
+  launches {
+    ...LaunchFragment
+  }
   """
 }
 
 enum LaunchSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  id
-  isBooked
   """
 
+  case id
+  case isBooked
   case mission = """
   mission {
     ...MissionFragment
@@ -794,26 +799,29 @@ enum MissionSelection: String, GraphQLSelection {
 
 enum RocketSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  id
   """
 
+  case id
   case name
   case type
 }
 
 enum UserSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  email
-  id
-  trips
   """
 
+  case email
+  case id
   case profileImage
+  case trips = """
+  trips {
+    ...LaunchFragment
+  }
+  """
 }
 
 enum TripUpdateResponseSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  success
   """
 
   case launches = """
@@ -822,6 +830,7 @@ enum TripUpdateResponseSelection: String, GraphQLSelection {
   }
   """
   case message
+  case success
 }
 
 struct ApolloQuerySelections: GraphQLSelections {
@@ -860,13 +869,12 @@ struct ApolloQuerySelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchConnectionDeclaration = """
     fragment LaunchConnectionFragment on LaunchConnection {
-    	\(LaunchConnectionSelection.requiredDeclaration)
+    	\(launchConnection.declaration)
     }
     """
 
     let launchDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launch.declaration)
     }
     """
@@ -879,21 +887,18 @@ struct ApolloQuerySelections: GraphQLSelections {
 
     let rocketDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocket.declaration)
     }
     """
 
     let userDeclaration = """
     fragment UserFragment on User {
-    	\(UserSelection.requiredDeclaration)
     	\(user.declaration)
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment TripUpdateResponseFragment on TripUpdateResponse {
-    	\(TripUpdateResponseSelection.requiredDeclaration)
     	\(tripUpdateResponse.declaration)
     }
     """
@@ -926,16 +931,18 @@ struct ApolloQuerySelections: GraphQLSelections {
 
 struct LaunchesApolloQuerySelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
-
+  let launchConnectionSelections: Set<LaunchConnectionSelection>
   let missionSelections: Set<MissionSelection>
   let rocketSelections: Set<RocketSelection>
 
   init(
     launchSelections: Set<LaunchSelection> = .allFields,
+    launchConnectionSelections: Set<LaunchConnectionSelection> = .allFields,
     missionSelections: Set<MissionSelection> = .allFields,
     rocketSelections: Set<RocketSelection> = .allFields
   ) {
     self.launchSelections = launchSelections
+    self.launchConnectionSelections = launchConnectionSelections
     self.missionSelections = missionSelections
     self.rocketSelections = rocketSelections
   }
@@ -951,6 +958,7 @@ struct LaunchesApolloQuerySelections: GraphQLSelections {
     let launchConnectionSelectionsDeclaration = """
     fragment LaunchConnectionFragment on LaunchConnection {
     	\(LaunchConnectionSelection.requiredDeclaration)
+    	\(launchConnectionSelections.declaration)
     }
     """
 
@@ -1165,13 +1173,12 @@ struct ApolloMutationSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchConnectionDeclaration = """
     fragment LaunchConnectionFragment on LaunchConnection {
-    	\(LaunchConnectionSelection.requiredDeclaration)
+    	\(launchConnection.declaration)
     }
     """
 
     let launchDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launch.declaration)
     }
     """
@@ -1184,21 +1191,18 @@ struct ApolloMutationSelections: GraphQLSelections {
 
     let rocketDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocket.declaration)
     }
     """
 
     let userDeclaration = """
     fragment UserFragment on User {
-    	\(UserSelection.requiredDeclaration)
     	\(user.declaration)
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment TripUpdateResponseFragment on TripUpdateResponse {
-    	\(TripUpdateResponseSelection.requiredDeclaration)
     	\(tripUpdateResponse.declaration)
     }
     """
@@ -1484,13 +1488,12 @@ struct ApolloSubscriptionSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchConnectionDeclaration = """
     fragment LaunchConnectionFragment on LaunchConnection {
-    	\(LaunchConnectionSelection.requiredDeclaration)
+    	\(launchConnection.declaration)
     }
     """
 
     let launchDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launch.declaration)
     }
     """
@@ -1503,21 +1506,18 @@ struct ApolloSubscriptionSelections: GraphQLSelections {
 
     let rocketDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocket.declaration)
     }
     """
 
     let userDeclaration = """
     fragment UserFragment on User {
-    	\(UserSelection.requiredDeclaration)
     	\(user.declaration)
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment TripUpdateResponseFragment on TripUpdateResponse {
-    	\(TripUpdateResponseSelection.requiredDeclaration)
     	\(tripUpdateResponse.declaration)
     }
     """

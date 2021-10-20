@@ -40,16 +40,12 @@ struct FieldCodeGenerator {
       let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
       if isRequired || isSelectable {
-        var type: String = try entityNameProvider.name(for: field.type)
-
-        if isSelectable, type.last != "?" {
-          type.append("?")
-        }
+        let type: String = try entityNameProvider.name(for: field.type)
 
         let texts: [String] = [
           field.docs,
           field.availability,
-          "let \(field.name.camelCase): \(type)"
+          "let \(field.name.camelCase): Optional<\(type)>"
         ]
 
         return texts.filter { !$0.isEmpty }.lines

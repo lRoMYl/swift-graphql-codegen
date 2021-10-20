@@ -27,3 +27,15 @@ public extension OutputRef {
     }
   }
 }
+
+public extension OutputRef {
+  /// Type that contains multiple output type
+  var isCompositeType: Bool {
+    switch self {
+    case .interface, .union:
+      return true
+    case .enum, .object, .scalar:
+      return false
+    }
+  }
+}

@@ -16,4 +16,6 @@ extension InterfaceType {
       try $0.objectType(objectTypeMap: objectTypeMap)
     }
   }
+
+  var isCompositeType: Bool { true }
 }

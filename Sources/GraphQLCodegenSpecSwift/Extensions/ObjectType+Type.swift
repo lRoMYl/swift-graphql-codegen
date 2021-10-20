@@ -13,6 +13,8 @@ extension ObjectType: Structure {
   var possibleTypes: [ObjectTypeRef] {
     [ObjectTypeRef.named(ObjectRef.object(name))]
   }
+
+  var isCompositeType: Bool { false }
 }
 
 extension ObjectTypeRef {

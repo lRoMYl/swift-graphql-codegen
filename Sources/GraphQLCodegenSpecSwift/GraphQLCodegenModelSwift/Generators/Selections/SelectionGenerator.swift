@@ -69,7 +69,7 @@ extension SelectionGenerator {
       return ""
     }
 
-    let enumCasesCode = try selectableFields.map {
+    let enumCasesCode = try (requiredFields + selectableFields).map {
       try enumCaseDeclaration(name: $0.name, outputRef: $0.type, scalarMap: scalarMap)
     }.lines
 

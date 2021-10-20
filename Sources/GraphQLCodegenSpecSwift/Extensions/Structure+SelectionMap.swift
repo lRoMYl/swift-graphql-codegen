@@ -22,19 +22,11 @@ extension Field {
 
 extension Structure {
   func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {
-    guard let selectionMap = selectionMap, let selectionItemMap = selectionMap[name] else {
-      return !field.isOptional
-    }
-
-    return selectionItemMap.required.contains(field.name)
+    return false
   }
 
   func isSelectable(field: Field, selectionMap: SelectionMap?) -> Bool {
-    guard let selectionMap = selectionMap, let selectionItemMap = selectionMap[name] else {
-      return field.isOptional
-    }
-
-    return selectionItemMap.selectable.contains(field.name)
+    return true
   }
 
   /*

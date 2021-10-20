@@ -18,4 +18,6 @@ extension UnionType {
       try $0.objectType(objectTypeMap: objectTypeMap)
     }
   }
+
+  var isCompositeType: Bool { true }
 }

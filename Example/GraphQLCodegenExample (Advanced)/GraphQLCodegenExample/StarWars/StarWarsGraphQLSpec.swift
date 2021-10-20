@@ -101,13 +101,13 @@ struct MutationStarWarsModel: Codable {
 }
 
 struct DroidStarWarsModel: Codable {
-  let appearsIn: [EpisodeStarWarsEnumModel]
+  let appearsIn: Optional<[EpisodeStarWarsEnumModel]>
 
-  let id: String
+  let id: Optional<String>
 
-  let name: String
+  let name: Optional<String>
 
-  let primaryFunction: String
+  let primaryFunction: Optional<String>
 
   // MARK: - CodingKeys
 
@@ -120,18 +120,24 @@ struct DroidStarWarsModel: Codable {
 }
 
 struct HumanStarWarsModel: Codable {
+  let appearsIn: Optional<[EpisodeStarWarsEnumModel]>
+
   /// The home planet of the human, or null if unknown.
-  let homePlanet: String?
+  let homePlanet: Optional<String?>
 
-  let id: String
+  let id: Optional<String>
 
-  let name: String?
+  let infoUrl: Optional<String?>
+
+  let name: Optional<String>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case appearsIn
     case homePlanet
     case id
+    case infoUrl = "infoURL"
     case name
   }
 }
@@ -258,8 +264,12 @@ enum CharacterUnionStarWarsUnionModel: Codable {
 
   private enum CodingKeys: String, CodingKey {
     case __typename
+    case appearsIn
     case homePlanet
+    case id
+    case infoUrl
     case name
+    case primaryFunction
   }
 
   init(from decoder: Decoder) throws {
@@ -885,21 +895,24 @@ struct NumberSubscriptionResponse: Codable {
 
 // MARK: - GraphQLSelection
 
-enum DroidSelection: GraphQLSelection {
+enum DroidSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  appearsIn
-  id
-  name
-  primaryFunction
   """
+
+  case appearsIn
+  case id
+  case name
+  case primaryFunction
 }
 
 enum HumanSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
-  id
   """
 
+  case appearsIn
   case homePlanet
+  case id
+  case infoURL
   case name
 }
 
@@ -927,13 +940,12 @@ struct StarWarsQuerySelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let droidDeclaration = """
     fragment DroidFragment on Droid {
-    	\(DroidSelection.requiredDeclaration)
+    	\(droid.declaration)
     }
     """
 
     let humanDeclaration = """
     fragment HumanFragment on Human {
-    	\(HumanSelection.requiredDeclaration)
     	\(human.declaration)
     }
     """
@@ -1017,12 +1029,19 @@ struct HumanStarWarsQuerySelections: GraphQLSelections {
 // MARK: - Selections
 
 struct DroidStarWarsQuerySelections: GraphQLSelections {
-  init() {}
+  let droidSelections: Set<DroidSelection>
+
+  init(
+    droidSelections: Set<DroidSelection> = .allFields
+  ) {
+    self.droidSelections = droidSelections
+  }
 
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let droidSelectionsDeclaration = """
     fragment DroidFragment on Droid {
     	\(DroidSelection.requiredDeclaration)
+    	\(droidSelections.declaration)
     }
     """
 
@@ -1048,11 +1067,14 @@ struct DroidStarWarsQuerySelections: GraphQLSelections {
 // MARK: - Selections
 
 struct CharacterStarWarsQuerySelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
   let humanSelections: Set<HumanSelection>
 
   init(
+    droidSelections: Set<DroidSelection> = .allFields,
     humanSelections: Set<HumanSelection> = .allFields
   ) {
+    self.droidSelections = droidSelections
     self.humanSelections = humanSelections
   }
 
@@ -1068,6 +1090,7 @@ struct CharacterStarWarsQuerySelections: GraphQLSelections {
     let droidSelectionsDeclaration = """
     fragment DroidFragment on Droid {
     	\(DroidSelection.requiredDeclaration)
+    	\(droidSelections.declaration)
     }
     """
 
@@ -1178,12 +1201,19 @@ struct HumansStarWarsQuerySelections: GraphQLSelections {
 // MARK: - Selections
 
 struct DroidsStarWarsQuerySelections: GraphQLSelections {
-  init() {}
+  let droidSelections: Set<DroidSelection>
+
+  init(
+    droidSelections: Set<DroidSelection> = .allFields
+  ) {
+    self.droidSelections = droidSelections
+  }
 
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let droidSelectionsDeclaration = """
     fragment DroidFragment on Droid {
     	\(DroidSelection.requiredDeclaration)
+    	\(droidSelections.declaration)
     }
     """
 
@@ -1209,11 +1239,14 @@ struct DroidsStarWarsQuerySelections: GraphQLSelections {
 // MARK: - Selections
 
 struct CharactersStarWarsQuerySelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
   let humanSelections: Set<HumanSelection>
 
   init(
+    droidSelections: Set<DroidSelection> = .allFields,
     humanSelections: Set<HumanSelection> = .allFields
   ) {
+    self.droidSelections = droidSelections
     self.humanSelections = humanSelections
   }
 
@@ -1229,6 +1262,7 @@ struct CharactersStarWarsQuerySelections: GraphQLSelections {
     let droidSelectionsDeclaration = """
     fragment DroidFragment on Droid {
     	\(DroidSelection.requiredDeclaration)
+    	\(droidSelections.declaration)
     }
     """
 
@@ -1308,13 +1342,12 @@ struct StarWarsMutationSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let droidDeclaration = """
     fragment DroidFragment on Droid {
-    	\(DroidSelection.requiredDeclaration)
+    	\(droid.declaration)
     }
     """
 
     let humanDeclaration = """
     fragment HumanFragment on Human {
-    	\(HumanSelection.requiredDeclaration)
     	\(human.declaration)
     }
     """
@@ -1389,13 +1422,12 @@ struct StarWarsSubscriptionSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let droidDeclaration = """
     fragment DroidFragment on Droid {
-    	\(DroidSelection.requiredDeclaration)
+    	\(droid.declaration)
     }
     """
 
     let humanDeclaration = """
     fragment HumanFragment on Human {
-    	\(HumanSelection.requiredDeclaration)
     	\(human.declaration)
     }
     """
