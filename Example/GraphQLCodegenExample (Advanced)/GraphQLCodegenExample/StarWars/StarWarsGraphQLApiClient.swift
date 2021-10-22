@@ -533,3 +533,81 @@ struct StarWarsResourceParametersProvider: ResourceParameters {
     return resourceBodyParameters.bodyParameters()
   }
 }
+
+// MARK: - SelectionMock
+
+extension EpisodeStarWarsEnumModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension LanguageStarWarsEnumModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension CharacterStarWarsInterfaceModel {
+  static func selectionMock() -> Self {
+    .droid(.selectionMock())
+  }
+}
+
+extension CharacterUnionStarWarsUnionModel {
+  static func selectionMock() -> Self {
+    .human(.selectionMock())
+  }
+}
+
+extension MutationStarWarsModel {
+  static func selectionMock() -> Self {
+    MutationStarWarsModel(
+      mutate: .selectionMock()
+    )
+  }
+}
+
+extension DroidStarWarsModel {
+  static func selectionMock() -> Self {
+    DroidStarWarsModel(
+      appearsIn: [.selectionMock()],
+      id: .selectionMock(),
+      name: .selectionMock(),
+      primaryFunction: .selectionMock()
+    )
+  }
+}
+
+extension HumanStarWarsModel {
+  static func selectionMock() -> Self {
+    HumanStarWarsModel(
+      appearsIn: [.selectionMock()],
+      homePlanet: .selectionMock(),
+      id: .selectionMock(),
+      infoUrl: .selectionMock(),
+      name: .selectionMock()
+    )
+  }
+}
+
+extension QueryStarWarsModel {
+  static func selectionMock() -> Self {
+    QueryStarWarsModel(
+      character: .selectionMock(),
+      characters: [.selectionMock()],
+      droid: .selectionMock(),
+      droids: [.selectionMock()],
+      greeting: .selectionMock(),
+      human: .selectionMock(),
+      humans: [.selectionMock()],
+      luke: .selectionMock(),
+      time: .selectionMock(),
+      whoami: .selectionMock()
+    )
+  }
+}
+
+extension SubscriptionStarWarsModel {
+  static func selectionMock() -> Self {
+    SubscriptionStarWarsModel(
+      number: .selectionMock()
+    )
+  }
+}

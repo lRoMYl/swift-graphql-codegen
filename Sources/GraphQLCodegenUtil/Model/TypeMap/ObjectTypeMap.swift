@@ -8,10 +8,10 @@
 import Foundation
 import GraphQLAST
 
-enum ObjectTypeMapError: Error, LocalizedError {
+public enum ObjectTypeMapError: Error, LocalizedError {
   case notFound(context: String)
 
-  var errorDescription: String? {
+  public var errorDescription: String? {
     switch self {
     case let .notFound(context):
       return "Unknown ObjectType for \(context)"
@@ -19,10 +19,10 @@ enum ObjectTypeMapError: Error, LocalizedError {
   }
 }
 
-struct ObjectTypeMap {
+public struct ObjectTypeMap {
   private let objectTypeMap: [String: ObjectType]
 
-  init(schema: Schema) {
+  public init(schema: Schema) {
     self.objectTypeMap = Dictionary(
       uniqueKeysWithValues: schema.objects.map {
         ($0.name, $0)
@@ -30,7 +30,7 @@ struct ObjectTypeMap {
     )
   }
 
-  func value(from objectTypeRef: ObjectTypeRef) throws -> ObjectType {
+  public func value(from objectTypeRef: ObjectTypeRef) throws -> ObjectType {
     guard let objectType = objectTypeMap[objectTypeRef.name] else {
       throw ObjectTypeMapError.notFound(context: "ObjectTypeRef \(objectTypeRef.name)")
     }
@@ -38,7 +38,7 @@ struct ObjectTypeMap {
     return objectType
   }
 
-  func value(from outputRef: OutputRef) throws -> ObjectType? {
+  public func value(from outputRef: OutputRef) throws -> ObjectType? {
     switch outputRef {
     case let .object(name):
       guard let objectType = objectTypeMap[name] else {

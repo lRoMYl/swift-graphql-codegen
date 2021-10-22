@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum SelectionsGeneratorError: Error, LocalizedError {
   case missingReturnType(context: String)

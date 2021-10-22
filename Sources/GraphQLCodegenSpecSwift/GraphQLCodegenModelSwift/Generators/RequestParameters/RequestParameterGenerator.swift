@@ -218,17 +218,3 @@ private extension RequestParameterGenerator {
     return text
   }
 }
-
-// MARK: - Operation
-
-private extension GraphQLAST.Operation {
-  func returnObject() throws -> ObjectType {
-    switch self {
-    case let .query(object), let .mutation(object):
-      return object
-    case let .subscription(object):
-      print("Warning, subscription is not implemented yet")
-      return object
-    }
-  }
-}

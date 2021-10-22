@@ -8,10 +8,10 @@
 import Foundation
 import GraphQLAST
 
-enum InterfaceTypeMapError: Error, LocalizedError {
+public enum InterfaceTypeMapError: Error, LocalizedError {
   case notFound(context: String)
 
-  var errorDescription: String? {
+  public var errorDescription: String? {
     switch self {
     case let .notFound(context):
       return "Unknown InterfaceType for \(context)"
@@ -19,10 +19,10 @@ enum InterfaceTypeMapError: Error, LocalizedError {
   }
 }
 
-struct InterfaceTypeMap {
+public struct InterfaceTypeMap {
   private let interfaceTypeMap: [String: InterfaceType]
 
-  init(schema: Schema) {
+  public init(schema: Schema) {
     self.interfaceTypeMap = Dictionary(
       uniqueKeysWithValues: schema.interfaces.map {
         ($0.name, $0)
@@ -30,7 +30,7 @@ struct InterfaceTypeMap {
     )
   }
 
-  func value(from outputRef: OutputRef) throws -> InterfaceType? {
+  public func value(from outputRef: OutputRef) throws -> InterfaceType? {
     switch outputRef {
     case let .interface(name):
       guard let interfaceType = interfaceTypeMap[name] else {

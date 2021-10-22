@@ -8,10 +8,10 @@
 import Foundation
 import GraphQLAST
 
-enum UnionTypeMapError: Error, LocalizedError {
+public enum UnionTypeMapError: Error, LocalizedError {
   case notFound(context: String)
 
-  var errorDescription: String? {
+  public var errorDescription: String? {
     switch self {
     case let .notFound(context):
       return "Unknown UnionType for \(context)"
@@ -19,10 +19,10 @@ enum UnionTypeMapError: Error, LocalizedError {
   }
 }
 
-struct UnionTypeMap {
+public struct UnionTypeMap {
   private let unionTypeMap: [String: UnionType]
 
-  init(schema: Schema) {
+  public init(schema: Schema) {
     self.unionTypeMap = Dictionary(
       uniqueKeysWithValues: schema.unions.map {
         ($0.name, $0)
@@ -30,7 +30,7 @@ struct UnionTypeMap {
     )
   }
 
-  func value(from outputRef: OutputRef) throws -> UnionType? {
+  public func value(from outputRef: OutputRef) throws -> UnionType? {
     switch outputRef {
     case let .union(name):
       guard let unionType = unionTypeMap[name] else {

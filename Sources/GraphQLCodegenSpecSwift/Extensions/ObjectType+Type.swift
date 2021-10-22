@@ -8,6 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 extension ObjectType: Structure {
   var possibleTypes: [ObjectTypeRef] {

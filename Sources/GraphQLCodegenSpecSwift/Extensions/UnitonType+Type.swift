@@ -7,6 +7,7 @@
 
 import GraphQLAST
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 extension UnionType: Structure {
   var fields: [Field] { [] }

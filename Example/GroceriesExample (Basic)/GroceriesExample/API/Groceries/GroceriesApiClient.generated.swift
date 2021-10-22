@@ -187,3 +187,77 @@ struct GroceriesResourceParametersProvider: ResourceParameters {
     return resourceBodyParameters.bodyParameters()
   }
 }
+
+// MARK: - SelectionMock
+
+extension CampaignSourceEnumResponseModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension CampaignTypeEnumResponseModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension DiscountTypeEnumResponseModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension BenefitResponseModel {
+  static func selectionMock() -> Self {
+    BenefitResponseModel(
+      productId: .selectionMock(),
+      quantity: .selectionMock()
+    )
+  }
+}
+
+extension CampaignAttributeResponseModel {
+  static func selectionMock() -> Self {
+    CampaignAttributeResponseModel(
+      autoApplied: .selectionMock(),
+      benefits: [.selectionMock()],
+      campaignType: .selectionMock(),
+      description: .selectionMock(),
+      id: .selectionMock(),
+      name: .selectionMock(),
+      redemptionLimit: .selectionMock(),
+      source: .selectionMock()
+    )
+  }
+}
+
+extension CampaignsResponseModel {
+  static func selectionMock() -> Self {
+    CampaignsResponseModel(
+      campaignAttributes: [.selectionMock()],
+      productDeals: [.selectionMock()]
+    )
+  }
+}
+
+extension DealResponseModel {
+  static func selectionMock() -> Self {
+    DealResponseModel(
+      campaignId: .selectionMock(),
+      discountTag: .selectionMock(),
+      triggerQuantity: .selectionMock()
+    )
+  }
+}
+
+extension ProductDealResponseModel {
+  static func selectionMock() -> Self {
+    ProductDealResponseModel(
+      deals: [.selectionMock()],
+      productId: .selectionMock()
+    )
+  }
+}
+
+extension QueryResponseModel {
+  static func selectionMock() -> Self {
+    QueryResponseModel(
+      campaigns: .selectionMock()
+    )
+  }
+}

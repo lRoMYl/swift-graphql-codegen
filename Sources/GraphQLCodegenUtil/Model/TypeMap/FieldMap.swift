@@ -7,4 +7,4 @@
 
 import GraphQLAST
 
-typealias FieldMap = [String: Field]
+public typealias FieldMap = [String: Field]

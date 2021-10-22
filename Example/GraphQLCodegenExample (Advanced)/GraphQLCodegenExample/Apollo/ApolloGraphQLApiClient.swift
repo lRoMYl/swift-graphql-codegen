@@ -467,3 +467,105 @@ struct ApolloResourceParametersProvider: ResourceParameters {
     return resourceBodyParameters.bodyParameters()
   }
 }
+
+// MARK: - SelectionMock
+
+extension PatchSizeApolloEnumModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension CacheControlScopeApolloEnumModel {
+  static func selectionMock() -> Self { ._unknown("") }
+}
+
+extension QueryApolloModel {
+  static func selectionMock() -> Self {
+    QueryApolloModel(
+      launch: .selectionMock(),
+      launches: .selectionMock(),
+      me: .selectionMock(),
+      tripsBooked: .selectionMock()
+    )
+  }
+}
+
+extension LaunchConnectionApolloModel {
+  static func selectionMock() -> Self {
+    LaunchConnectionApolloModel(
+      cursor: .selectionMock(),
+      hasMore: .selectionMock(),
+      launches: [.selectionMock()]
+    )
+  }
+}
+
+extension LaunchApolloModel {
+  static func selectionMock() -> Self {
+    LaunchApolloModel(
+      id: .selectionMock(),
+      isBooked: .selectionMock(),
+      mission: .selectionMock(),
+      rocket: .selectionMock(),
+      site: .selectionMock()
+    )
+  }
+}
+
+extension MissionApolloModel {
+  static func selectionMock() -> Self {
+    MissionApolloModel(
+      missionPatch: .selectionMock(),
+      name: .selectionMock()
+    )
+  }
+}
+
+extension RocketApolloModel {
+  static func selectionMock() -> Self {
+    RocketApolloModel(
+      id: .selectionMock(),
+      name: .selectionMock(),
+      type: .selectionMock()
+    )
+  }
+}
+
+extension UserApolloModel {
+  static func selectionMock() -> Self {
+    UserApolloModel(
+      email: .selectionMock(),
+      id: .selectionMock(),
+      profileImage: .selectionMock(),
+      trips: [.selectionMock()]
+    )
+  }
+}
+
+extension MutationApolloModel {
+  static func selectionMock() -> Self {
+    MutationApolloModel(
+      bookTrips: .selectionMock(),
+      cancelTrip: .selectionMock(),
+      login: .selectionMock(),
+      uploadProfileImage: .selectionMock()
+    )
+  }
+}
+
+extension TripUpdateResponseApolloModel {
+  static func selectionMock() -> Self {
+    TripUpdateResponseApolloModel(
+      launches: [.selectionMock()],
+      message: .selectionMock(),
+      success: .selectionMock()
+    )
+  }
+}
+
+extension SubscriptionApolloModel {
+  static func selectionMock() -> Self {
+    SubscriptionApolloModel(
+      tripsBooked: .selectionMock()
+    )
+  }
+}

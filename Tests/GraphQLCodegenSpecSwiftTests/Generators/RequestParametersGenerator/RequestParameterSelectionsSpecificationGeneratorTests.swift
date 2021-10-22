@@ -9,6 +9,7 @@
 @testable import GraphQLCodegenConfig
 @testable import GraphQLCodegenNameSwift
 @testable import GraphQLCodegenSpecSwift
+@testable import GraphQLCodegenUtil
 @testable import GraphQLDownloader
 import XCTest
 

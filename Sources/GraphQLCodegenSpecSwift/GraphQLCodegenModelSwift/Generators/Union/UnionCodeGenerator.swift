@@ -8,6 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 struct UnionCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
