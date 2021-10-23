@@ -264,6 +264,77 @@ extension QueryResponseModel {
 
 // MARK: - ResponseSelectionDecoder
 
+class CampaignsQueryResponseSelectionDecoder {
+  private(set) var benefitSelections = Set<BenefitSelection>()
+  private(set) var campaignAttributeSelections = Set<CampaignAttributeSelection>()
+  private(set) var campaignsSelections = Set<CampaignsSelection>()
+  private(set) var dealSelections = Set<DealSelection>()
+  private(set) var productDealSelections = Set<ProductDealSelection>()
+  private let response: CampaignsResponseModel
+  private let populateSelections: Bool
+
+  init(response: CampaignsResponseModel, populateSelections: Bool = false) {
+    self.response = response
+    self.populateSelections = populateSelections
+  }
+
+  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
+    if populateSelections {
+      campaignsSelections.insert(.productDeals)
+    }
+
+    guard let values = response.productDeals else {
+      throw GroceriesApiClientError.missingData(context: "productDeals not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let result = try mapper(decoder)
+
+          dealSelections = decoder.dealSelections
+          productDealSelections = decoder.productDealSelections
+
+          return result
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+
+  func campaignAttributes<T>(mapper: (CampaignAttributeSelectionDecoder) throws -> T) throws -> [T?]? {
+    if populateSelections {
+      campaignsSelections.insert(.campaignAttributes)
+    }
+
+    guard let values = response.campaignAttributes else {
+      throw GroceriesApiClientError.missingData(context: "campaignAttributes not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = CampaignAttributeSelectionDecoder(response: value, populateSelections: populateSelections)
+          let result = try mapper(decoder)
+
+          benefitSelections = decoder.benefitSelections
+          campaignAttributeSelections = decoder.campaignAttributeSelections
+
+          return result
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+}
+
 class BenefitSelectionDecoder {
   private(set) var benefitSelections = Set<BenefitSelection>()
   private let response: BenefitResponseModel

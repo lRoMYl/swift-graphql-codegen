@@ -41,59 +41,103 @@ struct SelectionDecoderGenerator: Generating {
   func code(schema: Schema) throws -> String {
     let schemaMap = try SchemaMap(schema: schema)
 
-    let objectCode = try schema.objects.compactMap { object in
-      guard !object.isOperation, !object.isInternal else { return nil }
-
-      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: object)
-      let responseName = try entityNameProvider.name(for: object)
-
-      let rootField = Field(with: object)
-      let nestedFields: [Field] = (
-        try object.nestedFields(objects: schema.objects, scalarMap: scalarMap) + [rootField]
-      ).sorted(by: { $0.name < $1.name })
-
-      let selectionDeclaration = try nestedFields.compactMap {
+    let operationCode = try schema.operations.compactMap { operation in
+      try operation.type.fields.compactMap { field in
         guard
-          let selectionName = try entityNameProvider.selectionName(for: $0),
-          let selectionsVariableName = try entityNameProvider.selectionsVariableName(
-            for: $0.type.namedType,
-            entityNameProvider: entityNameProvider
+          let selectionDecoderName = try entityNameProvider.selectionDecoderName(
+            field: field,
+            operation: operation,
+            schemaMap: schemaMap
           )
         else { return nil }
+        let responseName = try entityNameProvider.name(for: field.type.namedType)
 
-        return """
-        private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
-        """
+        let nestedFields: [Field] = (
+          try field.nestedFields(objects: schema.objects, scalarMap: scalarMap, excluded: [])
+        ).sorted(by: { $0.name < $1.name })
+
+        let returnObjectType = try field.returnObjectType(schemaMap: schemaMap)
+
+        return try code(
+          selectionDecoderName: selectionDecoderName,
+          responseName: responseName,
+          nestedFields: nestedFields,
+          objectType: returnObjectType,
+          schemaMap: schemaMap
+        )
       }.lines
+    }.lines
 
-      let fieldCodes = try object.fields.map { field in
-        return try code(objectType: object, field: field, schemaMap: schemaMap)
-      }.joined(separator: "\n\n")
+    let objectCode = try schema.objects.compactMap { objectType in
+      guard !objectType.isOperation, !objectType.isInternal else { return nil }
 
-      return """
-      class \(selectionDecoderName) {
-        \(selectionDeclaration)
-        private let response: \(responseName)
-        private let \(Variables.populateSelections): Bool
+      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: objectType)
+      let responseName = try entityNameProvider.name(for: objectType)
 
-        init(response: \(responseName), \(Variables.populateSelections): Bool = false) {
-          self.response = response
-          self.\(Variables.populateSelections) = \(Variables.populateSelections)
-        }
+      let nestedFields: [Field] = (
+        try objectType.nestedFields(objects: schema.objects, scalarMap: scalarMap)
+      ).sorted(by: { $0.name < $1.name })
 
-        \(fieldCodes)
-      }
-      """
+      return try code(
+        selectionDecoderName: selectionDecoderName,
+        responseName: responseName,
+        nestedFields: nestedFields,
+        objectType: objectType,
+        schemaMap: schemaMap
+      )
     }.lines
 
     return [
-      "// MARK: - ResponseSelectionDecoder",
+      "// MARK: - SelectionDecoder",
+      operationCode,
       objectCode
     ].lines
   }
 }
 
 private extension SelectionDecoderGenerator {
+  func code(
+    selectionDecoderName: String,
+    responseName: String,
+    nestedFields: [Field],
+    objectType: ObjectType?,
+    schemaMap: SchemaMap
+  ) throws -> String {
+    let selectionDeclaration = try nestedFields.compactMap {
+      guard
+        let selectionName = try entityNameProvider.selectionName(for: $0),
+        let selectionsVariableName = try entityNameProvider.selectionsVariableName(
+          for: $0.type.namedType,
+          entityNameProvider: entityNameProvider
+        )
+      else { return nil }
+
+      return """
+        private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
+        """
+    }.lines
+
+    let fieldCodes = try objectType?.fields.compactMap { field in
+      guard let objectType = objectType else { return nil }
+      return try code(objectType: objectType, field: field, schemaMap: schemaMap)
+    }.joined(separator: "\n\n") ?? ""
+
+    return """
+    class \(selectionDecoderName) {
+      \(selectionDeclaration)
+      private let response: \(responseName)
+      private let \(Variables.populateSelections): Bool
+
+      init(response: \(responseName), \(Variables.populateSelections): Bool = false) {
+        self.response = response
+        self.\(Variables.populateSelections) = \(Variables.populateSelections)
+      }
+
+      \(fieldCodes)
+    }
+    """
+  }
+
   func code(objectType: ObjectType, field: Field, schemaMap: SchemaMap) throws -> String {
     let name = field.name.camelCase
 

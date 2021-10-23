@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct ProductDeal {
+  let productId: String
+
+  init(from decoder: ProductDealSelectionDecoder) throws {
+    productId = try decoder.productId()
+  }
+}

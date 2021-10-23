@@ -30,7 +30,7 @@ public extension Field {
     }
 
     try returnObjectType.fields.filter {
-      $0.name != self.name && !excluded.contains($0)
+      $0.type.namedType != self.type.namedType && !excluded.contains($0)
     }.forEach {
       switch $0.type {
       case let .named(outputRef):
@@ -51,6 +51,6 @@ public extension Field {
       }
     }
 
-    return fields.unique(by: { $0.name })
+    return fields.unique(by: { $0.type.namedType.name })
   }
 }
