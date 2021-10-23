@@ -7,7 +7,7 @@
 
 import Foundation
 
-GraphQLCodegenCLI.main()
+//GraphQLCodegenCLI.main()
 
-//mockBasicExample()
-//mockAdvancedCoreExample()
+mockBasicExample()
+mockAdvancedCoreExample()

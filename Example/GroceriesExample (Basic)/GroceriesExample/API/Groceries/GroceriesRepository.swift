@@ -21,17 +21,21 @@ final class GroceriesRepository {
 
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<CampaignsResponseModel?> {
-    apiClient.campaigns(
+  ) -> Single<Campaign?> {
+    let mapper = CampaignsQueryMapper { decoder in
+      try Campaign(from: decoder)
+    }
+
+    return apiClient.campaigns(
       with: parameters,
-      selections: .init()
+      selections: mapper.selections
     )
     .map {
-      guard let campaigns = $0.data?.campaigns else {
+      guard let responseModel = $0.data?.campaigns else {
         throw GroceriesRepositoryError.missingData
       }
 
-      return campaigns
+      return try mapper.map(response: responseModel)
     }
   }
 }
