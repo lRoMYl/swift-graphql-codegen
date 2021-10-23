@@ -205,8 +205,8 @@ extension DiscountTypeEnumResponseModel {
 extension BenefitResponseModel {
   static func selectionMock() -> Self {
     BenefitResponseModel(
-      productId: .selectionMock(),
-      quantity: .selectionMock()
+      quantity: .selectionMock(),
+      productId: .selectionMock()
     )
   }
 }
@@ -214,14 +214,14 @@ extension BenefitResponseModel {
 extension CampaignAttributeResponseModel {
   static func selectionMock() -> Self {
     CampaignAttributeResponseModel(
-      autoApplied: .selectionMock(),
       benefits: [.selectionMock()],
+      autoApplied: .selectionMock(),
+      source: .selectionMock(),
       campaignType: .selectionMock(),
-      description: .selectionMock(),
+      redemptionLimit: .selectionMock(),
       id: .selectionMock(),
       name: .selectionMock(),
-      redemptionLimit: .selectionMock(),
-      source: .selectionMock()
+      description: .selectionMock()
     )
   }
 }
@@ -238,9 +238,9 @@ extension CampaignsResponseModel {
 extension DealResponseModel {
   static func selectionMock() -> Self {
     DealResponseModel(
-      campaignId: .selectionMock(),
+      triggerQuantity: .selectionMock(),
       discountTag: .selectionMock(),
-      triggerQuantity: .selectionMock()
+      campaignId: .selectionMock()
     )
   }
 }
@@ -262,7 +262,7 @@ extension QueryResponseModel {
   }
 }
 
-// MARK: - ResponseSelectionDecoder
+// MARK: - SelectionDecoder
 
 class CampaignsQueryResponseSelectionDecoder {
   private(set) var benefitSelections = Set<BenefitSelection>()
@@ -371,8 +371,8 @@ class BenefitSelectionDecoder {
 }
 
 class CampaignAttributeSelectionDecoder {
-  private(set) var campaignAttributeSelections = Set<CampaignAttributeSelection>()
   private(set) var benefitSelections = Set<BenefitSelection>()
+  private(set) var campaignAttributeSelections = Set<CampaignAttributeSelection>()
   private let response: CampaignAttributeResponseModel
   private let populateSelections: Bool
 
@@ -490,9 +490,9 @@ class CampaignAttributeSelectionDecoder {
 }
 
 class CampaignsSelectionDecoder {
-  private(set) var campaignsSelections = Set<CampaignsSelection>()
   private(set) var benefitSelections = Set<BenefitSelection>()
   private(set) var campaignAttributeSelections = Set<CampaignAttributeSelection>()
+  private(set) var campaignsSelections = Set<CampaignsSelection>()
   private(set) var dealSelections = Set<DealSelection>()
   private(set) var productDealSelections = Set<ProductDealSelection>()
   private let response: CampaignsResponseModel
@@ -608,8 +608,8 @@ class DealSelectionDecoder {
 }
 
 class ProductDealSelectionDecoder {
-  private(set) var productDealSelections = Set<ProductDealSelection>()
   private(set) var dealSelections = Set<DealSelection>()
+  private(set) var productDealSelections = Set<ProductDealSelection>()
   private let response: ProductDealResponseModel
   private let populateSelections: Bool
 
@@ -655,5 +655,38 @@ class ProductDealSelectionDecoder {
     } else {
       return nil
     }
+  }
+}
+
+// MARK: - Mappers
+
+struct CampaignsQueryMapper<T> {
+  typealias MapperBlock = (CampaignsQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: CampaignsQueryRequestSelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = CampaignsQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = CampaignsQueryRequestSelections(
+      benefitSelections: decoder.benefitSelections,
+      campaignAttributeSelections: decoder.campaignAttributeSelections,
+      campaignsSelections: decoder.campaignsSelections,
+      dealSelections: decoder.dealSelections,
+      productDealSelections: decoder.productDealSelections
+    )
+  }
+
+  func map(response: CampaignsResponseModel) throws -> T {
+    try block(CampaignsQueryResponseSelectionDecoder(response: response))
   }
 }

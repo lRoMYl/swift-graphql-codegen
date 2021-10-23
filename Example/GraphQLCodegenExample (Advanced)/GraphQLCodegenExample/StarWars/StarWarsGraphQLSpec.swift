@@ -122,59 +122,59 @@ struct DroidStarWarsModel: Codable {
 struct HumanStarWarsModel: Codable {
   let appearsIn: Optional<[EpisodeStarWarsEnumModel]>
 
+  let id: Optional<String>
+
+  let name: Optional<String>
+
   /// The home planet of the human, or null if unknown.
   let homePlanet: Optional<String?>
 
-  let id: Optional<String>
-
   let infoUrl: Optional<String?>
-
-  let name: Optional<String>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case appearsIn
-    case homePlanet
     case id
-    case infoUrl = "infoURL"
     case name
+    case homePlanet
+    case infoUrl = "infoURL"
   }
 }
 
 struct QueryStarWarsModel: Codable {
+  let characters: Optional<[CharacterStarWarsInterfaceModel]>
+
   let character: Optional<CharacterUnionStarWarsUnionModel?>
 
-  let characters: Optional<[CharacterStarWarsInterfaceModel]>
+  let time: Optional<DateTimeInterval>
 
   let droid: Optional<DroidStarWarsModel?>
 
   let droids: Optional<[DroidStarWarsModel]>
 
-  let greeting: Optional<String>
-
   let human: Optional<HumanStarWarsModel?>
-
-  let humans: Optional<[HumanStarWarsModel]>
 
   let luke: Optional<HumanStarWarsModel?>
 
-  let time: Optional<DateTimeInterval>
+  let humans: Optional<[HumanStarWarsModel]>
+
+  let greeting: Optional<String>
 
   let whoami: Optional<String>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case character
     case characters
+    case character
+    case time
     case droid
     case droids
-    case greeting
     case human
-    case humans
     case luke
-    case time
+    case humans
+    case greeting
     case whoami
   }
 }

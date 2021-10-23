@@ -90,7 +90,7 @@ private extension SelectionMockGenerator {
 
   func selectionMock(type: ObjectType) throws -> String {
     let name = try entityNameProvider.name(for: type)
-    let sortedFields = type.fields.sorted(by: { $0.name < $1.name })
+    let sortedFields = type.fields.sorted()
 
     let memberwiseIntializer = try sortedFields.map {
       "\($0.name.camelCase): \(try mockDeclaration(typeRef: $0.type))"

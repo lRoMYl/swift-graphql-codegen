@@ -28,14 +28,4 @@ extension EntityNameProviding {
 
     return "\(try responseDataName(for: field, with: operation))SelectionDecoder"
   }
-
-  func selectionsVariableName(for objectType: ObjectType) throws -> String {
-    let selectionName = try self.selectionName(for: objectType).camelCase
-    return "\(selectionName)s"
-  }
-
-  func selectionsVariableName(for outputRef: OutputRef, entityNameProvider: EntityNameProviding) throws -> String? {
-    guard let selectionName = try entityNameProvider.selectionName(for: outputRef)?.camelCase else { return nil }
-    return "\(selectionName)s"
-  }
 }

@@ -36,12 +36,12 @@ extension Structure {
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
       isSelectable(field: field, selectionMap: selectionMap)
-    }.sorted(by: { $0.name < $1.name })
+    }.sorted()
   }
 
   func requiredFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
       isRequired(field: field, selectionMap: selectionMap)
-    }.sorted(by: { $0.name < $1.name })
+    }.sorted()
   }
 }

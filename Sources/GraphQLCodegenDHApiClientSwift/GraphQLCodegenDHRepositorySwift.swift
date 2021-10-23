@@ -54,6 +54,10 @@ public struct GraphQLCodegenDHApiClientSwift {
         entityNameProvider: entityNameProvider,
         scalarMap: self.scalarMap,
         entityNameMap: self.entityNameMap
+      ),
+      RequestMapperGenerator(
+        entityNameProvider: entityNameProvider,
+        scalarMap: self.scalarMap
       )
     ]
   }

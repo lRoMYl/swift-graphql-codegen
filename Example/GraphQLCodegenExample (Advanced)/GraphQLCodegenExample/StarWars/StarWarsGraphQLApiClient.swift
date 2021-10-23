@@ -579,10 +579,10 @@ extension HumanStarWarsModel {
   static func selectionMock() -> Self {
     HumanStarWarsModel(
       appearsIn: [.selectionMock()],
-      homePlanet: .selectionMock(),
       id: .selectionMock(),
-      infoUrl: .selectionMock(),
-      name: .selectionMock()
+      name: .selectionMock(),
+      homePlanet: .selectionMock(),
+      infoUrl: .selectionMock()
     )
   }
 }
@@ -590,15 +590,15 @@ extension HumanStarWarsModel {
 extension QueryStarWarsModel {
   static func selectionMock() -> Self {
     QueryStarWarsModel(
-      character: .selectionMock(),
       characters: [.selectionMock()],
+      character: .selectionMock(),
+      time: .selectionMock(),
       droid: .selectionMock(),
       droids: [.selectionMock()],
-      greeting: .selectionMock(),
       human: .selectionMock(),
-      humans: [.selectionMock()],
       luke: .selectionMock(),
-      time: .selectionMock(),
+      humans: [.selectionMock()],
+      greeting: .selectionMock(),
       whoami: .selectionMock()
     )
   }
@@ -612,7 +612,7 @@ extension SubscriptionStarWarsModel {
   }
 }
 
-// MARK: - ResponseSelectionDecoder
+// MARK: - SelectionDecoder
 
 class HumanQueryResponseSelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
@@ -1118,5 +1118,142 @@ class HumanSelectionDecoder {
     } else {
       return nil
     }
+  }
+}
+
+// MARK: - Mappers
+
+struct HumanQueryMapper<T> {
+  typealias MapperBlock = (HumanQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: HumanStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = HumanQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = HumanStarWarsQuerySelections(
+      humanSelections: decoder.humanSelections
+    )
+  }
+
+  func map(response: HumanStarWarsModel) throws -> T {
+    try block(HumanQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct DroidQueryMapper<T> {
+  typealias MapperBlock = (DroidQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: DroidStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = DroidQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = DroidStarWarsQuerySelections(
+      droidSelections: decoder.droidSelections
+    )
+  }
+
+  func map(response: DroidStarWarsModel) throws -> T {
+    try block(DroidQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct LukeQueryMapper<T> {
+  typealias MapperBlock = (LukeQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: LukeStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = LukeQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = LukeStarWarsQuerySelections(
+      humanSelections: decoder.humanSelections
+    )
+  }
+
+  func map(response: HumanStarWarsModel) throws -> T {
+    try block(LukeQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct HumansQueryMapper<T> {
+  typealias MapperBlock = (HumansQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: HumansStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = HumansQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = HumansStarWarsQuerySelections(
+      humanSelections: decoder.humanSelections
+    )
+  }
+
+  func map(response: HumanStarWarsModel) throws -> T {
+    try block(HumansQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct DroidsQueryMapper<T> {
+  typealias MapperBlock = (DroidsQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: DroidsStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = DroidsQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = DroidsStarWarsQuerySelections(
+      droidSelections: decoder.droidSelections
+    )
+  }
+
+  func map(response: DroidStarWarsModel) throws -> T {
+    try block(DroidsQueryResponseSelectionDecoder(response: response))
   }
 }

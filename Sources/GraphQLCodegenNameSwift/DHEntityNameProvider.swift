@@ -149,4 +149,8 @@ public final class DHEntityNameProvider: EntityNameProviding {
 
     return "\(operationTypeName)\(Constants.selectionsPostFix)"
   }
+
+  public func mapperName(for field: Field, operation: GraphQLAST.Operation) throws -> String {
+    field.name.pascalCase + operation.type.name.pascalCase + "Mapper"
+  }
 }

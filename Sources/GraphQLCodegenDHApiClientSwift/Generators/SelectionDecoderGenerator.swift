@@ -54,7 +54,7 @@ struct SelectionDecoderGenerator: Generating {
 
         let nestedFields: [Field] = (
           try field.nestedFields(objects: schema.objects, scalarMap: scalarMap, excluded: [])
-        ).sorted(by: { $0.name < $1.name })
+        )
 
         let returnObjectType = try field.returnObjectType(schemaMap: schemaMap)
 
@@ -76,7 +76,7 @@ struct SelectionDecoderGenerator: Generating {
 
       let nestedFields: [Field] = (
         try objectType.nestedFields(objects: schema.objects, scalarMap: scalarMap)
-      ).sorted(by: { $0.name < $1.name })
+      )
 
       return try code(
         selectionDecoderName: selectionDecoderName,
@@ -274,7 +274,7 @@ private extension SelectionDecoderGenerator {
         let selectionDecoderName = try entityNameProvider.selectionDecoderName(outputRef: outputRef)
       {
         let nestedFields = try field.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap, excluded: [])
-          .sorted(by: { $0.name < $1.name })
+          
         let selectionsDeclarations = try nestedFields.compactMap { field in
           guard
             let selectionsVariableName = try entityNameProvider.selectionsVariableName(

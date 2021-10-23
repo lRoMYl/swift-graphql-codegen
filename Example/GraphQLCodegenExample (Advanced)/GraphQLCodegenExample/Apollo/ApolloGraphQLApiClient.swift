@@ -481,10 +481,10 @@ extension CacheControlScopeApolloEnumModel {
 extension QueryApolloModel {
   static func selectionMock() -> Self {
     QueryApolloModel(
+      tripsBooked: .selectionMock(),
       launch: .selectionMock(),
       launches: .selectionMock(),
-      me: .selectionMock(),
-      tripsBooked: .selectionMock()
+      me: .selectionMock()
     )
   }
 }
@@ -492,9 +492,9 @@ extension QueryApolloModel {
 extension LaunchConnectionApolloModel {
   static func selectionMock() -> Self {
     LaunchConnectionApolloModel(
-      cursor: .selectionMock(),
       hasMore: .selectionMock(),
-      launches: [.selectionMock()]
+      launches: [.selectionMock()],
+      cursor: .selectionMock()
     )
   }
 }
@@ -502,8 +502,8 @@ extension LaunchConnectionApolloModel {
 extension LaunchApolloModel {
   static func selectionMock() -> Self {
     LaunchApolloModel(
-      id: .selectionMock(),
       isBooked: .selectionMock(),
+      id: .selectionMock(),
       mission: .selectionMock(),
       rocket: .selectionMock(),
       site: .selectionMock()
@@ -514,8 +514,8 @@ extension LaunchApolloModel {
 extension MissionApolloModel {
   static func selectionMock() -> Self {
     MissionApolloModel(
-      missionPatch: .selectionMock(),
-      name: .selectionMock()
+      name: .selectionMock(),
+      missionPatch: .selectionMock()
     )
   }
 }
@@ -533,10 +533,10 @@ extension RocketApolloModel {
 extension UserApolloModel {
   static func selectionMock() -> Self {
     UserApolloModel(
-      email: .selectionMock(),
       id: .selectionMock(),
-      profileImage: .selectionMock(),
-      trips: [.selectionMock()]
+      trips: [.selectionMock()],
+      email: .selectionMock(),
+      profileImage: .selectionMock()
     )
   }
 }
@@ -544,9 +544,9 @@ extension UserApolloModel {
 extension MutationApolloModel {
   static func selectionMock() -> Self {
     MutationApolloModel(
+      login: .selectionMock(),
       bookTrips: .selectionMock(),
       cancelTrip: .selectionMock(),
-      login: .selectionMock(),
       uploadProfileImage: .selectionMock()
     )
   }
@@ -555,9 +555,9 @@ extension MutationApolloModel {
 extension TripUpdateResponseApolloModel {
   static func selectionMock() -> Self {
     TripUpdateResponseApolloModel(
+      success: .selectionMock(),
       launches: [.selectionMock()],
-      message: .selectionMock(),
-      success: .selectionMock()
+      message: .selectionMock()
     )
   }
 }
@@ -570,7 +570,7 @@ extension SubscriptionApolloModel {
   }
 }
 
-// MARK: - ResponseSelectionDecoder
+// MARK: - SelectionDecoder
 
 class LaunchesQueryResponseSelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
@@ -731,10 +731,10 @@ class LaunchQueryResponseSelectionDecoder {
 }
 
 class MeQueryResponseSelectionDecoder {
-  private(set) var userSelections = Set<UserSelection>()
+  private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
-  private(set) var launchSelections = Set<LaunchSelection>()
+  private(set) var userSelections = Set<UserSelection>()
   private let response: UserApolloModel
   private let populateSelections: Bool
 
@@ -797,9 +797,9 @@ class MeQueryResponseSelectionDecoder {
         let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
         let result = try mapper(decoder)
 
+        launchSelections = decoder.launchSelections
         missionSelections = decoder.missionSelections
         rocketSelections = decoder.rocketSelections
-        launchSelections = decoder.launchSelections
 
         return result
       } else {
@@ -810,10 +810,10 @@ class MeQueryResponseSelectionDecoder {
 }
 
 class BookTripsMutationResponseSelectionDecoder {
-  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
+  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private let response: TripUpdateResponseApolloModel
   private let populateSelections: Bool
 
@@ -881,10 +881,10 @@ class BookTripsMutationResponseSelectionDecoder {
 }
 
 class CancelTripMutationResponseSelectionDecoder {
-  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
+  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private let response: TripUpdateResponseApolloModel
   private let populateSelections: Bool
 
@@ -952,9 +952,9 @@ class CancelTripMutationResponseSelectionDecoder {
 }
 
 class UploadProfileImageMutationResponseSelectionDecoder {
+  private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
-  private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var userSelections = Set<UserSelection>()
   private let response: UserApolloModel
   private let populateSelections: Bool
@@ -1018,9 +1018,9 @@ class UploadProfileImageMutationResponseSelectionDecoder {
         let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
         let result = try mapper(decoder)
 
+        launchSelections = decoder.launchSelections
         missionSelections = decoder.missionSelections
         rocketSelections = decoder.rocketSelections
-        launchSelections = decoder.launchSelections
 
         return result
       } else {
@@ -1031,8 +1031,8 @@ class UploadProfileImageMutationResponseSelectionDecoder {
 }
 
 class LaunchConnectionSelectionDecoder {
-  private(set) var launchConnectionSelections = Set<LaunchConnectionSelection>()
   private(set) var launchSelections = Set<LaunchSelection>()
+  private(set) var launchConnectionSelections = Set<LaunchConnectionSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
   private let response: LaunchConnectionApolloModel
@@ -1287,10 +1287,10 @@ class RocketSelectionDecoder {
 }
 
 class UserSelectionDecoder {
-  private(set) var userSelections = Set<UserSelection>()
+  private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
-  private(set) var launchSelections = Set<LaunchSelection>()
+  private(set) var userSelections = Set<UserSelection>()
   private let response: UserApolloModel
   private let populateSelections: Bool
 
@@ -1353,9 +1353,9 @@ class UserSelectionDecoder {
         let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
         let result = try mapper(decoder)
 
+        launchSelections = decoder.launchSelections
         missionSelections = decoder.missionSelections
         rocketSelections = decoder.rocketSelections
-        launchSelections = decoder.launchSelections
 
         return result
       } else {
@@ -1366,10 +1366,10 @@ class UserSelectionDecoder {
 }
 
 class TripUpdateResponseSelectionDecoder {
-  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
+  private(set) var tripUpdateResponseSelections = Set<TripUpdateResponseSelection>()
   private let response: TripUpdateResponseApolloModel
   private let populateSelections: Bool
 
@@ -1433,5 +1433,186 @@ class TripUpdateResponseSelectionDecoder {
     } else {
       return nil
     }
+  }
+}
+
+// MARK: - Mappers
+
+struct LaunchesQueryMapper<T> {
+  typealias MapperBlock = (LaunchesQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: LaunchesApolloQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = LaunchesQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = LaunchesApolloQuerySelections(
+      launchSelections: decoder.launchSelections,
+      launchConnectionSelections: decoder.launchConnectionSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections
+    )
+  }
+
+  func map(response: LaunchConnectionApolloModel) throws -> T {
+    try block(LaunchesQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct LaunchQueryMapper<T> {
+  typealias MapperBlock = (LaunchQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: LaunchApolloQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = LaunchQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = LaunchApolloQuerySelections(
+      launchSelections: decoder.launchSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections
+    )
+  }
+
+  func map(response: LaunchApolloModel) throws -> T {
+    try block(LaunchQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct MeQueryMapper<T> {
+  typealias MapperBlock = (MeQueryResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: MeApolloQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = MeQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = MeApolloQuerySelections(
+      launchSelections: decoder.launchSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections,
+      userSelections: decoder.userSelections
+    )
+  }
+
+  func map(response: UserApolloModel) throws -> T {
+    try block(MeQueryResponseSelectionDecoder(response: response))
+  }
+}
+
+struct BookTripsMutationMapper<T> {
+  typealias MapperBlock = (BookTripsMutationResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: BookTripsApolloMutationSelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = BookTripsMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = BookTripsApolloMutationSelections(
+      launchSelections: decoder.launchSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections,
+      tripUpdateResponseSelections: decoder.tripUpdateResponseSelections
+    )
+  }
+
+  func map(response: TripUpdateResponseApolloModel) throws -> T {
+    try block(BookTripsMutationResponseSelectionDecoder(response: response))
+  }
+}
+
+struct CancelTripMutationMapper<T> {
+  typealias MapperBlock = (CancelTripMutationResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: CancelTripApolloMutationSelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = CancelTripMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = CancelTripApolloMutationSelections(
+      launchSelections: decoder.launchSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections,
+      tripUpdateResponseSelections: decoder.tripUpdateResponseSelections
+    )
+  }
+
+  func map(response: TripUpdateResponseApolloModel) throws -> T {
+    try block(CancelTripMutationResponseSelectionDecoder(response: response))
+  }
+}
+
+struct UploadProfileImageMutationMapper<T> {
+  typealias MapperBlock = (UploadProfileImageMutationResponseSelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: UploadProfileImageApolloMutationSelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = UploadProfileImageMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = UploadProfileImageApolloMutationSelections(
+      launchSelections: decoder.launchSelections,
+      missionSelections: decoder.missionSelections,
+      rocketSelections: decoder.rocketSelections,
+      userSelections: decoder.userSelections
+    )
+  }
+
+  func map(response: UserApolloModel) throws -> T {
+    try block(UploadProfileImageMutationResponseSelectionDecoder(response: response))
   }
 }

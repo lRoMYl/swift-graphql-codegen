@@ -66,7 +66,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 
 extension ObjectCodeGenerator {
   func declaration(_ objectType: ObjectType) throws -> String {
-    let sortedFields = objectType.fields.sorted(by: { $0.name < $1.name })
+    let sortedFields = objectType.fields.sorted()
 
     let fieldsVariable = try sortedFields
       .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: objectType, field: $0) }

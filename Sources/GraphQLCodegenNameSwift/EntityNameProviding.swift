@@ -36,4 +36,18 @@ public protocol EntityNameProviding {
 
   func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String
   func selectionsName(with operation: GraphQLAST.Operation) throws -> String
+
+  func mapperName(for field: Field, operation: GraphQLAST.Operation) throws -> String
+}
+
+public extension EntityNameProviding {
+  func selectionsVariableName(for objectType: ObjectType) throws -> String {
+    let selectionName = try self.selectionName(for: objectType).camelCase
+    return "\(selectionName)s"
+  }
+
+  func selectionsVariableName(for outputRef: OutputRef, entityNameProvider: EntityNameProviding) throws -> String? {
+    guard let selectionName = try entityNameProvider.selectionName(for: outputRef)?.camelCase else { return nil }
+    return "\(selectionName)s"
+  }
 }

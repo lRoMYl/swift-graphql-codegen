@@ -31,6 +31,8 @@ public extension ObjectType {
       fields.append(contentsOf: try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: []))
     }
 
-    return fields.unique(by: { $0.type.namedType.name })
+    return fields
+      .unique(by: { $0.type.namedType.name })
+      .sorted()
   }
 }

@@ -35,9 +35,9 @@ public extension Field {
       switch $0.type {
       case let .named(outputRef):
         switch outputRef {
-        case .object:
+        case .object, .interface, .union:
           fields.append($0)
-        case .enum, .interface, .scalar, .union:
+        case .enum, .scalar:
           break
         }
       case .list, .nonNull:
@@ -51,6 +51,8 @@ public extension Field {
       }
     }
 
-    return fields.unique(by: { $0.type.namedType.name })
+    return fields
+      .unique(by: { $0.type.namedType.name })
+      .sorted()
   }
 }

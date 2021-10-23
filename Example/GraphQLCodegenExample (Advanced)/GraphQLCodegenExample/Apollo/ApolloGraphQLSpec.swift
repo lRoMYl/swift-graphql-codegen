@@ -81,44 +81,44 @@ enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
 // MARK: - ApolloModel
 
 struct QueryApolloModel: Codable {
+  let tripsBooked: Optional<Int?>
+
   let launch: Optional<LaunchApolloModel?>
 
   let launches: Optional<LaunchConnectionApolloModel>
 
   let me: Optional<UserApolloModel?>
 
-  let tripsBooked: Optional<Int?>
-
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case tripsBooked
     case launch
     case launches
     case me
-    case tripsBooked
   }
 }
 
 struct LaunchConnectionApolloModel: Codable {
-  let cursor: Optional<String>
-
   let hasMore: Optional<Bool>
 
   let launches: Optional<[LaunchApolloModel?]>
 
+  let cursor: Optional<String>
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case cursor
     case hasMore
     case launches
+    case cursor
   }
 }
 
 struct LaunchApolloModel: Codable {
-  let id: Optional<String>
-
   let isBooked: Optional<Bool>
+
+  let id: Optional<String>
 
   let mission: Optional<MissionApolloModel?>
 
@@ -129,8 +129,8 @@ struct LaunchApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
     case isBooked
+    case id
     case mission
     case rocket
     case site
@@ -138,15 +138,15 @@ struct LaunchApolloModel: Codable {
 }
 
 struct MissionApolloModel: Codable {
-  let missionPatch: Optional<String?>
-
   let name: Optional<String?>
+
+  let missionPatch: Optional<String?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case missionPatch
     case name
+    case missionPatch
   }
 }
 
@@ -167,56 +167,56 @@ struct RocketApolloModel: Codable {
 }
 
 struct UserApolloModel: Codable {
-  let email: Optional<String>
-
   let id: Optional<String>
 
-  let profileImage: Optional<String?>
-
   let trips: Optional<[LaunchApolloModel?]>
+
+  let email: Optional<String>
+
+  let profileImage: Optional<String?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case email
     case id
-    case profileImage
     case trips
+    case email
+    case profileImage
   }
 }
 
 struct MutationApolloModel: Codable {
+  let login: Optional<String?>
+
   let bookTrips: Optional<TripUpdateResponseApolloModel>
 
   let cancelTrip: Optional<TripUpdateResponseApolloModel>
-
-  let login: Optional<String?>
 
   let uploadProfileImage: Optional<UserApolloModel?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case login
     case bookTrips
     case cancelTrip
-    case login
     case uploadProfileImage
   }
 }
 
 struct TripUpdateResponseApolloModel: Codable {
+  let success: Optional<Bool>
+
   let launches: Optional<[LaunchApolloModel?]?>
 
   let message: Optional<String?>
 
-  let success: Optional<Bool>
-
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case success
     case launches
     case message
-    case success
   }
 }
 
