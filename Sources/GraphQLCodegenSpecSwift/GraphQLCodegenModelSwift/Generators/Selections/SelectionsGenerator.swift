@@ -237,7 +237,7 @@ extension SelectionsGenerator {
 
     let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
     var fieldMap: FieldMap = [fieldScalarType: field]
-    fieldMap.merge(try returnObjectType.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
+    fieldMap.merge(try returnObjectType.nestedFieldMap(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
 
     // Sort field map to ensure the generated code sequence is always consistent
     let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
@@ -276,16 +276,9 @@ extension SelectionsGenerator {
     )
 
     try possibleObjectTypes.forEach {
-      fieldMap[$0.name] = Field(
-        name: $0.name,
-        description: $0.description,
-        args: [],
-        type: .named(.object($0.name)),
-        isDeprecated: false,
-        deprecationReason: nil
-      )
+      fieldMap[$0.name] = Field(with: $0)
 
-      fieldMap.merge(try $0.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
+      fieldMap.merge(try $0.nestedFieldMap(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
     }
 
     // Sort field map to ensure the generated code sequence is always consistent
@@ -334,7 +327,7 @@ extension SelectionsGenerator {
         deprecationReason: nil
       )
 
-      fieldMap.merge(try $0.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
+      fieldMap.merge(try $0.nestedFieldMap(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
     }
 
     // Sort field map to ensure the generated code sequence is always consistent
