@@ -261,3 +261,260 @@ extension QueryResponseModel {
     )
   }
 }
+
+// MARK: - ResponseSelectionDecoder
+
+class BenefitSelectionDecoder {
+  private(set) var selections = Set<BenefitSelection>()
+  private let response: BenefitResponseModel
+
+  init(response: BenefitResponseModel) {
+    self.response = response
+  }
+
+  func productId() throws -> String {
+    selections.insert(.productId)
+
+    guard let value = response.productId else {
+      throw GroceriesApiClientError.missingData(context: "productID not found")
+    }
+
+    return value
+  }
+
+  func quantity() throws -> Int {
+    selections.insert(.quantity)
+
+    guard let value = response.quantity else {
+      throw GroceriesApiClientError.missingData(context: "quantity not found")
+    }
+
+    return value
+  }
+}
+
+class CampaignAttributeSelectionDecoder {
+  private(set) var selections = Set<CampaignAttributeSelection>()
+  private let response: CampaignAttributeResponseModel
+
+  init(response: CampaignAttributeResponseModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw GroceriesApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func redemptionLimit() throws -> Double {
+    selections.insert(.redemptionLimit)
+
+    guard let value = response.redemptionLimit else {
+      throw GroceriesApiClientError.missingData(context: "redemptionLimit not found")
+    }
+
+    return value
+  }
+
+  func autoApplied() throws -> Bool {
+    selections.insert(.autoApplied)
+
+    guard let value = response.autoApplied else {
+      throw GroceriesApiClientError.missingData(context: "autoApplied not found")
+    }
+
+    return value
+  }
+
+  func source<T>(mapper: (CampaignSourceEnumResponseModel) throws -> T) throws -> T {
+    selections.insert(.source)
+
+    guard let value = response.source else {
+      throw GroceriesApiClientError.missingData(context: "source not found")
+    }
+
+    return try mapper(value)
+  }
+
+  func campaignType<T>(mapper: (CampaignTypeEnumResponseModel) throws -> T) throws -> T {
+    selections.insert(.campaignType)
+
+    guard let value = response.campaignType else {
+      throw GroceriesApiClientError.missingData(context: "campaignType not found")
+    }
+
+    return try mapper(value)
+  }
+
+  func benefits<T>(mapper: (BenefitSelectionDecoder) throws -> T) throws -> [T]? {
+    selections.insert(.benefits)
+
+    guard let values = response.benefits else {
+      throw GroceriesApiClientError.missingData(context: "benefits not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        let decoder = BenefitSelectionDecoder(response: value)
+        return try mapper(decoder)
+      }
+    } else {
+      return nil
+    }
+  }
+
+  func name() throws -> String {
+    selections.insert(.name)
+
+    guard let value = response.name else {
+      throw GroceriesApiClientError.missingData(context: "name not found")
+    }
+
+    return value
+  }
+
+  func description() throws -> String {
+    selections.insert(.description)
+
+    guard let value = response.description else {
+      throw GroceriesApiClientError.missingData(context: "description not found")
+    }
+
+    return value
+  }
+}
+
+class CampaignsSelectionDecoder {
+  private(set) var selections = Set<CampaignsSelection>()
+  private let response: CampaignsResponseModel
+
+  init(response: CampaignsResponseModel) {
+    self.response = response
+  }
+
+  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
+    selections.insert(.productDeals)
+
+    guard let values = response.productDeals else {
+      throw GroceriesApiClientError.missingData(context: "productDeals not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = ProductDealSelectionDecoder(response: value)
+          return try mapper(decoder)
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+
+  func campaignAttributes<T>(mapper: (CampaignAttributeSelectionDecoder) throws -> T) throws -> [T?]? {
+    selections.insert(.campaignAttributes)
+
+    guard let values = response.campaignAttributes else {
+      throw GroceriesApiClientError.missingData(context: "campaignAttributes not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = CampaignAttributeSelectionDecoder(response: value)
+          return try mapper(decoder)
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+}
+
+class DealSelectionDecoder {
+  private(set) var selections = Set<DealSelection>()
+  private let response: DealResponseModel
+
+  init(response: DealResponseModel) {
+    self.response = response
+  }
+
+  func discountTag() throws -> String {
+    selections.insert(.discountTag)
+
+    guard let value = response.discountTag else {
+      throw GroceriesApiClientError.missingData(context: "discountTag not found")
+    }
+
+    return value
+  }
+
+  func triggerQuantity() throws -> Int {
+    selections.insert(.triggerQuantity)
+
+    guard let value = response.triggerQuantity else {
+      throw GroceriesApiClientError.missingData(context: "triggerQuantity not found")
+    }
+
+    return value
+  }
+
+  func campaignId() throws -> String {
+    selections.insert(.campaignId)
+
+    guard let value = response.campaignId else {
+      throw GroceriesApiClientError.missingData(context: "campaignID not found")
+    }
+
+    return value
+  }
+}
+
+class ProductDealSelectionDecoder {
+  private(set) var selections = Set<ProductDealSelection>()
+  private let response: ProductDealResponseModel
+
+  init(response: ProductDealResponseModel) {
+    self.response = response
+  }
+
+  func productId() throws -> String {
+    selections.insert(.productId)
+
+    guard let value = response.productId else {
+      throw GroceriesApiClientError.missingData(context: "productID not found")
+    }
+
+    return value
+  }
+
+  func deals<T>(mapper: (DealSelectionDecoder) throws -> T) throws -> [T?]? {
+    selections.insert(.deals)
+
+    guard let values = response.deals else {
+      throw GroceriesApiClientError.missingData(context: "deals not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = DealSelectionDecoder(response: value)
+          return try mapper(decoder)
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+}

@@ -98,7 +98,7 @@ extension SelectionGenerator {
     case let .named(objectRef):
       switch objectRef {
       case .scalar, .enum:
-        return "case \(name) = \"\(name)\""
+        return "case \(name.camelCase) = \"\(name)\""
       case .object, .interface, .union:
         guard let fragmentName = try entityNameProvider.fragmentName(for: objectRef) else {
           throw SelectionGeneratorError.missingFragmentName(
@@ -107,7 +107,7 @@ extension SelectionGenerator {
         }
 
         return """
-        case \(name) = \"\"\"
+        case \(name.camelCase) = \"\"\"
         \(name) {
           ...\(fragmentName)
         }

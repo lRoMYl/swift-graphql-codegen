@@ -125,7 +125,6 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         : "\t\\(\($0.name.camelCase).declaration)"
       let fragmentDeclaration: String
 
-
       if
         !$0.requiredFields(selectionMap: selectionMap).isEmpty,
         let selectionName = try entityNameProvider.selectionName(structure: $0)
@@ -423,18 +422,6 @@ extension SelectionsGenerator {
     }
 
     return formattedCode
-  }
-}
-
-// MARK: - ObjectType
-
-private extension ObjectType {
-  func nestedFields(objects: [ObjectType], scalarMap: ScalarMap) throws -> FieldMap {
-    let fieldMap = try fields.flatMap {
-      try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [])
-    }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.name })
-
-    return fieldMap
   }
 }
 

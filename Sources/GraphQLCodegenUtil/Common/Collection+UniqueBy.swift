@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Collection {
+public extension Collection {
   /// Returns a list of unique items.
   ///
   /// - Note: Item's uniqueness is determined by the hash value of that item.

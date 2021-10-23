@@ -337,7 +337,7 @@ enum BenefitSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
   """
 
-  case productID
+  case productId = "productID"
   case quantity
 }
 
@@ -379,7 +379,7 @@ enum DealSelection: String, GraphQLSelection {
   static let requiredDeclaration = """
   """
 
-  case campaignID
+  case campaignId = "campaignID"
   case discountTag
   case triggerQuantity
 }
@@ -393,7 +393,7 @@ enum ProductDealSelection: String, GraphQLSelection {
     ...DealFragment
   }
   """
-  case productID
+  case productId = "productID"
 }
 
 struct QueryRequestSelections: GraphQLSelections {

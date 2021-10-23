@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAA2723F51500328EF9 /* Campaign.swift */; };
+		F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */; };
+		F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EB0272438B300328EF9 /* ProductDeal.swift */; };
 		F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1427043B9100602EC4 /* StarWarsRepository.swift */; };
 		F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1627043C4900602EC4 /* StarWarsWebService.swift */; };
 		F8A11737271DACD000723D3A /* ApolloGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A11735271DACD000723D3A /* ApolloGraphQLSpec.swift */; };
@@ -51,6 +54,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F8113EAA2723F51500328EF9 /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
+		F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignAttribute.swift; sourceTree = "<group>"; };
+		F8113EB0272438B300328EF9 /* ProductDeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDeal.swift; sourceTree = "<group>"; };
 		F855FD1427043B9100602EC4 /* StarWarsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsRepository.swift; sourceTree = "<group>"; };
 		F855FD1627043C4900602EC4 /* StarWarsWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsWebService.swift; sourceTree = "<group>"; };
 		F8A11735271DACD000723D3A /* ApolloGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLSpec.swift; sourceTree = "<group>"; };
@@ -106,6 +112,9 @@
 			isa = PBXGroup;
 			children = (
 				F8BFF72C270AD02C00AE4828 /* DateTimeInterval.swift */,
+				F8113EAA2723F51500328EF9 /* Campaign.swift */,
+				F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */,
+				F8113EB0272438B300328EF9 /* ProductDeal.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -311,15 +320,18 @@
 				F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */,
 				F8D323AB26FF9CA800A594B2 /* GraphQLEntities.swift in Sources */,
 				F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */,
+				F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
 				F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */,
 				F8A1173A271DAFD200723D3A /* ApolloRepository.swift in Sources */,
+				F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */,
 				F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */,
 				F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */,
 				F8C4086E270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift in Sources */,
 				F8BFF72D270AD02C00AE4828 /* DateTimeInterval.swift in Sources */,
 				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
 				F8A11737271DACD000723D3A /* ApolloGraphQLSpec.swift in Sources */,
+				F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */,
 				F8A11738271DACD000723D3A /* ApolloGraphQLApiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

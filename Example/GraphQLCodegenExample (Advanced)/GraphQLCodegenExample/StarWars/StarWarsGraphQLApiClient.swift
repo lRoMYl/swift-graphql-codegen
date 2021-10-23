@@ -611,3 +611,125 @@ extension SubscriptionStarWarsModel {
     )
   }
 }
+
+// MARK: - ResponseSelectionDecoder
+
+class DroidSelectionDecoder {
+  private(set) var selections = Set<DroidSelection>()
+  private let response: DroidStarWarsModel
+
+  init(response: DroidStarWarsModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw StarWarsApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func name() throws -> String {
+    selections.insert(.name)
+
+    guard let value = response.name else {
+      throw StarWarsApiClientError.missingData(context: "name not found")
+    }
+
+    return value
+  }
+
+  func primaryFunction() throws -> String {
+    selections.insert(.primaryFunction)
+
+    guard let value = response.primaryFunction else {
+      throw StarWarsApiClientError.missingData(context: "primaryFunction not found")
+    }
+
+    return value
+  }
+
+  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
+    selections.insert(.appearsIn)
+
+    guard let values = response.appearsIn else {
+      throw StarWarsApiClientError.missingData(context: "appearsIn not found")
+    }
+
+    return try values.compactMap { value in
+      try mapper(value)
+    }
+  }
+}
+
+class HumanSelectionDecoder {
+  private(set) var selections = Set<HumanSelection>()
+  private let response: HumanStarWarsModel
+
+  init(response: HumanStarWarsModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw StarWarsApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func name() throws -> String {
+    selections.insert(.name)
+
+    guard let value = response.name else {
+      throw StarWarsApiClientError.missingData(context: "name not found")
+    }
+
+    return value
+  }
+
+  func homePlanet() throws -> String? {
+    selections.insert(.homePlanet)
+
+    guard let value = response.homePlanet else {
+      throw StarWarsApiClientError.missingData(context: "homePlanet not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
+    selections.insert(.appearsIn)
+
+    guard let values = response.appearsIn else {
+      throw StarWarsApiClientError.missingData(context: "appearsIn not found")
+    }
+
+    return try values.compactMap { value in
+      try mapper(value)
+    }
+  }
+
+  func infoUrl() throws -> String? {
+    selections.insert(.infoUrl)
+
+    guard let value = response.infoUrl else {
+      throw StarWarsApiClientError.missingData(context: "infoURL not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+}

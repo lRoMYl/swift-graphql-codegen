@@ -17,6 +17,8 @@ public protocol EntityNameProviding {
   func name(for namedType: NamedType) throws -> String
   func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
 
+  func genericName(for typeRef: OutputTypeRef, identifier: String) throws -> String
+
   func fragmentName(for outputRef: OutputRef) throws -> String?
   func fragmentName(for objectType: ObjectType) throws -> String
   func fragmentName(for interfaceType: InterfaceType) throws -> String
@@ -29,6 +31,7 @@ public protocol EntityNameProviding {
   func responseDataName(with operation: GraphQLAST.Operation) throws -> String
 
   func selectionName(for objectType: ObjectType) throws -> String
+  func selectionName(for outputRef: OutputRef) throws -> String?
   func selectionName(for field: Field) throws -> String?
 
   func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String

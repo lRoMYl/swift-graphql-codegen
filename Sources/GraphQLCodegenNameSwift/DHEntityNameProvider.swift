@@ -40,6 +40,10 @@ public final class DHEntityNameProvider: EntityNameProviding {
     try outputRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
   }
 
+  public func genericName(for typeRef: OutputTypeRef, identifier: String) throws -> String {
+    try typeRef.genericType(scalarMap: scalarMap, entityNameMap: entityNameMap, identifier: identifier)
+  }
+
   public func name(for namedType: NamedType) throws -> String {
     switch namedType {
     case let .scalar(refType):
@@ -113,6 +117,15 @@ public final class DHEntityNameProvider: EntityNameProviding {
 
   public func selectionName(for objectType: ObjectType) throws -> String {
     "\(objectType.name.pascalCase)\(Constants.selectionPostFix)"
+  }
+
+  public func selectionName(for outputRef: OutputRef) throws -> String? {
+    switch outputRef {
+    case let .object(name):
+      return "\(name.pascalCase)\(Constants.selectionPostFix)"
+    case .enum, .interface, .scalar, .union:
+      return nil
+    }
   }
 
   public func selectionName(for field: Field) throws -> String? {

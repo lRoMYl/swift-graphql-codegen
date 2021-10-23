@@ -8,7 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-extension Field {
+public extension Field {
   func nestedFields(
     objects: [ObjectType],
     scalarMap: ScalarMap,
@@ -23,9 +23,9 @@ extension Field {
     var fields = [Field]()
 
     switch returnObjectType.kind {
-    case .object, .interface:
+    case .object, .interface, .union:
       fields.append(self)
-    case .enumeration, .inputObject, .scalar, .union:
+    case .enumeration, .inputObject, .scalar:
       break
     }
 

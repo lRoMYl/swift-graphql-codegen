@@ -912,7 +912,7 @@ enum HumanSelection: String, GraphQLSelection {
   case appearsIn
   case homePlanet
   case id
-  case infoURL
+  case infoUrl = "infoURL"
   case name
 }
 

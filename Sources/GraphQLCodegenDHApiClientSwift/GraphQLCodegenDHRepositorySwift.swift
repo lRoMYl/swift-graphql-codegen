@@ -49,6 +49,11 @@ public struct GraphQLCodegenDHApiClientSwift {
       ),
       SelectionMockGenerator(
         entityNameProvider: entityNameProvider
+      ),
+      SelectionDecoderGenerator(
+        entityNameProvider: entityNameProvider,
+        scalarMap: self.scalarMap,
+        entityNameMap: self.entityNameMap
       )
     ]
   }

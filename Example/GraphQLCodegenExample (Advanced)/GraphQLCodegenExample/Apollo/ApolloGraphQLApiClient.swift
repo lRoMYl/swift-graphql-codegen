@@ -569,3 +569,322 @@ extension SubscriptionApolloModel {
     )
   }
 }
+
+// MARK: - ResponseSelectionDecoder
+
+class LaunchConnectionSelectionDecoder {
+  private(set) var selections = Set<LaunchConnectionSelection>()
+  private let response: LaunchConnectionApolloModel
+
+  init(response: LaunchConnectionApolloModel) {
+    self.response = response
+  }
+
+  func cursor() throws -> String {
+    selections.insert(.cursor)
+
+    guard let value = response.cursor else {
+      throw ApolloApiClientError.missingData(context: "cursor not found")
+    }
+
+    return value
+  }
+
+  func hasMore() throws -> Bool {
+    selections.insert(.hasMore)
+
+    guard let value = response.hasMore else {
+      throw ApolloApiClientError.missingData(context: "hasMore not found")
+    }
+
+    return value
+  }
+
+  func launches<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
+    selections.insert(.launches)
+
+    guard let values = response.launches else {
+      throw ApolloApiClientError.missingData(context: "launches not found")
+    }
+
+    return try values.compactMap { value in
+      if let value = value {
+        let decoder = LaunchSelectionDecoder(response: value)
+        return try mapper(decoder)
+      } else {
+        return nil
+      }
+    }
+  }
+}
+
+class LaunchSelectionDecoder {
+  private(set) var selections = Set<LaunchSelection>()
+  private let response: LaunchApolloModel
+
+  init(response: LaunchApolloModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw ApolloApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func site() throws -> String? {
+    selections.insert(.site)
+
+    guard let value = response.site else {
+      throw ApolloApiClientError.missingData(context: "site not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func mission<T>(mapper: (MissionSelectionDecoder) throws -> T) throws -> T? {
+    selections.insert(.mission)
+
+    guard let value = response.mission else {
+      throw ApolloApiClientError.missingData(context: "mission not found")
+    }
+
+    if let value = value {
+      let decoder = MissionSelectionDecoder(response: value)
+      return try mapper(decoder)
+    } else {
+      return nil
+    }
+  }
+
+  func rocket<T>(mapper: (RocketSelectionDecoder) throws -> T) throws -> T? {
+    selections.insert(.rocket)
+
+    guard let value = response.rocket else {
+      throw ApolloApiClientError.missingData(context: "rocket not found")
+    }
+
+    if let value = value {
+      let decoder = RocketSelectionDecoder(response: value)
+      return try mapper(decoder)
+    } else {
+      return nil
+    }
+  }
+
+  func isBooked() throws -> Bool {
+    selections.insert(.isBooked)
+
+    guard let value = response.isBooked else {
+      throw ApolloApiClientError.missingData(context: "isBooked not found")
+    }
+
+    return value
+  }
+}
+
+class MissionSelectionDecoder {
+  private(set) var selections = Set<MissionSelection>()
+  private let response: MissionApolloModel
+
+  init(response: MissionApolloModel) {
+    self.response = response
+  }
+
+  func name() throws -> String? {
+    selections.insert(.name)
+
+    guard let value = response.name else {
+      throw ApolloApiClientError.missingData(context: "name not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func missionPatch() throws -> String? {
+    selections.insert(.missionPatch)
+
+    guard let value = response.missionPatch else {
+      throw ApolloApiClientError.missingData(context: "missionPatch not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+}
+
+class RocketSelectionDecoder {
+  private(set) var selections = Set<RocketSelection>()
+  private let response: RocketApolloModel
+
+  init(response: RocketApolloModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw ApolloApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func name() throws -> String? {
+    selections.insert(.name)
+
+    guard let value = response.name else {
+      throw ApolloApiClientError.missingData(context: "name not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func type() throws -> String? {
+    selections.insert(.type)
+
+    guard let value = response.type else {
+      throw ApolloApiClientError.missingData(context: "type not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+}
+
+class UserSelectionDecoder {
+  private(set) var selections = Set<UserSelection>()
+  private let response: UserApolloModel
+
+  init(response: UserApolloModel) {
+    self.response = response
+  }
+
+  func id() throws -> String {
+    selections.insert(.id)
+
+    guard let value = response.id else {
+      throw ApolloApiClientError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func email() throws -> String {
+    selections.insert(.email)
+
+    guard let value = response.email else {
+      throw ApolloApiClientError.missingData(context: "email not found")
+    }
+
+    return value
+  }
+
+  func profileImage() throws -> String? {
+    selections.insert(.profileImage)
+
+    guard let value = response.profileImage else {
+      throw ApolloApiClientError.missingData(context: "profileImage not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
+    selections.insert(.trips)
+
+    guard let values = response.trips else {
+      throw ApolloApiClientError.missingData(context: "trips not found")
+    }
+
+    return try values.compactMap { value in
+      if let value = value {
+        let decoder = LaunchSelectionDecoder(response: value)
+        return try mapper(decoder)
+      } else {
+        return nil
+      }
+    }
+  }
+}
+
+class TripUpdateResponseSelectionDecoder {
+  private(set) var selections = Set<TripUpdateResponseSelection>()
+  private let response: TripUpdateResponseApolloModel
+
+  init(response: TripUpdateResponseApolloModel) {
+    self.response = response
+  }
+
+  func success() throws -> Bool {
+    selections.insert(.success)
+
+    guard let value = response.success else {
+      throw ApolloApiClientError.missingData(context: "success not found")
+    }
+
+    return value
+  }
+
+  func message() throws -> String? {
+    selections.insert(.message)
+
+    guard let value = response.message else {
+      throw ApolloApiClientError.missingData(context: "message not found")
+    }
+
+    if let value = value {
+      return value
+    } else {
+      return nil
+    }
+  }
+
+  func launches<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?]? {
+    selections.insert(.launches)
+
+    guard let values = response.launches else {
+      throw ApolloApiClientError.missingData(context: "launches not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = LaunchSelectionDecoder(response: value)
+          return try mapper(decoder)
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
+}
