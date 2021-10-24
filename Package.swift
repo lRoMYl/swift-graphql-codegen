@@ -42,10 +42,15 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
+      name: "GraphQLCodegenMapperSwift",
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
+    ),
+    .target(
       name: "GraphQLCodegenCLI",
       dependencies: [
         "GraphQLCodegenSpecSwift",
         "GraphQLCodegenDHApiClientSwift",
+        "GraphQLCodegenMapperSwift",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser")
       ]

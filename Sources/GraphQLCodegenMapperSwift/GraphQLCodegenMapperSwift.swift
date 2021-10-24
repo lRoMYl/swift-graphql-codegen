@@ -1,8 +1,8 @@
 //
 //  File.swift
+//  
 //
-//
-//  Created by Romy Cheah on 24/9/21.
+//  Created by Romy Cheah on 24/10/21.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 import SwiftFormat
 
-enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
+enum GraphQLCodegenMapperError: Error, LocalizedError {
   case formatError(context: String)
 
   var errorDescription: String? {
@@ -22,7 +22,7 @@ enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
   }
 }
 
-public struct GraphQLCodegenDHApiClientSwift {
+public struct GraphQLCodegenMapperSwift {
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
@@ -37,15 +37,21 @@ public struct GraphQLCodegenDHApiClientSwift {
 
     self.generators = [
       HeaderGenerator(),
-      ApiClientGenerator(
+      MapperErrorGenerator(
         entityNameMap: self.entityNameMap,
-        scalarMap: self.scalarMap,
-        entityNameProvider: self.entityNameProvider
-      ),
-      ResourceParametersGenerator(
-        entityNameMap: self.entityNameMap,
-        scalarMap: self.scalarMap,
         entityNameProvider: entityNameProvider
+      ),
+      SelectionMockGenerator(
+        entityNameProvider: entityNameProvider
+      ),
+      SelectionDecoderGenerator(
+        entityNameProvider: entityNameProvider,
+        scalarMap: self.scalarMap,
+        entityNameMap: self.entityNameMap
+      ),
+      RequestMapperGenerator(
+        entityNameProvider: entityNameProvider,
+        scalarMap: self.scalarMap
       )
     ]
   }
@@ -58,14 +64,14 @@ public struct GraphQLCodegenDHApiClientSwift {
     do {
       formattedCode = try code.format()
     } catch {
-      throw GraphQLCodegenDHApiClientSwiftError
-        .formatError(
-          context: """
+      throw GraphQLCodegenMapperError
+      .formatError(
+        context: """
           \(error)
           Raw text:
           \(code)
           """
-        )
+      )
     }
 
     return formattedCode

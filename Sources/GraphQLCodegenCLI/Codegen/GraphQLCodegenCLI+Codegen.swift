@@ -37,6 +37,7 @@ extension GraphQLCodegenCLI {
       help: """
       Define the codegeneration target
       - dh-apiclient: Generate ApiClient specific to DH specification
+      - mapper: Generate optional mapper classes
       - specification: Generate GraphQL specification
       - introspection: Generate Abstract Syntax Tree from the graphql schema url, local schema source is not supported
       - entity: Generate GraphQL entities/base classes
@@ -121,6 +122,10 @@ private extension GraphQLCodegenCLI.Codegen {
     case .dhApiClient:
       let schema = try fetchSchema(with: config)
       let generatedCode = try codegen.repositoryCode(schema: schema)
+      generatedCodeData = generatedCode.data(using: .utf8)
+    case .mapper:
+      let schema = try fetchSchema(with: config)
+      let generatedCode = try codegen.mapperCode(schema: schema)
       generatedCodeData = generatedCode.data(using: .utf8)
     case .specification:
       let schema = try fetchSchema(with: config)

@@ -18,8 +18,16 @@ public enum SchemaSource: String, ExpressibleByArgument {
 }
 
 public enum CodegenTarget: String, ExpressibleByArgument {
+  /**
+   implementation of proprietary DH flavor API Client
+   */
   case dhApiClient = "dh-apiclient"
-  /*
+  /**
+   Convenient mapper classes to ensure build-time safe mapping from network models to application models by
+   automatically infering the GraphQL query selections based on the fields that are accesed in mapper
+   */
+  case mapper
+  /**
    Network models such as request and response inferred from the schema
    */
   case specification
@@ -29,7 +37,7 @@ public enum CodegenTarget: String, ExpressibleByArgument {
    - Only remote url is supported when `introspection` action option is provided
    */
   case introspection
-  /*
+  /**
    Base/Default entity class required for the network models
    */
   case entity

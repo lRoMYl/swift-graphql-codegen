@@ -50,7 +50,10 @@ extension GraphQLCodegenCLI {
     var apiClientOutput: String = "ApiClient.generated.swift"
 
     @Option
-    var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient]
+    var mapperOutput: String = "Mappers.generated.swift"
+
+    @Option
+    var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient, .mapper]
 
     @Option(help: "Path and name of the config file")
     var configPath: String?
@@ -113,6 +116,15 @@ extension GraphQLCodegenCLI {
         ]
 
         GraphQLCodegenCLI.Codegen.main(specificiationArguments)
+      case .mapper:
+        let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
+
+        let mapperArguments = arguments + [
+          "--target", CodegenTarget.mapper.rawValue,
+          "--output", "\(basePath)\(mapperOutput)"
+        ]
+
+        GraphQLCodegenCLI.Codegen.main(mapperArguments)
       }
     }
   }

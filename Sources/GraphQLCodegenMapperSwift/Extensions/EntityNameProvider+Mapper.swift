@@ -2,12 +2,13 @@
 //  File.swift
 //  
 //
-//  Created by Romy Cheah on 23/10/21.
+//  Created by Romy Cheah on 24/10/21.
 //
 
+import Foundation
 import GraphQLAST
-import GraphQLCodegenUtil
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 extension EntityNameProviding {
   func selectionDecoderName(type: ObjectType) throws -> String {
@@ -27,5 +28,9 @@ extension EntityNameProviding {
     guard try field.returnObjectType(schemaMap: schemaMap) != nil else { return nil }
 
     return "\(try responseDataName(for: field, with: operation))SelectionDecoder"
+  }
+
+  func mapperErrorName(apiClientPrefix: String) -> String {
+    "\(apiClientPrefix.pascalCase)MapperError"
   }
 }

@@ -20,7 +20,7 @@ struct SelectionDecoderGenerator: Generating {
   private let entityNameMap: EntityNameMap
 
   private let genericIdentifier = "T"
-  private let apiClientErrorName: String
+  private let mapperErrorName: String
 
   private enum Variables {
     static let populateSelections = "populateSelections"
@@ -35,7 +35,7 @@ struct SelectionDecoderGenerator: Generating {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
 
-    self.apiClientErrorName = entityNameMap.apiClientErrorName(apiClientPrefix: entityNameMap.apiClientPrefix)
+    self.mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: entityNameMap.apiClientPrefix)
   }
 
   func code(schema: Schema) throws -> String {
@@ -86,6 +86,10 @@ struct SelectionDecoderGenerator: Generating {
         schemaMap: schemaMap
       )
     }.lines
+
+    guard !(operationCode.isEmpty && objectCode.isEmpty) else {
+      return ""
+    }
 
     return [
       "// MARK: - SelectionDecoder",
@@ -214,7 +218,7 @@ private extension SelectionDecoderGenerator {
 
     let result = """
     guard let \(valueName) = response.\(name) else {
-      throw \(apiClientErrorName).missingData(context: "\(encodingKey) not found")
+      throw \(mapperErrorName).missingData(context: "\(encodingKey) not found")
     }
     """
 

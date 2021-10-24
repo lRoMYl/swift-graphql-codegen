@@ -39,6 +39,10 @@ struct SelectionMockGenerator: Generating {
       try selectionMock(type: objectType)
     }.lines
 
+    guard !(enums.isEmpty && interfaces.isEmpty && unions.isEmpty && objects.isEmpty) else {
+      return ""
+    }
+
     let codes = [
       comment,
       enums,
