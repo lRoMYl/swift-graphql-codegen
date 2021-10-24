@@ -6,14 +6,12 @@
 //
 
 import GraphQLAST
-import GraphQLCodegenNameSwift
-import GraphQLCodegenUtil
 
 extension UnionType: Structure {
-  var fields: [Field] { [] }
+  public var fields: [Field] { [] }
 }
 
-extension UnionType {
+public extension UnionType {
   func possibleObjectTypes(objectTypeMap: ObjectTypeMap) throws -> [ObjectType] {
     try possibleTypes.compactMap {
       try $0.objectType(objectTypeMap: objectTypeMap)

@@ -7,45 +7,41 @@
 
 import Foundation
 
-public typealias SelectionMapResponse = [String: SelectionItemMapResponse]
+public typealias SelectionMapResponse = [String: Set<String>]
 
 public extension SelectionMapResponse {
   func merging(other: SelectionMapResponse) -> SelectionMapResponse {
     merging(
       other,
-      uniquingKeysWith: { $0.merging(other: $1) }
+      uniquingKeysWith: {
+        $0.union($1)
+      }
     )
   }
 }
 
 public struct SelectionItemMapResponse: Decodable {
-  public let required: Set<String>
-  public let selectable: Set<String>
+  public let fields: Set<String>
 
   enum CodingKeys: String, CodingKey {
-    case required
-    case selectable
+    case fields
   }
 
   public init(
-    required: Set<String>,
-    selectable: Set<String>
+    fields: Set<String>
   ) {
-    self.required = required
-    self.selectable = selectable
+    self.fields = fields
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
-    required = try container.decodeIfPresent(Set<String>.self, forKey: .required) ?? []
-    selectable = try container.decodeIfPresent(Set<String>.self, forKey: .selectable) ?? []
+    fields = try container.decodeIfPresent(Set<String>.self, forKey: .fields) ?? []
   }
 
   public func merging(other: SelectionItemMapResponse) -> SelectionItemMapResponse {
     SelectionItemMapResponse(
-      required: required.union(other.required),
-      selectable: selectable.union(other.selectable)
+      fields: fields.union(other.fields)
     )
   }
 }

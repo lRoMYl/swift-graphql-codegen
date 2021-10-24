@@ -6,12 +6,10 @@
 //
 
 import GraphQLAST
-import GraphQLCodegenNameSwift
-import GraphQLCodegenUtil
 
 extension InterfaceType: Structure {}
 
-extension InterfaceType {
+public extension InterfaceType {
   func possibleObjectTypes(objectTypeMap: ObjectTypeMap) throws -> [ObjectType] {
     try possibleTypes.compactMap {
       try $0.objectType(objectTypeMap: objectTypeMap)

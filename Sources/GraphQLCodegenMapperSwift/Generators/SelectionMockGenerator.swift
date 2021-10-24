@@ -7,6 +7,7 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
@@ -15,9 +16,11 @@ enum SelectionMockGeneratorError: Error {
 }
 
 struct SelectionMockGenerator: Generating {
+  private let selectionMap: SelectionMap?
   private let entityNameProvider: EntityNameProviding
 
-  init(entityNameProvider: EntityNameProviding) {
+  init(selectionMap: SelectionMap?, entityNameProvider: EntityNameProviding) {
+    self.selectionMap = selectionMap
     self.entityNameProvider = entityNameProvider
   }
 
@@ -94,7 +97,7 @@ private extension SelectionMockGenerator {
 
   func selectionMock(type: ObjectType) throws -> String {
     let name = try entityNameProvider.name(for: type)
-    let sortedFields = type.fields.sorted()
+    let sortedFields = type.selectableFields(selectionMap: selectionMap).sorted()
 
     let memberwiseIntializer = try sortedFields.map {
       "\($0.name.camelCase): \(try mockDeclaration(typeRef: $0.type))"

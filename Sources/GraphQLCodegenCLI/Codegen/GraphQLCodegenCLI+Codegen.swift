@@ -77,7 +77,6 @@ extension GraphQLCodegenCLI {
       let entityNameMap = self.entityNameMap(config: config)
       let selectionMap = self.selectionMap(config: config)
 
-      try selectionMap?.validate()
       try entityNameMap.validate()
 
       switch platform {

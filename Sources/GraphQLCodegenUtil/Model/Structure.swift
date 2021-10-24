@@ -7,7 +7,7 @@
 
 import GraphQLAST
 
-protocol Structure: NamedTypeProtocol {
+public protocol Structure: NamedTypeProtocol {
   var kind: NamedTypeKind { get }
   var name: String { get }
   var fields: [Field] { get }

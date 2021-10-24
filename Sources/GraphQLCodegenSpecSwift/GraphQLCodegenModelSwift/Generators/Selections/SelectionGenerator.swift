@@ -63,15 +63,14 @@ extension SelectionGenerator {
   func selectionDeclaration(objectType: ObjectType, schemaMap _: SchemaMap) throws -> String {
     let selectionName = try entityNameProvider.selectionName(for: objectType)
     let selectableFields = objectType.selectableFields(selectionMap: selectionMap)
-    let requiredFields = objectType.requiredFields(selectionMap: selectionMap)
-    let allFields = (selectableFields + requiredFields).sorted(by: { $0.name < $1.name })
-    let fieldsIsEmpty = allFields.isEmpty
+      .sorted(by: { $0.name < $1.name })
+    let fieldsIsEmpty = selectableFields.isEmpty
 
     guard !objectType.isOperation, !fieldsIsEmpty else {
       return ""
     }
 
-    let enumCasesCode = try allFields.map {
+    let enumCasesCode = try selectableFields.map {
       try enumCaseDeclaration(name: $0.name, outputRef: $0.type, scalarMap: scalarMap)
     }.lines
 

@@ -70,10 +70,8 @@ extension MutationStarWarsModel {
 extension DroidStarWarsModel {
   static func selectionMock() -> Self {
     DroidStarWarsModel(
-      appearsIn: [.selectionMock()],
       id: .selectionMock(),
-      name: .selectionMock(),
-      primaryFunction: .selectionMock()
+      name: .selectionMock()
     )
   }
 }
@@ -81,11 +79,7 @@ extension DroidStarWarsModel {
 extension HumanStarWarsModel {
   static func selectionMock() -> Self {
     HumanStarWarsModel(
-      appearsIn: [.selectionMock()],
-      id: .selectionMock(),
-      name: .selectionMock(),
-      homePlanet: .selectionMock(),
-      infoUrl: .selectionMock()
+      id: .selectionMock()
     )
   }
 }
@@ -138,64 +132,6 @@ class HumanQueryResponseSelectionDecoder {
 
     return value
   }
-
-  func name() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.name)
-    }
-
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
-
-    return value
-  }
-
-  func homePlanet() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.homePlanet)
-    }
-
-    guard let value = response.homePlanet else {
-      throw StarWarsMapperError.missingData(context: "homePlanet not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      humanSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
-
-  func infoUrl() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.infoUrl)
-    }
-
-    guard let value = response.infoUrl else {
-      throw StarWarsMapperError.missingData(context: "infoURL not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
 }
 
 class DroidQueryResponseSelectionDecoder {
@@ -231,32 +167,6 @@ class DroidQueryResponseSelectionDecoder {
 
     return value
   }
-
-  func primaryFunction() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.primaryFunction)
-    }
-
-    guard let value = response.primaryFunction else {
-      throw StarWarsMapperError.missingData(context: "primaryFunction not found")
-    }
-
-    return value
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      droidSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
 }
 
 class LukeQueryResponseSelectionDecoder {
@@ -280,64 +190,6 @@ class LukeQueryResponseSelectionDecoder {
 
     return value
   }
-
-  func name() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.name)
-    }
-
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
-
-    return value
-  }
-
-  func homePlanet() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.homePlanet)
-    }
-
-    guard let value = response.homePlanet else {
-      throw StarWarsMapperError.missingData(context: "homePlanet not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      humanSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
-
-  func infoUrl() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.infoUrl)
-    }
-
-    guard let value = response.infoUrl else {
-      throw StarWarsMapperError.missingData(context: "infoURL not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
 }
 
 class HumansQueryResponseSelectionDecoder {
@@ -360,64 +212,6 @@ class HumansQueryResponseSelectionDecoder {
     }
 
     return value
-  }
-
-  func name() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.name)
-    }
-
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
-
-    return value
-  }
-
-  func homePlanet() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.homePlanet)
-    }
-
-    guard let value = response.homePlanet else {
-      throw StarWarsMapperError.missingData(context: "homePlanet not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      humanSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
-
-  func infoUrl() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.infoUrl)
-    }
-
-    guard let value = response.infoUrl else {
-      throw StarWarsMapperError.missingData(context: "infoURL not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
   }
 }
 
@@ -454,32 +248,6 @@ class DroidsQueryResponseSelectionDecoder {
 
     return value
   }
-
-  func primaryFunction() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.primaryFunction)
-    }
-
-    guard let value = response.primaryFunction else {
-      throw StarWarsMapperError.missingData(context: "primaryFunction not found")
-    }
-
-    return value
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      droidSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
 }
 
 class DroidSelectionDecoder {
@@ -515,32 +283,6 @@ class DroidSelectionDecoder {
 
     return value
   }
-
-  func primaryFunction() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.primaryFunction)
-    }
-
-    guard let value = response.primaryFunction else {
-      throw StarWarsMapperError.missingData(context: "primaryFunction not found")
-    }
-
-    return value
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      droidSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
 }
 
 class HumanSelectionDecoder {
@@ -563,64 +305,6 @@ class HumanSelectionDecoder {
     }
 
     return value
-  }
-
-  func name() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.name)
-    }
-
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
-
-    return value
-  }
-
-  func homePlanet() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.homePlanet)
-    }
-
-    guard let value = response.homePlanet else {
-      throw StarWarsMapperError.missingData(context: "homePlanet not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
-  }
-
-  func appearsIn<T>(mapper: (EpisodeStarWarsEnumModel) throws -> T) throws -> [T] {
-    if populateSelections {
-      humanSelections.insert(.appearsIn)
-    }
-
-    guard let values = response.appearsIn else {
-      throw StarWarsMapperError.missingData(context: "appearsIn not found")
-    }
-
-    return try values.compactMap { value in
-      try mapper(value)
-    }
-  }
-
-  func infoUrl() throws -> String? {
-    if populateSelections {
-      humanSelections.insert(.infoUrl)
-    }
-
-    guard let value = response.infoUrl else {
-      throw StarWarsMapperError.missingData(context: "infoURL not found")
-    }
-
-    if let value = value {
-      return value
-    } else {
-      return nil
-    }
   }
 }
 

@@ -18,6 +18,7 @@ struct SelectionDecoderGenerator: Generating {
   private let entityNameProvider: EntityNameProviding
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let selectionMap: SelectionMap?
 
   private let genericIdentifier = "T"
   private let mapperErrorName: String
@@ -29,11 +30,13 @@ struct SelectionDecoderGenerator: Generating {
   init(
     entityNameProvider: EntityNameProviding,
     scalarMap: ScalarMap,
-    entityNameMap: EntityNameMap
+    entityNameMap: EntityNameMap,
+    selectionMap: SelectionMap?
   ) {
     self.entityNameProvider = entityNameProvider
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.selectionMap = selectionMap
 
     self.mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: entityNameMap.apiClientPrefix)
   }
@@ -121,7 +124,7 @@ private extension SelectionDecoderGenerator {
         """
     }.lines
 
-    let fieldCodes = try objectType?.fields.compactMap { field in
+    let fieldCodes = try objectType?.selectableFields(selectionMap: selectionMap).compactMap { field in
       guard let objectType = objectType else { return nil }
       return try code(objectType: objectType, field: field, schemaMap: schemaMap)
     }.joined(separator: "\n\n") ?? ""

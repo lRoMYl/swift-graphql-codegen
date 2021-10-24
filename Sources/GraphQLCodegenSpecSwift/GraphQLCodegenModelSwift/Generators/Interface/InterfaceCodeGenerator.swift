@@ -57,6 +57,9 @@ extension InterfaceCodeGenerator {
     let possibleObjectTypes: [ObjectType] = try interface.possibleObjectTypes(
       objectTypeMap: objectTypeMap
     )
+    let codingKeys = interface.selectableFields(selectionMap: selectionMap)
+      .map { "case \($0.name.camelCase)" }
+      .lines
 
     return """
     enum \(try entityNameProvider.name(for: interface)): Codable {
@@ -68,7 +71,7 @@ extension InterfaceCodeGenerator {
 
       private enum CodingKeys: String, CodingKey {
         case __typename
-        \(interface.fields.map { "case \($0.name.camelCase)" }.lines)
+        \(codingKeys)
       }
 
       init(from decoder: Decoder) throws {

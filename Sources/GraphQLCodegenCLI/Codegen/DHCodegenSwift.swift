@@ -68,6 +68,7 @@ struct DHCodegenSwift {
     let generator = try GraphQLCodegenMapperSwift(
       entityNameMap: entityNameMap,
       scalarMap: scalarMap,
+      selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
     let generatedCode = try generator.code(schema: schema)

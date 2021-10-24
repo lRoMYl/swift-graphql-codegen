@@ -25,14 +25,21 @@ enum GraphQLCodegenMapperError: Error, LocalizedError {
 public struct GraphQLCodegenMapperSwift {
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
   private let entityNameProvider: EntityNameProviding
 
   /// Generators
   private let generators: [Generating]
 
-  public init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) throws {
+  public init(
+    entityNameMap: EntityNameMap,
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?,
+    entityNameProvider: EntityNameProviding
+  ) throws {
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
     self.entityNameProvider = entityNameProvider
 
     self.generators = [
@@ -42,12 +49,14 @@ public struct GraphQLCodegenMapperSwift {
         entityNameProvider: entityNameProvider
       ),
       SelectionMockGenerator(
+        selectionMap: self.selectionMap,
         entityNameProvider: entityNameProvider
       ),
       SelectionDecoderGenerator(
         entityNameProvider: entityNameProvider,
         scalarMap: self.scalarMap,
-        entityNameMap: self.entityNameMap
+        entityNameMap: self.entityNameMap,
+        selectionMap: self.selectionMap
       ),
       RequestMapperGenerator(
         entityNameProvider: entityNameProvider,

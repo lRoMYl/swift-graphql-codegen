@@ -28,7 +28,7 @@ public extension ConfigResponse {
     let mergedSelectionMap = selectionMap?.merging(
       configResponse.selectionMap ?? [:],
       uniquingKeysWith: {
-        $0.merging(other: $1)
+        $0.union($1)
       }
     ) ?? configResponse.selectionMap
     let mergedEntityNameMap = entityNameMap?.merging(

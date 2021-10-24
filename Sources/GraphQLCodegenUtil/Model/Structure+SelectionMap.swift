@@ -9,7 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 
-extension Field {
+public extension Field {
   var isOptional: Bool {
     switch type {
     case .nonNull:
@@ -20,13 +20,14 @@ extension Field {
   }
 }
 
-extension Structure {
-  func isRequired(field: Field, selectionMap: SelectionMap?) -> Bool {
-    return false
-  }
-
+public extension Structure {
   func isSelectable(field: Field, selectionMap: SelectionMap?) -> Bool {
-    return true
+    guard
+      let selectionMap = selectionMap,
+      let selectableFields = selectionMap.first(where: { key, _ in key == name })?.value
+    else { return true }
+
+    return selectableFields.contains(field.name)
   }
 
   /*
@@ -36,12 +37,6 @@ extension Structure {
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
       isSelectable(field: field, selectionMap: selectionMap)
-    }.sorted()
-  }
-
-  func requiredFields(selectionMap: SelectionMap?) -> [Field] {
-    fields.filter { field in
-      isRequired(field: field, selectionMap: selectionMap)
     }.sorted()
   }
 }

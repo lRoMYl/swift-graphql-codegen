@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum SelectionEntityNameProviderError: Error, LocalizedError {
   case missingStructure

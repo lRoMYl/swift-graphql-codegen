@@ -101,44 +101,25 @@ struct MutationStarWarsModel: Codable {
 }
 
 struct DroidStarWarsModel: Codable {
-  let appearsIn: Optional<[EpisodeStarWarsEnumModel]>
-
   let id: Optional<String>
 
   let name: Optional<String>
 
-  let primaryFunction: Optional<String>
-
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case appearsIn
     case id
     case name
-    case primaryFunction
   }
 }
 
 struct HumanStarWarsModel: Codable {
-  let appearsIn: Optional<[EpisodeStarWarsEnumModel]>
-
   let id: Optional<String>
-
-  let name: Optional<String>
-
-  /// The home planet of the human, or null if unknown.
-  let homePlanet: Optional<String?>
-
-  let infoUrl: Optional<String?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case appearsIn
     case id
-    case name
-    case homePlanet
-    case infoUrl = "infoURL"
   }
 }
 
@@ -264,12 +245,8 @@ enum CharacterUnionStarWarsUnionModel: Codable {
 
   private enum CodingKeys: String, CodingKey {
     case __typename
-    case appearsIn
-    case homePlanet
     case id
-    case infoUrl
     case name
-    case primaryFunction
   }
 
   init(from decoder: Decoder) throws {
@@ -896,18 +873,12 @@ struct NumberSubscriptionResponse: Codable {
 // MARK: - GraphQLSelection
 
 enum DroidSelection: String, GraphQLSelection {
-  case appearsIn
   case id
   case name
-  case primaryFunction
 }
 
 enum HumanSelection: String, GraphQLSelection {
-  case appearsIn
-  case homePlanet
   case id
-  case infoUrl = "infoURL"
-  case name
 }
 
 struct StarWarsQuerySelections: GraphQLSelections {

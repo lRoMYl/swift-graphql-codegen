@@ -127,34 +127,6 @@ class CampaignsQueryResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
-    if populateSelections {
-      campaignsSelections.insert(.productDeals)
-    }
-
-    guard let values = response.productDeals else {
-      throw GroceriesMapperError.missingData(context: "productDeals not found")
-    }
-
-    if let values = values {
-      return try values.compactMap { value in
-        if let value = value {
-          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
-          let result = try mapper(decoder)
-
-          dealSelections = decoder.dealSelections
-          productDealSelections = decoder.productDealSelections
-
-          return result
-        } else {
-          return nil
-        }
-      }
-    } else {
-      return nil
-    }
-  }
-
   func campaignAttributes<T>(mapper: (CampaignAttributeSelectionDecoder) throws -> T) throws -> [T?]? {
     if populateSelections {
       campaignsSelections.insert(.campaignAttributes)
@@ -182,6 +154,34 @@ class CampaignsQueryResponseSelectionDecoder {
       return nil
     }
   }
+
+  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
+    if populateSelections {
+      campaignsSelections.insert(.productDeals)
+    }
+
+    guard let values = response.productDeals else {
+      throw GroceriesMapperError.missingData(context: "productDeals not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let result = try mapper(decoder)
+
+          dealSelections = decoder.dealSelections
+          productDealSelections = decoder.productDealSelections
+
+          return result
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
 }
 
 class BenefitSelectionDecoder {
@@ -194,18 +194,6 @@ class BenefitSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func productId() throws -> String {
-    if populateSelections {
-      benefitSelections.insert(.productId)
-    }
-
-    guard let value = response.productId else {
-      throw GroceriesMapperError.missingData(context: "productID not found")
-    }
-
-    return value
-  }
-
   func quantity() throws -> Int {
     if populateSelections {
       benefitSelections.insert(.quantity)
@@ -213,6 +201,18 @@ class BenefitSelectionDecoder {
 
     guard let value = response.quantity else {
       throw GroceriesMapperError.missingData(context: "quantity not found")
+    }
+
+    return value
+  }
+
+  func productId() throws -> String {
+    if populateSelections {
+      benefitSelections.insert(.productId)
+    }
+
+    guard let value = response.productId else {
+      throw GroceriesMapperError.missingData(context: "productID not found")
     }
 
     return value
@@ -230,28 +230,27 @@ class CampaignAttributeSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func id() throws -> String {
+  func benefits<T>(mapper: (BenefitSelectionDecoder) throws -> T) throws -> [T]? {
     if populateSelections {
-      campaignAttributeSelections.insert(.id)
+      campaignAttributeSelections.insert(.benefits)
     }
 
-    guard let value = response.id else {
-      throw GroceriesMapperError.missingData(context: "id not found")
+    guard let values = response.benefits else {
+      throw GroceriesMapperError.missingData(context: "benefits not found")
     }
 
-    return value
-  }
+    if let values = values {
+      return try values.compactMap { value in
+        let decoder = BenefitSelectionDecoder(response: value, populateSelections: populateSelections)
+        let result = try mapper(decoder)
 
-  func redemptionLimit() throws -> Double {
-    if populateSelections {
-      campaignAttributeSelections.insert(.redemptionLimit)
+        benefitSelections = decoder.benefitSelections
+
+        return result
+      }
+    } else {
+      return nil
     }
-
-    guard let value = response.redemptionLimit else {
-      throw GroceriesMapperError.missingData(context: "redemptionLimit not found")
-    }
-
-    return value
   }
 
   func autoApplied() throws -> Bool {
@@ -290,27 +289,28 @@ class CampaignAttributeSelectionDecoder {
     return try mapper(value)
   }
 
-  func benefits<T>(mapper: (BenefitSelectionDecoder) throws -> T) throws -> [T]? {
+  func redemptionLimit() throws -> Double {
     if populateSelections {
-      campaignAttributeSelections.insert(.benefits)
+      campaignAttributeSelections.insert(.redemptionLimit)
     }
 
-    guard let values = response.benefits else {
-      throw GroceriesMapperError.missingData(context: "benefits not found")
+    guard let value = response.redemptionLimit else {
+      throw GroceriesMapperError.missingData(context: "redemptionLimit not found")
     }
 
-    if let values = values {
-      return try values.compactMap { value in
-        let decoder = BenefitSelectionDecoder(response: value, populateSelections: populateSelections)
-        let result = try mapper(decoder)
+    return value
+  }
 
-        benefitSelections = decoder.benefitSelections
-
-        return result
-      }
-    } else {
-      return nil
+  func id() throws -> String {
+    if populateSelections {
+      campaignAttributeSelections.insert(.id)
     }
+
+    guard let value = response.id else {
+      throw GroceriesMapperError.missingData(context: "id not found")
+    }
+
+    return value
   }
 
   func name() throws -> String {
@@ -352,34 +352,6 @@ class CampaignsSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
-    if populateSelections {
-      campaignsSelections.insert(.productDeals)
-    }
-
-    guard let values = response.productDeals else {
-      throw GroceriesMapperError.missingData(context: "productDeals not found")
-    }
-
-    if let values = values {
-      return try values.compactMap { value in
-        if let value = value {
-          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
-          let result = try mapper(decoder)
-
-          dealSelections = decoder.dealSelections
-          productDealSelections = decoder.productDealSelections
-
-          return result
-        } else {
-          return nil
-        }
-      }
-    } else {
-      return nil
-    }
-  }
-
   func campaignAttributes<T>(mapper: (CampaignAttributeSelectionDecoder) throws -> T) throws -> [T?]? {
     if populateSelections {
       campaignsSelections.insert(.campaignAttributes)
@@ -407,6 +379,34 @@ class CampaignsSelectionDecoder {
       return nil
     }
   }
+
+  func productDeals<T>(mapper: (ProductDealSelectionDecoder) throws -> T) throws -> [T?]? {
+    if populateSelections {
+      campaignsSelections.insert(.productDeals)
+    }
+
+    guard let values = response.productDeals else {
+      throw GroceriesMapperError.missingData(context: "productDeals not found")
+    }
+
+    if let values = values {
+      return try values.compactMap { value in
+        if let value = value {
+          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let result = try mapper(decoder)
+
+          dealSelections = decoder.dealSelections
+          productDealSelections = decoder.productDealSelections
+
+          return result
+        } else {
+          return nil
+        }
+      }
+    } else {
+      return nil
+    }
+  }
 }
 
 class DealSelectionDecoder {
@@ -419,18 +419,6 @@ class DealSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func discountTag() throws -> String {
-    if populateSelections {
-      dealSelections.insert(.discountTag)
-    }
-
-    guard let value = response.discountTag else {
-      throw GroceriesMapperError.missingData(context: "discountTag not found")
-    }
-
-    return value
-  }
-
   func triggerQuantity() throws -> Int {
     if populateSelections {
       dealSelections.insert(.triggerQuantity)
@@ -438,6 +426,18 @@ class DealSelectionDecoder {
 
     guard let value = response.triggerQuantity else {
       throw GroceriesMapperError.missingData(context: "triggerQuantity not found")
+    }
+
+    return value
+  }
+
+  func discountTag() throws -> String {
+    if populateSelections {
+      dealSelections.insert(.discountTag)
+    }
+
+    guard let value = response.discountTag else {
+      throw GroceriesMapperError.missingData(context: "discountTag not found")
     }
 
     return value
@@ -467,18 +467,6 @@ class ProductDealSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func productId() throws -> String {
-    if populateSelections {
-      productDealSelections.insert(.productId)
-    }
-
-    guard let value = response.productId else {
-      throw GroceriesMapperError.missingData(context: "productID not found")
-    }
-
-    return value
-  }
-
   func deals<T>(mapper: (DealSelectionDecoder) throws -> T) throws -> [T?]? {
     if populateSelections {
       productDealSelections.insert(.deals)
@@ -504,6 +492,18 @@ class ProductDealSelectionDecoder {
     } else {
       return nil
     }
+  }
+
+  func productId() throws -> String {
+    if populateSelections {
+      productDealSelections.insert(.productId)
+    }
+
+    guard let value = response.productId else {
+      throw GroceriesMapperError.missingData(context: "productID not found")
+    }
+
+    return value
   }
 }
 

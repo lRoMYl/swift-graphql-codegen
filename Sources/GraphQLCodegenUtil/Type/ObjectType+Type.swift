@@ -7,18 +7,16 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
-import GraphQLCodegenNameSwift
-import GraphQLCodegenUtil
 
 extension ObjectType: Structure {
-  var possibleTypes: [ObjectTypeRef] {
+  public var possibleTypes: [ObjectTypeRef] {
     [ObjectTypeRef.named(ObjectRef.object(name))]
   }
 
-  var isCompositeType: Bool { false }
+  public var isCompositeType: Bool { false }
 }
 
-extension ObjectTypeRef {
+public extension ObjectTypeRef {
   func objectType(objectTypeMap: ObjectTypeMap) throws -> ObjectType {
     return try objectTypeMap.value(from: self)
   }
