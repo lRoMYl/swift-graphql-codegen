@@ -11,7 +11,7 @@ import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 import GraphQLCodegenNameSwift
 
-struct RequestMapperGenerator: Generating {
+struct MapperGenerator: Generating {
   private let entityNameProvider: EntityNameProviding
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
@@ -33,8 +33,13 @@ struct RequestMapperGenerator: Generating {
     let codes: String = try schema.operations.compactMap { operation in
       try operation.type.fields.compactMap { field in
         guard
-          let selectionDecoder = try entityNameProvider.selectionDecoderName(field: field, operation: operation, schemaMap: schemaMap)
+          let selectionDecoderName = try entityNameProvider.selectionDecoderName(
+            field: field,
+            operation: operation,
+            schemaMap: schemaMap
+          )
         else { return nil }
+
         let mapperName = try entityNameProvider.mapperName(for: field, operation: operation)
         let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
         let responseName = try entityNameProvider.name(for: field.type.namedType)
@@ -62,7 +67,7 @@ struct RequestMapperGenerator: Generating {
 
         return """
         struct \(mapperName)<T> {
-          typealias \(Constants.mapperBlock) = (\(selectionDecoder)) throws -> T
+          typealias \(Constants.mapperBlock) = (\(selectionDecoderName)) throws -> T
           private let block: \(Constants.mapperBlock)
 
           let selections: \(selectionsName)
@@ -70,7 +75,7 @@ struct RequestMapperGenerator: Generating {
           init(_ block: @escaping \(Constants.mapperBlock)) {
             self.block = block
 
-            let decoder = \(selectionDecoder)(response: .selectionMock(), populateSelections: true)
+            let decoder = \(selectionDecoderName)(response: .selectionMock(), populateSelections: true)
 
             do {
               _ = try block(decoder)
@@ -84,7 +89,7 @@ struct RequestMapperGenerator: Generating {
           }
 
           func map(response: \(responseName)) throws -> T {
-            try block(\(selectionDecoder)(response: response))
+            try block(\(selectionDecoderName)(response: response))
           }
         }
         """

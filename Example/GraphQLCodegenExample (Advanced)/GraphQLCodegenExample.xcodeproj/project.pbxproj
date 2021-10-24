@@ -19,6 +19,7 @@
 		F809FC6027250D770044E518 /* ApolloMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC5F27250D770044E518 /* ApolloMappers.generated.swift */; };
 		F809FC62272522F30044E518 /* Droid.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC61272522F30044E518 /* Droid.swift */; };
 		F809FC64272522FA0044E518 /* Human.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC63272522FA0044E518 /* Human.swift */; };
+		F809FC66272560AE0044E518 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC65272560AE0044E518 /* Character.swift */; };
 		F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAA2723F51500328EF9 /* Campaign.swift */; };
 		F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */; };
 		F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EB0272438B300328EF9 /* ProductDeal.swift */; };
@@ -72,6 +73,7 @@
 		F809FC5F27250D770044E518 /* ApolloMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloMappers.generated.swift; sourceTree = "<group>"; };
 		F809FC61272522F30044E518 /* Droid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droid.swift; sourceTree = "<group>"; };
 		F809FC63272522FA0044E518 /* Human.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Human.swift; sourceTree = "<group>"; };
+		F809FC65272560AE0044E518 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
 		F8113EAA2723F51500328EF9 /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
 		F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignAttribute.swift; sourceTree = "<group>"; };
 		F8113EB0272438B300328EF9 /* ProductDeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDeal.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				F8D05A562724A94A0009A228 /* Deal.swift */,
 				F809FC61272522F30044E518 /* Droid.swift */,
 				F809FC63272522FA0044E518 /* Human.swift */,
+				F809FC65272560AE0044E518 /* Character.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F809FC66272560AE0044E518 /* Character.swift in Sources */,
 				F809FC5E27250D650044E518 /* StarWarsMappers.generated.swift in Sources */,
 				F809FC49272509640044E518 /* ApolloGraphQLSpec.generated.swift in Sources */,
 				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,

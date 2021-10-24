@@ -169,6 +169,32 @@ class DroidQuerySelectionDecoder {
   }
 }
 
+class CharacterQuerySelectionDecoder {
+  private(set) var humanSelections = Set<HumanSelection>()
+  private(set) var droidSelections = Set<DroidSelection>()
+  private let response: CharacterUnionStarWarsUnionModel
+  private let populateSelections: Bool
+
+  init(response: CharacterUnionStarWarsUnionModel, populateSelections: Bool = false) {
+    self.response = response
+    self.populateSelections = populateSelections
+  }
+
+  func characterUnion<T>(
+    droidMapper: (DroidSelectionDecoder) throws -> T,
+    humanMapper: (HumanSelectionDecoder) throws -> T
+  ) throws -> T? {
+    switch response {
+    case let .droid(droid):
+      let decoder = DroidSelectionDecoder(response: droid)
+      return try droidMapper(decoder)
+    case let .human(human):
+      let decoder = HumanSelectionDecoder(response: human)
+      return try humanMapper(decoder)
+    }
+  }
+}
+
 class LukeQuerySelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
   private let response: HumanStarWarsModel
@@ -250,6 +276,32 @@ class DroidsQuerySelectionDecoder {
   }
 }
 
+class CharactersQuerySelectionDecoder {
+  private(set) var droidSelections = Set<DroidSelection>()
+  private(set) var humanSelections = Set<HumanSelection>()
+  private let response: CharacterStarWarsInterfaceModel
+  private let populateSelections: Bool
+
+  init(response: CharacterStarWarsInterfaceModel, populateSelections: Bool = false) {
+    self.response = response
+    self.populateSelections = populateSelections
+  }
+
+  func character<T>(
+    droidMapper: (DroidSelectionDecoder) throws -> T,
+    humanMapper: (HumanSelectionDecoder) throws -> T
+  ) throws -> T? {
+    switch response {
+    case let .droid(droid):
+      let decoder = DroidSelectionDecoder(response: droid)
+      return try droidMapper(decoder)
+    case let .human(human):
+      let decoder = HumanSelectionDecoder(response: human)
+      return try humanMapper(decoder)
+    }
+  }
+}
+
 class DroidSelectionDecoder {
   private(set) var droidSelections = Set<DroidSelection>()
   private let response: DroidStarWarsModel
@@ -308,9 +360,9 @@ class HumanSelectionDecoder {
   }
 }
 
-class CharacterUnionSelectionDecoder {
-  private(set) var droidSelections = Set<DroidSelection>()
+class CharacterUnionUnionSelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
+  private(set) var droidSelections = Set<DroidSelection>()
   private let response: CharacterUnionStarWarsUnionModel
   private let populateSelections: Bool
 
@@ -319,12 +371,22 @@ class CharacterUnionSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func characterUnion<T>(mapper: (CharacterUnionStarWarsUnionModel) throws -> T) throws -> T? {
-    try mapper(response)
+  func characterUnion<T>(
+    droidMapper: (DroidSelectionDecoder) throws -> T,
+    humanMapper: (HumanSelectionDecoder) throws -> T
+  ) throws -> T? {
+    switch response {
+    case let .droid(droid):
+      let decoder = DroidSelectionDecoder(response: droid)
+      return try droidMapper(decoder)
+    case let .human(human):
+      let decoder = HumanSelectionDecoder(response: human)
+      return try humanMapper(decoder)
+    }
   }
 }
 
-class CharacterSelectionDecoder {
+class CharacterInterfaceSelectionDecoder {
   private(set) var droidSelections = Set<DroidSelection>()
   private(set) var humanSelections = Set<HumanSelection>()
   private let response: CharacterStarWarsInterfaceModel
@@ -335,8 +397,18 @@ class CharacterSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func character<T>(mapper: (CharacterStarWarsInterfaceModel) throws -> T) throws -> T? {
-    try mapper(response)
+  func character<T>(
+    droidMapper: (DroidSelectionDecoder) throws -> T,
+    humanMapper: (HumanSelectionDecoder) throws -> T
+  ) throws -> T? {
+    switch response {
+    case let .droid(droid):
+      let decoder = DroidSelectionDecoder(response: droid)
+      return try droidMapper(decoder)
+    case let .human(human):
+      let decoder = HumanSelectionDecoder(response: human)
+      return try humanMapper(decoder)
+    }
   }
 }
 
@@ -393,6 +465,32 @@ struct DroidQueryMapper<T> {
 
   func map(response: DroidStarWarsModel) throws -> T {
     try block(DroidQuerySelectionDecoder(response: response))
+  }
+}
+
+struct CharacterQueryMapper<T> {
+  typealias MapperBlock = (CharacterQuerySelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: CharacterStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = CharacterQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = CharacterStarWarsQuerySelections(
+    )
+  }
+
+  func map(response: CharacterUnionStarWarsUnionModel) throws -> T {
+    try block(CharacterQuerySelectionDecoder(response: response))
   }
 }
 
@@ -474,5 +572,31 @@ struct DroidsQueryMapper<T> {
 
   func map(response: DroidStarWarsModel) throws -> T {
     try block(DroidsQuerySelectionDecoder(response: response))
+  }
+}
+
+struct CharactersQueryMapper<T> {
+  typealias MapperBlock = (CharactersQuerySelectionDecoder) throws -> T
+  private let block: MapperBlock
+
+  let selections: CharactersStarWarsQuerySelections
+
+  init(_ block: @escaping MapperBlock) {
+    self.block = block
+
+    let decoder = CharactersQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
+
+    do {
+      _ = try block(decoder)
+    } catch {
+      assertionFailure("Failed to mock serialization")
+    }
+
+    selections = CharactersStarWarsQuerySelections(
+    )
+  }
+
+  func map(response: CharacterStarWarsInterfaceModel) throws -> T {
+    try block(CharactersQuerySelectionDecoder(response: response))
   }
 }

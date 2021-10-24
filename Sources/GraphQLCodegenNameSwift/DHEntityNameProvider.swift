@@ -128,6 +128,10 @@ public final class DHEntityNameProvider: EntityNameProviding {
     }
   }
 
+  public func selectionName(for objectTypeRef: ObjectTypeRef) throws -> String {
+    "\(objectTypeRef.name.pascalCase)\(Constants.selectionPostFix)"
+  }
+
   public func selectionName(for field: Field) throws -> String? {
     switch field.type.namedType {
     case

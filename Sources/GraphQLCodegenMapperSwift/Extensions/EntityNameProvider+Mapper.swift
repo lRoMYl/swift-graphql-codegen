@@ -14,8 +14,12 @@ import GraphQLCodegenUtil
 extension EntityNameProviding {
   func selectionDecoderName(type: NamedTypeProtocol) throws -> String? {
     switch type.kind {
-    case .object, .union, .interface:
+    case .object:
       return "\(type.name.pascalCase)SelectionDecoder"
+    case .union:
+      return "\(type.name.pascalCase)UnionSelectionDecoder"
+    case .interface:
+      return "\(type.name.pascalCase)InterfaceSelectionDecoder"
     case .enumeration, .inputObject, .scalar:
       return nil
     }
@@ -23,15 +27,21 @@ extension EntityNameProviding {
 
   func selectionDecoderName(outputRef: OutputRef) throws -> String? {
     switch outputRef {
-    case .object, .union, .interface:
+    case .object:
       return "\(outputRef.name.pascalCase)SelectionDecoder"
+    case .union:
+      return "\(outputRef.name.pascalCase)UnionSelectionDecoder"
+    case .interface:
+      return "\(outputRef.name.pascalCase)InterfaceSelectionDecoder"
     case .enum, .scalar:
       return nil
     }
   }
 
   func selectionDecoderName(field: Field, operation: GraphQLAST.Operation, schemaMap: SchemaMap) throws -> String? {
-    guard try field.returnObjectType(schemaMap: schemaMap) != nil else { return nil }
+    guard try selectionDecoderName(outputRef: field.type.namedType) != nil else {
+      return nil
+    }
 
     return "\(field.name.pascalCase)\(operation.type.name.pascalCase)SelectionDecoder"
   }

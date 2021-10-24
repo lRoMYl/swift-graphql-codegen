@@ -55,12 +55,14 @@ struct SelectionDecoderGenerator: Generating {
     let operationCode = try schema.operations.compactMap { operation in
       try operation.type.fields.compactMap { field in
         guard
+          let fieldStructure = try field.structure(schemaMap: schemaMap),
           let selectionDecoderName = try entityNameProvider.selectionDecoderName(
             field: field,
             operation: operation,
             schemaMap: schemaMap
           )
         else { return nil }
+
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
         let nestedFields: [Field] = (
@@ -73,15 +75,11 @@ struct SelectionDecoderGenerator: Generating {
           )
         )
 
-        guard let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) else {
-          return nil
-        }
-
         return try code(
           selectionDecoderName: selectionDecoderName,
           responseName: responseName,
           nestedFields: nestedFields,
-          structure: returnObjectType,
+          structure: fieldStructure,
           schemaMap: schemaMap
         )
       }.lines
@@ -207,37 +205,10 @@ private extension SelectionDecoderGenerator {
     structure: Structure,
     schemaMap: SchemaMap
   ) throws -> String {
-    let selectionDeclaration = try nestedFields.compactMap {
-      guard
-        let selectionName = try entityNameProvider.selectionName(for: $0),
-        let selectionsVariableName = try entityNameProvider.selectionsVariableName(
-          for: $0.type.namedType,
-          entityNameProvider: entityNameProvider
-        )
-      else { return nil }
+    let selectionDeclaration = try self.selectionDeclaration(structure: structure, nestedFields: nestedFields)
+    let fieldDeclaration = try self.fieldDeclaration(structure: structure, schemaMap: schemaMap)
 
-      return """
-        private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
-        """
-    }.lines
-
-    let selectableFields = structure.selectableFields(selectionMap: selectionMap)
-
-    let fieldCodes: String
-
-    // Generates all fields getter for non-composite type
-    if !structure.isCompositeType {
-      fieldCodes = try selectableFields
-        .compactMap { field in
-          try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
-        }
-        .joined(separator: "\n\n")
-    } else {
-      // For composite type, generate getter to return itself
-      fieldCodes = try fieldDeclaration(structure: structure, schemaMap: schemaMap)
-    }
-
-    if fieldCodes.isEmpty {
+    if fieldDeclaration.isEmpty {
       throw SelectionDecoderGeneratorError.missingImplementation(
         context: "Missing implementation to populate fieldCodes for \(structure.name)"
       )
@@ -254,41 +225,9 @@ private extension SelectionDecoderGenerator {
         self.\(Variables.populateSelections) = \(Variables.populateSelections)
       }
 
-      \(fieldCodes)
+      \(fieldDeclaration)
     }
     """
-  }
-
-  func funcDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
-    let name = field.name.camelCase
-    let isPrimitive = try field.type.inverted.isPrimitive(scalarMap: scalarMap)
-    let returnType = isPrimitive
-      ? try entityNameProvider.name(for: field.type)
-      : try entityNameProvider.genericName(for: field.type, identifier: genericIdentifier)
-
-    if isPrimitive {
-      return """
-      func \(name)() throws -> \(returnType)
-      """
-    } else {
-      let mapperCode: String
-
-      if let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) {
-        guard let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: returnObjectType) else {
-          throw SelectionDecoderGeneratorError.missingImplementation(
-            context: "Missing decoder name implemantation at \(#function)"
-          )
-        }
-
-        mapperCode = selectionDecoderName
-      } else {
-        mapperCode = try entityNameProvider.name(for: field.type.namedType)
-      }
-
-      return """
-      func \(name)<\(genericIdentifier)>(mapper: (\(mapperCode)) throws -> \(genericIdentifier)) throws -> \(returnType)
-      """
-    }
   }
 
   func valueName(outputTypeRef: OutputTypeRef) -> String {
@@ -320,24 +259,68 @@ private extension SelectionDecoderGenerator {
 
     return result
   }
+
+  func mapperVariableName(type: ObjectType) -> String {
+    "\(type.name.camelCase)Mapper"
+  }
+}
+
+// MARK: - Generate GraphQLSelection(s) code from Structure
+
+extension SelectionDecoderGenerator {
+  func selectionDeclaration(structure: Structure, nestedFields: [Field]) throws -> String {
+    if structure.isCompositeType {
+      return try structure.possibleTypes.compactMap { possibleTypeRef in
+        let selectionName = try entityNameProvider.selectionName(for: possibleTypeRef)
+        let selectionsVariableName = try entityNameProvider.selectionsVariableName(
+          for: possibleTypeRef
+        )
+
+        return """
+        private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
+        """
+      }.lines
+    } else {
+      return try nestedFields.compactMap {
+        guard
+          let selectionName = try entityNameProvider.selectionName(for: $0),
+          let selectionsVariableName = try entityNameProvider.selectionsVariableName(
+            for: $0.type.namedType,
+            entityNameProvider: entityNameProvider
+          )
+        else { return nil }
+
+        return """
+      private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
+      """
+      }.lines
+    }
+  }
 }
 
 // MARK: - Generate code from Struture
 
 extension SelectionDecoderGenerator {
-  /// Use this for structure without selectableFields
   func fieldDeclaration(structure: Structure, schemaMap: SchemaMap) throws -> String {
-    switch structure {
-    case let unionType as UnionType:
-      let field = Field(with: unionType)
-      return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
-    case let interfaceType as InterfaceType:
-      let field = Field(with: interfaceType)
-      return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
-    default:
-      throw SelectionDecoderGeneratorError.missingImplementation(
-        context: "Missing \(#function) implementation to handle structure type for \(structure.name)"
-      )
+    if structure.isCompositeType {
+      switch structure {
+      case let unionType as UnionType:
+        let field = Field(with: unionType)
+        return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+      case let interfaceType as InterfaceType:
+        let field = Field(with: interfaceType)
+        return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+      default:
+        throw SelectionDecoderGeneratorError.missingImplementation(
+          context: "Missing \(#function) implementation to handle structure type for \(structure.name)"
+        )
+      }
+    } else {
+      return try structure.selectableFields(selectionMap: selectionMap)
+        .compactMap { field in
+          try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+        }
+        .joined(separator: "\n\n")
     }
   }
 
@@ -389,20 +372,22 @@ extension SelectionDecoderGenerator {
 
   func fieldDeclaration(interfaceType: InterfaceType, field: Field, schemaMap: SchemaMap) throws -> String {
     let functionDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
+    let returnDeclaration = try compositeReturnDeclaration(field: field, schemaMap: schemaMap)
 
     return """
     \(functionDeclaration) {
-      try mapper(response)
+      \(returnDeclaration)
     }
     """
   }
 
   func fieldDeclaration(unionType: UnionType, field: Field, schemaMap: SchemaMap) throws -> String {
     let functionDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
+    let returnDeclaration = try compositeReturnDeclaration(field: field, schemaMap: schemaMap)
 
     return """
     \(functionDeclaration) {
-      try mapper(response)
+      \(returnDeclaration)
     }
     """
   }
@@ -496,5 +481,111 @@ private extension SelectionDecoderGenerator {
         return "return try mapper(value)"
       }
     }
+  }
+
+  func compositeReturnDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
+    guard let possibleObjects = try field.possibleObjectTypes(schemaMap: schemaMap) else {
+      throw SelectionDecoderGeneratorError.missingImplementation(
+        context: "\(#function) expecting possibleObject for composite type"
+      )
+    }
+
+    let sortedPossibleObjects = possibleObjects.sorted()
+
+    let decoderCode = try sortedPossibleObjects.compactMap {
+      guard let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: $0) else {
+        throw SelectionDecoderGeneratorError.missingImplementation(
+          context: "\(#function) expecting decoderName for objectType \($0.name)"
+        )
+      }
+
+      let enumName = $0.name.camelCase
+
+      return """
+        case let .\(enumName)(\(enumName)):
+          let decoder = \(selectionDecoderName)(response: \(enumName))
+          return try \(mapperVariableName(type: $0))(decoder)
+        """
+    }.joined(separator: "\n")
+
+    return """
+    switch response {
+      \(decoderCode)
+    }
+    """
+  }
+}
+
+// MARK: - Func declaration
+
+extension SelectionDecoderGenerator {
+  func funcDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
+    let isPrimitive = try field.type.inverted.isPrimitive(scalarMap: scalarMap)
+    let isComposite = field.type.inverted.isComposite
+
+    if isPrimitive {
+      return try primitiveFuncDeclaration(field: field)
+    } else {
+      return isComposite
+        ? try compositeFuncDeclaration(field: field, schemaMap: schemaMap)
+        : try genericFuncDeclaration(field: field, schemaMap: schemaMap)
+    }
+  }
+
+  func primitiveFuncDeclaration(field: Field) throws -> String {
+    let name = field.name.camelCase
+    let returnType = try entityNameProvider.name(for: field.type)
+
+    return """
+    func \(name)() throws -> \(returnType)
+    """
+  }
+
+  func compositeFuncDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
+    guard let possibleTypes = try field.possibleObjectTypes(schemaMap: schemaMap), !possibleTypes.isEmpty else {
+      throw SelectionDecoderGeneratorError.missingImplementation(
+        context: "\(#function) expecting objectTypes for composite field"
+      )
+    }
+
+    let sortedPossibleTypes = possibleTypes.sorted()
+    let name = field.name.camelCase
+    let returnType = try entityNameProvider.genericName(for: field.type, identifier: genericIdentifier)
+
+    let mapperCode = try sortedPossibleTypes.compactMap {
+      guard let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: $0) else {
+        throw SelectionDecoderGeneratorError.missingImplementation(
+          context: "\(#function) expecting decoderName for objectType \($0.name)"
+        )
+      }
+
+      return "\(mapperVariableName(type: $0)): (\(selectionDecoderName)) throws -> \(genericIdentifier)"
+    }.joined(separator: ",\n")
+
+    return """
+    func \(name)<\(genericIdentifier)>(
+      \(mapperCode)
+    ) throws -> \(returnType)
+    """
+  }
+
+  func genericFuncDeclaration(field: Field, schemaMap: SchemaMap) throws -> String {
+    let name = field.name.camelCase
+    let returnType = try entityNameProvider.genericName(for: field.type, identifier: genericIdentifier)
+    let mapperCode: String
+
+    if let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) {
+      guard let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: returnObjectType) else {
+        throw SelectionDecoderGeneratorError.missingImplementation(
+          context: "Missing decoder name implemantation at \(#function)"
+        )
+      }
+
+      mapperCode = selectionDecoderName
+    } else {
+      mapperCode = try entityNameProvider.name(for: field.type.namedType)
+    }
+
+    return "func \(name)<\(genericIdentifier)>(mapper: (\(mapperCode)) throws -> \(genericIdentifier)) throws -> \(returnType)"
   }
 }

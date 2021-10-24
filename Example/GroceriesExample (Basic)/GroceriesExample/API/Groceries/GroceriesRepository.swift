@@ -38,4 +38,27 @@ final class GroceriesRepository {
       return try mapper.map(response: responseModel)
     }
   }
+
+  func campaignsWithoutUsingMapper(
+    with parameters: CampaignsQueryRequest
+  ) -> Single<Campaign?> {
+    return apiClient.campaigns(
+      with: parameters,
+      selections: CampaignsQueryRequestSelections()
+    )
+    .map {
+      guard let responseModel = $0.data?.campaigns else {
+        throw GroceriesRepositoryError.missingData
+      }
+
+      return Campaign(
+        attributes: responseModel.campaignAttributes??.compactMap { attribute in
+          guard let attribute = attribute else { return nil }
+
+          return CampaignAttribute(with: attribute)
+        },
+        productDeals: responseModel.productDeals??.compactMap { _ in return nil }
+      )
+    }
+  }
 }

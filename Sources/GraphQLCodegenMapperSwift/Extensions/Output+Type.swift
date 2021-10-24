@@ -19,6 +19,17 @@ extension InvertedOutputTypeRef {
       return try subRef.isPrimitive(scalarMap: scalarMap)
     }
   }
+
+  var isComposite: Bool {
+    switch self {
+    case let .named(scalar):
+      return scalar.isComposite
+    case let .nullable(subRef):
+      return subRef.isComposite
+    case let .list(subRef):
+      return subRef.isComposite
+    }
+  }
 }
 
 extension OutputRef {
@@ -28,6 +39,15 @@ extension OutputRef {
       let scalarValue = try scalarType(scalarMap: scalarMap)
       return ScalarMap.default.values.contains(scalarValue)
     case .object, .interface, .union, .enum:
+      return false
+    }
+  }
+
+  var isComposite: Bool {
+    switch self {
+    case .interface, .union:
+      return true
+    case .enum, .scalar, .object:
       return false
     }
   }
