@@ -35,7 +35,11 @@ final class StarWarsRepository {
   func character(
     with parameters: CharacterStarWarsQuery
   ) -> Single<CharacterUnionStarWarsUnionModel?> {
-    apiClient.character(with: parameters, selections: .init())
+    let mapper = CharacterQueryMapper { decoder in
+      try CharacterUnion(from: decoder)
+    }
+
+    return apiClient.character(with: parameters, selections: mapper.selections)
       .map {
         guard let data = $0.data?.character else {
           throw StarWarsRepositoryError.missingData

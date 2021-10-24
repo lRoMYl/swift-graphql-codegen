@@ -36,20 +36,15 @@ struct FieldCodeGenerator {
       return "let \(field.name.camelCase): Optional<\(type)>"
     } else {
       // Else infer optionality from SelectionMap or Schema
-      let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
       let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
-      if isRequired || isSelectable {
-        var type: String = try entityNameProvider.name(for: field.type)
-
-        if isSelectable, type.last != "?" {
-          type.append("?")
-        }
+      if isSelectable {
+        let type: String = try entityNameProvider.name(for: field.type)
 
         let texts: [String] = [
           field.docs,
           field.availability,
-          "let \(field.name.camelCase): \(type)"
+          "let \(field.name.camelCase): Optional<\(type)>"
         ]
 
         return texts.filter { !$0.isEmpty }.lines
@@ -60,10 +55,9 @@ struct FieldCodeGenerator {
   }
 
   func codingKeyDeclaration(object: Structure, field: Field) -> String? {
-    let isRequired = object.isRequired(field: field, selectionMap: selectionMap)
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
-    if isRequired || isSelectable {
+    if isSelectable {
       return "case \(field.name.camelCase) = \"\(field.name)\""
     } else {
       return nil

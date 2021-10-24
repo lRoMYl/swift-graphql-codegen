@@ -53,7 +53,7 @@ struct GroceriesExampleApp: App {
 
           print("Groceries campaign query request success")
           print("Product Deals Count: \(campaigns.productDeals?.count ?? -1)")
-          print("Campaign Attributes Count: \(campaigns.campaignAttributes?.count ?? -1)")
+          print("Campaign Attributes Count: \(campaigns.attributes?.count ?? -1)")
         },
         onFailure: { error in
           print(error)

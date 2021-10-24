@@ -6,14 +6,29 @@ import ApiClient
 import Foundation
 import RxSwift
 
+// MARK: - GroceriesApiClientProtocol
+
 protocol GroceriesApiClientProtocol {
+  func query(
+    with request: QueryRequest,
+    selections: QueryRequestSelections
+  ) -> Single<ApiResponse<QueryResponseModel>>
   func campaigns(
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
 }
 
-// MARK: - GroceriesApiClientProtocol
+enum GroceriesApiClientError: Error, LocalizedError {
+  case missingData(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .missingData(context):
+      return "\(Self.self): \(context)"
+    }
+  }
+}
 
 final class GroceriesApiClient: GroceriesApiClientProtocol {
   private let restClient: RestClient
@@ -42,6 +57,35 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
     return executeGraphQLQuery(
       resource: resource
     )
+  }
+
+  func query(
+    with request: QueryRequest,
+    selections: QueryRequestSelections
+  ) -> Single<ApiResponse<QueryResponseModel>> {
+    let resource = GroceriesResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .query(request: request, selections: selections)
+    )
+
+    let response: Single<ApiResponse<QueryResponseModel>> = executeGraphQLQuery(resource: resource)
+
+    return response
+      .map { result in
+        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          (request.campaigns, result.data?.campaigns)
+        ]
+
+        try responseExpectations.forEach {
+          if let request = $0.0, $0.1 == nil {
+            throw GroceriesApiClientError.missingData(
+              context: "Missing data for \(request.requestType.rawValue) { \(request.operationDefinition()) }"
+            )
+          }
+        }
+
+        return result
+      }
   }
 }
 
@@ -77,10 +121,13 @@ protocol GroceriesResourceParametersConfigurating {
 struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
     case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestSelections)
+    case query(request: QueryRequest, selections: QueryRequestSelections)
 
     func bodyParameters() -> Any? {
       switch self {
       case let .queryCampaigns(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .query(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       }
     }

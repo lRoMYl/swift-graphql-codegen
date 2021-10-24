@@ -17,9 +17,7 @@
         "apiClientPrefix":  "StarWars"
     },
     "selectionMap": {
-        "Human": {
-            "required": ["id"],
-            "selectable": ["name", "homePlanet"]
-        }
+        "Human": ["id"],
+        "Droid": ["id", "name"]
     }
 }

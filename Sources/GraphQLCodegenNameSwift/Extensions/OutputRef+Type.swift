@@ -13,6 +13,10 @@ extension OutputTypeRef {
   func type(scalarMap: ScalarMap, entityNameMap: EntityNameMap) throws -> String {
     try inverted.type(scalarMap: scalarMap, entityNameMap: entityNameMap)
   }
+
+  func genericType(scalarMap: ScalarMap, entityNameMap: EntityNameMap, identifier: String) throws -> String {
+    try inverted.genericType(identifier: identifier)
+  }
 }
 
 extension InvertedOutputTypeRef {
@@ -25,6 +29,17 @@ extension InvertedOutputTypeRef {
       return "\(try subRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap))?"
     case let .list(subRef):
       return "[\(try subRef.type(scalarMap: scalarMap, entityNameMap: entityNameMap))]"
+    }
+  }
+
+  func genericType(identifier: String) throws -> String {
+    switch self {
+    case .named:
+      return identifier
+    case let .nullable(subRef):
+      return "\(try subRef.genericType(identifier: identifier))?"
+    case let .list(subRef):
+      return "[\(try subRef.genericType(identifier: identifier))]"
     }
   }
 }

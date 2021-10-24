@@ -11,10 +11,12 @@ import GraphQLCodegenNameSwift
 
 struct ResponseCodeGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
+  private let selectionMap: SelectionMap?
   private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
+  init(entityNameMap: EntityNameMap, selectionMap: SelectionMap?, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
+    self.selectionMap = selectionMap
     self.entityNameProvider = entityNameProvider
   }
 
@@ -27,7 +29,7 @@ struct ResponseCodeGenerator: GraphQLCodeGenerating {
 
 extension ResponseCodeGenerator {
   func code(operation: GraphQLAST.Operation) throws -> String {
-    try operation.type.fields.map {
+    try operation.type.selectableFields(selectionMap: selectionMap).map {
       try code(field: $0, operation: operation)
     }.lines
   }

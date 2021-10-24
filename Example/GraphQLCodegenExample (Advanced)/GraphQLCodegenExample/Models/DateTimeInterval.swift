@@ -13,6 +13,10 @@ struct DateTimeInterval: Codable {
 
   // MARK: - Decoder
 
+  init(rawValue: Date) {
+    self.rawValue = rawValue
+  }
+
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let rawIntValue = try container.decode(Int.self)
@@ -29,5 +33,9 @@ struct DateTimeInterval: Codable {
   func encode(to encoder: Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.encode(Int(rawValue.timeIntervalSince1970))
+  }
+
+  static func selectionMock() -> Self {
+    DateTimeInterval(rawValue: Date())
   }
 }

@@ -8,6 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 struct UnionCodeGenerator: GraphQLCodeGenerating {
   private let scalarMap: ScalarMap
@@ -38,10 +39,12 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
       let possibleObjectTypes = try union.possibleTypes.compactMap {
         try $0.objectType(objectTypeMap: objectTypeMap)
       }
-      let fields = possibleObjectTypes
+      let codingKeys = possibleObjectTypes
         .flatMap { ($0 as Structure).selectableFields(selectionMap: selectionMap) }
         .unique(by: { $0.name })
         .sorted(by: { $0.name < $1.name })
+        .map { "case \($0.name.camelCase)" }
+        .lines
 
       return """
       enum \(try entityNameProvider.name(for: union)): Codable {
@@ -53,7 +56,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
 
         private enum CodingKeys: String, CodingKey {
           case __typename
-          \(fields.map { "case \($0.name.camelCase)" }.lines)
+          \(codingKeys)
         }
 
         init(from decoder: Decoder) throws {

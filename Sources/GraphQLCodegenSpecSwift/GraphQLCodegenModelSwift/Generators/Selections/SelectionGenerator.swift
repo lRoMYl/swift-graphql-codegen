@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum SelectionGeneratorError: Error, LocalizedError {
   case missingFragmentName(context: String)
@@ -62,8 +63,8 @@ extension SelectionGenerator {
   func selectionDeclaration(objectType: ObjectType, schemaMap _: SchemaMap) throws -> String {
     let selectionName = try entityNameProvider.selectionName(for: objectType)
     let selectableFields = objectType.selectableFields(selectionMap: selectionMap)
-    let requiredFields = objectType.requiredFields(selectionMap: selectionMap)
-    let fieldsIsEmpty = selectableFields.isEmpty && requiredFields.isEmpty
+      .sorted(by: { $0.name < $1.name })
+    let fieldsIsEmpty = selectableFields.isEmpty
 
     guard !objectType.isOperation, !fieldsIsEmpty else {
       return ""
@@ -76,15 +77,9 @@ extension SelectionGenerator {
     let rawRepresentableCode = enumCasesCode.isEmpty
       ? " "
       : "String, "
-    let requiredDeclarationCode = requiredFields.isEmpty
-      ? ""
-      : "\n\(requiredFields.map { $0.name }.lines)"
 
     return try """
     enum \(selectionName):\(rawRepresentableCode)\(entityNameMap.selection) {
-      static let requiredDeclaration = \"\"\"\(requiredDeclarationCode)
-      \"\"\"
-
       \(enumCasesCode)
     }
     """.format()
@@ -97,7 +92,7 @@ extension SelectionGenerator {
     case let .named(objectRef):
       switch objectRef {
       case .scalar, .enum:
-        return "case \(name) = \"\(name)\""
+        return "case \(name.camelCase) = \"\(name)\""
       case .object, .interface, .union:
         guard let fragmentName = try entityNameProvider.fragmentName(for: objectRef) else {
           throw SelectionGeneratorError.missingFragmentName(
@@ -106,7 +101,7 @@ extension SelectionGenerator {
         }
 
         return """
-        case \(name) = \"\"\"
+        case \(name.camelCase) = \"\"\"
         \(name) {
           ...\(fragmentName)
         }

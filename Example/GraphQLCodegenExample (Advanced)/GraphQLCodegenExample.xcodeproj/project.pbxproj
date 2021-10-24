@@ -7,15 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F809FC48272509640044E518 /* ApolloGraphQLApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC45272509640044E518 /* ApolloGraphQLApiClient.generated.swift */; };
+		F809FC49272509640044E518 /* ApolloGraphQLSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC46272509640044E518 /* ApolloGraphQLSpec.generated.swift */; };
+		F809FC4F272509780044E518 /* StarWarsGraphQLSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC4C272509780044E518 /* StarWarsGraphQLSpec.generated.swift */; };
+		F809FC50272509780044E518 /* StarWarsGraphQLApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC4D272509780044E518 /* StarWarsGraphQLApiClient.generated.swift */; };
+		F809FC552725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */; };
+		F809FC58272509AA0044E518 /* GroceriesApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */; };
+		F809FC5A272509E60044E518 /* GraphQLEntities.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC59272509E60044E518 /* GraphQLEntities.generated.swift */; };
+		F809FC5C27250D530044E518 /* GroceriesMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */; };
+		F809FC5E27250D650044E518 /* StarWarsMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC5D27250D650044E518 /* StarWarsMappers.generated.swift */; };
+		F809FC6027250D770044E518 /* ApolloMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC5F27250D770044E518 /* ApolloMappers.generated.swift */; };
+		F809FC62272522F30044E518 /* Droid.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC61272522F30044E518 /* Droid.swift */; };
+		F809FC64272522FA0044E518 /* Human.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC63272522FA0044E518 /* Human.swift */; };
+		F809FC66272560AE0044E518 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC65272560AE0044E518 /* Character.swift */; };
+		F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAA2723F51500328EF9 /* Campaign.swift */; };
+		F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */; };
+		F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EB0272438B300328EF9 /* ProductDeal.swift */; };
 		F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1427043B9100602EC4 /* StarWarsRepository.swift */; };
 		F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F855FD1627043C4900602EC4 /* StarWarsWebService.swift */; };
-		F8A11737271DACD000723D3A /* ApolloGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A11735271DACD000723D3A /* ApolloGraphQLSpec.swift */; };
-		F8A11738271DACD000723D3A /* ApolloGraphQLApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A11736271DACD000723D3A /* ApolloGraphQLApiClient.swift */; };
 		F8A1173A271DAFD200723D3A /* ApolloRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A11739271DAFD200723D3A /* ApolloRepository.swift */; };
 		F8A1173C271DAFE600723D3A /* ApolloWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1173B271DAFE600723D3A /* ApolloWebService.swift */; };
 		F8BFF72D270AD02C00AE4828 /* DateTimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BFF72C270AD02C00AE4828 /* DateTimeInterval.swift */; };
 		F8C4086E270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4086D270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift */; };
 		F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */; };
+		F8D05A572724A94A0009A228 /* Deal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D05A562724A94A0009A228 /* Deal.swift */; };
 		F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */; };
 		F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3235926FCAC9F00A594B2 /* ContentView.swift */; };
 		F8D3235C26FCACA000A594B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D3235B26FCACA000A594B2 /* Assets.xcassets */; };
@@ -27,11 +42,6 @@
 		F8D3237026FCACFE00A594B2 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236F26FCACFE00A594B2 /* RxSwift.framework */; };
 		F8D3237126FCACFE00A594B2 /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8D3236F26FCACFE00A594B2 /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */; };
-		F8D323AB26FF9CA800A594B2 /* GraphQLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323A826FF9CA800A594B2 /* GraphQLEntities.swift */; };
-		F8D323B4270032D600A594B2 /* GroceriesGraphQLNetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B2270032D600A594B2 /* GroceriesGraphQLNetworkModels.swift */; };
-		F8D323B62700333A00A594B2 /* GroceriesApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B52700333A00A594B2 /* GroceriesApiClient.swift */; };
-		F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */; };
-		F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,15 +61,30 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F809FC45272509640044E518 /* ApolloGraphQLApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLApiClient.generated.swift; sourceTree = "<group>"; };
+		F809FC46272509640044E518 /* ApolloGraphQLSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLSpec.generated.swift; sourceTree = "<group>"; };
+		F809FC4C272509780044E518 /* StarWarsGraphQLSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLSpec.generated.swift; sourceTree = "<group>"; };
+		F809FC4D272509780044E518 /* StarWarsGraphQLApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLApiClient.generated.swift; sourceTree = "<group>"; };
+		F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLNetworkModels.generated.swift; sourceTree = "<group>"; };
+		F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.generated.swift; sourceTree = "<group>"; };
+		F809FC59272509E60044E518 /* GraphQLEntities.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntities.generated.swift; sourceTree = "<group>"; };
+		F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesMappers.generated.swift; sourceTree = "<group>"; };
+		F809FC5D27250D650044E518 /* StarWarsMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsMappers.generated.swift; sourceTree = "<group>"; };
+		F809FC5F27250D770044E518 /* ApolloMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloMappers.generated.swift; sourceTree = "<group>"; };
+		F809FC61272522F30044E518 /* Droid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droid.swift; sourceTree = "<group>"; };
+		F809FC63272522FA0044E518 /* Human.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Human.swift; sourceTree = "<group>"; };
+		F809FC65272560AE0044E518 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
+		F8113EAA2723F51500328EF9 /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
+		F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignAttribute.swift; sourceTree = "<group>"; };
+		F8113EB0272438B300328EF9 /* ProductDeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDeal.swift; sourceTree = "<group>"; };
 		F855FD1427043B9100602EC4 /* StarWarsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsRepository.swift; sourceTree = "<group>"; };
 		F855FD1627043C4900602EC4 /* StarWarsWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWarsWebService.swift; sourceTree = "<group>"; };
-		F8A11735271DACD000723D3A /* ApolloGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLSpec.swift; sourceTree = "<group>"; };
-		F8A11736271DACD000723D3A /* ApolloGraphQLApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLApiClient.swift; sourceTree = "<group>"; };
 		F8A11739271DAFD200723D3A /* ApolloRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApolloRepository.swift; sourceTree = "<group>"; };
 		F8A1173B271DAFE600723D3A /* ApolloWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApolloWebService.swift; sourceTree = "<group>"; };
 		F8BFF72C270AD02C00AE4828 /* DateTimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeInterval.swift; sourceTree = "<group>"; };
 		F8C4086D270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesResourceParametersConfigurator.swift; sourceTree = "<group>"; };
 		F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesRepository.swift; sourceTree = "<group>"; };
+		F8D05A562724A94A0009A228 /* Deal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deal.swift; sourceTree = "<group>"; };
 		F8D3235426FCAC9F00A594B2 /* GraphQLCodegenExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphQLCodegenExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8D3235726FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCodegenExampleApp.swift; sourceTree = "<group>"; };
 		F8D3235926FCAC9F00A594B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -70,11 +95,6 @@
 		F8D3236C26FCACFB00A594B2 /* ApiClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApiClient.framework; path = Carthage/Build/iOS/ApiClient.framework; sourceTree = "<group>"; };
 		F8D3236F26FCACFE00A594B2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesWebService.swift; sourceTree = "<group>"; };
-		F8D323A826FF9CA800A594B2 /* GraphQLEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntities.swift; sourceTree = "<group>"; };
-		F8D323B2270032D600A594B2 /* GroceriesGraphQLNetworkModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLNetworkModels.swift; sourceTree = "<group>"; };
-		F8D323B52700333A00A594B2 /* GroceriesApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.swift; sourceTree = "<group>"; };
-		F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLApiClient.swift; sourceTree = "<group>"; };
-		F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,8 +116,9 @@
 			children = (
 				F8A1173B271DAFE600723D3A /* ApolloWebService.swift */,
 				F8A11739271DAFD200723D3A /* ApolloRepository.swift */,
-				F8A11735271DACD000723D3A /* ApolloGraphQLSpec.swift */,
-				F8A11736271DACD000723D3A /* ApolloGraphQLApiClient.swift */,
+				F809FC45272509640044E518 /* ApolloGraphQLApiClient.generated.swift */,
+				F809FC46272509640044E518 /* ApolloGraphQLSpec.generated.swift */,
+				F809FC5F27250D770044E518 /* ApolloMappers.generated.swift */,
 			);
 			path = Apollo;
 			sourceTree = "<group>";
@@ -106,6 +127,13 @@
 			isa = PBXGroup;
 			children = (
 				F8BFF72C270AD02C00AE4828 /* DateTimeInterval.swift */,
+				F8113EAA2723F51500328EF9 /* Campaign.swift */,
+				F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */,
+				F8113EB0272438B300328EF9 /* ProductDeal.swift */,
+				F8D05A562724A94A0009A228 /* Deal.swift */,
+				F809FC61272522F30044E518 /* Droid.swift */,
+				F809FC63272522FA0044E518 /* Human.swift */,
+				F809FC65272560AE0044E518 /* Character.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -167,9 +195,10 @@
 			children = (
 				F8C4088E270324F800CA5F13 /* GroceriesRepository.swift */,
 				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
-				F8D323B52700333A00A594B2 /* GroceriesApiClient.swift */,
-				F8D323B2270032D600A594B2 /* GroceriesGraphQLNetworkModels.swift */,
 				F8C4086D270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift */,
+				F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */,
+				F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */,
+				F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */,
 			);
 			path = Groceries;
 			sourceTree = "<group>";
@@ -179,8 +208,9 @@
 			children = (
 				F855FD1627043C4900602EC4 /* StarWarsWebService.swift */,
 				F855FD1427043B9100602EC4 /* StarWarsRepository.swift */,
-				F8D323B727003DA100A594B2 /* StarWarsGraphQLApiClient.swift */,
-				F8D323B827003DA200A594B2 /* StarWarsGraphQLSpec.swift */,
+				F809FC4D272509780044E518 /* StarWarsGraphQLApiClient.generated.swift */,
+				F809FC4C272509780044E518 /* StarWarsGraphQLSpec.generated.swift */,
+				F809FC5D27250D650044E518 /* StarWarsMappers.generated.swift */,
 			);
 			path = StarWars;
 			sourceTree = "<group>";
@@ -188,7 +218,7 @@
 		F8FCE28B270AC79500A83582 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				F8D323A826FF9CA800A594B2 /* GraphQLEntities.swift */,
+				F809FC59272509E60044E518 /* GraphQLEntities.generated.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -304,23 +334,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8D323B62700333A00A594B2 /* GroceriesApiClient.swift in Sources */,
+				F809FC66272560AE0044E518 /* Character.swift in Sources */,
+				F809FC5E27250D650044E518 /* StarWarsMappers.generated.swift in Sources */,
+				F809FC49272509640044E518 /* ApolloGraphQLSpec.generated.swift in Sources */,
 				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,
-				F8D323B4270032D600A594B2 /* GroceriesGraphQLNetworkModels.swift in Sources */,
 				F8A1173C271DAFE600723D3A /* ApolloWebService.swift in Sources */,
+				F809FC552725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift in Sources */,
+				F809FC64272522FA0044E518 /* Human.swift in Sources */,
 				F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */,
-				F8D323AB26FF9CA800A594B2 /* GraphQLEntities.swift in Sources */,
-				F8D323B927003DA200A594B2 /* StarWarsGraphQLApiClient.swift in Sources */,
+				F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */,
 				F8D3235A26FCAC9F00A594B2 /* ContentView.swift in Sources */,
 				F855FD1527043B9100602EC4 /* StarWarsRepository.swift in Sources */,
 				F8A1173A271DAFD200723D3A /* ApolloRepository.swift in Sources */,
-				F8D323BA27003DA200A594B2 /* StarWarsGraphQLSpec.swift in Sources */,
+				F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */,
+				F8D05A572724A94A0009A228 /* Deal.swift in Sources */,
 				F855FD1727043C4900602EC4 /* StarWarsWebService.swift in Sources */,
+				F809FC48272509640044E518 /* ApolloGraphQLApiClient.generated.swift in Sources */,
+				F809FC6027250D770044E518 /* ApolloMappers.generated.swift in Sources */,
+				F809FC4F272509780044E518 /* StarWarsGraphQLSpec.generated.swift in Sources */,
+				F809FC62272522F30044E518 /* Droid.swift in Sources */,
 				F8C4086E270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift in Sources */,
+				F809FC5A272509E60044E518 /* GraphQLEntities.generated.swift in Sources */,
 				F8BFF72D270AD02C00AE4828 /* DateTimeInterval.swift in Sources */,
 				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
-				F8A11737271DACD000723D3A /* ApolloGraphQLSpec.swift in Sources */,
-				F8A11738271DACD000723D3A /* ApolloGraphQLApiClient.swift in Sources */,
+				F809FC58272509AA0044E518 /* GroceriesApiClient.generated.swift in Sources */,
+				F809FC50272509780044E518 /* StarWarsGraphQLApiClient.generated.swift in Sources */,
+				F809FC5C27250D530044E518 /* GroceriesMappers.generated.swift in Sources */,
+				F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,6 +17,8 @@ public protocol EntityNameProviding {
   func name(for namedType: NamedType) throws -> String
   func name(for namedTypeProtocol: NamedTypeProtocol) throws -> String
 
+  func genericName(for typeRef: OutputTypeRef, identifier: String) throws -> String
+
   func fragmentName(for outputRef: OutputRef) throws -> String?
   func fragmentName(for objectType: ObjectType) throws -> String
   func fragmentName(for interfaceType: InterfaceType) throws -> String
@@ -29,8 +31,29 @@ public protocol EntityNameProviding {
   func responseDataName(with operation: GraphQLAST.Operation) throws -> String
 
   func selectionName(for objectType: ObjectType) throws -> String
+  func selectionName(for outputRef: OutputRef) throws -> String?
   func selectionName(for field: Field) throws -> String?
+  func selectionName(for objectTypeRef: ObjectTypeRef) throws -> String
 
   func selectionsName(for field: Field, operation: GraphQLAST.Operation) throws -> String
   func selectionsName(with operation: GraphQLAST.Operation) throws -> String
+
+  func mapperName(for field: Field, operation: GraphQLAST.Operation) throws -> String
+}
+
+public extension EntityNameProviding {
+  func selectionsVariableName(for objectType: ObjectType) throws -> String {
+    let selectionName = try self.selectionName(for: objectType).camelCase
+    return "\(selectionName)s"
+  }
+
+  func selectionsVariableName(for outputRef: OutputRef, entityNameProvider: EntityNameProviding) throws -> String? {
+    guard let selectionName = try entityNameProvider.selectionName(for: outputRef)?.camelCase else { return nil }
+    return "\(selectionName)s"
+  }
+
+  func selectionsVariableName(for objectTypeRef: ObjectTypeRef) throws -> String {
+    let selectionName = try self.selectionName(for: objectTypeRef).camelCase
+    return "\(selectionName)s"
+  }
 }

@@ -89,7 +89,7 @@ func mockAdvancedCoreExample() {
     [
       groceriesSchema,
       "--target", CodegenTarget.entity.rawValue,
-      "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.swift",
+      "--output", "\(examplePath)/GraphQLCodegenExample/Core/GraphQLEntities.generated.swift",
       "--config-path", groceriesConfig
     ]
   )
@@ -98,7 +98,7 @@ func mockAdvancedCoreExample() {
     [
       groceriesSchema,
       "--target", CodegenTarget.specification.rawValue,
-      "--output", "\(groceriesOutputPath)GraphQLNetworkModels.swift",
+      "--output", "\(groceriesOutputPath)GraphQLNetworkModels.generated.swift",
       "--config-path", groceriesConfig
     ]
   )
@@ -106,7 +106,16 @@ func mockAdvancedCoreExample() {
     [
       groceriesSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
-      "--output", "\(groceriesOutputPath)ApiClient.swift",
+      "--output", "\(groceriesOutputPath)ApiClient.generated.swift",
+      "--config-path", groceriesConfig
+    ]
+  )
+
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      groceriesSchema,
+      "--target", CodegenTarget.mapper.rawValue,
+      "--output", "\(groceriesOutputPath)Mappers.generated.swift",
       "--config-path", groceriesConfig
     ]
   )
@@ -120,7 +129,7 @@ func mockAdvancedCoreExample() {
     [
       starwarsSchema,
       "--target", CodegenTarget.specification.rawValue,
-      "--output", "\(starwarsOutputPath)GraphQLSpec.swift",
+      "--output", "\(starwarsOutputPath)GraphQLSpec.generated.swift",
       "--config-path", starwarsConfig
     ]
   )
@@ -128,7 +137,16 @@ func mockAdvancedCoreExample() {
     [
       starwarsSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
-      "--output", "\(starwarsOutputPath)GraphQLApiClient.swift",
+      "--output", "\(starwarsOutputPath)GraphQLApiClient.generated.swift",
+      "--config-path", starwarsConfig
+    ]
+  )
+
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      starwarsSchema,
+      "--target", CodegenTarget.mapper.rawValue,
+      "--output", "\(starwarsOutputPath)Mappers.generated.swift",
       "--config-path", starwarsConfig
     ]
   )
@@ -153,7 +171,7 @@ func mockAdvancedCoreExample() {
     [
       apolloSchema,
       "--target", CodegenTarget.specification.rawValue,
-      "--output", "\(apolloOutputPath)GraphQLSpec.swift",
+      "--output", "\(apolloOutputPath)GraphQLSpec.generated.swift",
       "--config-path", apolloConfig
     ]
   )
@@ -161,7 +179,16 @@ func mockAdvancedCoreExample() {
     [
       apolloSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
-      "--output", "\(apolloOutputPath)GraphQLApiClient.swift",
+      "--output", "\(apolloOutputPath)GraphQLApiClient.generated.swift",
+      "--config-path", apolloConfig
+    ]
+  )
+
+  GraphQLCodegenCLI.Codegen.main(
+    [
+      apolloSchema,
+      "--target", CodegenTarget.mapper.rawValue,
+      "--output", "\(apolloOutputPath)Mappers.generated.swift",
       "--config-path", apolloConfig
     ]
   )
