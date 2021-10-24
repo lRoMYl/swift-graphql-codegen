@@ -308,6 +308,38 @@ class HumanSelectionDecoder {
   }
 }
 
+class CharacterUnionSelectionDecoder {
+  private(set) var droidSelections = Set<DroidSelection>()
+  private(set) var humanSelections = Set<HumanSelection>()
+  private let response: CharacterUnionStarWarsUnionModel
+  private let populateSelections: Bool
+
+  init(response: CharacterUnionStarWarsUnionModel, populateSelections: Bool = false) {
+    self.response = response
+    self.populateSelections = populateSelections
+  }
+
+  func characterUnion<T>(mapper: (CharacterUnionStarWarsUnionModel) throws -> T) throws -> T? {
+    try mapper(response)
+  }
+}
+
+class CharacterSelectionDecoder {
+  private(set) var droidSelections = Set<DroidSelection>()
+  private(set) var humanSelections = Set<HumanSelection>()
+  private let response: CharacterStarWarsInterfaceModel
+  private let populateSelections: Bool
+
+  init(response: CharacterStarWarsInterfaceModel, populateSelections: Bool = false) {
+    self.response = response
+    self.populateSelections = populateSelections
+  }
+
+  func character<T>(mapper: (CharacterStarWarsInterfaceModel) throws -> T) throws -> T? {
+    try mapper(response)
+  }
+}
+
 // MARK: - Mappers
 
 struct HumanQueryMapper<T> {

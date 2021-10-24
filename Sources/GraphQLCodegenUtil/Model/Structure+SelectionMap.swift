@@ -35,7 +35,9 @@ public extension Structure {
    Do not be confused with selectionFields
    */
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
-    fields.filter { field in
+    guard !isCompositeType else { return [] }
+
+    return fields.filter { field in
       isSelectable(field: field, selectionMap: selectionMap)
     }.sorted(by: .name)
   }

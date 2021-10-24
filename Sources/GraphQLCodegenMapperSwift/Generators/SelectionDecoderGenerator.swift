@@ -11,7 +11,15 @@ import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
-enum SelectionDecoderGeneratorError: Error {
+enum SelectionDecoderGeneratorError: Error, LocalizedError {
+  case missingImplementation(context: String)
+
+  var errorDescription: String? {
+    switch self {
+    case let .missingImplementation(context):
+      return "\(Self.self): \(context)"
+    }
+  }
 }
 
 struct SelectionDecoderGenerator: Generating {
@@ -65,13 +73,15 @@ struct SelectionDecoderGenerator: Generating {
           )
         )
 
-        let returnObjectType = try field.returnObjectType(schemaMap: schemaMap)
+        guard let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) else {
+          return nil
+        }
 
         return try code(
           selectionDecoderName: selectionDecoderName,
           responseName: responseName,
           nestedFields: nestedFields,
-          objectType: returnObjectType,
+          structure: returnObjectType,
           schemaMap: schemaMap
         )
       }.lines
@@ -96,31 +106,83 @@ struct SelectionDecoderGenerator: Generating {
         selectionDecoderName: selectionDecoderName,
         responseName: responseName,
         nestedFields: nestedFields,
-        objectType: objectType,
+        structure: objectType,
         schemaMap: schemaMap
       )
     }.lines
 
-//    let interfaceCode = try schema.interfaces.compactMap { interfaceType in
-//      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: interfaceType)
-//      let responseName = try entityNameProvider.name(for: interfaceType)
-//
-//      let nestedFields = interfaceType.fields
-//
-//      return try code(
-//        selectionDecoderName: selectionDecoderName,
-//        responseName: responseName,
-//        nestedFields: <#T##[Field]#>, objectType: <#T##ObjectType?#>, schemaMap: <#T##SchemaMap#>)
-//    }.lines
+    let interfaceCode = try schema.interfaces.compactMap { interfaceType in
+      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: interfaceType)
+      let responseName = try entityNameProvider.name(for: interfaceType)
 
-    guard !(operationCode.isEmpty && objectCode.isEmpty) else {
+      let possibleObjectTypes = try interfaceType.possibleTypes.compactMap {
+        try $0.objectType(objectTypeMap: schemaMap.objectTypeMap)
+      }
+      .unique(by: { $0.name })
+
+      let nestedFields: [Field] = try possibleObjectTypes.reduce(into: []) { result, objectType in
+        result.append(Field(with: objectType))
+        result.append(
+          contentsOf: try objectType.nestedFields(
+            objects: schema.objects,
+            scalarMap: scalarMap,
+            selectionMap: selectionMap
+          )
+        )
+      }
+      .unique(by: { $0.type.namedType.name })
+      .sorted(by: .namedType)
+
+      return try code(
+        selectionDecoderName: selectionDecoderName,
+        responseName: responseName,
+        nestedFields: nestedFields,
+        structure: interfaceType,
+        schemaMap: schemaMap
+      )
+    }.lines
+
+    let unionCode = try schema.unions.compactMap { unionType in
+      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: unionType)
+      let responseName = try entityNameProvider.name(for: unionType)
+
+      let possibleObjectTypes = try unionType.possibleTypes.compactMap {
+        try $0.objectType(objectTypeMap: schemaMap.objectTypeMap)
+      }
+      .unique(by: { $0.name })
+
+      let nestedFields: [Field] = try possibleObjectTypes.reduce(into: []) { result, objectType in
+        result.append(Field(with: objectType))
+        result.append(
+          contentsOf: try objectType.nestedFields(
+            objects: schema.objects,
+            scalarMap: scalarMap,
+            selectionMap: selectionMap
+          )
+        )
+      }
+      .unique(by: { $0.type.namedType.name })
+      .sorted(by: .namedType)
+
+      return try code(
+        selectionDecoderName: selectionDecoderName,
+        responseName: responseName,
+        nestedFields: nestedFields,
+        structure: unionType,
+        schemaMap: schemaMap
+      )
+    }.lines
+
+    guard !(operationCode.isEmpty && objectCode.isEmpty && unionCode.isEmpty && interfaceCode.isEmpty) else {
       return ""
     }
 
     return [
       "// MARK: - SelectionDecoder",
       operationCode,
-      objectCode
+      objectCode,
+      unionCode,
+      interfaceCode
     ].lines
   }
 }
@@ -130,7 +192,7 @@ private extension SelectionDecoderGenerator {
     selectionDecoderName: String,
     responseName: String,
     nestedFields: [Field],
-    objectType: ObjectType?,
+    structure: Structure,
     schemaMap: SchemaMap
   ) throws -> String {
     let selectionDeclaration = try nestedFields.compactMap {
@@ -147,10 +209,27 @@ private extension SelectionDecoderGenerator {
         """
     }.lines
 
-    let fieldCodes = try objectType?.selectableFields(selectionMap: selectionMap).compactMap { field in
-      guard let objectType = objectType else { return nil }
-      return try code(objectType: objectType, field: field, schemaMap: schemaMap)
-    }.joined(separator: "\n\n") ?? ""
+    let selectableFields = structure.selectableFields(selectionMap: selectionMap)
+
+    let fieldCodes: String
+
+    // Generates all fields getter for non-composite type
+    if !structure.isCompositeType {
+      fieldCodes = try selectableFields
+        .compactMap { field in
+          try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+        }
+        .joined(separator: "\n\n")
+    } else {
+      // For composite type, generate getter to return itself
+      fieldCodes = try fieldDeclaration(structure: structure, schemaMap: schemaMap)
+    }
+
+    if fieldCodes.isEmpty {
+      throw SelectionDecoderGeneratorError.missingImplementation(
+        context: "Missing implementation to populate fieldCodes for \(structure.name)"
+      )
+    }
 
     return """
     class \(selectionDecoderName) {
@@ -164,37 +243,6 @@ private extension SelectionDecoderGenerator {
       }
 
       \(fieldCodes)
-    }
-    """
-  }
-
-  func code(objectType: ObjectType, field: Field, schemaMap: SchemaMap) throws -> String {
-    let name = field.name.camelCase
-
-    let funcDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
-    let selectionsVariableName = """
-    if \(Variables.populateSelections) {
-      \(try entityNameProvider.selectionsVariableName(for: objectType)).insert(.\(name))
-    }
-    """
-    let unwrapFieldDeclaration = self.unwrapFieldDeclaration(field: field)
-    let returnDeclaration = try self.returnDeclaration(
-      field: field,
-      outputTypeRef: field.type,
-      schemaMap: schemaMap
-    )
-
-    let codes = [
-      selectionsVariableName,
-      unwrapFieldDeclaration,
-      returnDeclaration
-    ]
-    .compactMap { $0 }
-    .joined(separator: "\n\n")
-
-    return """
-    \(funcDeclaration) {
-      \(codes)
     }
     """
   }
@@ -254,7 +302,97 @@ private extension SelectionDecoderGenerator {
 
     return result
   }
+}
 
+// MARK: - Generate code from Struture
+
+extension SelectionDecoderGenerator {
+  /// Use this for structure without selectableFields
+  func fieldDeclaration(structure: Structure, schemaMap: SchemaMap) throws -> String {
+    switch structure {
+    case let unionType as UnionType:
+      let field = Field(with: unionType)
+      return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+    case let interfaceType as InterfaceType:
+      let field = Field(with: interfaceType)
+      return try fieldDeclaration(structure: structure, field: field, schemaMap: schemaMap)
+    default:
+      throw SelectionDecoderGeneratorError.missingImplementation(
+        context: "Missing \(#function) implementation to handle structure type for \(structure.name)"
+      )
+    }
+  }
+
+  func fieldDeclaration(structure: Structure, field: Field, schemaMap: SchemaMap) throws -> String {
+    switch structure {
+    case let objectType as ObjectType:
+      return try fieldDeclaration(objectType: objectType, field: field, schemaMap: schemaMap)
+    case let interfaceType as InterfaceType:
+      return try fieldDeclaration(interfaceType: interfaceType, field: field, schemaMap: schemaMap)
+    case let unionType as UnionType:
+      return try fieldDeclaration(unionType: unionType, field: field, schemaMap: schemaMap)
+    default:
+      throw SelectionDecoderGeneratorError.missingImplementation(
+        context: "Missing \(#function) implementation to handle structure type for \(structure.name)"
+      )
+    }
+  }
+
+  func fieldDeclaration(objectType: ObjectType, field: Field, schemaMap: SchemaMap) throws -> String {
+    let name = field.name.camelCase
+
+    let funcDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
+    let selectionsVariableName = """
+    if \(Variables.populateSelections) {
+      \(try entityNameProvider.selectionsVariableName(for: objectType)).insert(.\(name))
+    }
+    """
+    let unwrapFieldDeclaration = self.unwrapFieldDeclaration(field: field)
+    let returnDeclaration = try self.returnDeclaration(
+      field: field,
+      outputTypeRef: field.type,
+      schemaMap: schemaMap
+    )
+
+    let codes = [
+      selectionsVariableName,
+      unwrapFieldDeclaration,
+      returnDeclaration
+    ]
+    .compactMap { $0 }
+    .joined(separator: "\n\n")
+
+    return """
+    \(funcDeclaration) {
+      \(codes)
+    }
+    """
+  }
+
+  func fieldDeclaration(interfaceType: InterfaceType, field: Field, schemaMap: SchemaMap) throws -> String {
+    let functionDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
+
+    return """
+    \(functionDeclaration) {
+      try mapper(response)
+    }
+    """
+  }
+
+  func fieldDeclaration(unionType: UnionType, field: Field, schemaMap: SchemaMap) throws -> String {
+    let functionDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
+
+    return """
+    \(functionDeclaration) {
+      try mapper(response)
+    }
+    """
+  }
+}
+
+// MARK: - Generate code to decode and return the response
+
+private extension SelectionDecoderGenerator {
   func returnDeclaration(
     field: Field,
     outputTypeRef: OutputTypeRef,
@@ -309,7 +447,7 @@ private extension SelectionDecoderGenerator {
           excluded: [],
           selectionMap: selectionMap
         )
-          
+
         let selectionsDeclarations = try nestedFields.compactMap { field in
           guard
             let selectionsVariableName = try entityNameProvider.selectionsVariableName(
