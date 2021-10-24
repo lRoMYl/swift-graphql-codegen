@@ -8,20 +8,20 @@ import RxSwift
 
 // MARK: - Primitive Selection Mock
 
-private extension Int {
-  static func selectionMock() -> Self { 0 }
-}
-
 private extension Bool {
   static func selectionMock() -> Self { false }
 }
 
-private extension String {
-  static func selectionMock() -> Self { "" }
-}
-
 private extension Double {
   static func selectionMock() -> Self { 0 }
+}
+
+private extension Int {
+  static func selectionMock() -> Self { 0 }
+}
+
+private extension String {
+  static func selectionMock() -> Self { "" }
 }
 
 // MARK: - MapperError

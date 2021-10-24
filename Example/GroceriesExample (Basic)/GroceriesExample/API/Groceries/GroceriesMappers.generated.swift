@@ -12,16 +12,16 @@ private extension Bool {
   static func selectionMock() -> Self { false }
 }
 
+private extension Double {
+  static func selectionMock() -> Self { 0 }
+}
+
 private extension Int {
   static func selectionMock() -> Self { 0 }
 }
 
 private extension String {
   static func selectionMock() -> Self { "" }
-}
-
-private extension Double {
-  static func selectionMock() -> Self { 0 }
 }
 
 // MARK: - MapperError

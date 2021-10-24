@@ -115,7 +115,7 @@ func mockAdvancedCoreExample() {
     [
       groceriesSchema,
       "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(groceriesOutputPath)Mapper.generated.swift",
+      "--output", "\(groceriesOutputPath)Mappers.generated.swift",
       "--config-path", groceriesConfig
     ]
   )
@@ -146,7 +146,7 @@ func mockAdvancedCoreExample() {
     [
       starwarsSchema,
       "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(starwarsOutputPath)Mapper.generated.swift",
+      "--output", "\(starwarsOutputPath)Mappers.generated.swift",
       "--config-path", starwarsConfig
     ]
   )
@@ -188,7 +188,7 @@ func mockAdvancedCoreExample() {
     [
       apolloSchema,
       "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(apolloOutputPath)Mapper.generated.swift",
+      "--output", "\(apolloOutputPath)Mappers.generated.swift",
       "--config-path", apolloConfig
     ]
   )

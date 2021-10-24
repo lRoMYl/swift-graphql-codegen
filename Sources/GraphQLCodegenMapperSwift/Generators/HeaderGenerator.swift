@@ -20,7 +20,7 @@ struct HeaderGenerator: Generating {
       "Int": "0"
     ]
 
-    let primitiveCodes = primitiveMap.map {
+    let primitiveCodes = primitiveMap.sorted(by: { $0.key < $1.key }).map {
       """
       private extension \($0.key) {
         static func selectionMock() -> Self { \($0.value) }
