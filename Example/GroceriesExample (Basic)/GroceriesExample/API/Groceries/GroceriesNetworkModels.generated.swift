@@ -334,17 +334,11 @@ struct CampaignsQueryResponse: Codable {
 // MARK: - GraphQLSelection
 
 enum BenefitSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case productId = "productID"
   case quantity
 }
 
 enum CampaignAttributeSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case autoApplied
   case benefits = """
   benefits {
@@ -360,9 +354,6 @@ enum CampaignAttributeSelection: String, GraphQLSelection {
 }
 
 enum CampaignsSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case campaignAttributes = """
   campaignAttributes {
     ...CampaignAttributeFragment
@@ -376,18 +367,12 @@ enum CampaignsSelection: String, GraphQLSelection {
 }
 
 enum DealSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case campaignId = "campaignID"
   case discountTag
   case triggerQuantity
 }
 
 enum ProductDealSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case deals = """
   deals {
     ...DealFragment
@@ -506,35 +491,30 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let benefitSelectionsDeclaration = """
     fragment BenefitFragment on Benefit {
-    	\(BenefitSelection.requiredDeclaration)
     	\(benefitSelections.declaration)
     }
     """
 
     let campaignAttributeSelectionsDeclaration = """
     fragment CampaignAttributeFragment on CampaignAttribute {
-    	\(CampaignAttributeSelection.requiredDeclaration)
     	\(campaignAttributeSelections.declaration)
     }
     """
 
     let campaignsSelectionsDeclaration = """
     fragment CampaignsFragment on Campaigns {
-    	\(CampaignsSelection.requiredDeclaration)
     	\(campaignsSelections.declaration)
     }
     """
 
     let dealSelectionsDeclaration = """
     fragment DealFragment on Deal {
-    	\(DealSelection.requiredDeclaration)
     	\(dealSelections.declaration)
     }
     """
 
     let productDealSelectionsDeclaration = """
     fragment ProductDealFragment on ProductDeal {
-    	\(ProductDealSelection.requiredDeclaration)
     	\(productDealSelections.declaration)
     }
     """

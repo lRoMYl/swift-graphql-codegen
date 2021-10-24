@@ -14,9 +14,7 @@ protocol GraphQLRequesting: Encodable {
   func operationArguments() -> String
 }
 
-protocol GraphQLSelection: Hashable, CaseIterable {
-  static var requiredDeclaration: String { get }
-}
+protocol GraphQLSelection: Hashable, CaseIterable {}
 
 protocol GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String
@@ -78,7 +76,7 @@ struct GraphQLResponse<ResponseData: Codable>: Codable {
 
 extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
   var declaration: String {
-    if Element.requiredDeclaration.isEmpty, count == 0 {
+    if count == 0 {
       return Element.allCases.reduce(into: "") { $0 += "\n  \($1.rawValue)" }
     } else {
       return reduce(into: "") { $0 += "\n  \($1.rawValue)" }

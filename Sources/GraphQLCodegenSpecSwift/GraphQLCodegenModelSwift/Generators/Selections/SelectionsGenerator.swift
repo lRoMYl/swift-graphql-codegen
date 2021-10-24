@@ -119,20 +119,10 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
     let selectionFragmentMap = try structures.map {
       let possibleTypes = $0.possibleTypes
-      let requiredDeclaration: String
       let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
         : "\t\\(\($0.name.camelCase).declaration)"
       let fragmentDeclaration: String
-
-      if
-        !$0.requiredFields(selectionMap: selectionMap).isEmpty,
-        let selectionName = try entityNameProvider.selectionName(structure: $0)
-      {
-        requiredDeclaration = "\t\\(\(selectionName).requiredDeclaration)"
-      } else {
-        requiredDeclaration = ""
-      }
 
       if possibleTypes.count > 1 {
         fragmentDeclaration = """
@@ -149,7 +139,6 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       }
 
       let fragmentContent: [String] = [
-        requiredDeclaration,
         selectableDeclaration,
         fragmentDeclaration
       ].filter { !$0.isEmpty }
@@ -468,13 +457,6 @@ extension SelectionsGenerator {
   ) throws -> String {
     try fieldMaps.map {
       let interfaceFragmentCode: String
-      let requiredFields: String
-
-      if let selectionName = try entityNameProvider.selectionName(for: $0) {
-        requiredFields = "\t\\(\(selectionName).requiredDeclaration)"
-      } else {
-        requiredFields = ""
-      }
 
       let returnTypeSelectableFields = try $0.returnTypeSelectableFields(
         schemaMap: schemaMap,
@@ -505,7 +487,6 @@ extension SelectionsGenerator {
         : "\t\\(\(fieldTypeName.camelCase)Selections.declaration)"
 
       let fragmentContent: [String] = [
-        requiredFields,
         selectionDeclaration,
         interfaceFragmentCode
       ].filter { !$0.isEmpty }

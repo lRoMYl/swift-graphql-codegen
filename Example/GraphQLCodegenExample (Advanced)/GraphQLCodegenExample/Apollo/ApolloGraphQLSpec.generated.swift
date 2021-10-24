@@ -758,9 +758,6 @@ struct TripsBookedSubscriptionResponse: Codable {
 // MARK: - GraphQLSelection
 
 enum LaunchConnectionSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case cursor
   case hasMore
   case launches = """
@@ -771,9 +768,6 @@ enum LaunchConnectionSelection: String, GraphQLSelection {
 }
 
 enum LaunchSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case id
   case isBooked
   case mission = """
@@ -790,26 +784,17 @@ enum LaunchSelection: String, GraphQLSelection {
 }
 
 enum MissionSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case missionPatch
   case name
 }
 
 enum RocketSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case id
   case name
   case type
 }
 
 enum UserSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case email
   case id
   case profileImage
@@ -821,9 +806,6 @@ enum UserSelection: String, GraphQLSelection {
 }
 
 enum TripUpdateResponseSelection: String, GraphQLSelection {
-  static let requiredDeclaration = """
-  """
-
   case launches = """
   launches {
     ...LaunchFragment
@@ -950,28 +932,24 @@ struct LaunchesApolloQuerySelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let launchConnectionSelectionsDeclaration = """
     fragment LaunchConnectionFragment on LaunchConnection {
-    	\(LaunchConnectionSelection.requiredDeclaration)
     	\(launchConnectionSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
@@ -1018,21 +996,18 @@ struct LaunchApolloQuerySelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
@@ -1081,28 +1056,24 @@ struct MeApolloQuerySelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
 
     let userSelectionsDeclaration = """
     fragment UserFragment on User {
-    	\(UserSelection.requiredDeclaration)
     	\(userSelections.declaration)
     }
     """
@@ -1254,28 +1225,24 @@ struct BookTripsApolloMutationSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
 
     let tripUpdateResponseSelectionsDeclaration = """
     fragment TripUpdateResponseFragment on TripUpdateResponse {
-    	\(TripUpdateResponseSelection.requiredDeclaration)
     	\(tripUpdateResponseSelections.declaration)
     }
     """
@@ -1325,28 +1292,24 @@ struct CancelTripApolloMutationSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
 
     let tripUpdateResponseSelectionsDeclaration = """
     fragment TripUpdateResponseFragment on TripUpdateResponse {
-    	\(TripUpdateResponseSelection.requiredDeclaration)
     	\(tripUpdateResponseSelections.declaration)
     }
     """
@@ -1404,28 +1367,24 @@ struct UploadProfileImageApolloMutationSelections: GraphQLSelections {
   func declaration(with rootSelectionKeys: Set<String>) -> String {
     let launchSelectionsDeclaration = """
     fragment LaunchFragment on Launch {
-    	\(LaunchSelection.requiredDeclaration)
     	\(launchSelections.declaration)
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment MissionFragment on Mission {
-    	\(MissionSelection.requiredDeclaration)
     	\(missionSelections.declaration)
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment RocketFragment on Rocket {
-    	\(RocketSelection.requiredDeclaration)
     	\(rocketSelections.declaration)
     }
     """
 
     let userSelectionsDeclaration = """
     fragment UserFragment on User {
-    	\(UserSelection.requiredDeclaration)
     	\(userSelections.declaration)
     }
     """
