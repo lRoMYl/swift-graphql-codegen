@@ -29,8 +29,8 @@ Supports GraphQL Native Feature
 - [x] Mutation
 - [x] Subscription; Partial support, request/response/respository/resource are generated but DH ApiClient doesn't have native support for WebSocket yet
 - [x] Introspection
-- [ ] Root level query [WIP]
-- [ ] Directive, not supported as this is not possible to be done on codegen level.
+- [x] Root level query
+- [ ] Directive, no plan to support it atm.
 
 Support DH Custom Feature
 - [x] SPM package
@@ -48,6 +48,13 @@ Support DH Custom Feature
 - [x] DH flavor APIClient
 - [x] Provide service dependency injection for DH flavor APIClient
 - [x] DHSwift subcommand to simplify code generation
+- [x] Mapper class, the mapping logic will also be used to compute the selections automatically
+
+TODO
+- [ ] Nested field selection with arguments is not handled yet
+- [ ] ApiClientPrefix needs to be removed from EntityNameMap
+- [ ] Ramp up test cases
+- [ ] Ramp up documentation
 
 ## Installation
 ```
@@ -102,6 +109,7 @@ In `Advanced Example`, you can look at the `Makefile` to see how to use `dh-grap
 ```
 make codegen-groceries
 make codegen-starwars
+make codegen-appolo
 ```
 
 In `Basic Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
@@ -112,13 +120,37 @@ make codegen-groceries
 ---
 
 ### Sample Query Code
+
+Optional mapper class can be used to defined how to map the response model into application/domain model.
+
+The mapper would then generate the selections based on which field will be used for the mapping to query only the fields used during the mapping logic.
+
+e.g. 
+- `VenderResponseModel` have 10 fields; `id`, `name`, `source` and etc.
+- In the example below, we have a `Vendor` application/model which is used within the app
+- Define which fields in `VendorResponseModel` are required to populate the `Vendor` domain model, in this case example only 2 fields are are used.
+- The mapper class will compute all the selections used for this mapping and create a selections based on that, in this case 2 selections
+- The api call will only request for only `2` fields although the response model have `10` fields.
+- Using the mapper, we can guarantee the code to be build-time safe. (Unless if there is a bug in the generated code)
+- However, using mapper is optional as this is a separate module but mapping and selections generation will need to be done manually and there is a risk of selections not being the same as the field expected from the response.
+
 ```
 let request = VendorQueryRequest(
   name: "vendor name", // Argument1 is code-generated
   country: .sg,  // Argument2 is code-generated
 )
 
-repository.vendor(with: request) { ... }
+let mapper = VendorSelectionMapper { decoder in
+  try Vendor(
+    id: try decoder.id(),
+    name: try decoder.name()
+  )
+}
+
+let vendor = apiClient.vendor(with: request, selections: mapper.selections)
+  .map { response in
+    return try mapper.map(response: responseModel)
+  }
 ```
 
 ---
@@ -133,7 +165,6 @@ repository.vendor(with: request) { ... }
 
 ```JSON
 {
-  "namespace": "Groceries",
   "apiHeaders": {
     "authorization": "aasd8uioj213+="
   },
@@ -144,10 +175,7 @@ repository.vendor(with: request) { ... }
     "Upload": "String"
   },
   "selectionMap": {
-    "Discount": {
-      "required": ["type"],
-      "selectable": []
-    }
+    "Discount": ["type"]
   },
   "entityNameMap": {
     "request": "CustomRequestEntityName"

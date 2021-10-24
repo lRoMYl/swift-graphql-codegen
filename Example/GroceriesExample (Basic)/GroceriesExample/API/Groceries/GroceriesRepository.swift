@@ -39,7 +39,40 @@ final class GroceriesRepository {
     }
   }
 
-  func campaignsWithoutUsingMapper(
+  func campaignsWithCustomMappingExample(
+    with parameters: CampaignsQueryRequest
+  ) -> Single<Campaign?> {
+    let mapper = CampaignsQueryMapper { decoder in
+      Campaign(
+        attributes: try decoder.campaignAttributes(
+          mapper: { decoder in
+            CampaignAttribute(
+              id: try decoder.id(),
+              name: "",
+              customVariableNotInResponse: "",
+              source: try decoder.source(mapper: { CampaignAttribute.Source(with: $0) }),
+              responseSource: ._unknown("")
+            )
+          }
+        )?.compactMap { $0 },
+        productDeals: nil
+      )
+    }
+
+    return apiClient.campaigns(
+      with: parameters,
+      selections: mapper.selections
+    )
+    .map {
+      guard let responseModel = $0.data?.campaigns else {
+        throw GroceriesRepositoryError.missingData
+      }
+
+      return try mapper.map(response: responseModel)
+    }
+  }
+
+  func campaignsWithoutUsingMapperExample(
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign?> {
     return apiClient.campaigns(
