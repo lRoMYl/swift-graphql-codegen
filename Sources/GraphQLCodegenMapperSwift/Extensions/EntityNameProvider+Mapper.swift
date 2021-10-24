@@ -7,27 +7,25 @@
 
 import Foundation
 import GraphQLAST
+import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 import GraphQLCodegenUtil
 
 extension EntityNameProviding {
-  func selectionDecoderName(type: ObjectType) throws -> String {
-    "\(type.name.pascalCase)SelectionDecoder"
-  }
-
-  func selectionDecoderName(type: InterfaceType) throws -> String {
-    "\(type.name.pascalCase)SelectionDecoder"
-  }
-
-  func selectionDecoderName(type: UnionType) throws -> String {
-    "\(type.name.pascalCase)SelectionDecoder"
+  func selectionDecoderName(type: NamedTypeProtocol) throws -> String? {
+    switch type.kind {
+    case .object, .union, .interface:
+      return "\(type.name.pascalCase)SelectionDecoder"
+    case .enumeration, .inputObject, .scalar:
+      return nil
+    }
   }
 
   func selectionDecoderName(outputRef: OutputRef) throws -> String? {
     switch outputRef {
-    case let .object(name):
-      return "\(name.pascalCase)SelectionDecoder"
-    case .enum, .interface, .scalar, .union:
+    case .object, .union, .interface:
+      return "\(outputRef.name.pascalCase)SelectionDecoder"
+    case .enum, .scalar:
       return nil
     }
   }

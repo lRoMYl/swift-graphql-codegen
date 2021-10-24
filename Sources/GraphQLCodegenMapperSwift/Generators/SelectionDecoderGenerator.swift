@@ -88,9 +88,11 @@ struct SelectionDecoderGenerator: Generating {
     }.lines
 
     let objectCode = try schema.objects.compactMap { objectType in
-      guard !objectType.isOperation else { return nil }
+      guard
+        !objectType.isOperation,
+        let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: objectType)
+      else { return nil }
 
-      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: objectType)
       let responseName = try entityNameProvider.name(for: objectType)
 
       let nestedFields: [Field] = (
@@ -112,7 +114,12 @@ struct SelectionDecoderGenerator: Generating {
     }.lines
 
     let interfaceCode = try schema.interfaces.compactMap { interfaceType in
-      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: interfaceType)
+      guard
+        let selectionDecoderName = try entityNameProvider.selectionDecoderName(
+          type: interfaceType
+        )
+      else { return nil }
+
       let responseName = try entityNameProvider.name(for: interfaceType)
 
       let possibleObjectTypes = try interfaceType.possibleTypes.compactMap {
@@ -143,7 +150,12 @@ struct SelectionDecoderGenerator: Generating {
     }.lines
 
     let unionCode = try schema.unions.compactMap { unionType in
-      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: unionType)
+      guard
+        let selectionDecoderName = try entityNameProvider.selectionDecoderName(
+          type: unionType
+        )
+      else { return nil }
+
       let responseName = try entityNameProvider.name(for: unionType)
 
       let possibleObjectTypes = try unionType.possibleTypes.compactMap {
@@ -262,7 +274,13 @@ private extension SelectionDecoderGenerator {
       let mapperCode: String
 
       if let returnObjectType = try field.returnObjectType(schemaMap: schemaMap) {
-        mapperCode = try entityNameProvider.selectionDecoderName(type: returnObjectType)
+        guard let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: returnObjectType) else {
+          throw SelectionDecoderGeneratorError.missingImplementation(
+            context: "Missing decoder name implemantation at \(#function)"
+          )
+        }
+
+        mapperCode = selectionDecoderName
       } else {
         mapperCode = try entityNameProvider.name(for: field.type.namedType)
       }
