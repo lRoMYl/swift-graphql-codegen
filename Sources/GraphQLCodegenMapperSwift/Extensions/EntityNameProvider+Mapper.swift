@@ -15,6 +15,14 @@ extension EntityNameProviding {
     "\(type.name.pascalCase)SelectionDecoder"
   }
 
+  func selectionDecoderName(type: InterfaceType) throws -> String {
+    "\(type.name.pascalCase)SelectionDecoder"
+  }
+
+  func selectionDecoderName(type: UnionType) throws -> String {
+    "\(type.name.pascalCase)SelectionDecoder"
+  }
+
   func selectionDecoderName(outputRef: OutputRef) throws -> String? {
     switch outputRef {
     case let .object(name):

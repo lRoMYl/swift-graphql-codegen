@@ -52,6 +52,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.initializerGenerator = RequestParameterInitializerGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
+      selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
     self.operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
@@ -89,7 +90,7 @@ private extension RequestParameterGenerator {
   ) throws -> [String] {
     let returnObject = try operation.returnObject()
 
-    var result: [String] = try returnObject.fields.map { field in
+    var result: [String] = try returnObject.selectableFields(selectionMap: selectionMap).map { field in
       try requestParameterDeclaration(
         operation: operation,
         schema: schema,
@@ -157,7 +158,7 @@ private extension RequestParameterGenerator {
     schema _: Schema
   ) throws -> String {
     let returnObject = try operation.returnObject()
-    let fields = returnObject.fields
+    let fields = returnObject.selectableFields(selectionMap: selectionMap)
 
     let requestParameterName = "\(try entityNameProvider.requestParameterName(with: operation))"
     let fieldsCode: String = try fields.map { field in

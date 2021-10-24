@@ -54,8 +54,8 @@ extension DiscountTypeEnumResponseModel {
 extension BenefitResponseModel {
   static func selectionMock() -> Self {
     BenefitResponseModel(
-      quantity: .selectionMock(),
-      productId: .selectionMock()
+      productId: .selectionMock(),
+      quantity: .selectionMock()
     )
   }
 }
@@ -63,14 +63,14 @@ extension BenefitResponseModel {
 extension CampaignAttributeResponseModel {
   static func selectionMock() -> Self {
     CampaignAttributeResponseModel(
-      benefits: [.selectionMock()],
       autoApplied: .selectionMock(),
-      source: .selectionMock(),
+      benefits: [.selectionMock()],
       campaignType: .selectionMock(),
-      redemptionLimit: .selectionMock(),
+      description: .selectionMock(),
       id: .selectionMock(),
       name: .selectionMock(),
-      description: .selectionMock()
+      redemptionLimit: .selectionMock(),
+      source: .selectionMock()
     )
   }
 }
@@ -87,9 +87,9 @@ extension CampaignsResponseModel {
 extension DealResponseModel {
   static func selectionMock() -> Self {
     DealResponseModel(
-      triggerQuantity: .selectionMock(),
+      campaignId: .selectionMock(),
       discountTag: .selectionMock(),
-      campaignId: .selectionMock()
+      triggerQuantity: .selectionMock()
     )
   }
 }
@@ -194,18 +194,6 @@ class BenefitSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func quantity() throws -> Int {
-    if populateSelections {
-      benefitSelections.insert(.quantity)
-    }
-
-    guard let value = response.quantity else {
-      throw GroceriesMapperError.missingData(context: "quantity not found")
-    }
-
-    return value
-  }
-
   func productId() throws -> String {
     if populateSelections {
       benefitSelections.insert(.productId)
@@ -213,6 +201,18 @@ class BenefitSelectionDecoder {
 
     guard let value = response.productId else {
       throw GroceriesMapperError.missingData(context: "productID not found")
+    }
+
+    return value
+  }
+
+  func quantity() throws -> Int {
+    if populateSelections {
+      benefitSelections.insert(.quantity)
+    }
+
+    guard let value = response.quantity else {
+      throw GroceriesMapperError.missingData(context: "quantity not found")
     }
 
     return value
@@ -228,6 +228,18 @@ class CampaignAttributeSelectionDecoder {
   init(response: CampaignAttributeResponseModel, populateSelections: Bool = false) {
     self.response = response
     self.populateSelections = populateSelections
+  }
+
+  func autoApplied() throws -> Bool {
+    if populateSelections {
+      campaignAttributeSelections.insert(.autoApplied)
+    }
+
+    guard let value = response.autoApplied else {
+      throw GroceriesMapperError.missingData(context: "autoApplied not found")
+    }
+
+    return value
   }
 
   func benefits<T>(mapper: (BenefitSelectionDecoder) throws -> T) throws -> [T]? {
@@ -253,30 +265,6 @@ class CampaignAttributeSelectionDecoder {
     }
   }
 
-  func autoApplied() throws -> Bool {
-    if populateSelections {
-      campaignAttributeSelections.insert(.autoApplied)
-    }
-
-    guard let value = response.autoApplied else {
-      throw GroceriesMapperError.missingData(context: "autoApplied not found")
-    }
-
-    return value
-  }
-
-  func source<T>(mapper: (CampaignSourceEnumResponseModel) throws -> T) throws -> T {
-    if populateSelections {
-      campaignAttributeSelections.insert(.source)
-    }
-
-    guard let value = response.source else {
-      throw GroceriesMapperError.missingData(context: "source not found")
-    }
-
-    return try mapper(value)
-  }
-
   func campaignType<T>(mapper: (CampaignTypeEnumResponseModel) throws -> T) throws -> T {
     if populateSelections {
       campaignAttributeSelections.insert(.campaignType)
@@ -289,13 +277,13 @@ class CampaignAttributeSelectionDecoder {
     return try mapper(value)
   }
 
-  func redemptionLimit() throws -> Double {
+  func description() throws -> String {
     if populateSelections {
-      campaignAttributeSelections.insert(.redemptionLimit)
+      campaignAttributeSelections.insert(.description)
     }
 
-    guard let value = response.redemptionLimit else {
-      throw GroceriesMapperError.missingData(context: "redemptionLimit not found")
+    guard let value = response.description else {
+      throw GroceriesMapperError.missingData(context: "description not found")
     }
 
     return value
@@ -325,16 +313,28 @@ class CampaignAttributeSelectionDecoder {
     return value
   }
 
-  func description() throws -> String {
+  func redemptionLimit() throws -> Double {
     if populateSelections {
-      campaignAttributeSelections.insert(.description)
+      campaignAttributeSelections.insert(.redemptionLimit)
     }
 
-    guard let value = response.description else {
-      throw GroceriesMapperError.missingData(context: "description not found")
+    guard let value = response.redemptionLimit else {
+      throw GroceriesMapperError.missingData(context: "redemptionLimit not found")
     }
 
     return value
+  }
+
+  func source<T>(mapper: (CampaignSourceEnumResponseModel) throws -> T) throws -> T {
+    if populateSelections {
+      campaignAttributeSelections.insert(.source)
+    }
+
+    guard let value = response.source else {
+      throw GroceriesMapperError.missingData(context: "source not found")
+    }
+
+    return try mapper(value)
   }
 }
 
@@ -419,13 +419,13 @@ class DealSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func triggerQuantity() throws -> Int {
+  func campaignId() throws -> String {
     if populateSelections {
-      dealSelections.insert(.triggerQuantity)
+      dealSelections.insert(.campaignId)
     }
 
-    guard let value = response.triggerQuantity else {
-      throw GroceriesMapperError.missingData(context: "triggerQuantity not found")
+    guard let value = response.campaignId else {
+      throw GroceriesMapperError.missingData(context: "campaignID not found")
     }
 
     return value
@@ -443,13 +443,13 @@ class DealSelectionDecoder {
     return value
   }
 
-  func campaignId() throws -> String {
+  func triggerQuantity() throws -> Int {
     if populateSelections {
-      dealSelections.insert(.campaignId)
+      dealSelections.insert(.triggerQuantity)
     }
 
-    guard let value = response.campaignId else {
-      throw GroceriesMapperError.missingData(context: "campaignID not found")
+    guard let value = response.triggerQuantity else {
+      throw GroceriesMapperError.missingData(context: "triggerQuantity not found")
     }
 
     return value

@@ -60,7 +60,8 @@ public struct GraphQLCodegenMapperSwift {
       ),
       RequestMapperGenerator(
         entityNameProvider: entityNameProvider,
-        scalarMap: self.scalarMap
+        scalarMap: self.scalarMap,
+        selectionMap: self.selectionMap
       )
     ]
   }

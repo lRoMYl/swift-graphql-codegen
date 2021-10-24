@@ -127,46 +127,46 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
 // MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
-  let quantity: Optional<Int>
-
   let productId: Optional<String>
+
+  let quantity: Optional<Int>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case quantity
     case productId = "productID"
+    case quantity
   }
 }
 
 struct CampaignAttributeResponseModel: Codable {
-  let benefits: Optional<[BenefitResponseModel]?>
-
   let autoApplied: Optional<Bool>
 
-  let source: Optional<CampaignSourceEnumResponseModel>
+  let benefits: Optional<[BenefitResponseModel]?>
 
   let campaignType: Optional<CampaignTypeEnumResponseModel>
 
-  let redemptionLimit: Optional<Double>
+  let description: Optional<String>
 
   let id: Optional<String>
 
   let name: Optional<String>
 
-  let description: Optional<String>
+  let redemptionLimit: Optional<Double>
+
+  let source: Optional<CampaignSourceEnumResponseModel>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case benefits
     case autoApplied
-    case source
+    case benefits
     case campaignType
-    case redemptionLimit
+    case description
     case id
     case name
-    case description
+    case redemptionLimit
+    case source
   }
 }
 
@@ -184,20 +184,20 @@ struct CampaignsResponseModel: Codable {
 }
 
 struct DealResponseModel: Codable {
-  /// buy 3 get 1 free
-  let triggerQuantity: Optional<Int>
+  let campaignId: Optional<String>
 
   /// things that would change across products for a campaign
   let discountTag: Optional<String>
 
-  let campaignId: Optional<String>
+  /// buy 3 get 1 free
+  let triggerQuantity: Optional<Int>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case triggerQuantity
-    case discountTag
     case campaignId = "campaignID"
+    case discountTag
+    case triggerQuantity
   }
 }
 

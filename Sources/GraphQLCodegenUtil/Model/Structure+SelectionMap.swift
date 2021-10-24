@@ -37,6 +37,6 @@ public extension Structure {
   func selectableFields(selectionMap: SelectionMap?) -> [Field] {
     fields.filter { field in
       isSelectable(field: field, selectionMap: selectionMap)
-    }.sorted()
+    }.sorted(by: .name)
   }
 }

@@ -78,6 +78,7 @@ public struct GraphQLCodegenModelSwift {
       ),
       ResponseCodeGenerator(
         entityNameMap: self.entityNameMap,
+        selectionMap: self.selectionMap,
         entityNameProvider: entityNameProvider
       ),
       SelectionGenerator(

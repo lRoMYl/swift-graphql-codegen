@@ -19,29 +19,3 @@ public extension SelectionMapResponse {
     )
   }
 }
-
-public struct SelectionItemMapResponse: Decodable {
-  public let fields: Set<String>
-
-  enum CodingKeys: String, CodingKey {
-    case fields
-  }
-
-  public init(
-    fields: Set<String>
-  ) {
-    self.fields = fields
-  }
-
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    fields = try container.decodeIfPresent(Set<String>.self, forKey: .fields) ?? []
-  }
-
-  public func merging(other: SelectionItemMapResponse) -> SelectionItemMapResponse {
-    SelectionItemMapResponse(
-      fields: fields.union(other.fields)
-    )
-  }
-}

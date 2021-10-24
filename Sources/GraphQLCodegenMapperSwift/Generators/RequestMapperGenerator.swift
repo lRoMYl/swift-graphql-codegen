@@ -14,14 +14,16 @@ import GraphQLCodegenNameSwift
 struct RequestMapperGenerator: Generating {
   private let entityNameProvider: EntityNameProviding
   private let scalarMap: ScalarMap
+  private let selectionMap: SelectionMap?
 
   private enum Constants {
     static let mapperBlock = "MapperBlock"
   }
 
-  init(entityNameProvider: EntityNameProviding, scalarMap: ScalarMap) {
+  init(entityNameProvider: EntityNameProviding, scalarMap: ScalarMap, selectionMap: SelectionMap?) {
     self.entityNameProvider = entityNameProvider
     self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
   }
 
   func code(schema: Schema) throws -> String {
@@ -37,8 +39,12 @@ struct RequestMapperGenerator: Generating {
         let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
-        let nestedFields: [Field] = (
-          try field.nestedFields(objects: schema.objects, scalarMap: scalarMap, excluded: [])
+        let nestedFields: [Field] = try field.nestedFields(
+          objects: schema.objects,
+          scalarMap: scalarMap,
+          excluded: [],
+          selectionMap: selectionMap,
+          sortType: .namedType
         )
 
         let selectionsMemberwiseInitializer = try nestedFields.compactMap { field in

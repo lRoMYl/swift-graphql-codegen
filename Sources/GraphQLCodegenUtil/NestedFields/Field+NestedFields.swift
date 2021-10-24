@@ -12,7 +12,9 @@ public extension Field {
   func nestedFields(
     objects: [ObjectType],
     scalarMap: ScalarMap,
-    excluded: [Field]
+    excluded: [Field],
+    selectionMap: SelectionMap?,
+    sortType: FieldSortType = .name
   ) throws -> [Field] {
     guard
       let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
@@ -29,7 +31,7 @@ public extension Field {
       break
     }
 
-    try returnObjectType.fields.filter {
+    try returnObjectType.selectableFields(selectionMap: selectionMap).filter {
       $0.type.namedType != self.type.namedType && !excluded.contains($0)
     }.forEach {
       switch $0.type {
@@ -45,7 +47,8 @@ public extension Field {
           contentsOf: try $0.nestedFields(
             objects: objects,
             scalarMap: scalarMap,
-            excluded: excluded + fields
+            excluded: excluded + fields,
+            selectionMap: selectionMap
           )
         )
       }
@@ -53,6 +56,6 @@ public extension Field {
 
     return fields
       .unique(by: { $0.type.namedType.name })
-      .sorted()
+      .sorted(by: sortType)
   }
 }

@@ -50,10 +50,10 @@ extension CacheControlScopeApolloEnumModel {
 extension QueryApolloModel {
   static func selectionMock() -> Self {
     QueryApolloModel(
-      tripsBooked: .selectionMock(),
       launch: .selectionMock(),
       launches: .selectionMock(),
-      me: .selectionMock()
+      me: .selectionMock(),
+      tripsBooked: .selectionMock()
     )
   }
 }
@@ -61,9 +61,9 @@ extension QueryApolloModel {
 extension LaunchConnectionApolloModel {
   static func selectionMock() -> Self {
     LaunchConnectionApolloModel(
+      cursor: .selectionMock(),
       hasMore: .selectionMock(),
-      launches: [.selectionMock()],
-      cursor: .selectionMock()
+      launches: [.selectionMock()]
     )
   }
 }
@@ -71,8 +71,8 @@ extension LaunchConnectionApolloModel {
 extension LaunchApolloModel {
   static func selectionMock() -> Self {
     LaunchApolloModel(
-      isBooked: .selectionMock(),
       id: .selectionMock(),
+      isBooked: .selectionMock(),
       mission: .selectionMock(),
       rocket: .selectionMock(),
       site: .selectionMock()
@@ -83,8 +83,8 @@ extension LaunchApolloModel {
 extension MissionApolloModel {
   static func selectionMock() -> Self {
     MissionApolloModel(
-      name: .selectionMock(),
-      missionPatch: .selectionMock()
+      missionPatch: .selectionMock(),
+      name: .selectionMock()
     )
   }
 }
@@ -102,10 +102,10 @@ extension RocketApolloModel {
 extension UserApolloModel {
   static func selectionMock() -> Self {
     UserApolloModel(
-      id: .selectionMock(),
-      trips: [.selectionMock()],
       email: .selectionMock(),
-      profileImage: .selectionMock()
+      id: .selectionMock(),
+      profileImage: .selectionMock(),
+      trips: [.selectionMock()]
     )
   }
 }
@@ -113,9 +113,9 @@ extension UserApolloModel {
 extension MutationApolloModel {
   static func selectionMock() -> Self {
     MutationApolloModel(
-      login: .selectionMock(),
       bookTrips: .selectionMock(),
       cancelTrip: .selectionMock(),
+      login: .selectionMock(),
       uploadProfileImage: .selectionMock()
     )
   }
@@ -124,9 +124,9 @@ extension MutationApolloModel {
 extension TripUpdateResponseApolloModel {
   static func selectionMock() -> Self {
     TripUpdateResponseApolloModel(
-      success: .selectionMock(),
       launches: [.selectionMock()],
-      message: .selectionMock()
+      message: .selectionMock(),
+      success: .selectionMock()
     )
   }
 }
@@ -152,6 +152,18 @@ class LaunchesQueryResponseSelectionDecoder {
   init(response: LaunchConnectionApolloModel, populateSelections: Bool = false) {
     self.response = response
     self.populateSelections = populateSelections
+  }
+
+  func cursor() throws -> String {
+    if populateSelections {
+      launchConnectionSelections.insert(.cursor)
+    }
+
+    guard let value = response.cursor else {
+      throw ApolloMapperError.missingData(context: "cursor not found")
+    }
+
+    return value
   }
 
   func hasMore() throws -> Bool {
@@ -190,18 +202,6 @@ class LaunchesQueryResponseSelectionDecoder {
       }
     }
   }
-
-  func cursor() throws -> String {
-    if populateSelections {
-      launchConnectionSelections.insert(.cursor)
-    }
-
-    guard let value = response.cursor else {
-      throw ApolloMapperError.missingData(context: "cursor not found")
-    }
-
-    return value
-  }
 }
 
 class LaunchQueryResponseSelectionDecoder {
@@ -216,18 +216,6 @@ class LaunchQueryResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func isBooked() throws -> Bool {
-    if populateSelections {
-      launchSelections.insert(.isBooked)
-    }
-
-    guard let value = response.isBooked else {
-      throw ApolloMapperError.missingData(context: "isBooked not found")
-    }
-
-    return value
-  }
-
   func id() throws -> String {
     if populateSelections {
       launchSelections.insert(.id)
@@ -235,6 +223,18 @@ class LaunchQueryResponseSelectionDecoder {
 
     guard let value = response.id else {
       throw ApolloMapperError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func isBooked() throws -> Bool {
+    if populateSelections {
+      launchSelections.insert(.isBooked)
+    }
+
+    guard let value = response.isBooked else {
+      throw ApolloMapperError.missingData(context: "isBooked not found")
     }
 
     return value
@@ -312,43 +312,6 @@ class MeQueryResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func id() throws -> String {
-    if populateSelections {
-      userSelections.insert(.id)
-    }
-
-    guard let value = response.id else {
-      throw ApolloMapperError.missingData(context: "id not found")
-    }
-
-    return value
-  }
-
-  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
-    if populateSelections {
-      userSelections.insert(.trips)
-    }
-
-    guard let values = response.trips else {
-      throw ApolloMapperError.missingData(context: "trips not found")
-    }
-
-    return try values.compactMap { value in
-      if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
-        let result = try mapper(decoder)
-
-        launchSelections = decoder.launchSelections
-        missionSelections = decoder.missionSelections
-        rocketSelections = decoder.rocketSelections
-
-        return result
-      } else {
-        return nil
-      }
-    }
-  }
-
   func email() throws -> String {
     if populateSelections {
       userSelections.insert(.email)
@@ -356,6 +319,18 @@ class MeQueryResponseSelectionDecoder {
 
     guard let value = response.email else {
       throw ApolloMapperError.missingData(context: "email not found")
+    }
+
+    return value
+  }
+
+  func id() throws -> String {
+    if populateSelections {
+      userSelections.insert(.id)
+    }
+
+    guard let value = response.id else {
+      throw ApolloMapperError.missingData(context: "id not found")
     }
 
     return value
@@ -374,6 +349,31 @@ class MeQueryResponseSelectionDecoder {
       return value
     } else {
       return nil
+    }
+  }
+
+  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
+    if populateSelections {
+      userSelections.insert(.trips)
+    }
+
+    guard let values = response.trips else {
+      throw ApolloMapperError.missingData(context: "trips not found")
+    }
+
+    return try values.compactMap { value in
+      if let value = value {
+        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let result = try mapper(decoder)
+
+        missionSelections = decoder.missionSelections
+        rocketSelections = decoder.rocketSelections
+        launchSelections = decoder.launchSelections
+
+        return result
+      } else {
+        return nil
+      }
     }
   }
 }
@@ -391,18 +391,6 @@ class BookTripsMutationResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func success() throws -> Bool {
-    if populateSelections {
-      tripUpdateResponseSelections.insert(.success)
-    }
-
-    guard let value = response.success else {
-      throw ApolloMapperError.missingData(context: "success not found")
-    }
-
-    return value
-  }
-
   func launches<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?]? {
     if populateSelections {
       tripUpdateResponseSelections.insert(.launches)
@@ -446,6 +434,18 @@ class BookTripsMutationResponseSelectionDecoder {
     } else {
       return nil
     }
+  }
+
+  func success() throws -> Bool {
+    if populateSelections {
+      tripUpdateResponseSelections.insert(.success)
+    }
+
+    guard let value = response.success else {
+      throw ApolloMapperError.missingData(context: "success not found")
+    }
+
+    return value
   }
 }
 
@@ -462,18 +462,6 @@ class CancelTripMutationResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func success() throws -> Bool {
-    if populateSelections {
-      tripUpdateResponseSelections.insert(.success)
-    }
-
-    guard let value = response.success else {
-      throw ApolloMapperError.missingData(context: "success not found")
-    }
-
-    return value
-  }
-
   func launches<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?]? {
     if populateSelections {
       tripUpdateResponseSelections.insert(.launches)
@@ -518,6 +506,18 @@ class CancelTripMutationResponseSelectionDecoder {
       return nil
     }
   }
+
+  func success() throws -> Bool {
+    if populateSelections {
+      tripUpdateResponseSelections.insert(.success)
+    }
+
+    guard let value = response.success else {
+      throw ApolloMapperError.missingData(context: "success not found")
+    }
+
+    return value
+  }
 }
 
 class UploadProfileImageMutationResponseSelectionDecoder {
@@ -533,43 +533,6 @@ class UploadProfileImageMutationResponseSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func id() throws -> String {
-    if populateSelections {
-      userSelections.insert(.id)
-    }
-
-    guard let value = response.id else {
-      throw ApolloMapperError.missingData(context: "id not found")
-    }
-
-    return value
-  }
-
-  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
-    if populateSelections {
-      userSelections.insert(.trips)
-    }
-
-    guard let values = response.trips else {
-      throw ApolloMapperError.missingData(context: "trips not found")
-    }
-
-    return try values.compactMap { value in
-      if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
-        let result = try mapper(decoder)
-
-        launchSelections = decoder.launchSelections
-        missionSelections = decoder.missionSelections
-        rocketSelections = decoder.rocketSelections
-
-        return result
-      } else {
-        return nil
-      }
-    }
-  }
-
   func email() throws -> String {
     if populateSelections {
       userSelections.insert(.email)
@@ -577,6 +540,18 @@ class UploadProfileImageMutationResponseSelectionDecoder {
 
     guard let value = response.email else {
       throw ApolloMapperError.missingData(context: "email not found")
+    }
+
+    return value
+  }
+
+  func id() throws -> String {
+    if populateSelections {
+      userSelections.insert(.id)
+    }
+
+    guard let value = response.id else {
+      throw ApolloMapperError.missingData(context: "id not found")
     }
 
     return value
@@ -597,6 +572,31 @@ class UploadProfileImageMutationResponseSelectionDecoder {
       return nil
     }
   }
+
+  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
+    if populateSelections {
+      userSelections.insert(.trips)
+    }
+
+    guard let values = response.trips else {
+      throw ApolloMapperError.missingData(context: "trips not found")
+    }
+
+    return try values.compactMap { value in
+      if let value = value {
+        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let result = try mapper(decoder)
+
+        missionSelections = decoder.missionSelections
+        rocketSelections = decoder.rocketSelections
+        launchSelections = decoder.launchSelections
+
+        return result
+      } else {
+        return nil
+      }
+    }
+  }
 }
 
 class LaunchConnectionSelectionDecoder {
@@ -610,6 +610,18 @@ class LaunchConnectionSelectionDecoder {
   init(response: LaunchConnectionApolloModel, populateSelections: Bool = false) {
     self.response = response
     self.populateSelections = populateSelections
+  }
+
+  func cursor() throws -> String {
+    if populateSelections {
+      launchConnectionSelections.insert(.cursor)
+    }
+
+    guard let value = response.cursor else {
+      throw ApolloMapperError.missingData(context: "cursor not found")
+    }
+
+    return value
   }
 
   func hasMore() throws -> Bool {
@@ -648,18 +660,6 @@ class LaunchConnectionSelectionDecoder {
       }
     }
   }
-
-  func cursor() throws -> String {
-    if populateSelections {
-      launchConnectionSelections.insert(.cursor)
-    }
-
-    guard let value = response.cursor else {
-      throw ApolloMapperError.missingData(context: "cursor not found")
-    }
-
-    return value
-  }
 }
 
 class LaunchSelectionDecoder {
@@ -674,18 +674,6 @@ class LaunchSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func isBooked() throws -> Bool {
-    if populateSelections {
-      launchSelections.insert(.isBooked)
-    }
-
-    guard let value = response.isBooked else {
-      throw ApolloMapperError.missingData(context: "isBooked not found")
-    }
-
-    return value
-  }
-
   func id() throws -> String {
     if populateSelections {
       launchSelections.insert(.id)
@@ -693,6 +681,18 @@ class LaunchSelectionDecoder {
 
     guard let value = response.id else {
       throw ApolloMapperError.missingData(context: "id not found")
+    }
+
+    return value
+  }
+
+  func isBooked() throws -> Bool {
+    if populateSelections {
+      launchSelections.insert(.isBooked)
+    }
+
+    guard let value = response.isBooked else {
+      throw ApolloMapperError.missingData(context: "isBooked not found")
     }
 
     return value
@@ -767,13 +767,13 @@ class MissionSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func name() throws -> String? {
+  func missionPatch() throws -> String? {
     if populateSelections {
-      missionSelections.insert(.name)
+      missionSelections.insert(.missionPatch)
     }
 
-    guard let value = response.name else {
-      throw ApolloMapperError.missingData(context: "name not found")
+    guard let value = response.missionPatch else {
+      throw ApolloMapperError.missingData(context: "missionPatch not found")
     }
 
     if let value = value {
@@ -783,13 +783,13 @@ class MissionSelectionDecoder {
     }
   }
 
-  func missionPatch() throws -> String? {
+  func name() throws -> String? {
     if populateSelections {
-      missionSelections.insert(.missionPatch)
+      missionSelections.insert(.name)
     }
 
-    guard let value = response.missionPatch else {
-      throw ApolloMapperError.missingData(context: "missionPatch not found")
+    guard let value = response.name else {
+      throw ApolloMapperError.missingData(context: "name not found")
     }
 
     if let value = value {
@@ -868,43 +868,6 @@ class UserSelectionDecoder {
     self.populateSelections = populateSelections
   }
 
-  func id() throws -> String {
-    if populateSelections {
-      userSelections.insert(.id)
-    }
-
-    guard let value = response.id else {
-      throw ApolloMapperError.missingData(context: "id not found")
-    }
-
-    return value
-  }
-
-  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
-    if populateSelections {
-      userSelections.insert(.trips)
-    }
-
-    guard let values = response.trips else {
-      throw ApolloMapperError.missingData(context: "trips not found")
-    }
-
-    return try values.compactMap { value in
-      if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
-        let result = try mapper(decoder)
-
-        launchSelections = decoder.launchSelections
-        missionSelections = decoder.missionSelections
-        rocketSelections = decoder.rocketSelections
-
-        return result
-      } else {
-        return nil
-      }
-    }
-  }
-
   func email() throws -> String {
     if populateSelections {
       userSelections.insert(.email)
@@ -912,6 +875,18 @@ class UserSelectionDecoder {
 
     guard let value = response.email else {
       throw ApolloMapperError.missingData(context: "email not found")
+    }
+
+    return value
+  }
+
+  func id() throws -> String {
+    if populateSelections {
+      userSelections.insert(.id)
+    }
+
+    guard let value = response.id else {
+      throw ApolloMapperError.missingData(context: "id not found")
     }
 
     return value
@@ -932,6 +907,31 @@ class UserSelectionDecoder {
       return nil
     }
   }
+
+  func trips<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?] {
+    if populateSelections {
+      userSelections.insert(.trips)
+    }
+
+    guard let values = response.trips else {
+      throw ApolloMapperError.missingData(context: "trips not found")
+    }
+
+    return try values.compactMap { value in
+      if let value = value {
+        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let result = try mapper(decoder)
+
+        missionSelections = decoder.missionSelections
+        rocketSelections = decoder.rocketSelections
+        launchSelections = decoder.launchSelections
+
+        return result
+      } else {
+        return nil
+      }
+    }
+  }
 }
 
 class TripUpdateResponseSelectionDecoder {
@@ -945,18 +945,6 @@ class TripUpdateResponseSelectionDecoder {
   init(response: TripUpdateResponseApolloModel, populateSelections: Bool = false) {
     self.response = response
     self.populateSelections = populateSelections
-  }
-
-  func success() throws -> Bool {
-    if populateSelections {
-      tripUpdateResponseSelections.insert(.success)
-    }
-
-    guard let value = response.success else {
-      throw ApolloMapperError.missingData(context: "success not found")
-    }
-
-    return value
   }
 
   func launches<T>(mapper: (LaunchSelectionDecoder) throws -> T) throws -> [T?]? {
@@ -1002,6 +990,18 @@ class TripUpdateResponseSelectionDecoder {
     } else {
       return nil
     }
+  }
+
+  func success() throws -> Bool {
+    if populateSelections {
+      tripUpdateResponseSelections.insert(.success)
+    }
+
+    guard let value = response.success else {
+      throw ApolloMapperError.missingData(context: "success not found")
+    }
+
+    return value
   }
 }
 

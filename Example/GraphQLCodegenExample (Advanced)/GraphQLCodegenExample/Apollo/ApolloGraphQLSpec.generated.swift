@@ -81,44 +81,44 @@ enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
 // MARK: - ApolloModel
 
 struct QueryApolloModel: Codable {
-  let tripsBooked: Optional<Int?>
-
   let launch: Optional<LaunchApolloModel?>
 
   let launches: Optional<LaunchConnectionApolloModel>
 
   let me: Optional<UserApolloModel?>
 
+  let tripsBooked: Optional<Int?>
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case tripsBooked
     case launch
     case launches
     case me
+    case tripsBooked
   }
 }
 
 struct LaunchConnectionApolloModel: Codable {
+  let cursor: Optional<String>
+
   let hasMore: Optional<Bool>
 
   let launches: Optional<[LaunchApolloModel?]>
 
-  let cursor: Optional<String>
-
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case cursor
     case hasMore
     case launches
-    case cursor
   }
 }
 
 struct LaunchApolloModel: Codable {
-  let isBooked: Optional<Bool>
-
   let id: Optional<String>
+
+  let isBooked: Optional<Bool>
 
   let mission: Optional<MissionApolloModel?>
 
@@ -129,8 +129,8 @@ struct LaunchApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case isBooked
     case id
+    case isBooked
     case mission
     case rocket
     case site
@@ -138,15 +138,15 @@ struct LaunchApolloModel: Codable {
 }
 
 struct MissionApolloModel: Codable {
-  let name: Optional<String?>
-
   let missionPatch: Optional<String?>
+
+  let name: Optional<String?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case name
     case missionPatch
+    case name
   }
 }
 
@@ -167,56 +167,56 @@ struct RocketApolloModel: Codable {
 }
 
 struct UserApolloModel: Codable {
-  let id: Optional<String>
-
-  let trips: Optional<[LaunchApolloModel?]>
-
   let email: Optional<String>
 
+  let id: Optional<String>
+
   let profileImage: Optional<String?>
+
+  let trips: Optional<[LaunchApolloModel?]>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
-    case trips
     case email
+    case id
     case profileImage
+    case trips
   }
 }
 
 struct MutationApolloModel: Codable {
-  let login: Optional<String?>
-
   let bookTrips: Optional<TripUpdateResponseApolloModel>
 
   let cancelTrip: Optional<TripUpdateResponseApolloModel>
+
+  let login: Optional<String?>
 
   let uploadProfileImage: Optional<UserApolloModel?>
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case login
     case bookTrips
     case cancelTrip
+    case login
     case uploadProfileImage
   }
 }
 
 struct TripUpdateResponseApolloModel: Codable {
-  let success: Optional<Bool>
-
   let launches: Optional<[LaunchApolloModel?]?>
 
   let message: Optional<String?>
 
+  let success: Optional<Bool>
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case success
     case launches
     case message
+    case success
   }
 }
 
@@ -231,6 +231,46 @@ struct SubscriptionApolloModel: Codable {
 }
 
 // MARK: - GraphQLRequesting
+
+/// LaunchApolloQuery
+struct LaunchApolloQuery: GraphQLRequesting {
+  // MARK: - GraphQLRequestType
+
+  let requestType: GraphQLRequestType = .query
+  let rootSelectionKeys: Set<String> = ["LaunchFragment"]
+
+  // MARK: - Arguments
+
+  let id: String
+
+  private enum CodingKeys: String, CodingKey {
+    case id = "launchId"
+  }
+
+  init(
+    id: String
+  ) {
+    self.id = id
+  }
+
+  // MARK: - Operation Definition
+
+  func operationDefinition() -> String {
+    return """
+    launch(
+      id: $launchId
+    ) {
+       ...LaunchFragment
+    }
+    """
+  }
+
+  func operationArguments() -> String {
+    """
+    $launchId: ID!
+    """
+  }
+}
 
 /// LaunchesApolloQuery
 struct LaunchesApolloQuery: GraphQLRequesting {
@@ -278,46 +318,6 @@ struct LaunchesApolloQuery: GraphQLRequesting {
     """
     $launchesPageSize: Int
     $launchesAfter: String
-    """
-  }
-}
-
-/// LaunchApolloQuery
-struct LaunchApolloQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
-  let requestType: GraphQLRequestType = .query
-  let rootSelectionKeys: Set<String> = ["LaunchFragment"]
-
-  // MARK: - Arguments
-
-  let id: String
-
-  private enum CodingKeys: String, CodingKey {
-    case id = "launchId"
-  }
-
-  init(
-    id: String
-  ) {
-    self.id = id
-  }
-
-  // MARK: - Operation Definition
-
-  func operationDefinition() -> String {
-    return """
-    launch(
-      id: $launchId
-    ) {
-       ...LaunchFragment
-    }
-    """
-  }
-
-  func operationArguments() -> String {
-    """
-    $launchId: ID!
     """
   }
 }
@@ -386,15 +386,15 @@ struct ApolloQuery: GraphQLRequesting {
     }
   }
 
-  let launches: LaunchesApolloQuery?
   let launch: LaunchApolloQuery?
+  let launches: LaunchesApolloQuery?
   let me: MeApolloQuery?
   let tripsBooked: TripsBookedApolloQuery?
 
   private var requests: [GraphQLRequesting] {
     let requests: [GraphQLRequesting?] = [
-      launches,
       launch,
+      launches,
       me,
       tripsBooked
     ]
@@ -403,13 +403,13 @@ struct ApolloQuery: GraphQLRequesting {
   }
 
   init(
-    launches: LaunchesApolloQuery? = nil,
     launch: LaunchApolloQuery? = nil,
+    launches: LaunchesApolloQuery? = nil,
     me: MeApolloQuery? = nil,
     tripsBooked: TripsBookedApolloQuery? = nil
   ) {
-    self.launches = launches
     self.launch = launch
+    self.launches = launches
     self.me = me
     self.tripsBooked = tripsBooked
   }
@@ -719,12 +719,12 @@ struct ApolloSubscription: GraphQLRequesting {
   }
 }
 
-struct LaunchesQueryResponse: Codable {
-  let launches: LaunchConnectionApolloModel
-}
-
 struct LaunchQueryResponse: Codable {
   let launch: LaunchApolloModel?
+}
+
+struct LaunchesQueryResponse: Codable {
+  let launches: LaunchConnectionApolloModel
 }
 
 struct MeQueryResponse: Codable {

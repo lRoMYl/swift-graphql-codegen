@@ -12,11 +12,18 @@ import GraphQLCodegenNameSwift
 struct RequestParameterInitializerGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let selectionMap: SelectionMap?
   private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
+  init(
+    scalarMap: ScalarMap,
+    entityNameMap: EntityNameMap,
+    selectionMap: SelectionMap?,
+    entityNameProvider: EntityNameProviding
+  ) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.selectionMap = selectionMap
     self.entityNameProvider = entityNameProvider
   }
 
@@ -41,7 +48,7 @@ struct RequestParameterInitializerGenerator {
   }
 
   func declaration(with operation: GraphQLAST.Operation) throws -> String {
-    let fields = operation.type.fields
+    let fields = operation.type.selectableFields(selectionMap: selectionMap)
     let arguments = try fields.map {
       "\($0.name.camelCase): \(try entityNameProvider.requestParameterName(for: $0, with: operation))? = nil"
     }

@@ -224,12 +224,8 @@ extension SelectionsGenerator {
       throw SelectionsGeneratorError.missingReturnType(context: "No ObjectType type found for field \(field.name)")
     }
 
-//    let fieldScalarType = try field.type.namedType.scalarType(scalarMap: scalarMap)
-//    var fieldMap: FieldMap = [fieldScalarType: field]
-//    fieldMap.merge(try returnObjectType.nestedFieldMap(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
-
-    // Sort field map to ensure the generated code sequence is always consistent
-    let nestedFields = try returnObjectType.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap) //fieldMap.sorted(by: { $0.key < $1.key })
+    let nestedFields = try returnObjectType
+      .nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap, selectionMap: selectionMap)
 
     return try structureDeclaration(
       operation: operation,
@@ -253,24 +249,19 @@ extension SelectionsGenerator {
       throw SelectionsGeneratorError.missingReturnType(context: "No InterfaceType type found for field \(field.name)")
     }
 
-//    var fieldMap = FieldMap()
-//
-//    fieldMap[returnInterfaceType.name] = Field(
-//      name: returnInterfaceType.name,
-//      description: returnInterfaceType.description,
-//      args: [],
-//      type: .named(.interface(returnInterfaceType.name)),
-//      isDeprecated: false,
-//      deprecationReason: nil
-//    )
-
     var nestedFields = [Field(with: returnInterfaceType)]
     try possibleObjectTypes.forEach {
-      nestedFields.append(contentsOf: try $0.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap))
+      nestedFields.append(
+        contentsOf: try $0.nestedFields(
+          objects: schemaMap.schema.objects,
+          scalarMap: scalarMap,
+          selectionMap: selectionMap
+        )
+      )
     }
     nestedFields = nestedFields
       .unique(by: { $0.type.namedType.name })
-      .sorted()
+      .sorted(by: .namedType)
 
     return try structureDeclaration(
       operation: operation,
@@ -294,39 +285,19 @@ extension SelectionsGenerator {
       throw SelectionsGeneratorError.missingReturnType(context: "No UnionType type found for field \(field.name)")
     }
 
-//    var fieldMap = FieldMap()
-//
-//    fieldMap[returnUnionType.name] = Field(
-//      name: returnUnionType.name,
-//      description: returnUnionType.description,
-//      args: [],
-//      type: .named(.union(returnUnionType.name)),
-//      isDeprecated: false,
-//      deprecationReason: nil
-//    )
-
-//    try possibleObjectTypes.forEach {
-//      fieldMap[$0.name] = Field(
-//        name: $0.name,
-//        description: $0.description,
-//        args: [],
-//        type: .named(.object($0.name)),
-//        isDeprecated: false,
-//        deprecationReason: nil
-//      )
-//
-//      fieldMap.merge(try $0.nestedFieldMap(objects: schemaMap.schema.objects, scalarMap: scalarMap)) { _, new in new }
-//    }
-//
-//    // Sort field map to ensure the generated code sequence is always consistent
-//    let sortedFieldMap = fieldMap.sorted(by: { $0.key < $1.key })
     var nestedFields = [Field(with: returnUnionType)]
     try possibleObjectTypes.forEach {
-      nestedFields.append(contentsOf: try $0.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap))
+      nestedFields.append(
+        contentsOf: try $0.nestedFields(
+          objects: schemaMap.schema.objects,
+          scalarMap: scalarMap,
+          selectionMap: selectionMap
+        )
+      )
     }
     nestedFields = nestedFields
       .unique(by: { $0.type.namedType.name })
-      .sorted()
+      .sorted(by: .namedType)
 
     return try structureDeclaration(
       operation: operation,
@@ -356,6 +327,7 @@ extension SelectionsGenerator {
     fieldMaps: [Field],
     schemaMap: SchemaMap
   ) throws -> String {
+    let fieldMaps = fieldMaps.sorted(by: { $0.type.namedType.name < $1.type.namedType.name })
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
     let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fieldMaps, schemaMap: schemaMap)
     let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fieldMaps, schemaMap: schemaMap)
@@ -508,20 +480,21 @@ extension SelectionsGenerator {
     operation: GraphQLAST.Operation,
     schemaMap: SchemaMap
   ) throws -> String {
-    let filteredElements = try fieldMaps.compactMap { element -> Field? in
-      guard (try element.possibleObjectTypes(schemaMap: schemaMap)?.count ?? 1) <= 1 else {
-        return nil
+    let filteredElements = try fieldMaps
+      .compactMap { element -> Field? in
+        guard (try element.possibleObjectTypes(schemaMap: schemaMap)?.count ?? 1) <= 1 else {
+          return nil
+        }
+
+        let fields = try element.returnTypeSelectableFields(
+          schemaMap: schemaMap,
+          selectionMap: selectionMap
+        )
+
+        guard !fields.isEmpty else { return nil }
+
+        return element
       }
-
-      let fields = try element.returnTypeSelectableFields(
-        schemaMap: schemaMap,
-        selectionMap: selectionMap
-      )
-
-      guard !fields.isEmpty else { return nil }
-
-      return element
-    }
 
     guard !filteredElements.isEmpty else {
       return "init() {}"

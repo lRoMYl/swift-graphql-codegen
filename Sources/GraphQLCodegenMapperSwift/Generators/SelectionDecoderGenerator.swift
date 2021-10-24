@@ -56,7 +56,13 @@ struct SelectionDecoderGenerator: Generating {
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
         let nestedFields: [Field] = (
-          try field.nestedFields(objects: schema.objects, scalarMap: scalarMap, excluded: [])
+          try field.nestedFields(
+            objects: schema.objects,
+            scalarMap: scalarMap,
+            excluded: [],
+            selectionMap: selectionMap,
+            sortType: .namedType
+          )
         )
 
         let returnObjectType = try field.returnObjectType(schemaMap: schemaMap)
@@ -72,13 +78,18 @@ struct SelectionDecoderGenerator: Generating {
     }.lines
 
     let objectCode = try schema.objects.compactMap { objectType in
-      guard !objectType.isOperation, !objectType.isInternal else { return nil }
+      guard !objectType.isOperation else { return nil }
 
       let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: objectType)
       let responseName = try entityNameProvider.name(for: objectType)
 
       let nestedFields: [Field] = (
-        try objectType.nestedFields(objects: schema.objects, scalarMap: scalarMap)
+        try objectType.nestedFields(
+          objects: schema.objects,
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          sortType: .namedType
+        )
       )
 
       return try code(
@@ -89,6 +100,18 @@ struct SelectionDecoderGenerator: Generating {
         schemaMap: schemaMap
       )
     }.lines
+
+//    let interfaceCode = try schema.interfaces.compactMap { interfaceType in
+//      let selectionDecoderName = try entityNameProvider.selectionDecoderName(type: interfaceType)
+//      let responseName = try entityNameProvider.name(for: interfaceType)
+//
+//      let nestedFields = interfaceType.fields
+//
+//      return try code(
+//        selectionDecoderName: selectionDecoderName,
+//        responseName: responseName,
+//        nestedFields: <#T##[Field]#>, objectType: <#T##ObjectType?#>, schemaMap: <#T##SchemaMap#>)
+//    }.lines
 
     guard !(operationCode.isEmpty && objectCode.isEmpty) else {
       return ""
@@ -280,7 +303,12 @@ private extension SelectionDecoderGenerator {
       if
         let selectionDecoderName = try entityNameProvider.selectionDecoderName(outputRef: outputRef)
       {
-        let nestedFields = try field.nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap, excluded: [])
+        let nestedFields = try field.nestedFields(
+          objects: schemaMap.schema.objects,
+          scalarMap: scalarMap,
+          excluded: [],
+          selectionMap: selectionMap
+        )
           
         let selectionsDeclarations = try nestedFields.compactMap { field in
           guard

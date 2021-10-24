@@ -87,15 +87,15 @@ extension HumanStarWarsModel {
 extension QueryStarWarsModel {
   static func selectionMock() -> Self {
     QueryStarWarsModel(
-      characters: [.selectionMock()],
       character: .selectionMock(),
-      time: .selectionMock(),
+      characters: [.selectionMock()],
       droid: .selectionMock(),
       droids: [.selectionMock()],
-      human: .selectionMock(),
-      luke: .selectionMock(),
-      humans: [.selectionMock()],
       greeting: .selectionMock(),
+      human: .selectionMock(),
+      humans: [.selectionMock()],
+      luke: .selectionMock(),
+      time: .selectionMock(),
       whoami: .selectionMock()
     )
   }
