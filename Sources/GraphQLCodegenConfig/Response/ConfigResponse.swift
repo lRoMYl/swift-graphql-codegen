@@ -12,6 +12,18 @@ public struct ConfigResponse: Decodable {
   public let scalarMap: ScalarMapResponse?
   public let selectionMap: SelectionMapResponse?
   public let entityNameMap: EntityNameMapResponse?
+
+  public init(
+    schemaApiHeaders: [String: String]?,
+    scalarMap: ScalarMapResponse?,
+    selectionMap: SelectionMapResponse?,
+    entityNameMap: EntityNameMapResponse?
+  ) {
+    self.schemaApiHeaders = schemaApiHeaders
+    self.scalarMap = scalarMap
+    self.selectionMap = selectionMap
+    self.entityNameMap = entityNameMap
+  }
 }
 
 public extension ConfigResponse {

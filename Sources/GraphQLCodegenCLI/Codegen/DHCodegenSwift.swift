@@ -85,25 +85,6 @@ struct DHCodegenSwift {
   }
 
   static var defaultConfigResponse: ConfigResponse? {
-    let defaultConfigResponse: ConfigResponse?
-
-    if let defaultConfigPath = GraphQLCodegenSpecSwiftConfig.defaultConfigPath {
-      do {
-        guard let defaultJsonData = try String(contentsOfFile: defaultConfigPath).data(using: .utf8) else {
-          throw GraphQLCodegenCLIError.invalidConfigPath
-        }
-
-        let config = try JSONDecoder().decode(ConfigResponse.self, from: defaultJsonData)
-        defaultConfigResponse = config
-      } catch {
-        print("[Warning] Discarding package config, package defaultConfigPath was given but serialization failed")
-
-        defaultConfigResponse = nil
-      }
-    } else {
-      defaultConfigResponse = nil
-    }
-
-    return defaultConfigResponse
+    return GraphQLCodegenSpecSwiftConfig.defaultConfigResponse
   }
 }

@@ -7,10 +7,6 @@ let package = Package(
   name: "DHGraphQLCodegen",
   platforms: [.macOS(.v10_15)],
   products: [
-    .library(name: "GraphQLCodegenSpecSwift", targets: ["GraphQLCodegenSpecSwift"]),
-    .library(name: "GraphQLCodegenDHApiClientSwift", targets: ["GraphQLCodegenDHApiClientSwift"]),
-    .library(name: "GraphQLCodegenMapperSwift", targets: ["GraphQLCodegenMapperSwift"]),
-    .library(name: "GraphQLDownloader", targets: ["GraphQLDownloader"]),
     .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
@@ -36,10 +32,7 @@ let package = Package(
     ),
     .target(
       name: "GraphQLCodegenSpecSwift",
-      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"],
-      resources: [
-        .process("Resources")
-      ]
+      dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
       name: "GraphQLCodegenDHApiClientSwift",
