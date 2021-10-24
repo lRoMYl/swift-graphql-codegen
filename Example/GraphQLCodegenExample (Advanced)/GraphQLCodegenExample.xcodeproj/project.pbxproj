@@ -11,7 +11,6 @@
 		F809FC49272509640044E518 /* ApolloGraphQLSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC46272509640044E518 /* ApolloGraphQLSpec.generated.swift */; };
 		F809FC4F272509780044E518 /* StarWarsGraphQLSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC4C272509780044E518 /* StarWarsGraphQLSpec.generated.swift */; };
 		F809FC50272509780044E518 /* StarWarsGraphQLApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC4D272509780044E518 /* StarWarsGraphQLApiClient.generated.swift */; };
-		F809FC552725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */; };
 		F809FC58272509AA0044E518 /* GroceriesApiClient.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */; };
 		F809FC5A272509E60044E518 /* GraphQLEntities.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC59272509E60044E518 /* GraphQLEntities.generated.swift */; };
 		F809FC5C27250D530044E518 /* GroceriesMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */; };
@@ -20,6 +19,7 @@
 		F809FC62272522F30044E518 /* Droid.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC61272522F30044E518 /* Droid.swift */; };
 		F809FC64272522FA0044E518 /* Human.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC63272522FA0044E518 /* Human.swift */; };
 		F809FC66272560AE0044E518 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC65272560AE0044E518 /* Character.swift */; };
+		F809FC6827259E840044E518 /* GroceriesNetworkModels.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC6727259E840044E518 /* GroceriesNetworkModels.generated.swift */; };
 		F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAA2723F51500328EF9 /* Campaign.swift */; };
 		F8113EAF2723F59800328EF9 /* CampaignAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */; };
 		F8113EB1272438B300328EF9 /* ProductDeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113EB0272438B300328EF9 /* ProductDeal.swift */; };
@@ -65,7 +65,6 @@
 		F809FC46272509640044E518 /* ApolloGraphQLSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApolloGraphQLSpec.generated.swift; sourceTree = "<group>"; };
 		F809FC4C272509780044E518 /* StarWarsGraphQLSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLSpec.generated.swift; sourceTree = "<group>"; };
 		F809FC4D272509780044E518 /* StarWarsGraphQLApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarWarsGraphQLApiClient.generated.swift; sourceTree = "<group>"; };
-		F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesGraphQLNetworkModels.generated.swift; sourceTree = "<group>"; };
 		F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesApiClient.generated.swift; sourceTree = "<group>"; };
 		F809FC59272509E60044E518 /* GraphQLEntities.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLEntities.generated.swift; sourceTree = "<group>"; };
 		F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesMappers.generated.swift; sourceTree = "<group>"; };
@@ -74,6 +73,7 @@
 		F809FC61272522F30044E518 /* Droid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droid.swift; sourceTree = "<group>"; };
 		F809FC63272522FA0044E518 /* Human.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Human.swift; sourceTree = "<group>"; };
 		F809FC65272560AE0044E518 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
+		F809FC6727259E840044E518 /* GroceriesNetworkModels.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesNetworkModels.generated.swift; sourceTree = "<group>"; };
 		F8113EAA2723F51500328EF9 /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
 		F8113EAE2723F59800328EF9 /* CampaignAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignAttribute.swift; sourceTree = "<group>"; };
 		F8113EB0272438B300328EF9 /* ProductDeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDeal.swift; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 				F8D3237426FCAF6300A594B2 /* GroceriesWebService.swift */,
 				F8C4086D270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift */,
 				F809FC57272509AA0044E518 /* GroceriesApiClient.generated.swift */,
-				F809FC522725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift */,
+				F809FC6727259E840044E518 /* GroceriesNetworkModels.generated.swift */,
 				F809FC5B27250D520044E518 /* GroceriesMappers.generated.swift */,
 			);
 			path = Groceries;
@@ -339,7 +339,6 @@
 				F809FC49272509640044E518 /* ApolloGraphQLSpec.generated.swift in Sources */,
 				F8D3237526FCAF6300A594B2 /* GroceriesWebService.swift in Sources */,
 				F8A1173C271DAFE600723D3A /* ApolloWebService.swift in Sources */,
-				F809FC552725098C0044E518 /* GroceriesGraphQLNetworkModels.generated.swift in Sources */,
 				F809FC64272522FA0044E518 /* Human.swift in Sources */,
 				F8C4088F270324F800CA5F13 /* GroceriesRepository.swift in Sources */,
 				F8113EAB2723F51500328EF9 /* Campaign.swift in Sources */,
@@ -354,6 +353,7 @@
 				F809FC4F272509780044E518 /* StarWarsGraphQLSpec.generated.swift in Sources */,
 				F809FC62272522F30044E518 /* Droid.swift in Sources */,
 				F8C4086E270193CE00CA5F13 /* GroceriesResourceParametersConfigurator.swift in Sources */,
+				F809FC6827259E840044E518 /* GroceriesNetworkModels.generated.swift in Sources */,
 				F809FC5A272509E60044E518 /* GraphQLEntities.generated.swift in Sources */,
 				F8BFF72D270AD02C00AE4828 /* DateTimeInterval.swift in Sources */,
 				F8D3235826FCAC9F00A594B2 /* GraphQLCodegenExampleApp.swift in Sources */,
