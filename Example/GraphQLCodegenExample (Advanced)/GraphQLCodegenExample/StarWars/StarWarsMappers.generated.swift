@@ -111,7 +111,7 @@ extension SubscriptionStarWarsModel {
 
 // MARK: - SelectionDecoder
 
-class HumanQueryResponseSelectionDecoder {
+class HumanQuerySelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
   private let response: HumanStarWarsModel
   private let populateSelections: Bool
@@ -134,7 +134,7 @@ class HumanQueryResponseSelectionDecoder {
   }
 }
 
-class DroidQueryResponseSelectionDecoder {
+class DroidQuerySelectionDecoder {
   private(set) var droidSelections = Set<DroidSelection>()
   private let response: DroidStarWarsModel
   private let populateSelections: Bool
@@ -169,7 +169,7 @@ class DroidQueryResponseSelectionDecoder {
   }
 }
 
-class LukeQueryResponseSelectionDecoder {
+class LukeQuerySelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
   private let response: HumanStarWarsModel
   private let populateSelections: Bool
@@ -192,7 +192,7 @@ class LukeQueryResponseSelectionDecoder {
   }
 }
 
-class HumansQueryResponseSelectionDecoder {
+class HumansQuerySelectionDecoder {
   private(set) var humanSelections = Set<HumanSelection>()
   private let response: HumanStarWarsModel
   private let populateSelections: Bool
@@ -215,7 +215,7 @@ class HumansQueryResponseSelectionDecoder {
   }
 }
 
-class DroidsQueryResponseSelectionDecoder {
+class DroidsQuerySelectionDecoder {
   private(set) var droidSelections = Set<DroidSelection>()
   private let response: DroidStarWarsModel
   private let populateSelections: Bool
@@ -311,7 +311,7 @@ class HumanSelectionDecoder {
 // MARK: - Mappers
 
 struct HumanQueryMapper<T> {
-  typealias MapperBlock = (HumanQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (HumanQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: HumanStarWarsQuerySelections
@@ -319,7 +319,7 @@ struct HumanQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = HumanQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = HumanQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -333,12 +333,12 @@ struct HumanQueryMapper<T> {
   }
 
   func map(response: HumanStarWarsModel) throws -> T {
-    try block(HumanQueryResponseSelectionDecoder(response: response))
+    try block(HumanQuerySelectionDecoder(response: response))
   }
 }
 
 struct DroidQueryMapper<T> {
-  typealias MapperBlock = (DroidQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (DroidQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: DroidStarWarsQuerySelections
@@ -346,7 +346,7 @@ struct DroidQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = DroidQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = DroidQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -360,12 +360,12 @@ struct DroidQueryMapper<T> {
   }
 
   func map(response: DroidStarWarsModel) throws -> T {
-    try block(DroidQueryResponseSelectionDecoder(response: response))
+    try block(DroidQuerySelectionDecoder(response: response))
   }
 }
 
 struct LukeQueryMapper<T> {
-  typealias MapperBlock = (LukeQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (LukeQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: LukeStarWarsQuerySelections
@@ -373,7 +373,7 @@ struct LukeQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = LukeQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = LukeQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -387,12 +387,12 @@ struct LukeQueryMapper<T> {
   }
 
   func map(response: HumanStarWarsModel) throws -> T {
-    try block(LukeQueryResponseSelectionDecoder(response: response))
+    try block(LukeQuerySelectionDecoder(response: response))
   }
 }
 
 struct HumansQueryMapper<T> {
-  typealias MapperBlock = (HumansQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (HumansQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: HumansStarWarsQuerySelections
@@ -400,7 +400,7 @@ struct HumansQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = HumansQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = HumansQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -414,12 +414,12 @@ struct HumansQueryMapper<T> {
   }
 
   func map(response: HumanStarWarsModel) throws -> T {
-    try block(HumansQueryResponseSelectionDecoder(response: response))
+    try block(HumansQuerySelectionDecoder(response: response))
   }
 }
 
 struct DroidsQueryMapper<T> {
-  typealias MapperBlock = (DroidsQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (DroidsQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: DroidsStarWarsQuerySelections
@@ -427,7 +427,7 @@ struct DroidsQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = DroidsQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = DroidsQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -441,6 +441,6 @@ struct DroidsQueryMapper<T> {
   }
 
   func map(response: DroidStarWarsModel) throws -> T {
-    try block(DroidsQueryResponseSelectionDecoder(response: response))
+    try block(DroidsQuerySelectionDecoder(response: response))
   }
 }

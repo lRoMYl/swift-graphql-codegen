@@ -113,7 +113,7 @@ extension QueryResponseModel {
 
 // MARK: - SelectionDecoder
 
-class CampaignsQueryResponseSelectionDecoder {
+class CampaignsQuerySelectionDecoder {
   private(set) var benefitSelections = Set<BenefitSelection>()
   private(set) var campaignAttributeSelections = Set<CampaignAttributeSelection>()
   private(set) var campaignsSelections = Set<CampaignsSelection>()
@@ -139,7 +139,10 @@ class CampaignsQueryResponseSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = CampaignAttributeSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = CampaignAttributeSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           benefitSelections = decoder.benefitSelections
@@ -167,7 +170,10 @@ class CampaignsQueryResponseSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = ProductDealSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           dealSelections = decoder.dealSelections
@@ -253,7 +259,10 @@ class CampaignAttributeSelectionDecoder {
 
     if let values = values {
       return try values.compactMap { value in
-        let decoder = BenefitSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = BenefitSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         benefitSelections = decoder.benefitSelections
@@ -364,7 +373,10 @@ class CampaignsSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = CampaignAttributeSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = CampaignAttributeSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           benefitSelections = decoder.benefitSelections
@@ -392,7 +404,10 @@ class CampaignsSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = ProductDealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = ProductDealSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           dealSelections = decoder.dealSelections
@@ -479,7 +494,10 @@ class ProductDealSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = DealSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = DealSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           dealSelections = decoder.dealSelections
@@ -510,7 +528,7 @@ class ProductDealSelectionDecoder {
 // MARK: - Mappers
 
 struct CampaignsQueryMapper<T> {
-  typealias MapperBlock = (CampaignsQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (CampaignsQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: CampaignsQueryRequestSelections
@@ -518,7 +536,7 @@ struct CampaignsQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = CampaignsQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = CampaignsQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -536,6 +554,6 @@ struct CampaignsQueryMapper<T> {
   }
 
   func map(response: CampaignsResponseModel) throws -> T {
-    try block(CampaignsQueryResponseSelectionDecoder(response: response))
+    try block(CampaignsQuerySelectionDecoder(response: response))
   }
 }

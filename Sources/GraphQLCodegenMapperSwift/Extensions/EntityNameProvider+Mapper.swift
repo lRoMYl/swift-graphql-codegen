@@ -35,7 +35,7 @@ extension EntityNameProviding {
   func selectionDecoderName(field: Field, operation: GraphQLAST.Operation, schemaMap: SchemaMap) throws -> String? {
     guard try field.returnObjectType(schemaMap: schemaMap) != nil else { return nil }
 
-    return "\(try responseDataName(for: field, with: operation))SelectionDecoder"
+    return "\(field.name.pascalCase)\(operation.type.name.pascalCase)SelectionDecoder"
   }
 
   func mapperErrorName(apiClientPrefix: String) -> String {

@@ -14,7 +14,7 @@ struct Campaign {
 
 extension Campaign {
   init(
-    from decoder: CampaignsQueryResponseSelectionDecoder
+    from decoder: CampaignsQuerySelectionDecoder
   ) throws {
     self.attributes = try decoder.campaignAttributes(
       mapper: { try CampaignAttribute(from: $0) }

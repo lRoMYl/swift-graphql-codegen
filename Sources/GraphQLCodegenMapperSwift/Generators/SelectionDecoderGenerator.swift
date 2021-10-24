@@ -326,7 +326,10 @@ private extension SelectionDecoderGenerator {
         }.joined(separator: "\n")
 
         return """
-        let decoder = \(selectionDecoderName)(response: value, \(Variables.populateSelections): \(Variables.populateSelections))
+        let decoder = \(selectionDecoderName)(
+          response: value,
+          \(Variables.populateSelections): \(Variables.populateSelections)
+        )
         let result = try mapper(decoder)
 
         \(selectionsDeclarations)

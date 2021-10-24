@@ -141,7 +141,7 @@ extension SubscriptionApolloModel {
 
 // MARK: - SelectionDecoder
 
-class LaunchesQueryResponseSelectionDecoder {
+class LaunchesQuerySelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var launchConnectionSelections = Set<LaunchConnectionSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
@@ -189,7 +189,10 @@ class LaunchesQueryResponseSelectionDecoder {
 
     return try values.compactMap { value in
       if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = LaunchSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         launchSelections = decoder.launchSelections
@@ -204,7 +207,7 @@ class LaunchesQueryResponseSelectionDecoder {
   }
 }
 
-class LaunchQueryResponseSelectionDecoder {
+class LaunchQuerySelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
@@ -250,7 +253,10 @@ class LaunchQueryResponseSelectionDecoder {
     }
 
     if let value = value {
-      let decoder = MissionSelectionDecoder(response: value, populateSelections: populateSelections)
+      let decoder = MissionSelectionDecoder(
+        response: value,
+        populateSelections: populateSelections
+      )
       let result = try mapper(decoder)
 
       missionSelections = decoder.missionSelections
@@ -271,7 +277,10 @@ class LaunchQueryResponseSelectionDecoder {
     }
 
     if let value = value {
-      let decoder = RocketSelectionDecoder(response: value, populateSelections: populateSelections)
+      let decoder = RocketSelectionDecoder(
+        response: value,
+        populateSelections: populateSelections
+      )
       let result = try mapper(decoder)
 
       rocketSelections = decoder.rocketSelections
@@ -299,7 +308,7 @@ class LaunchQueryResponseSelectionDecoder {
   }
 }
 
-class MeQueryResponseSelectionDecoder {
+class MeQuerySelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
@@ -363,7 +372,10 @@ class MeQueryResponseSelectionDecoder {
 
     return try values.compactMap { value in
       if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = LaunchSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         missionSelections = decoder.missionSelections
@@ -378,7 +390,7 @@ class MeQueryResponseSelectionDecoder {
   }
 }
 
-class BookTripsMutationResponseSelectionDecoder {
+class BookTripsMutationSelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
@@ -403,7 +415,10 @@ class BookTripsMutationResponseSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = LaunchSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           launchSelections = decoder.launchSelections
@@ -449,7 +464,7 @@ class BookTripsMutationResponseSelectionDecoder {
   }
 }
 
-class CancelTripMutationResponseSelectionDecoder {
+class CancelTripMutationSelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
@@ -474,7 +489,10 @@ class CancelTripMutationResponseSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = LaunchSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           launchSelections = decoder.launchSelections
@@ -520,7 +538,7 @@ class CancelTripMutationResponseSelectionDecoder {
   }
 }
 
-class UploadProfileImageMutationResponseSelectionDecoder {
+class UploadProfileImageMutationSelectionDecoder {
   private(set) var launchSelections = Set<LaunchSelection>()
   private(set) var missionSelections = Set<MissionSelection>()
   private(set) var rocketSelections = Set<RocketSelection>()
@@ -584,7 +602,10 @@ class UploadProfileImageMutationResponseSelectionDecoder {
 
     return try values.compactMap { value in
       if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = LaunchSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         missionSelections = decoder.missionSelections
@@ -647,7 +668,10 @@ class LaunchConnectionSelectionDecoder {
 
     return try values.compactMap { value in
       if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = LaunchSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         launchSelections = decoder.launchSelections
@@ -708,7 +732,10 @@ class LaunchSelectionDecoder {
     }
 
     if let value = value {
-      let decoder = MissionSelectionDecoder(response: value, populateSelections: populateSelections)
+      let decoder = MissionSelectionDecoder(
+        response: value,
+        populateSelections: populateSelections
+      )
       let result = try mapper(decoder)
 
       missionSelections = decoder.missionSelections
@@ -729,7 +756,10 @@ class LaunchSelectionDecoder {
     }
 
     if let value = value {
-      let decoder = RocketSelectionDecoder(response: value, populateSelections: populateSelections)
+      let decoder = RocketSelectionDecoder(
+        response: value,
+        populateSelections: populateSelections
+      )
       let result = try mapper(decoder)
 
       rocketSelections = decoder.rocketSelections
@@ -919,7 +949,10 @@ class UserSelectionDecoder {
 
     return try values.compactMap { value in
       if let value = value {
-        let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+        let decoder = LaunchSelectionDecoder(
+          response: value,
+          populateSelections: populateSelections
+        )
         let result = try mapper(decoder)
 
         missionSelections = decoder.missionSelections
@@ -959,7 +992,10 @@ class TripUpdateResponseSelectionDecoder {
     if let values = values {
       return try values.compactMap { value in
         if let value = value {
-          let decoder = LaunchSelectionDecoder(response: value, populateSelections: populateSelections)
+          let decoder = LaunchSelectionDecoder(
+            response: value,
+            populateSelections: populateSelections
+          )
           let result = try mapper(decoder)
 
           launchSelections = decoder.launchSelections
@@ -1008,7 +1044,7 @@ class TripUpdateResponseSelectionDecoder {
 // MARK: - Mappers
 
 struct LaunchesQueryMapper<T> {
-  typealias MapperBlock = (LaunchesQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (LaunchesQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: LaunchesApolloQuerySelections
@@ -1016,7 +1052,7 @@ struct LaunchesQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = LaunchesQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = LaunchesQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1033,12 +1069,12 @@ struct LaunchesQueryMapper<T> {
   }
 
   func map(response: LaunchConnectionApolloModel) throws -> T {
-    try block(LaunchesQueryResponseSelectionDecoder(response: response))
+    try block(LaunchesQuerySelectionDecoder(response: response))
   }
 }
 
 struct LaunchQueryMapper<T> {
-  typealias MapperBlock = (LaunchQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (LaunchQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: LaunchApolloQuerySelections
@@ -1046,7 +1082,7 @@ struct LaunchQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = LaunchQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = LaunchQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1062,12 +1098,12 @@ struct LaunchQueryMapper<T> {
   }
 
   func map(response: LaunchApolloModel) throws -> T {
-    try block(LaunchQueryResponseSelectionDecoder(response: response))
+    try block(LaunchQuerySelectionDecoder(response: response))
   }
 }
 
 struct MeQueryMapper<T> {
-  typealias MapperBlock = (MeQueryResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (MeQuerySelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: MeApolloQuerySelections
@@ -1075,7 +1111,7 @@ struct MeQueryMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = MeQueryResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = MeQuerySelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1092,12 +1128,12 @@ struct MeQueryMapper<T> {
   }
 
   func map(response: UserApolloModel) throws -> T {
-    try block(MeQueryResponseSelectionDecoder(response: response))
+    try block(MeQuerySelectionDecoder(response: response))
   }
 }
 
 struct BookTripsMutationMapper<T> {
-  typealias MapperBlock = (BookTripsMutationResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (BookTripsMutationSelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: BookTripsApolloMutationSelections
@@ -1105,7 +1141,7 @@ struct BookTripsMutationMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = BookTripsMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = BookTripsMutationSelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1122,12 +1158,12 @@ struct BookTripsMutationMapper<T> {
   }
 
   func map(response: TripUpdateResponseApolloModel) throws -> T {
-    try block(BookTripsMutationResponseSelectionDecoder(response: response))
+    try block(BookTripsMutationSelectionDecoder(response: response))
   }
 }
 
 struct CancelTripMutationMapper<T> {
-  typealias MapperBlock = (CancelTripMutationResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (CancelTripMutationSelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: CancelTripApolloMutationSelections
@@ -1135,7 +1171,7 @@ struct CancelTripMutationMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = CancelTripMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = CancelTripMutationSelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1152,12 +1188,12 @@ struct CancelTripMutationMapper<T> {
   }
 
   func map(response: TripUpdateResponseApolloModel) throws -> T {
-    try block(CancelTripMutationResponseSelectionDecoder(response: response))
+    try block(CancelTripMutationSelectionDecoder(response: response))
   }
 }
 
 struct UploadProfileImageMutationMapper<T> {
-  typealias MapperBlock = (UploadProfileImageMutationResponseSelectionDecoder) throws -> T
+  typealias MapperBlock = (UploadProfileImageMutationSelectionDecoder) throws -> T
   private let block: MapperBlock
 
   let selections: UploadProfileImageApolloMutationSelections
@@ -1165,7 +1201,7 @@ struct UploadProfileImageMutationMapper<T> {
   init(_ block: @escaping MapperBlock) {
     self.block = block
 
-    let decoder = UploadProfileImageMutationResponseSelectionDecoder(response: .selectionMock(), populateSelections: true)
+    let decoder = UploadProfileImageMutationSelectionDecoder(response: .selectionMock(), populateSelections: true)
 
     do {
       _ = try block(decoder)
@@ -1182,6 +1218,6 @@ struct UploadProfileImageMutationMapper<T> {
   }
 
   func map(response: UserApolloModel) throws -> T {
-    try block(UploadProfileImageMutationResponseSelectionDecoder(response: response))
+    try block(UploadProfileImageMutationSelectionDecoder(response: response))
   }
 }
