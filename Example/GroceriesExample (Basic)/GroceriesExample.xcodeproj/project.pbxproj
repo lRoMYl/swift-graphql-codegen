@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F809FC3E272506970044E518 /* GroceriesMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */; };
+		F809FC7827267B670044E518 /* GroceriesRepository+Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */; };
 		F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */; };
 		F8580796270D54AA00947AD3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580795270D54AA00947AD3 /* ContentView.swift */; };
 		F8580798270D54AA00947AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8580797270D54AA00947AD3 /* Assets.xcassets */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesMappers.generated.swift; sourceTree = "<group>"; };
+		F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroceriesRepository+Example.swift"; sourceTree = "<group>"; };
 		F8580790270D54AA00947AD3 /* GroceriesExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceriesExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesExampleApp.swift; sourceTree = "<group>"; };
 		F8580795270D54AA00947AD3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			children = (
 				F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */,
 				F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */,
+				F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */,
 				F8B5E9EF2715319D00FD91BE /* GroceriesApiClient.generated.swift */,
 				F8B5E9EE2715319D00FD91BE /* GroceriesNetworkModels.generated.swift */,
 				F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */,
@@ -250,6 +253,7 @@
 				F8D05A602724AB600009A228 /* Deal.swift in Sources */,
 				F8D05A612724AB600009A228 /* Campaign.swift in Sources */,
 				F8580796270D54AA00947AD3 /* ContentView.swift in Sources */,
+				F809FC7827267B670044E518 /* GroceriesRepository+Example.swift in Sources */,
 				F809FC3E272506970044E518 /* GroceriesMappers.generated.swift in Sources */,
 				F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */,
 			);
