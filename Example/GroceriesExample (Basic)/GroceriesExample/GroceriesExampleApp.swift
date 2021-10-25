@@ -12,18 +12,16 @@ import SwiftUI
 @main
 struct GroceriesExampleApp: App {
   private let disposeBag = DisposeBag()
-  private let groceriesRepository: GroceriesRepository = {
-    let restClient = RestClientImpl(
-      webService: GroceriesWebService(),
-      authProvider: nil
-    )
+  private let groceriesRepository: GroceriesRepositoring = {
+    return DIContainer
+      .shared
+      .groceryBuilderGenerated
+      .repository()
 
-    let apiClient = GroceriesApiClient(
-      restClient: restClient
-    )
-    let repository = GroceriesRepository(apiClient: apiClient)
-
-    return repository
+//    return DIContainer
+//      .shared
+//      .groceryBuilderManual
+//      .repository()
   }()
 
   var body: some Scene {
@@ -42,27 +40,8 @@ struct GroceriesExampleApp: App {
       locale: "en_SG"
     )
 
-//    groceriesRepository
-//      .campaigns(with: parameters)
-//      .subscribe(
-//        onSuccess: { campaigns in
-//          guard let campaigns = campaigns else {
-//            print("Groceries campaign query request fail, no campaigns founds")
-//            return
-//          }
-//
-//          print("Groceries campaign query request success")
-//          print("Product Deals Count: \(campaigns.productDeals?.count ?? -1)")
-//          print("Campaign Attributes Count: \(campaigns.attributes?.count ?? -1)")
-//        },
-//        onFailure: { error in
-//          print(error)
-//        }
-//      )
-//      .disposed(by: disposeBag)
-
     groceriesRepository
-      .campaignsWithCustomMappingExample(with: parameters)
+      .campaigns(with: parameters)
       .subscribe(
         onSuccess: { campaigns in
           guard let campaigns = campaigns else {
@@ -79,6 +58,5 @@ struct GroceriesExampleApp: App {
         }
       )
       .disposed(by: disposeBag)
-
   }
 }

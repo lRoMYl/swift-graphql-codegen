@@ -12,30 +12,37 @@ enum GroceriesRepositoryError: Error {
   case missingData
 }
 
-final class GroceriesRepository {
-  let apiClient: GroceriesApiClientProtocol
+protocol GroceriesRepositoring {
+  func campaigns(
+    with parameters: CampaignsQueryRequest
+  ) -> Single<Campaign?>
+}
 
-  init(apiClient: GroceriesApiClientProtocol) {
+final class GroceriesRepository: GroceriesRepositoring {
+  let apiClient: GroceriesApiClientProtocol
+  let campaignMapper: CampaignSelectionsMapping
+
+  init(
+    apiClient: GroceriesApiClientProtocol,
+    campaignMapper: CampaignSelectionsMapping
+  ) {
     self.apiClient = apiClient
+    self.campaignMapper = campaignMapper
   }
 
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign?> {
-    let mapper = CampaignsQueryMapper { decoder in
-      try Campaign(from: decoder)
-    }
-
-    return apiClient.campaigns(
+    apiClient.campaigns(
       with: parameters,
-      selections: mapper.selections
+      selections: campaignMapper.selections
     )
     .map {
       guard let responseModel = $0.data?.campaigns else {
         throw GroceriesRepositoryError.missingData
       }
 
-      return try mapper.map(response: responseModel)
+      return try self.campaignMapper.map(response: responseModel)
     }
   }
 }

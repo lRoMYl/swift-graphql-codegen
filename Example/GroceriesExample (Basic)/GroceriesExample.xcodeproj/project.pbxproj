@@ -8,7 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		F809FC3E272506970044E518 /* GroceriesMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */; };
-		F809FC7827267B670044E518 /* GroceriesRepository+Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */; };
+		F809FC7B27269ECF0044E518 /* GroceriesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC7A27269ECF0044E518 /* GroceriesBuilder.swift */; };
+		F809FC7E2726A06C0044E518 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC7D2726A06C0044E518 /* DIContainer.swift */; };
+		F809FC822726A3140044E518 /* CampaignMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC812726A3140044E518 /* CampaignMapping.swift */; };
+		F809FC842726A32E0044E518 /* CampaignSelectionsMapperManual.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC832726A32E0044E518 /* CampaignSelectionsMapperManual.swift */; };
+		F809FC862726A3880044E518 /* CampaignSelectionsMapperGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F809FC852726A3880044E518 /* CampaignSelectionsMapperGenerated.swift */; };
 		F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */; };
 		F8580796270D54AA00947AD3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8580795270D54AA00947AD3 /* ContentView.swift */; };
 		F8580798270D54AA00947AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8580797270D54AA00947AD3 /* Assets.xcassets */; };
@@ -48,7 +52,11 @@
 
 /* Begin PBXFileReference section */
 		F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroceriesMappers.generated.swift; sourceTree = "<group>"; };
-		F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GroceriesRepository+Example.swift"; sourceTree = "<group>"; };
+		F809FC7A27269ECF0044E518 /* GroceriesBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesBuilder.swift; sourceTree = "<group>"; };
+		F809FC7D2726A06C0044E518 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
+		F809FC812726A3140044E518 /* CampaignMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignMapping.swift; sourceTree = "<group>"; };
+		F809FC832726A32E0044E518 /* CampaignSelectionsMapperManual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignSelectionsMapperManual.swift; sourceTree = "<group>"; };
+		F809FC852726A3880044E518 /* CampaignSelectionsMapperGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampaignSelectionsMapperGenerated.swift; sourceTree = "<group>"; };
 		F8580790270D54AA00947AD3 /* GroceriesExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceriesExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceriesExampleApp.swift; sourceTree = "<group>"; };
 		F8580795270D54AA00947AD3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -83,6 +91,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F809FC7927269EC20044E518 /* Groceries */ = {
+			isa = PBXGroup;
+			children = (
+				F809FC7A27269ECF0044E518 /* GroceriesBuilder.swift */,
+			);
+			path = Groceries;
+			sourceTree = "<group>";
+		};
+		F809FC7C2726A0620044E518 /* DIContainer */ = {
+			isa = PBXGroup;
+			children = (
+				F809FC7D2726A06C0044E518 /* DIContainer.swift */,
+			);
+			path = DIContainer;
+			sourceTree = "<group>";
+		};
+		F809FC7F2726A2FC0044E518 /* Mappers */ = {
+			isa = PBXGroup;
+			children = (
+				F809FC802726A3050044E518 /* Campaign */,
+			);
+			path = Mappers;
+			sourceTree = "<group>";
+		};
+		F809FC802726A3050044E518 /* Campaign */ = {
+			isa = PBXGroup;
+			children = (
+				F809FC812726A3140044E518 /* CampaignMapping.swift */,
+				F809FC832726A32E0044E518 /* CampaignSelectionsMapperManual.swift */,
+				F809FC852726A3880044E518 /* CampaignSelectionsMapperGenerated.swift */,
+			);
+			path = Campaign;
+			sourceTree = "<group>";
+		};
 		F8580787270D54AA00947AD3 = {
 			isa = PBXGroup;
 			children = (
@@ -104,8 +146,11 @@
 			isa = PBXGroup;
 			children = (
 				F8580793270D54AA00947AD3 /* GroceriesExampleApp.swift */,
+				F809FC7927269EC20044E518 /* Groceries */,
 				F85807B0270D669B00947AD3 /* API */,
 				F8D05A5A2724AB300009A228 /* Models */,
+				F809FC7C2726A0620044E518 /* DIContainer */,
+				F809FC7F2726A2FC0044E518 /* Mappers */,
 				F8580795270D54AA00947AD3 /* ContentView.swift */,
 				F8580797270D54AA00947AD3 /* Assets.xcassets */,
 				F858079C270D54AA00947AD3 /* Info.plist */,
@@ -144,7 +189,6 @@
 			children = (
 				F85807D6270D6B2200947AD3 /* GroceriesWebService.swift */,
 				F85807D4270D6AE800947AD3 /* GroceriesRepository.swift */,
-				F809FC7727267B670044E518 /* GroceriesRepository+Example.swift */,
 				F8B5E9EF2715319D00FD91BE /* GroceriesApiClient.generated.swift */,
 				F8B5E9EE2715319D00FD91BE /* GroceriesNetworkModels.generated.swift */,
 				F809FC3D272506970044E518 /* GroceriesMappers.generated.swift */,
@@ -243,17 +287,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F809FC862726A3880044E518 /* CampaignSelectionsMapperGenerated.swift in Sources */,
 				F8B5E9F12715319D00FD91BE /* GroceriesApiClient.generated.swift in Sources */,
 				F8B5E9F02715319D00FD91BE /* GroceriesNetworkModels.generated.swift in Sources */,
 				F8AD48182715980D00772BD0 /* GraphQLEntities.generated.swift in Sources */,
 				F85807D7270D6B2200947AD3 /* GroceriesWebService.swift in Sources */,
 				F85807D5270D6AE800947AD3 /* GroceriesRepository.swift in Sources */,
 				F8D05A5F2724AB600009A228 /* CampaignAttribute.swift in Sources */,
+				F809FC842726A32E0044E518 /* CampaignSelectionsMapperManual.swift in Sources */,
 				F8D05A622724AB600009A228 /* ProductDeal.swift in Sources */,
+				F809FC7E2726A06C0044E518 /* DIContainer.swift in Sources */,
 				F8D05A602724AB600009A228 /* Deal.swift in Sources */,
 				F8D05A612724AB600009A228 /* Campaign.swift in Sources */,
+				F809FC7B27269ECF0044E518 /* GroceriesBuilder.swift in Sources */,
 				F8580796270D54AA00947AD3 /* ContentView.swift in Sources */,
-				F809FC7827267B670044E518 /* GroceriesRepository+Example.swift in Sources */,
+				F809FC822726A3140044E518 /* CampaignMapping.swift in Sources */,
 				F809FC3E272506970044E518 /* GroceriesMappers.generated.swift in Sources */,
 				F8580794270D54AA00947AD3 /* GroceriesExampleApp.swift in Sources */,
 			);
