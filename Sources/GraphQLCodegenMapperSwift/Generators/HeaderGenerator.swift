@@ -41,6 +41,18 @@ struct HeaderGenerator: Generating {
 
     \(primitiveCodes)
 
+    // MARK: - Extensions
+
+    private extension Optional {
+      func unwrapOrFail(context: String = "") throws -> Wrapped {
+        guard let value = self else {
+          throw GroceriesMapperError.missingData(context: context)
+        }
+
+        return value
+      }
+    }
+
     """
   }
 }

@@ -24,6 +24,18 @@ private extension String {
   static func selectionMock() -> Self { "" }
 }
 
+// MARK: - Extensions
+
+private extension Optional {
+  func unwrapOrFail(context: String = "") throws -> Wrapped {
+    guard let value = self else {
+      throw GroceriesMapperError.missingData(context: context)
+    }
+
+    return value
+  }
+}
+
 // MARK: - MapperError
 
 enum StarWarsMapperError: Error, LocalizedError {
@@ -122,15 +134,17 @@ class HumanQuerySelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
+  }
+
+  private func insert(selection: HumanSelection) {
+    if populateSelections {
+      humanSelections.insert(selection)
+    }
   }
 }
 
@@ -145,27 +159,25 @@ class DroidQuerySelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
   }
 
   func name() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.name)
-    }
+    insert(selection: .name)
 
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
+    let value = try response.name.unwrapOrFail(context: "name not found")
 
     return value
+  }
+
+  private func insert(selection: DroidSelection) {
+    if populateSelections {
+      droidSelections.insert(selection)
+    }
   }
 }
 
@@ -206,15 +218,17 @@ class LukeQuerySelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
+  }
+
+  private func insert(selection: HumanSelection) {
+    if populateSelections {
+      humanSelections.insert(selection)
+    }
   }
 }
 
@@ -229,15 +243,17 @@ class HumansQuerySelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
+  }
+
+  private func insert(selection: HumanSelection) {
+    if populateSelections {
+      humanSelections.insert(selection)
+    }
   }
 }
 
@@ -252,27 +268,25 @@ class DroidsQuerySelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
   }
 
   func name() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.name)
-    }
+    insert(selection: .name)
 
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
+    let value = try response.name.unwrapOrFail(context: "name not found")
 
     return value
+  }
+
+  private func insert(selection: DroidSelection) {
+    if populateSelections {
+      droidSelections.insert(selection)
+    }
   }
 }
 
@@ -313,27 +327,25 @@ class DroidSelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
   }
 
   func name() throws -> String {
-    if populateSelections {
-      droidSelections.insert(.name)
-    }
+    insert(selection: .name)
 
-    guard let value = response.name else {
-      throw StarWarsMapperError.missingData(context: "name not found")
-    }
+    let value = try response.name.unwrapOrFail(context: "name not found")
 
     return value
+  }
+
+  private func insert(selection: DroidSelection) {
+    if populateSelections {
+      droidSelections.insert(selection)
+    }
   }
 }
 
@@ -348,15 +360,17 @@ class HumanSelectionDecoder {
   }
 
   func id() throws -> String {
-    if populateSelections {
-      humanSelections.insert(.id)
-    }
+    insert(selection: .id)
 
-    guard let value = response.id else {
-      throw StarWarsMapperError.missingData(context: "id not found")
-    }
+    let value = try response.id.unwrapOrFail(context: "id not found")
 
     return value
+  }
+
+  private func insert(selection: HumanSelection) {
+    if populateSelections {
+      humanSelections.insert(selection)
+    }
   }
 }
 

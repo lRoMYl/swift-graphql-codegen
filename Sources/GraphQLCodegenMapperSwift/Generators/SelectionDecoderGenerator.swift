@@ -214,6 +214,20 @@ private extension SelectionDecoderGenerator {
       )
     }
 
+    let insertSelectionsDeclaration: String
+
+    if let objectType = structure as? ObjectType {
+      insertSelectionsDeclaration = """
+      private func insert(selection: \(try entityNameProvider.selectionName(for: objectType))) {
+        if \(Variables.populateSelections) {
+          \(try entityNameProvider.selectionsVariableName(for: objectType)).insert(selection)
+        }
+      }
+      """
+    } else {
+      insertSelectionsDeclaration = ""
+    }
+
     return """
     class \(selectionDecoderName) {
       \(selectionDeclaration)
@@ -226,6 +240,8 @@ private extension SelectionDecoderGenerator {
       }
 
       \(fieldDeclaration)
+
+      \(insertSelectionsDeclaration)
     }
     """
   }
@@ -248,14 +264,8 @@ private extension SelectionDecoderGenerator {
     let encodingKey = field.name
 
     let result = """
-    guard let \(valueName) = response.\(name) else {
-      throw \(mapperErrorName).missingData(context: "\(encodingKey) not found")
-    }
+    let \(valueName) = try response.\(name).unwrapOrFail(context: "\(encodingKey) not found")
     """
-
-    if result.contains("response.launches") {
-
-    }
 
     return result
   }
@@ -344,9 +354,7 @@ extension SelectionDecoderGenerator {
 
     let funcDeclaration = try self.funcDeclaration(field: field, schemaMap: schemaMap)
     let selectionsVariableName = """
-    if \(Variables.populateSelections) {
-      \(try entityNameProvider.selectionsVariableName(for: objectType)).insert(.\(name))
-    }
+    insert(selection: .\(name))
     """
     let unwrapFieldDeclaration = self.unwrapFieldDeclaration(field: field)
     let returnDeclaration = try self.returnDeclaration(
