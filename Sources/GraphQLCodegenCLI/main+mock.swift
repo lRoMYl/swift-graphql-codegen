@@ -98,7 +98,7 @@ func mockAdvancedCoreExample() {
     [
       groceriesSchema,
       "--target", CodegenTarget.specification.rawValue,
-      "--output", "\(groceriesOutputPath)GraphQLNetworkModels.generated.swift",
+      "--output", "\(groceriesOutputPath)NetworkModels.generated.swift",
       "--config-path", groceriesConfig
     ]
   )
