@@ -91,7 +91,7 @@ enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
 // MARK: - StarWarsModel
 
 struct MutationStarWarsModel: Codable {
-  let mutate: Optional<Bool>
+  let mutate: Maybe<Bool>
 
   // MARK: - CodingKeys
 
@@ -101,9 +101,9 @@ struct MutationStarWarsModel: Codable {
 }
 
 struct DroidStarWarsModel: Codable {
-  let id: Optional<String>
+  let id: Maybe<String>
 
-  let name: Optional<String>
+  let name: Maybe<String>
 
   // MARK: - CodingKeys
 
@@ -114,7 +114,7 @@ struct DroidStarWarsModel: Codable {
 }
 
 struct HumanStarWarsModel: Codable {
-  let id: Optional<String>
+  let id: Maybe<String>
 
   // MARK: - CodingKeys
 
@@ -124,25 +124,25 @@ struct HumanStarWarsModel: Codable {
 }
 
 struct QueryStarWarsModel: Codable {
-  let character: Optional<CharacterUnionStarWarsUnionModel?>
+  let character: Maybe<CharacterUnionStarWarsUnionModel?>
 
-  let characters: Optional<[CharacterStarWarsInterfaceModel]>
+  let characters: Maybe<[CharacterStarWarsInterfaceModel]>
 
-  let droid: Optional<DroidStarWarsModel?>
+  let droid: Maybe<DroidStarWarsModel?>
 
-  let droids: Optional<[DroidStarWarsModel]>
+  let droids: Maybe<[DroidStarWarsModel]>
 
-  let greeting: Optional<String>
+  let greeting: Maybe<String>
 
-  let human: Optional<HumanStarWarsModel?>
+  let human: Maybe<HumanStarWarsModel?>
 
-  let humans: Optional<[HumanStarWarsModel]>
+  let humans: Maybe<[HumanStarWarsModel]>
 
-  let luke: Optional<HumanStarWarsModel?>
+  let luke: Maybe<HumanStarWarsModel?>
 
-  let time: Optional<DateTimeInterval>
+  let time: Maybe<DateTimeInterval>
 
-  let whoami: Optional<String>
+  let whoami: Maybe<String>
 
   // MARK: - CodingKeys
 
@@ -161,7 +161,7 @@ struct QueryStarWarsModel: Codable {
 }
 
 struct SubscriptionStarWarsModel: Codable {
-  let number: Optional<Int>
+  let number: Maybe<Int>
 
   // MARK: - CodingKeys
 

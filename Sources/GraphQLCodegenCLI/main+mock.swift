@@ -111,14 +111,14 @@ func mockAdvancedCoreExample() {
     ]
   )
 
-  GraphQLCodegenCLI.Codegen.main(
-    [
-      groceriesSchema,
-      "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(groceriesOutputPath)Mappers.generated.swift",
-      "--config-path", groceriesConfig
-    ]
-  )
+//  GraphQLCodegenCLI.Codegen.main(
+//    [
+//      groceriesSchema,
+//      "--target", CodegenTarget.mapper.rawValue,
+//      "--output", "\(groceriesOutputPath)Mappers.generated.swift",
+//      "--config-path", groceriesConfig
+//    ]
+//  )
 
   // --- StarWars
   let starwarsSchema = "\(examplePath)/GraphQL/starwars-schema.json"
@@ -142,14 +142,14 @@ func mockAdvancedCoreExample() {
     ]
   )
 
-  GraphQLCodegenCLI.Codegen.main(
-    [
-      starwarsSchema,
-      "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(starwarsOutputPath)Mappers.generated.swift",
-      "--config-path", starwarsConfig
-    ]
-  )
+//  GraphQLCodegenCLI.Codegen.main(
+//    [
+//      starwarsSchema,
+//      "--target", CodegenTarget.mapper.rawValue,
+//      "--output", "\(starwarsOutputPath)Mappers.generated.swift",
+//      "--config-path", starwarsConfig
+//    ]
+//  )
 
   // --- Apollo Introspection
   let apolloSchema = examplePath + "/GraphQL/apollo-schema.json"
@@ -184,12 +184,12 @@ func mockAdvancedCoreExample() {
     ]
   )
 
-  GraphQLCodegenCLI.Codegen.main(
-    [
-      apolloSchema,
-      "--target", CodegenTarget.mapper.rawValue,
-      "--output", "\(apolloOutputPath)Mappers.generated.swift",
-      "--config-path", apolloConfig
-    ]
-  )
+//  GraphQLCodegenCLI.Codegen.main(
+//    [
+//      apolloSchema,
+//      "--target", CodegenTarget.mapper.rawValue,
+//      "--output", "\(apolloOutputPath)Mappers.generated.swift",
+//      "--config-path", apolloConfig
+//    ]
+//  )
 }

@@ -13,12 +13,10 @@ struct ProductDeal {
 }
 
 extension ProductDeal {
-  init(from decoder: ProductDealSelectionDecoder) throws {
-    productId = try decoder.productId()
-    deals = nil
-    // Uncomment this to fetch deals automatically
-    //    deals = try decoder
-    //      .deals(mapper: { try Deal(from: $0) })?
-    //      .compactMap { $0 }
+  init(with productDeal: ProductDealResponseModel) throws {
+    self = ProductDeal(
+      productId: try productDeal.productId.safelyUnwrapped(),
+      deals: nil
+    )
   }
 }

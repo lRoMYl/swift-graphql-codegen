@@ -53,7 +53,7 @@ extension GraphQLCodegenCLI {
     var mapperOutput: String = "Mappers.generated.swift"
 
     @Option
-    var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient, .mapper]
+    var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient]
 
     @Option(help: "Path and name of the config file")
     var configPath: String?

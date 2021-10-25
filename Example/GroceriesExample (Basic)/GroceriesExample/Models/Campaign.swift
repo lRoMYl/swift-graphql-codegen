@@ -13,14 +13,19 @@ struct Campaign {
 }
 
 extension Campaign {
-  init(
-    from decoder: CampaignsQuerySelectionDecoder
-  ) throws {
-    self.attributes = try decoder.campaignAttributes(
-      mapper: { try CampaignAttribute(from: $0) }
-    )?.compactMap { $0 }
-    self.productDeals = try decoder.productDeals(
-      mapper: { try ProductDeal(from: $0) }
-    )?.compactMap { $0 }
+  init(with campaign: CampaignsResponseModel) throws {
+    self = Campaign(
+      attributes: try campaign
+        .campaignAttributes.safelyUnwrapped()?
+        .compactMap { attribute in
+          return try attribute.map { try CampaignAttribute(with: $0) }
+        },
+      productDeals: nil
+//      productDeals: try campaign
+//        .productDeals.safelyUnwrapped()?
+//        .compactMap { productDeal in
+//          return try productDeal.map { try ProductDeal(with: $0) }
+//        }
+    )
   }
 }

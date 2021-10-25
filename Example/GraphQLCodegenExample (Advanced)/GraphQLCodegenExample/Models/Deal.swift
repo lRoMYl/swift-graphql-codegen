@@ -10,9 +10,4 @@ import Foundation
 struct Deal {
   let discountTag: String
   let triggerQuantity: Int
-
-  init(from decoder: DealSelectionDecoder) throws {
-    discountTag = try decoder.discountTag()
-    triggerQuantity = try decoder.triggerQuantity()
-  }
 }

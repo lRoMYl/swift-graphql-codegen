@@ -12,11 +12,11 @@ import Foundation
 
 struct GroceriesBuilder {
   let apiClient: GroceriesApiClientProtocol
-  let campaignMapper: CampaignSelectionsMapping
+  let campaignMapper: CampaignMapping
 
   init(
     apiClient: GroceriesApiClientProtocol,
-    campaignMapper: CampaignSelectionsMapping
+    campaignMapper: CampaignMapping
   ) {
     self.apiClient = apiClient
     self.campaignMapper = campaignMapper

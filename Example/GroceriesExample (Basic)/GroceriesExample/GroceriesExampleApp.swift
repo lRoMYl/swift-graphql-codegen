@@ -13,15 +13,15 @@ import SwiftUI
 struct GroceriesExampleApp: App {
   private let disposeBag = DisposeBag()
   private let groceriesRepository: GroceriesRepositoring = {
-    return DIContainer
-      .shared
-      .groceryBuilderGenerated
-      .repository()
-
 //    return DIContainer
 //      .shared
-//      .groceryBuilderManual
+//      .groceryBuilderGenerated
 //      .repository()
+
+    return DIContainer
+      .shared
+      .groceryBuilderManual
+      .repository()
   }()
 
   var body: some Scene {
@@ -54,7 +54,7 @@ struct GroceriesExampleApp: App {
           print("Campaign Attributes Count: \(campaigns.attributes?.count ?? -1)")
         },
         onFailure: { error in
-          print(error)
+          print(error.localizedDescription)
         }
       )
       .disposed(by: disposeBag)

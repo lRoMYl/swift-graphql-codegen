@@ -20,25 +20,15 @@ struct CampaignAttribute {
   let responseSource: CampaignSourceEnumResponseModel
 }
 
-/// Using custom decoder
 extension CampaignAttribute {
-  init(from decoder: CampaignAttributeSelectionDecoder) throws {
-    self.id = try decoder.id()
-    self.name = try decoder.name()
-    self.customVariableNotInResponse = ""
-    self.source = try decoder.source(mapper: { CampaignAttribute.Source(with: $0) } )
-    self.responseSource = try decoder.source(mapper: { $0 } )
-  }
-}
-
-/// Using manual mapping
-extension CampaignAttribute {
-  init(with attribute: CampaignAttributeResponseModel) {
-    self.id = attribute.id ?? ""
-    self.name = attribute.name ?? ""
-    self.customVariableNotInResponse = ""
-    self.source = attribute.source.map { CampaignAttribute.Source(with: $0) } ?? .unknown("")
-    self.responseSource = attribute.source ?? ._unknown("")
+  init(with campaignAttribute: CampaignAttributeResponseModel) throws {
+    self = CampaignAttribute(
+      id: try campaignAttribute.id.safelyUnwrapped(),
+      name: (try? campaignAttribute.name.safelyUnwrapped()) ?? "default value",
+      customVariableNotInResponse: "",
+      source: .djini, // CampaignAttribute.Source(with: try campaignAttribute.source.safelyUnwrapped()),
+      responseSource: .djini // try campaignAttribute.source.safelyUnwrapped()
+    )
   }
 }
 

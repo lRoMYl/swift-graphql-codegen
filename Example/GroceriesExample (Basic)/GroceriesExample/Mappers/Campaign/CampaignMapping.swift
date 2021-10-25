@@ -7,8 +7,6 @@
 
 import Foundation
 
-protocol CampaignSelectionsMapping {
-  var selections: CampaignsQueryRequestSelections { get }
-
+protocol CampaignMapping {
   func map(response: CampaignsResponseModel) throws -> Campaign
 }

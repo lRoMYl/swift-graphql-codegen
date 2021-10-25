@@ -9,8 +9,4 @@ import Foundation
 
 struct Human {
   let id: String
-
-  init(from decoder: HumanSelectionDecoder) throws {
-    id = try decoder.id()
-  }
 }

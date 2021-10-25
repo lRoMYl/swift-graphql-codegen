@@ -81,13 +81,13 @@ enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
 // MARK: - ApolloModel
 
 struct QueryApolloModel: Codable {
-  let launch: Optional<LaunchApolloModel?>
+  let launch: Maybe<LaunchApolloModel?>
 
-  let launches: Optional<LaunchConnectionApolloModel>
+  let launches: Maybe<LaunchConnectionApolloModel>
 
-  let me: Optional<UserApolloModel?>
+  let me: Maybe<UserApolloModel?>
 
-  let tripsBooked: Optional<Int?>
+  let tripsBooked: Maybe<Int?>
 
   // MARK: - CodingKeys
 
@@ -100,11 +100,11 @@ struct QueryApolloModel: Codable {
 }
 
 struct LaunchConnectionApolloModel: Codable {
-  let cursor: Optional<String>
+  let cursor: Maybe<String>
 
-  let hasMore: Optional<Bool>
+  let hasMore: Maybe<Bool>
 
-  let launches: Optional<[LaunchApolloModel?]>
+  let launches: Maybe<[LaunchApolloModel?]>
 
   // MARK: - CodingKeys
 
@@ -116,15 +116,15 @@ struct LaunchConnectionApolloModel: Codable {
 }
 
 struct LaunchApolloModel: Codable {
-  let id: Optional<String>
+  let id: Maybe<String>
 
-  let isBooked: Optional<Bool>
+  let isBooked: Maybe<Bool>
 
-  let mission: Optional<MissionApolloModel?>
+  let mission: Maybe<MissionApolloModel?>
 
-  let rocket: Optional<RocketApolloModel?>
+  let rocket: Maybe<RocketApolloModel?>
 
-  let site: Optional<String?>
+  let site: Maybe<String?>
 
   // MARK: - CodingKeys
 
@@ -138,9 +138,9 @@ struct LaunchApolloModel: Codable {
 }
 
 struct MissionApolloModel: Codable {
-  let missionPatch: Optional<String?>
+  let missionPatch: Maybe<String?>
 
-  let name: Optional<String?>
+  let name: Maybe<String?>
 
   // MARK: - CodingKeys
 
@@ -151,11 +151,11 @@ struct MissionApolloModel: Codable {
 }
 
 struct RocketApolloModel: Codable {
-  let id: Optional<String>
+  let id: Maybe<String>
 
-  let name: Optional<String?>
+  let name: Maybe<String?>
 
-  let type: Optional<String?>
+  let type: Maybe<String?>
 
   // MARK: - CodingKeys
 
@@ -167,13 +167,13 @@ struct RocketApolloModel: Codable {
 }
 
 struct UserApolloModel: Codable {
-  let email: Optional<String>
+  let email: Maybe<String>
 
-  let id: Optional<String>
+  let id: Maybe<String>
 
-  let profileImage: Optional<String?>
+  let profileImage: Maybe<String?>
 
-  let trips: Optional<[LaunchApolloModel?]>
+  let trips: Maybe<[LaunchApolloModel?]>
 
   // MARK: - CodingKeys
 
@@ -186,13 +186,13 @@ struct UserApolloModel: Codable {
 }
 
 struct MutationApolloModel: Codable {
-  let bookTrips: Optional<TripUpdateResponseApolloModel>
+  let bookTrips: Maybe<TripUpdateResponseApolloModel>
 
-  let cancelTrip: Optional<TripUpdateResponseApolloModel>
+  let cancelTrip: Maybe<TripUpdateResponseApolloModel>
 
-  let login: Optional<String?>
+  let login: Maybe<String?>
 
-  let uploadProfileImage: Optional<UserApolloModel?>
+  let uploadProfileImage: Maybe<UserApolloModel?>
 
   // MARK: - CodingKeys
 
@@ -205,11 +205,11 @@ struct MutationApolloModel: Codable {
 }
 
 struct TripUpdateResponseApolloModel: Codable {
-  let launches: Optional<[LaunchApolloModel?]?>
+  let launches: Maybe<[LaunchApolloModel?]?>
 
-  let message: Optional<String?>
+  let message: Maybe<String?>
 
-  let success: Optional<Bool>
+  let success: Maybe<Bool>
 
   // MARK: - CodingKeys
 
@@ -221,7 +221,7 @@ struct TripUpdateResponseApolloModel: Codable {
 }
 
 struct SubscriptionApolloModel: Codable {
-  let tripsBooked: Optional<Int?>
+  let tripsBooked: Maybe<Int?>
 
   // MARK: - CodingKeys
 

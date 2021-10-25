@@ -10,9 +10,4 @@ import Foundation
 struct Droid {
   let id: String
   let name: String
-
-  init(from decoder: DroidSelectionDecoder) throws {
-    id = try decoder.id()
-    name = try decoder.name()
-  }
 }

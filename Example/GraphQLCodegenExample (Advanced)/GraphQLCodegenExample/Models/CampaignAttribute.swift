@@ -20,24 +20,6 @@ struct CampaignAttribute {
   let responseSource: CampaignSourceEnumResponseModel
 }
 
-extension CampaignAttribute {
-  init(
-    from decoder: CampaignAttributeSelectionDecoder
-  ) throws {
-    self.id = try decoder.id()
-    self.name = try decoder.name()
-
-    // Domain model might have fields that are not in the response, decide the default value here
-    self.customVariableNotInResponse = ""
-
-    // Application/Domain enum mapping
-    self.source = try decoder.source(mapper: { CampaignAttribute.Source(with: $0) } )
-
-    // Sometimes, we use the response enum directly and treat it as a primitive without additional mapping
-    self.responseSource = try decoder.source(mapper: { $0 } )
-  }
-}
-
 extension CampaignAttribute.Source {
   init(with rawValue: CampaignSourceEnumResponseModel) {
     switch rawValue {

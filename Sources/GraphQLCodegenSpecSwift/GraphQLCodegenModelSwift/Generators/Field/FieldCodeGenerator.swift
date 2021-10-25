@@ -33,7 +33,7 @@ struct FieldCodeGenerator {
       // If structure is operation, all fields are generated with optional
       let type: String = try entityNameProvider.name(for: field.type)
 
-      return "let \(field.name.camelCase): Optional<\(type)>"
+      return "let \(field.name.camelCase): Maybe<\(type)>"
     } else {
       // Else infer optionality from SelectionMap or Schema
       let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
@@ -44,7 +44,7 @@ struct FieldCodeGenerator {
         let texts: [String] = [
           field.docs,
           field.availability,
-          "let \(field.name.camelCase): Optional<\(type)>"
+          "let \(field.name.camelCase): Maybe<\(type)>"
         ]
 
         return texts.filter { !$0.isEmpty }.lines

@@ -20,11 +20,11 @@ protocol GroceriesRepositoring {
 
 final class GroceriesRepository: GroceriesRepositoring {
   let apiClient: GroceriesApiClientProtocol
-  let campaignMapper: CampaignSelectionsMapping
+  let campaignMapper: CampaignMapping
 
   init(
     apiClient: GroceriesApiClientProtocol,
-    campaignMapper: CampaignSelectionsMapping
+    campaignMapper: CampaignMapping
   ) {
     self.apiClient = apiClient
     self.campaignMapper = campaignMapper
@@ -35,7 +35,13 @@ final class GroceriesRepository: GroceriesRepositoring {
   ) -> Single<Campaign?> {
     apiClient.campaigns(
       with: parameters,
-      selections: campaignMapper.selections
+      selections: CampaignsQueryRequestSelections(
+        benefitSelections: .allFields,
+        campaignAttributeSelections: [.id],
+        campaignsSelections: .allFields,
+        dealSelections: [.discountTag, .triggerQuantity],
+        productDealSelections: [.deals, .productId]
+      )
     )
     .map {
       guard let responseModel = $0.data?.campaigns else {

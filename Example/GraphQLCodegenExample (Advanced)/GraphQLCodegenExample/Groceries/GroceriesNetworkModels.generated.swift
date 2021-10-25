@@ -127,9 +127,9 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
 // MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
-  let productId: Optional<String>
+  let productId: Maybe<String>
 
-  let quantity: Optional<Int>
+  let quantity: Maybe<Int>
 
   // MARK: - CodingKeys
 
@@ -140,21 +140,21 @@ struct BenefitResponseModel: Codable {
 }
 
 struct CampaignAttributeResponseModel: Codable {
-  let autoApplied: Optional<Bool>
+  let autoApplied: Maybe<Bool>
 
-  let benefits: Optional<[BenefitResponseModel]?>
+  let benefits: Maybe<[BenefitResponseModel]?>
 
-  let campaignType: Optional<CampaignTypeEnumResponseModel>
+  let campaignType: Maybe<CampaignTypeEnumResponseModel>
 
-  let description: Optional<String>
+  let description: Maybe<String>
 
-  let id: Optional<String>
+  let id: Maybe<String>
 
-  let name: Optional<String>
+  let name: Maybe<String>
 
-  let redemptionLimit: Optional<Double>
+  let redemptionLimit: Maybe<Double>
 
-  let source: Optional<CampaignSourceEnumResponseModel>
+  let source: Maybe<CampaignSourceEnumResponseModel>
 
   // MARK: - CodingKeys
 
@@ -171,9 +171,9 @@ struct CampaignAttributeResponseModel: Codable {
 }
 
 struct CampaignsResponseModel: Codable {
-  let campaignAttributes: Optional<[CampaignAttributeResponseModel?]?>
+  let campaignAttributes: Maybe<[CampaignAttributeResponseModel?]?>
 
-  let productDeals: Optional<[ProductDealResponseModel?]?>
+  let productDeals: Maybe<[ProductDealResponseModel?]?>
 
   // MARK: - CodingKeys
 
@@ -184,13 +184,13 @@ struct CampaignsResponseModel: Codable {
 }
 
 struct DealResponseModel: Codable {
-  let campaignId: Optional<String>
+  let campaignId: Maybe<String>
 
   /// things that would change across products for a campaign
-  let discountTag: Optional<String>
+  let discountTag: Maybe<String>
 
   /// buy 3 get 1 free
-  let triggerQuantity: Optional<Int>
+  let triggerQuantity: Maybe<Int>
 
   // MARK: - CodingKeys
 
@@ -202,9 +202,9 @@ struct DealResponseModel: Codable {
 }
 
 struct ProductDealResponseModel: Codable {
-  let deals: Optional<[DealResponseModel?]?>
+  let deals: Maybe<[DealResponseModel?]?>
 
-  let productId: Optional<String>
+  let productId: Maybe<String>
 
   // MARK: - CodingKeys
 
@@ -215,7 +215,7 @@ struct ProductDealResponseModel: Codable {
 }
 
 struct QueryResponseModel: Codable {
-  let campaigns: Optional<CampaignsResponseModel?>
+  let campaigns: Maybe<CampaignsResponseModel?>
 
   // MARK: - CodingKeys
 

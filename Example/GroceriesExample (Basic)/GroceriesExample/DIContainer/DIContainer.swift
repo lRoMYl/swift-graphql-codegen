@@ -11,17 +11,17 @@ import Foundation
 class DIContainer {
   static let shared = DIContainer()
 
-  lazy var groceryBuilderGenerated: GroceriesBuilder = {
-    GroceriesBuilder(
-      apiClient: groceriesApiClient,
-      campaignMapper: campaignSelectionsMapperGenerated
-    )
-  }()
+//  lazy var groceryBuilderGenerated: GroceriesBuilder = {
+//    GroceriesBuilder(
+//      apiClient: groceriesApiClient,
+//      campaignMapper: campaignSelectionsMapperGenerated
+//    )
+//  }()
 
   lazy var groceryBuilderManual: GroceriesBuilder = {
     GroceriesBuilder(
       apiClient: groceriesApiClient,
-      campaignMapper: campaignSelectionsMapperGenerated
+      campaignMapper: campaignSelectionsMapperManual
     )
   }()
 }
@@ -44,11 +44,7 @@ extension DIContainer {
 // MARK: - Mappers
 
 extension DIContainer {
-  var campaignSelectionsMapperGenerated: CampaignSelectionsMapping {
-    CampaignSelectionsMapperGenerated()
-  }
-
-  var campaignSelectionsMapperManual: CampaignSelectionsMapping {
+  var campaignSelectionsMapperManual: CampaignMapping {
     CampaignSelectionsMapper()
   }
 }
