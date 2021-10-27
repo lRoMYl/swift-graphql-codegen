@@ -127,95 +127,277 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
 // MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
-  let productId: Maybe<String>
+  private static let typename = "Benefit"
 
-  let quantity: Maybe<Int>
+  private let _productId: Optional<String>
+  func productId() throws -> String {
+    guard let value = _productId else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._productId.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _quantity: Optional<Int>
+  func quantity() throws -> Int {
+    guard let value = _quantity else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._quantity.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case productId = "productID"
-    case quantity
+    case _productId = "productID"
+    case _quantity = "quantity"
   }
 }
 
 struct CampaignAttributeResponseModel: Codable {
-  let autoApplied: Maybe<Bool>
+  private static let typename = "CampaignAttribute"
 
-  let benefits: Maybe<[BenefitResponseModel]?>
+  private let _autoApplied: Optional<Bool>
+  func autoApplied() throws -> Bool {
+    guard let value = _autoApplied else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._autoApplied.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let campaignType: Maybe<CampaignTypeEnumResponseModel>
+    return value
+  }
 
-  let description: Maybe<String>
+  private let _benefits: Optional<[BenefitResponseModel]?>
+  func benefits() throws -> [BenefitResponseModel]? {
+    guard let value = _benefits else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._benefits.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let id: Maybe<String>
+    return value
+  }
 
-  let name: Maybe<String>
+  private let _campaignType: Optional<CampaignTypeEnumResponseModel>
+  func campaignType() throws -> CampaignTypeEnumResponseModel {
+    guard let value = _campaignType else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._campaignType.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let redemptionLimit: Maybe<Double>
+    return value
+  }
 
-  let source: Maybe<CampaignSourceEnumResponseModel>
+  private let _description: Optional<String>
+  func description() throws -> String {
+    guard let value = _description else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._description.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _name: Optional<String>
+  func name() throws -> String {
+    guard let value = _name else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._name.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _redemptionLimit: Optional<Double>
+  func redemptionLimit() throws -> Double {
+    guard let value = _redemptionLimit else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._redemptionLimit.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _source: Optional<CampaignSourceEnumResponseModel>
+  func source() throws -> CampaignSourceEnumResponseModel {
+    guard let value = _source else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._source.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case autoApplied
-    case benefits
-    case campaignType
-    case description
-    case id
-    case name
-    case redemptionLimit
-    case source
+    case _autoApplied = "autoApplied"
+    case _benefits = "benefits"
+    case _campaignType = "campaignType"
+    case _description = "description"
+    case _id = "id"
+    case _name = "name"
+    case _redemptionLimit = "redemptionLimit"
+    case _source = "source"
   }
 }
 
 struct CampaignsResponseModel: Codable {
-  let campaignAttributes: Maybe<[CampaignAttributeResponseModel?]?>
+  private static let typename = "Campaigns"
 
-  let productDeals: Maybe<[ProductDealResponseModel?]?>
+  private let _campaignAttributes: Optional<[CampaignAttributeResponseModel?]?>
+  func campaignAttributes() throws -> [CampaignAttributeResponseModel?]? {
+    guard let value = _campaignAttributes else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._campaignAttributes.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _productDeals: Optional<[ProductDealResponseModel?]?>
+  func productDeals() throws -> [ProductDealResponseModel?]? {
+    guard let value = _productDeals else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._productDeals.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case campaignAttributes
-    case productDeals
+    case _campaignAttributes = "campaignAttributes"
+    case _productDeals = "productDeals"
   }
 }
 
 struct DealResponseModel: Codable {
-  let campaignId: Maybe<String>
+  private static let typename = "Deal"
+
+  private let _campaignId: Optional<String>
+  func campaignId() throws -> String {
+    guard let value = _campaignId else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._campaignId.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   /// things that would change across products for a campaign
-  let discountTag: Maybe<String>
+  private let _discountTag: Optional<String>
+  func discountTag() throws -> String {
+    guard let value = _discountTag else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._discountTag.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   /// buy 3 get 1 free
-  let triggerQuantity: Maybe<Int>
+  private let _triggerQuantity: Optional<Int>
+  func triggerQuantity() throws -> Int {
+    guard let value = _triggerQuantity else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._triggerQuantity.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case campaignId = "campaignID"
-    case discountTag
-    case triggerQuantity
+    case _campaignId = "campaignID"
+    case _discountTag = "discountTag"
+    case _triggerQuantity = "triggerQuantity"
   }
 }
 
 struct ProductDealResponseModel: Codable {
-  let deals: Maybe<[DealResponseModel?]?>
+  private static let typename = "ProductDeal"
 
-  let productId: Maybe<String>
+  private let _deals: Optional<[DealResponseModel?]?>
+  func deals() throws -> [DealResponseModel?]? {
+    guard let value = _deals else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._deals.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _productId: Optional<String>
+  func productId() throws -> String {
+    guard let value = _productId else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._productId.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case deals
-    case productId = "productID"
+    case _deals = "deals"
+    case _productId = "productID"
   }
 }
 
 struct QueryResponseModel: Codable {
-  let campaigns: Maybe<CampaignsResponseModel?>
+  private static let typename = "Query"
+
+  let campaigns: Optional<CampaignsResponseModel?>
 
   // MARK: - CodingKeys
 

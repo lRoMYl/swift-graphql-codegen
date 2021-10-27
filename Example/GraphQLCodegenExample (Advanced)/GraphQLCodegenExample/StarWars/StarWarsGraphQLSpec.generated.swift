@@ -91,7 +91,9 @@ enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
 // MARK: - StarWarsModel
 
 struct MutationStarWarsModel: Codable {
-  let mutate: Maybe<Bool>
+  private static let typename = "Mutation"
+
+  let mutate: Optional<Bool>
 
   // MARK: - CodingKeys
 
@@ -101,48 +103,84 @@ struct MutationStarWarsModel: Codable {
 }
 
 struct DroidStarWarsModel: Codable {
-  let id: Maybe<String>
+  private static let typename = "Droid"
 
-  let name: Maybe<String>
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _name: Optional<String>
+  func name() throws -> String {
+    guard let value = _name else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._name.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
-    case name
+    case _id = "id"
+    case _name = "name"
   }
 }
 
 struct HumanStarWarsModel: Codable {
-  let id: Maybe<String>
+  private static let typename = "Human"
+
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
+    case _id = "id"
   }
 }
 
 struct QueryStarWarsModel: Codable {
-  let character: Maybe<CharacterUnionStarWarsUnionModel?>
+  private static let typename = "Query"
 
-  let characters: Maybe<[CharacterStarWarsInterfaceModel]>
+  let character: Optional<CharacterUnionStarWarsUnionModel?>
 
-  let droid: Maybe<DroidStarWarsModel?>
+  let characters: Optional<[CharacterStarWarsInterfaceModel]>
 
-  let droids: Maybe<[DroidStarWarsModel]>
+  let droid: Optional<DroidStarWarsModel?>
 
-  let greeting: Maybe<String>
+  let droids: Optional<[DroidStarWarsModel]>
 
-  let human: Maybe<HumanStarWarsModel?>
+  let greeting: Optional<String>
 
-  let humans: Maybe<[HumanStarWarsModel]>
+  let human: Optional<HumanStarWarsModel?>
 
-  let luke: Maybe<HumanStarWarsModel?>
+  let humans: Optional<[HumanStarWarsModel]>
 
-  let time: Maybe<DateTimeInterval>
+  let luke: Optional<HumanStarWarsModel?>
 
-  let whoami: Maybe<String>
+  let time: Optional<DateTimeInterval>
+
+  let whoami: Optional<String>
 
   // MARK: - CodingKeys
 
@@ -161,7 +199,9 @@ struct QueryStarWarsModel: Codable {
 }
 
 struct SubscriptionStarWarsModel: Codable {
-  let number: Maybe<Int>
+  private static let typename = "Subscription"
+
+  let number: Optional<Int>
 
   // MARK: - CodingKeys
 

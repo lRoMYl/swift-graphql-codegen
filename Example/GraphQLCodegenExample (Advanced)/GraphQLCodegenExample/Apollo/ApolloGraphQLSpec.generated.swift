@@ -81,13 +81,15 @@ enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
 // MARK: - ApolloModel
 
 struct QueryApolloModel: Codable {
-  let launch: Maybe<LaunchApolloModel?>
+  private static let typename = "Query"
 
-  let launches: Maybe<LaunchConnectionApolloModel>
+  let launch: Optional<LaunchApolloModel?>
 
-  let me: Maybe<UserApolloModel?>
+  let launches: Optional<LaunchConnectionApolloModel>
 
-  let tripsBooked: Maybe<Int?>
+  let me: Optional<UserApolloModel?>
+
+  let tripsBooked: Optional<Int?>
 
   // MARK: - CodingKeys
 
@@ -100,99 +102,281 @@ struct QueryApolloModel: Codable {
 }
 
 struct LaunchConnectionApolloModel: Codable {
-  let cursor: Maybe<String>
+  private static let typename = "LaunchConnection"
 
-  let hasMore: Maybe<Bool>
+  private let _cursor: Optional<String>
+  func cursor() throws -> String {
+    guard let value = _cursor else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._cursor.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let launches: Maybe<[LaunchApolloModel?]>
+    return value
+  }
+
+  private let _hasMore: Optional<Bool>
+  func hasMore() throws -> Bool {
+    guard let value = _hasMore else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._hasMore.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _launches: Optional<[LaunchApolloModel?]>
+  func launches() throws -> [LaunchApolloModel?] {
+    guard let value = _launches else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._launches.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case cursor
-    case hasMore
-    case launches
+    case _cursor = "cursor"
+    case _hasMore = "hasMore"
+    case _launches = "launches"
   }
 }
 
 struct LaunchApolloModel: Codable {
-  let id: Maybe<String>
+  private static let typename = "Launch"
 
-  let isBooked: Maybe<Bool>
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let mission: Maybe<MissionApolloModel?>
+    return value
+  }
 
-  let rocket: Maybe<RocketApolloModel?>
+  private let _isBooked: Optional<Bool>
+  func isBooked() throws -> Bool {
+    guard let value = _isBooked else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._isBooked.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let site: Maybe<String?>
+    return value
+  }
+
+  private let _mission: Optional<MissionApolloModel?>
+  func mission() throws -> MissionApolloModel? {
+    guard let value = _mission else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._mission.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _rocket: Optional<RocketApolloModel?>
+  func rocket() throws -> RocketApolloModel? {
+    guard let value = _rocket else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._rocket.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _site: Optional<String?>
+  func site() throws -> String? {
+    guard let value = _site else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._site.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
-    case isBooked
-    case mission
-    case rocket
-    case site
+    case _id = "id"
+    case _isBooked = "isBooked"
+    case _mission = "mission"
+    case _rocket = "rocket"
+    case _site = "site"
   }
 }
 
 struct MissionApolloModel: Codable {
-  let missionPatch: Maybe<String?>
+  private static let typename = "Mission"
 
-  let name: Maybe<String?>
+  private let _missionPatch: Optional<String?>
+  func missionPatch() throws -> String? {
+    guard let value = _missionPatch else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._missionPatch.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _name: Optional<String?>
+  func name() throws -> String? {
+    guard let value = _name else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._name.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case missionPatch
-    case name
+    case _missionPatch = "missionPatch"
+    case _name = "name"
   }
 }
 
 struct RocketApolloModel: Codable {
-  let id: Maybe<String>
+  private static let typename = "Rocket"
 
-  let name: Maybe<String?>
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let type: Maybe<String?>
+    return value
+  }
+
+  private let _name: Optional<String?>
+  func name() throws -> String? {
+    guard let value = _name else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._name.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _type: Optional<String?>
+  func type() throws -> String? {
+    guard let value = _type else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._type.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case id
-    case name
-    case type
+    case _id = "id"
+    case _name = "name"
+    case _type = "type"
   }
 }
 
 struct UserApolloModel: Codable {
-  let email: Maybe<String>
+  private static let typename = "User"
 
-  let id: Maybe<String>
+  private let _email: Optional<String>
+  func email() throws -> String {
+    guard let value = _email else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._email.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let profileImage: Maybe<String?>
+    return value
+  }
 
-  let trips: Maybe<[LaunchApolloModel?]>
+  private let _id: Optional<String>
+  func id() throws -> String {
+    guard let value = _id else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._id.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _profileImage: Optional<String?>
+  func profileImage() throws -> String? {
+    guard let value = _profileImage else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._profileImage.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _trips: Optional<[LaunchApolloModel?]>
+  func trips() throws -> [LaunchApolloModel?] {
+    guard let value = _trips else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._trips.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case email
-    case id
-    case profileImage
-    case trips
+    case _email = "email"
+    case _id = "id"
+    case _profileImage = "profileImage"
+    case _trips = "trips"
   }
 }
 
 struct MutationApolloModel: Codable {
-  let bookTrips: Maybe<TripUpdateResponseApolloModel>
+  private static let typename = "Mutation"
 
-  let cancelTrip: Maybe<TripUpdateResponseApolloModel>
+  let bookTrips: Optional<TripUpdateResponseApolloModel>
 
-  let login: Maybe<String?>
+  let cancelTrip: Optional<TripUpdateResponseApolloModel>
 
-  let uploadProfileImage: Maybe<UserApolloModel?>
+  let login: Optional<String?>
+
+  let uploadProfileImage: Optional<UserApolloModel?>
 
   // MARK: - CodingKeys
 
@@ -205,23 +389,57 @@ struct MutationApolloModel: Codable {
 }
 
 struct TripUpdateResponseApolloModel: Codable {
-  let launches: Maybe<[LaunchApolloModel?]?>
+  private static let typename = "TripUpdateResponse"
 
-  let message: Maybe<String?>
+  private let _launches: Optional<[LaunchApolloModel?]?>
+  func launches() throws -> [LaunchApolloModel?]? {
+    guard let value = _launches else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._launches.rawValue,
+        type: Self.typename
+      )
+    }
 
-  let success: Maybe<Bool>
+    return value
+  }
+
+  private let _message: Optional<String?>
+  func message() throws -> String? {
+    guard let value = _message else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._message.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
+
+  private let _success: Optional<Bool>
+  func success() throws -> Bool {
+    guard let value = _success else {
+      throw GraphQLResponseError.missingSelection(
+        key: CodingKeys._success.rawValue,
+        type: Self.typename
+      )
+    }
+
+    return value
+  }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case launches
-    case message
-    case success
+    case _launches = "launches"
+    case _message = "message"
+    case _success = "success"
   }
 }
 
 struct SubscriptionApolloModel: Codable {
-  let tripsBooked: Maybe<Int?>
+  private static let typename = "Subscription"
+
+  let tripsBooked: Optional<Int?>
 
   // MARK: - CodingKeys
 

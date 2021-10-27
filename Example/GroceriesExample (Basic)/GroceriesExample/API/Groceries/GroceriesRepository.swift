@@ -16,6 +16,10 @@ protocol GroceriesRepositoring {
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign?>
+
+  func query(
+    with parameters: CampaignsQueryRequest
+  ) -> Single<QueryResponseModel>
 }
 
 final class GroceriesRepository: GroceriesRepositoring {
@@ -36,11 +40,8 @@ final class GroceriesRepository: GroceriesRepositoring {
     apiClient.campaigns(
       with: parameters,
       selections: CampaignsQueryRequestSelections(
-        benefitSelections: .allFields,
-        campaignAttributeSelections: [.id],
-        campaignsSelections: .allFields,
-        dealSelections: [.discountTag, .triggerQuantity],
-        productDealSelections: [.deals, .productId]
+        campaignAttributeSelections: [.id, .name, .source],
+        campaignsSelections: .allFields
       )
     )
     .map {
@@ -49,6 +50,23 @@ final class GroceriesRepository: GroceriesRepositoring {
       }
 
       return try self.campaignMapper.map(response: responseModel)
+    }
+  }
+
+  func query(
+    with parameters: CampaignsQueryRequest
+  ) -> Single<QueryResponseModel> {
+    apiClient.query(
+      with: QueryRequest(
+        campaigns: parameters
+      ),
+      selections: QueryRequestSelections()
+    ).map {
+      guard let responseModel = $0.data else {
+        throw GroceriesRepositoryError.missingData
+      }
+
+      return responseModel
     }
   }
 }

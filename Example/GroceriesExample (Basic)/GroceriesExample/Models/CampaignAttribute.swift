@@ -15,6 +15,7 @@ struct CampaignAttribute {
 
   let id: String
   let name: String
+  let description: String
   let customVariableNotInResponse: String
   let source: Source
   let responseSource: CampaignSourceEnumResponseModel
@@ -23,11 +24,21 @@ struct CampaignAttribute {
 extension CampaignAttribute {
   init(with campaignAttribute: CampaignAttributeResponseModel) throws {
     self = CampaignAttribute(
-      id: try campaignAttribute.id.safelyUnwrapped(),
-      name: (try? campaignAttribute.name.safelyUnwrapped()) ?? "default value",
+      id: try campaignAttribute.id(),
+      name: try campaignAttribute.name(),
+      /*
+       If you have a shared mapping logic across the app and some fields might or might not be selected,
+       you can opt to not handle the error throw by using try? if you deemed this value is not so critical
+       for the app.
+
+       The error mechanism is in place but it's up to the developer to decide how to manage the error handling.
+
+       However, I would suggest to at least use a do-try block and print the error before assigning the default value.
+       */
+      description: (try? campaignAttribute.description()) ?? "",
       customVariableNotInResponse: "",
-      source: .djini, // CampaignAttribute.Source(with: try campaignAttribute.source.safelyUnwrapped()),
-      responseSource: .djini // try campaignAttribute.source.safelyUnwrapped()
+      source: CampaignAttribute.Source(with: try campaignAttribute.source()),
+      responseSource: try campaignAttribute.source()
     )
   }
 }

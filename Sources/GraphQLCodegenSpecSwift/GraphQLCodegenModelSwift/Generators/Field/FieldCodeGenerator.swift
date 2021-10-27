@@ -33,18 +33,33 @@ struct FieldCodeGenerator {
       // If structure is operation, all fields are generated with optional
       let type: String = try entityNameProvider.name(for: field.type)
 
-      return "let \(field.name.camelCase): Maybe<\(type)>"
+      return "let \(field.name.camelCase): Optional<\(type)>"
     } else {
       // Else infer optionality from SelectionMap or Schema
       let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
       if isSelectable {
         let type: String = try entityNameProvider.name(for: field.type)
+        let variableName = field.name.camelCase
+        let innerVariableName = "_\(variableName)"
+        let declaration = """
+        private let \(innerVariableName): Optional<\(type)>
+        func \(variableName)() throws -> \(type) {
+          guard let value = \(innerVariableName) else {
+            throw GraphQLResponseError.missingSelection(
+              key: CodingKeys.\(innerVariableName).rawValue,
+              type: Self.typename
+            )
+          }
+
+          return value
+        }
+        """
 
         let texts: [String] = [
           field.docs,
           field.availability,
-          "let \(field.name.camelCase): Maybe<\(type)>"
+          declaration
         ]
 
         return texts.filter { !$0.isEmpty }.lines
@@ -58,7 +73,11 @@ struct FieldCodeGenerator {
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
     if isSelectable {
-      return "case \(field.name.camelCase) = \"\(field.name)\""
+      if object.isOperation {
+        return "case \(field.name.camelCase)"
+      } else {
+        return "case _\(field.name.camelCase) = \"\(field.name)\""
+      }
     } else {
       return nil
     }

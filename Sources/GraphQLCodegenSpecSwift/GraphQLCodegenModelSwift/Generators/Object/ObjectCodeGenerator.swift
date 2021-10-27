@@ -85,6 +85,8 @@ extension ObjectCodeGenerator {
     // with Decodable conformance
     return """
     struct \(try entityNameProvider.name(for: objectType)): Codable {
+      private static let typename = "\(objectType.name)"
+
       \(fieldsVariable)
 
       // MARK: - CodingKeys

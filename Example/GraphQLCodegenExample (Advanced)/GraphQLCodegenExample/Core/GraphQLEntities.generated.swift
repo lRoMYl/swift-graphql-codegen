@@ -72,75 +72,13 @@ struct GraphQLResponse<ResponseData: Codable>: Codable {
   let data: ResponseData
 }
 
-// MARK: - Maybe
+enum GraphQLResponseError: Error, LocalizedError {
+  case missingSelection(key: String, type: String)
 
-enum Maybe<T> {
-  case some(T)
-  case none
-}
-
-extension Maybe {
-  enum MaybeError: Error, LocalizedError {
-    case missingValue(context: String)
-
-    var failureReason: String? {
-      switch self {
-      case let .missingValue(context):
-        return "Unwrapping value failed in \(context). Please ensure the GraphQL query contain selection for the value"
-      }
-    }
-  }
-
-  func safelyUnwrapped(
-    file: String = #file,
-    function _: String = #function,
-    line: Int = #line
-  ) throws -> T {
+  var errorDescription: String? {
     switch self {
-    case let .some(wrappedValue):
-      return wrappedValue
-    case .none:
-      let fileName = file.split(separator: "/").last ?? ""
-      throw MaybeError.missingValue(context: "\(fileName) line:\(line)")
-    }
-  }
-}
-
-extension KeyedDecodingContainer {
-  func decode<T>(_: Maybe<T>.Type, forKey key: Key) throws -> Maybe<T> where T: Codable {
-    do {
-      if contains(key) {
-        let value = try decode(T.self, forKey: key)
-        return .some(value)
-      } else {
-        return .none
-      }
-    } catch {
-      throw error
-    }
-  }
-}
-
-extension Maybe: Codable where T: Codable {
-  init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-
-    guard let value = try? container.decode(T.self) else {
-      self = .none
-      return
-    }
-
-    self = .some(value)
-  }
-
-  func encode(to encoder: Encoder) throws {
-    var encoder = encoder.singleValueContainer()
-
-    switch self {
-    case .none:
-      break
-    case let .some(value):
-      try encoder.encode(value)
+    case let .missingSelection(key, type):
+      return "\(Self.self): \(key) is not selected for \(type) type in the GraphQL query"
     }
   }
 }
