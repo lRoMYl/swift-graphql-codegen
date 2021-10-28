@@ -9,7 +9,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 
-struct RequestParameterInitializerGenerator {
+struct RequestInitializerGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let selectionMap: SelectionMap?
@@ -82,7 +82,7 @@ struct RequestParameterInitializerGenerator {
   }
 }
 
-private extension RequestParameterInitializerGenerator {
+private extension RequestInitializerGenerator {
   func argumentDeclaration(inputValue: InputValue, field: Field, rootField: Field) throws -> String {
     let isRootArgument = field.name == rootField.name && field.type == rootField.type
     let typeName = try entityNameProvider.name(for: inputValue.type)

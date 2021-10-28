@@ -19,7 +19,7 @@ enum RequestParameterError: Error, LocalizedError {
   }
 }
 
-struct RequestParameterGenerator: GraphQLCodeGenerating {
+struct RequestGenerator: GraphQLCodeGenerating {
   private let entityName: String
 
   private let scalarMap: ScalarMap
@@ -27,10 +27,10 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
-  private let codingKeysGenerator: RequestParameterEncodableGenerator
+  private let codingKeysGenerator: RequestEncodableGenerator
   private let variablesGenerator: RequestVariablesGenerator
-  private let initializerGenerator: RequestParameterInitializerGenerator
-  private let operationDefinitionGenerator: SelectionsOperationDefinitionGenerator
+  private let initializerGenerator: RequestInitializerGenerator
+  private let operationDefinitionGenerator: RequestOperationDefinitionGenerator
 
   init(
     scalarMap: ScalarMap,
@@ -43,7 +43,7 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
 
-    self.codingKeysGenerator = RequestParameterEncodableGenerator(
+    self.codingKeysGenerator = RequestEncodableGenerator(
       selectionMap: selectionMap,
       scalarMap: scalarMap
     )
@@ -53,13 +53,13 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
       selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
-    self.initializerGenerator = RequestParameterInitializerGenerator(
+    self.initializerGenerator = RequestInitializerGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
       selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
-    self.operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
+    self.operationDefinitionGenerator = RequestOperationDefinitionGenerator(
       variablesGenerator: variablesGenerator,
       entityNameProvider: entityNameProvider
     )
@@ -85,9 +85,9 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
   }
 }
 
-// MARK: - RequestParameterGenerator
+// MARK: - RequestGenerator
 
-private extension RequestParameterGenerator {
+private extension RequestGenerator {
   func operation(
     _ operation: GraphQLAST.Operation,
     schema: Schema

@@ -8,7 +8,7 @@
 import GraphQLAST
 import GraphQLCodegenConfig
 
-struct RequestParameterEncodableGenerator {
+struct RequestEncodableGenerator {
   private let selectionMap: SelectionMap?
   private let scalarMap: ScalarMap
 
@@ -26,7 +26,7 @@ struct RequestParameterEncodableGenerator {
 
 // MARK: - RequestParameterEncodableGenerator
 
-private extension RequestParameterEncodableGenerator {
+private extension RequestEncodableGenerator {
   func codingKeys(with field: Field, objects: [ObjectType]) throws -> String {
     let nestedFields = try field.nestedFields(
       objects: objects,

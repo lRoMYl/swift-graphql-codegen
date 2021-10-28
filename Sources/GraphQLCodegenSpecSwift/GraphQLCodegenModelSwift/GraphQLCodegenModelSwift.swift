@@ -70,7 +70,7 @@ public struct GraphQLCodegenModelSwift {
         entityNameMap: self.entityNameMap,
         entityNameProvider: self.entityNameProvider
       ),
-      RequestParameterGenerator(
+      RequestGenerator(
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,

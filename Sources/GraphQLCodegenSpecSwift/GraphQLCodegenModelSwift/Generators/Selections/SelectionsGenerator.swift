@@ -33,7 +33,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
-  private let operationDefinitionGenerator: SelectionsOperationDefinitionGenerator
+  private let operationDefinitionGenerator: RequestOperationDefinitionGenerator
 
   init(
     scalarMap: ScalarMap,
@@ -53,7 +53,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       entityNameProvider: entityNameProvider
     )
 
-    operationDefinitionGenerator = SelectionsOperationDefinitionGenerator(
+    operationDefinitionGenerator = RequestOperationDefinitionGenerator(
       variablesGenerator: requestParameterVariablesGenerator,
       entityNameProvider: entityNameProvider
     )

@@ -10,7 +10,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 
-enum SelectionsOperationDefinitionError: Error, LocalizedError {
+enum RequestOperationDefinitionError: Error, LocalizedError {
   case missingFragment(context: String)
 
   var errorDescription: String? {
@@ -21,7 +21,7 @@ enum SelectionsOperationDefinitionError: Error, LocalizedError {
   }
 }
 
-struct SelectionsOperationDefinitionGenerator {
+struct RequestOperationDefinitionGenerator {
   private let variablesGenerator: RequestVariablesGenerator
   private let entityNameProvider: EntityNameProviding
 
@@ -35,7 +35,7 @@ struct SelectionsOperationDefinitionGenerator {
 
     if field.isFragment {
       guard let fragmentName = try entityNameProvider.fragmentName(for: field.type.namedType) else {
-        throw SelectionsOperationDefinitionError.missingFragment(
+        throw RequestOperationDefinitionError.missingFragment(
           context: "Expecting fragment name from \(field.type.namedType.name)"
         )
       }
