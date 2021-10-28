@@ -461,14 +461,20 @@ struct LaunchApolloQuery: GraphQLRequesting {
 
   let id: String
 
+  let launchMissionPatchSize: PatchSizeApolloEnumModel?
+
   private enum CodingKeys: String, CodingKey {
     case id = "launchId"
+
+    case launchMissionPatchSize
   }
 
   init(
-    id: String
+    id: String,
+    launchMissionPatchSize: PatchSizeApolloEnumModel?
   ) {
     self.id = id
+    self.launchMissionPatchSize = launchMissionPatchSize
   }
 
   // MARK: - Operation Definition
@@ -504,19 +510,25 @@ struct LaunchesApolloQuery: GraphQLRequesting {
   /// If you add a cursor here, it will only return results _after_ this cursor
   let after: String?
 
+  let launchesMissionPatchSize: PatchSizeApolloEnumModel?
+
   private enum CodingKeys: String, CodingKey {
     /// The number of results to show. Must be >= 1. Default = 20
     case pageSize = "launchesPageSize"
     /// If you add a cursor here, it will only return results _after_ this cursor
     case after = "launchesAfter"
+
+    case launchesMissionPatchSize
   }
 
   init(
-    pageSize: Int?,
-    after: String?
+    after: String?,
+    launchesMissionPatchSize: PatchSizeApolloEnumModel?,
+    pageSize: Int?
   ) {
-    self.pageSize = pageSize
     self.after = after
+    self.launchesMissionPatchSize = launchesMissionPatchSize
+    self.pageSize = pageSize
   }
 
   // MARK: - Operation Definition
@@ -547,10 +559,17 @@ struct MeApolloQuery: GraphQLRequesting {
   let requestType: GraphQLRequestType = .query
   let rootSelectionKeys: Set<String> = ["UserFragment"]
 
+  // MARK: - Arguments
+
+  let meMissionPatchSize: PatchSizeApolloEnumModel?
+
   func encode(to _: Encoder) throws {}
 
   init(
-  ) {}
+    meMissionPatchSize: PatchSizeApolloEnumModel?
+  ) {
+    self.meMissionPatchSize = meMissionPatchSize
+  }
 
   // MARK: - Operation Definition
 
@@ -662,13 +681,19 @@ struct BookTripsApolloMutation: GraphQLRequesting {
 
   let launchIds: [String?]
 
+  let bookTripsMissionPatchSize: PatchSizeApolloEnumModel?
+
   private enum CodingKeys: String, CodingKey {
     case launchIds = "bookTripsLaunchIds"
+
+    case bookTripsMissionPatchSize
   }
 
   init(
+    bookTripsMissionPatchSize: PatchSizeApolloEnumModel?,
     launchIds: [String?]
   ) {
+    self.bookTripsMissionPatchSize = bookTripsMissionPatchSize
     self.launchIds = launchIds
   }
 
@@ -702,13 +727,19 @@ struct CancelTripApolloMutation: GraphQLRequesting {
 
   let launchId: String
 
+  let cancelTripMissionPatchSize: PatchSizeApolloEnumModel?
+
   private enum CodingKeys: String, CodingKey {
     case launchId = "cancelTripLaunchId"
+
+    case cancelTripMissionPatchSize
   }
 
   init(
+    cancelTripMissionPatchSize: PatchSizeApolloEnumModel?,
     launchId: String
   ) {
+    self.cancelTripMissionPatchSize = cancelTripMissionPatchSize
     self.launchId = launchId
   }
 
@@ -778,16 +809,22 @@ struct UploadProfileImageApolloMutation: GraphQLRequesting {
 
   // MARK: - Arguments
 
+  let uploadProfileImageMissionPatchSize: PatchSizeApolloEnumModel?
+
   let file: String
 
   private enum CodingKeys: String, CodingKey {
+    case uploadProfileImageMissionPatchSize
+
     case file = "uploadProfileImageFile"
   }
 
   init(
-    file: String
+    file: String,
+    uploadProfileImageMissionPatchSize: PatchSizeApolloEnumModel?
   ) {
     self.file = file
+    self.uploadProfileImageMissionPatchSize = uploadProfileImageMissionPatchSize
   }
 
   // MARK: - Operation Definition

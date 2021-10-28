@@ -30,7 +30,7 @@ struct SelectionsOperationDefinitionGenerator {
     self.entityNameProvider = entityNameProvider
   }
 
-  func declaration(operation: GraphQLAST.Operation, field: Field) throws -> String {
+  func declaration(operation: GraphQLAST.Operation, field: Field, schema: Schema) throws -> String {
     let selection: String
 
     if field.isFragment {

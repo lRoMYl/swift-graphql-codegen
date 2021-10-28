@@ -73,9 +73,9 @@ struct GraphQLCodegenExampleApp: App {
 extension GraphQLCodegenExampleApp {
   func testGroceriesGraphQL() {
     let parameters = CampaignsQueryRequest(
-      vendorId: "x1yy",
       globalEntityId: "FP_SG",
-      locale: "en_SG"
+      locale: "en_SG",
+      vendorId: "x1yy"
     )
 
     groceriesRepository
@@ -250,7 +250,7 @@ extension GraphQLCodegenExampleApp {
     apolloRepository
       .update(
         with: ApolloMutation(
-          cancelTrip: .init(launchId: "101"),
+          cancelTrip: .init(cancelTripMissionPatchSize: .small, launchId: "101"),
           login: .init(email: "test@test.com")
         )
       )

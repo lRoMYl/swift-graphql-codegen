@@ -13,11 +13,18 @@ import GraphQLCodegenNameSwift
 struct RequestVariablesGenerator {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
+  private let selectionMap: SelectionMap?
   private let entityNameProvider: EntityNameProviding
 
-  init(scalarMap: ScalarMap, entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
+  init(
+    scalarMap: ScalarMap,
+    entityNameMap: EntityNameMap,
+    selectionMap: SelectionMap?,
+    entityNameProvider: EntityNameProviding
+  ) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
+    self.selectionMap = selectionMap
     self.entityNameProvider = entityNameProvider
   }
 
@@ -37,8 +44,8 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
-  func operationVariablesDeclaration(with field: Field) -> String {
-    field.args.compactMap {
+  func operationVariablesDeclaration(with field: Field) -> String? {
+    let code = field.args.compactMap {
       switch $0.type {
       case let .named(objectRef):
         let typeName: String
@@ -54,6 +61,12 @@ struct RequestVariablesGenerator {
         return "$\(argumentName): \(objectRef.argument)!"
       }
     }.lines
+
+    guard !code.isEmpty else {
+      return nil
+    }
+
+    return code
   }
 
   /**
@@ -81,21 +94,48 @@ struct RequestVariablesGenerator {
   /**
    - Swift argument variables
    */
-  func argumentVariablesDeclaration(field: Field) throws -> String {
-    let argumentVariables = try field.args.compactMap {
-      let typeName = try entityNameProvider.name(for: $0.type)
+  func argumentVariablesDeclaration(field: Field, schema: Schema) throws -> String {
+    let nestedFields = try field.nestedFields(
+      objects: schema.objects,
+      scalarMap: scalarMap,
+      excluded: [],
+      selectionMap: selectionMap
+    )
+    let argumentVariables = try nestedFields.compactMap {
+      let argumentVariablesDeclaration = try self.argumentVariablesDeclaration(
+        field: $0,
+        rootField: field
+      )
 
-      return """
-      \($0.docs)
-      let \($0.name.camelCase): \(typeName)
-      """
+      guard !argumentVariablesDeclaration.isEmpty else {
+        return nil
+      }
+
+      return argumentVariablesDeclaration.lines
     }.lines
 
     guard !argumentVariables.isEmpty else { return "" }
 
-    return """
-    // MARK: - Arguments
-    \(argumentVariables)
-    """
+    return [
+      "// MARK: - Arguments",
+      argumentVariables
+    ].lines
+  }
+}
+
+private extension RequestVariablesGenerator {
+  func argumentVariablesDeclaration(field: Field, rootField: Field) throws -> [String] {
+    try field.args.compactMap {
+      let typeName = try entityNameProvider.name(for: $0.type)
+      let variableName = field.name == rootField.name && field.type == rootField.type
+        ? $0.name.camelCase
+        // If the variable is a nested query, use rootField and field as prefix to prevent name collision
+        : "\(rootField.name.camelCase)\(field.name.pascalCase)\($0.name.pascalCase)"
+
+      return """
+      \($0.docs)
+      let \(variableName): \(typeName)
+      """
+    }
   }
 }

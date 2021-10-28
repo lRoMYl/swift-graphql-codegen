@@ -44,7 +44,7 @@ struct MapperGenerator: Generating {
         let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
-        let nestedFields: [Field] = try field.nestedFields(
+        let nestedFields: [Field] = try field.nestedTypeFields(
           objects: schema.objects,
           scalarMap: scalarMap,
           excluded: [],

@@ -66,7 +66,7 @@ struct SelectionDecoderGenerator: Generating {
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
         let nestedFields: [Field] = (
-          try field.nestedFields(
+          try field.nestedTypeFields(
             objects: schema.objects,
             scalarMap: scalarMap,
             excluded: [],
@@ -452,7 +452,7 @@ private extension SelectionDecoderGenerator {
       if
         let selectionDecoderName = try entityNameProvider.selectionDecoderName(outputRef: outputRef)
       {
-        let nestedFields = try field.nestedFields(
+        let nestedFields = try field.nestedTypeFields(
           objects: schemaMap.schema.objects,
           scalarMap: scalarMap,
           excluded: [],

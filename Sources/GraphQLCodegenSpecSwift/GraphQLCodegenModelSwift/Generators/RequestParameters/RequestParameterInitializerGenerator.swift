@@ -27,16 +27,29 @@ struct RequestParameterInitializerGenerator {
     self.entityNameProvider = entityNameProvider
   }
 
-  func declaration(with field: Field) throws -> String {
-    let arguments = try field.args.map {
-      "\($0.name.camelCase): \(try entityNameProvider.name(for: $0.type))"
+  func declaration(with field: Field, schema: Schema) throws -> String {
+    let nestedFields = try field.nestedFields(
+      objects: schema.objects,
+      scalarMap: scalarMap,
+      excluded: [],
+      selectionMap: selectionMap
+    )
+
+    let arguments: String = try nestedFields.reduce(into: [String]()) { result, nestedField in
+      result.append(contentsOf: try nestedField.args.map {
+        try argumentDeclaration(inputValue: $0, field: nestedField, rootField: field)
+      })
     }
+    .sorted(by: { $0 < $1 })
     .joined(separator: ",\n")
 
-    let assignments = field.args.map {
-      let argumentName = $0.name.camelCase
-      return "self.\(argumentName) = \(argumentName)"
-    }.lines
+    let assignments = try nestedFields.reduce(into: [String]()) { result, nestedField in
+      result.append(contentsOf: try nestedField.args.map {
+        try assignmentDeclaration(inputValue: $0, field: nestedField, rootField: field)
+      })
+    }
+    .sorted(by: { $0 < $1 })
+    .lines
 
     return """
     init(
@@ -66,5 +79,25 @@ struct RequestParameterInitializerGenerator {
       \(assignments)
     }
     """
+  }
+}
+
+private extension RequestParameterInitializerGenerator {
+  func argumentDeclaration(inputValue: InputValue, field: Field, rootField: Field) throws -> String {
+    let isRootArgument = field.name == rootField.name && field.type == rootField.type
+    let typeName = try entityNameProvider.name(for: inputValue.type)
+
+    return isRootArgument
+      ? "\(inputValue.name.camelCase): \(typeName)"
+      : "\(rootField.name.camelCase + field.name.pascalCase + inputValue.name.pascalCase): \(typeName)"
+  }
+
+  func assignmentDeclaration(inputValue: InputValue, field: Field, rootField: Field) throws -> String {
+    let isRootArgument = field.name == rootField.name && field.type == rootField.type
+    let argumentName = isRootArgument
+      ? inputValue.name.camelCase
+      : rootField.name.camelCase + field.name.pascalCase + inputValue.name.pascalCase
+
+    return "self.\(argumentName) = \(argumentName)"
   }
 }

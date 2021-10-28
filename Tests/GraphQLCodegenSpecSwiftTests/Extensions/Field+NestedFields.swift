@@ -23,7 +23,7 @@ final class FieldNestedFieldsTests: XCTestCase {
 
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
-    let allNestedFields = try campaignRequestField.nestedFields(
+    let allNestedFields = try campaignRequestField.nestedTypeFields(
       objects: schema.objects, scalarMap: ScalarMap.default, excluded: [], selectionMap: nil
     )
 
@@ -42,7 +42,7 @@ final class FieldNestedFieldsTests: XCTestCase {
 
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
-    let allNestedFields = try campaignRequestField.nestedFields(
+    let allNestedFields = try campaignRequestField.nestedTypeFields(
       objects: schema.objects, scalarMap: ScalarMap.default, excluded: [], selectionMap: nil
     )
 

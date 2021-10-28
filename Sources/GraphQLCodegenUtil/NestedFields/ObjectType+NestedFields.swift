@@ -11,7 +11,7 @@ import GraphQLCodegenConfig
 public extension ObjectType {
   func nestedFieldMap(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> FieldMap {
     let fieldMap = try selectableFields(selectionMap: selectionMap).flatMap {
-      try $0.nestedFields(objects: objects, scalarMap: scalarMap, excluded: [], selectionMap: selectionMap)
+      try $0.nestedTypeFields(objects: objects, scalarMap: scalarMap, excluded: [], selectionMap: selectionMap)
     }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.type.namedType.name })
 
     return fieldMap
@@ -34,7 +34,7 @@ public extension ObjectType {
 
     try self.selectableFields(selectionMap: selectionMap).forEach {
       fields.append(
-        contentsOf: try $0.nestedFields(
+        contentsOf: try $0.nestedTypeFields(
           objects: objects,
           scalarMap: scalarMap,
           excluded: [],

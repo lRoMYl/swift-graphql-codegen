@@ -43,10 +43,14 @@ struct RequestParameterGenerator: GraphQLCodeGenerating {
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
 
-    self.codingKeysGenerator = RequestParameterEncodableGenerator()
+    self.codingKeysGenerator = RequestParameterEncodableGenerator(
+      selectionMap: selectionMap,
+      scalarMap: scalarMap
+    )
     self.variablesGenerator = RequestVariablesGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
+      selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
     self.initializerGenerator = RequestParameterInitializerGenerator(
@@ -105,27 +109,26 @@ private extension RequestParameterGenerator {
 
   func requestParameterDeclaration(
     operation: GraphQLAST.Operation,
-    schema _: Schema,
+    schema: Schema,
     field: Field
   ) throws -> String {
     let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
     let rootSelectionKey = try entityNameProvider.fragmentName(for: field.type.namedType).map { "\"\($0)\"" } ?? ""
 
-    let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(
-      field: field
-    )
+    let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(field: field, schema: schema)
 
-    let codingKeys = try codingKeysGenerator.declaration(field: field)
+    let codingKeys = try codingKeysGenerator.encodingDeclaration(field: field, schema: schema)
 
-    let initializer = try initializerGenerator.declaration(with: field)
+    let initializer = try initializerGenerator.declaration(with: field, schema: schema)
 
     let operationDefinition = try operationDefinitionGenerator.declaration(
-      operation: operation, field: field
+      operation: operation,
+      field: field,
+      schema: schema
     )
 
-    let operationArgumentCode = argumentVariables.isEmpty
-      ? ""
-      : "\n" + variablesGenerator.operationVariablesDeclaration(with: field)
+    let operationArgumentCode: String = variablesGenerator.operationVariablesDeclaration(with: field)
+      .map {"\n\($0)"} ?? ""
 
     let text = """
     /// \(requestParameterName)

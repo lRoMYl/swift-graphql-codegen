@@ -49,6 +49,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     let requestParameterVariablesGenerator = RequestVariablesGenerator(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
+      selectionMap: selectionMap,
       entityNameProvider: entityNameProvider
     )
 

@@ -432,13 +432,13 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   }
 
   init(
-    vendorId: String,
     globalEntityId: String,
-    locale: String
+    locale: String,
+    vendorId: String
   ) {
-    self.vendorId = vendorId
     self.globalEntityId = globalEntityId
     self.locale = locale
+    self.vendorId = vendorId
   }
 
   // MARK: - Operation Definition

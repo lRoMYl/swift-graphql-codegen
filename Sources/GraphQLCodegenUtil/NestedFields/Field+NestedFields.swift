@@ -9,7 +9,8 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 public extension Field {
-  func nestedFields(
+  /// Fields which are defined with `Type` in GraphQL schema
+  func nestedTypeFields(
     objects: [ObjectType],
     scalarMap: ScalarMap,
     excluded: [Field],
@@ -44,7 +45,7 @@ public extension Field {
         }
       case .list, .nonNull:
         fields.append(
-          contentsOf: try $0.nestedFields(
+          contentsOf: try $0.nestedTypeFields(
             objects: objects,
             scalarMap: scalarMap,
             excluded: excluded + fields,
@@ -56,6 +57,62 @@ public extension Field {
 
     return fields
       .unique(by: { $0.type.namedType.name })
+      .sorted(by: sortType)
+  }
+
+  func nestedFields(
+    objects: [ObjectType],
+    scalarMap: ScalarMap,
+    excluded: [Field],
+    selectionMap: SelectionMap?,
+    sortType: FieldSortType = .name
+  ) throws -> [Field] {
+    var fields = [Field]()
+    fields.append(self)
+
+    guard
+      let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
+    else {
+      return fields
+    }
+
+    let selectableFields = returnObjectType.selectableFields(selectionMap: selectionMap).filter {
+      $0.type.namedType != self.type.namedType && !excluded.contains($0)
+    }
+    let filteredSelectableFields = selectableFields.filter {
+      $0.type.namedType != self.type.namedType && !excluded.contains($0)
+    }
+
+    try filteredSelectableFields.forEach {
+      switch $0.type {
+      case let .named(outputRef):
+        switch outputRef {
+        case .object, .interface, .union:
+          fields.append($0)
+          let innerNestedFields = try $0.nestedFields(
+            objects: objects,
+            scalarMap: scalarMap,
+            excluded: excluded + fields,
+            selectionMap: selectionMap
+          )
+          fields.append(contentsOf: innerNestedFields)
+        case .enum, .scalar:
+          fields.append($0)
+        }
+      case .list, .nonNull:
+        fields.append(
+          contentsOf: try $0.nestedFields(
+            objects: objects,
+            scalarMap: scalarMap,
+            excluded: excluded + fields,
+            selectionMap: selectionMap
+          )
+        )
+      }
+    }
+
+    return fields
+      .unique(by: { $0.name + $0.type.namedType.name })
       .sorted(by: sortType)
   }
 }
