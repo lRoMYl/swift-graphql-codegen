@@ -91,8 +91,6 @@ enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
 // MARK: - StarWarsModel
 
 struct MutationStarWarsModel: Codable {
-  private static let typename = "Mutation"
-
   let mutate: Optional<Bool>
 
   // MARK: - CodingKeys
@@ -103,26 +101,22 @@ struct MutationStarWarsModel: Codable {
 }
 
 struct DroidStarWarsModel: Codable {
-  private static let typename = "Droid"
+  private let internalId: Optional<String>
+  private let internalName: Optional<String>
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
   }
 
-  private let _name: Optional<String>
   func name() throws -> String {
-    guard let value = _name else {
+    try value(for: \.internalName, codingKey: CodingKeys.internalName)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<DroidStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._name.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Droid"
       )
     }
 
@@ -132,20 +126,23 @@ struct DroidStarWarsModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _id = "id"
-    case _name = "name"
+    case internalId = "id"
+    case internalName = "name"
   }
 }
 
 struct HumanStarWarsModel: Codable {
-  private static let typename = "Human"
+  private let internalId: Optional<String>
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<HumanStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Human"
       )
     }
 
@@ -155,31 +152,20 @@ struct HumanStarWarsModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _id = "id"
+    case internalId = "id"
   }
 }
 
 struct QueryStarWarsModel: Codable {
-  private static let typename = "Query"
-
   let character: Optional<CharacterUnionStarWarsUnionModel?>
-
   let characters: Optional<[CharacterStarWarsInterfaceModel]>
-
   let droid: Optional<DroidStarWarsModel?>
-
   let droids: Optional<[DroidStarWarsModel]>
-
   let greeting: Optional<String>
-
   let human: Optional<HumanStarWarsModel?>
-
   let humans: Optional<[HumanStarWarsModel]>
-
   let luke: Optional<HumanStarWarsModel?>
-
   let time: Optional<DateTimeInterval>
-
   let whoami: Optional<String>
 
   // MARK: - CodingKeys
@@ -199,8 +185,6 @@ struct QueryStarWarsModel: Codable {
 }
 
 struct SubscriptionStarWarsModel: Codable {
-  private static let typename = "Subscription"
-
   let number: Optional<Int>
 
   // MARK: - CodingKeys

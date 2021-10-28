@@ -93,12 +93,12 @@ struct EntityGenerator: GraphQLCodeGenerating {
     }
 
     enum GraphQLResponseError: Error, LocalizedError {
-      case missingSelection(key: String, type: String)
+      case missingSelection(key: CodingKey, type: String)
 
       var errorDescription: String? {
         switch self {
         case let .missingSelection(key, type):
-          return "\\(Self.self): \\(key) is not selected for \\(type) type in the GraphQL query"
+          return "\\(Self.self): \\(key.stringValue) is not selected for \\(type) type in the GraphQL query"
         }
       }
     }

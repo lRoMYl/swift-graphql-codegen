@@ -127,26 +127,22 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
 // MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
-  private static let typename = "Benefit"
+  private let internalProductId: Optional<String>
+  private let internalQuantity: Optional<Int>
 
-  private let _productId: Optional<String>
   func productId() throws -> String {
-    guard let value = _productId else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._productId.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalProductId, codingKey: CodingKeys.internalProductId)
   }
 
-  private let _quantity: Optional<Int>
   func quantity() throws -> Int {
-    guard let value = _quantity else {
+    try value(for: \.internalQuantity, codingKey: CodingKeys.internalQuantity)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<BenefitResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._quantity.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Benefit"
       )
     }
 
@@ -156,104 +152,58 @@ struct BenefitResponseModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _productId = "productID"
-    case _quantity = "quantity"
+    case internalProductId = "productID"
+    case internalQuantity = "quantity"
   }
 }
 
 struct CampaignAttributeResponseModel: Codable {
-  private static let typename = "CampaignAttribute"
+  private let internalAutoApplied: Optional<Bool>
+  private let internalBenefits: Optional<[BenefitResponseModel]?>
+  private let internalCampaignType: Optional<CampaignTypeEnumResponseModel>
+  private let internalDescription: Optional<String>
+  private let internalId: Optional<String>
+  private let internalName: Optional<String>
+  private let internalRedemptionLimit: Optional<Double>
+  private let internalSource: Optional<CampaignSourceEnumResponseModel>
 
-  private let _autoApplied: Optional<Bool>
   func autoApplied() throws -> Bool {
-    guard let value = _autoApplied else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._autoApplied.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalAutoApplied, codingKey: CodingKeys.internalAutoApplied)
   }
 
-  private let _benefits: Optional<[BenefitResponseModel]?>
   func benefits() throws -> [BenefitResponseModel]? {
-    guard let value = _benefits else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._benefits.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalBenefits, codingKey: CodingKeys.internalBenefits)
   }
 
-  private let _campaignType: Optional<CampaignTypeEnumResponseModel>
   func campaignType() throws -> CampaignTypeEnumResponseModel {
-    guard let value = _campaignType else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._campaignType.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalCampaignType, codingKey: CodingKeys.internalCampaignType)
   }
 
-  private let _description: Optional<String>
   func description() throws -> String {
-    guard let value = _description else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._description.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalDescription, codingKey: CodingKeys.internalDescription)
   }
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
   }
 
-  private let _name: Optional<String>
   func name() throws -> String {
-    guard let value = _name else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._name.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalName, codingKey: CodingKeys.internalName)
   }
 
-  private let _redemptionLimit: Optional<Double>
   func redemptionLimit() throws -> Double {
-    guard let value = _redemptionLimit else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._redemptionLimit.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalRedemptionLimit, codingKey: CodingKeys.internalRedemptionLimit)
   }
 
-  private let _source: Optional<CampaignSourceEnumResponseModel>
   func source() throws -> CampaignSourceEnumResponseModel {
-    guard let value = _source else {
+    try value(for: \.internalSource, codingKey: CodingKeys.internalSource)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<CampaignAttributeResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._source.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "CampaignAttribute"
       )
     }
 
@@ -263,38 +213,34 @@ struct CampaignAttributeResponseModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _autoApplied = "autoApplied"
-    case _benefits = "benefits"
-    case _campaignType = "campaignType"
-    case _description = "description"
-    case _id = "id"
-    case _name = "name"
-    case _redemptionLimit = "redemptionLimit"
-    case _source = "source"
+    case internalAutoApplied = "autoApplied"
+    case internalBenefits = "benefits"
+    case internalCampaignType = "campaignType"
+    case internalDescription = "description"
+    case internalId = "id"
+    case internalName = "name"
+    case internalRedemptionLimit = "redemptionLimit"
+    case internalSource = "source"
   }
 }
 
 struct CampaignsResponseModel: Codable {
-  private static let typename = "Campaigns"
+  private let internalCampaignAttributes: Optional<[CampaignAttributeResponseModel?]?>
+  private let internalProductDeals: Optional<[ProductDealResponseModel?]?>
 
-  private let _campaignAttributes: Optional<[CampaignAttributeResponseModel?]?>
   func campaignAttributes() throws -> [CampaignAttributeResponseModel?]? {
-    guard let value = _campaignAttributes else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._campaignAttributes.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalCampaignAttributes, codingKey: CodingKeys.internalCampaignAttributes)
   }
 
-  private let _productDeals: Optional<[ProductDealResponseModel?]?>
   func productDeals() throws -> [ProductDealResponseModel?]? {
-    guard let value = _productDeals else {
+    try value(for: \.internalProductDeals, codingKey: CodingKeys.internalProductDeals)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<CampaignsResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._productDeals.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Campaigns"
       )
     }
 
@@ -304,46 +250,35 @@ struct CampaignsResponseModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _campaignAttributes = "campaignAttributes"
-    case _productDeals = "productDeals"
+    case internalCampaignAttributes = "campaignAttributes"
+    case internalProductDeals = "productDeals"
   }
 }
 
 struct DealResponseModel: Codable {
-  private static let typename = "Deal"
+  private let internalCampaignId: Optional<String>
+  private let internalDiscountTag: Optional<String>
+  private let internalTriggerQuantity: Optional<Int>
 
-  private let _campaignId: Optional<String>
   func campaignId() throws -> String {
-    guard let value = _campaignId else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._campaignId.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalCampaignId, codingKey: CodingKeys.internalCampaignId)
   }
 
   /// things that would change across products for a campaign
-  private let _discountTag: Optional<String>
   func discountTag() throws -> String {
-    guard let value = _discountTag else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._discountTag.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalDiscountTag, codingKey: CodingKeys.internalDiscountTag)
   }
 
   /// buy 3 get 1 free
-  private let _triggerQuantity: Optional<Int>
   func triggerQuantity() throws -> Int {
-    guard let value = _triggerQuantity else {
+    try value(for: \.internalTriggerQuantity, codingKey: CodingKeys.internalTriggerQuantity)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<DealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._triggerQuantity.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Deal"
       )
     }
 
@@ -353,33 +288,29 @@ struct DealResponseModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _campaignId = "campaignID"
-    case _discountTag = "discountTag"
-    case _triggerQuantity = "triggerQuantity"
+    case internalCampaignId = "campaignID"
+    case internalDiscountTag = "discountTag"
+    case internalTriggerQuantity = "triggerQuantity"
   }
 }
 
 struct ProductDealResponseModel: Codable {
-  private static let typename = "ProductDeal"
+  private let internalDeals: Optional<[DealResponseModel?]?>
+  private let internalProductId: Optional<String>
 
-  private let _deals: Optional<[DealResponseModel?]?>
   func deals() throws -> [DealResponseModel?]? {
-    guard let value = _deals else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._deals.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalDeals, codingKey: CodingKeys.internalDeals)
   }
 
-  private let _productId: Optional<String>
   func productId() throws -> String {
-    guard let value = _productId else {
+    try value(for: \.internalProductId, codingKey: CodingKeys.internalProductId)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<ProductDealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._productId.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "ProductDeal"
       )
     }
 
@@ -389,14 +320,12 @@ struct ProductDealResponseModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _deals = "deals"
-    case _productId = "productID"
+    case internalDeals = "deals"
+    case internalProductId = "productID"
   }
 }
 
 struct QueryResponseModel: Codable {
-  private static let typename = "Query"
-
   let campaigns: Optional<CampaignsResponseModel?>
 
   // MARK: - CodingKeys

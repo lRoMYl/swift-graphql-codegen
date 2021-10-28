@@ -40,46 +40,71 @@ struct FieldCodeGenerator {
 
       if isSelectable {
         let type: String = try entityNameProvider.name(for: field.type)
-        let variableName = field.name.camelCase
-        let innerVariableName = "_\(variableName)"
-        let declaration = """
+        let innerVariableName = try entityNameProvider.responseInternalVariableName(with: field)
+        return """
         private let \(innerVariableName): Optional<\(type)>
-        func \(variableName)() throws -> \(type) {
-          guard let value = \(innerVariableName) else {
-            throw GraphQLResponseError.missingSelection(
-              key: CodingKeys.\(innerVariableName).rawValue,
-              type: Self.typename
-            )
-          }
-
-          return value
-        }
         """
-
-        let texts: [String] = [
-          field.docs,
-          field.availability,
-          declaration
-        ]
-
-        return texts.filter { !$0.isEmpty }.lines
       } else {
         return nil
       }
     }
   }
 
-  func codingKeyDeclaration(object: Structure, field: Field) -> String? {
+  func variableFunctionDeclaration(object: Structure, field: Field) throws -> String? {
+    guard !object.isOperation else { return nil }
+
+    let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
+
+    if isSelectable {
+      let type: String = try entityNameProvider.name(for: field.type)
+      let variableName = field.name.camelCase
+      let innerVariableName = try entityNameProvider.responseInternalVariableName(with: field)
+      let declaration = """
+      func \(variableName)() throws -> \(type) {
+        try value(for: \\.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName))
+      }
+      """
+
+      let texts: [String] = [
+        field.docs,
+        field.availability,
+        declaration
+      ]
+
+      return texts.filter { !$0.isEmpty }.lines
+    } else {
+      return nil
+    }
+  }
+
+  func codingKeyDeclaration(object: Structure, field: Field) throws -> String? {
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
 
     if isSelectable {
       if object.isOperation {
         return "case \(field.name.camelCase)"
       } else {
-        return "case _\(field.name.camelCase) = \"\(field.name)\""
+        return "case \(try entityNameProvider.responseInternalVariableName(with: field)) = \"\(field.name)\""
       }
     } else {
       return nil
     }
+  }
+
+  func valueFunctionDeclaration(with object: Structure) throws -> String? {
+    let responseName = try entityNameProvider.name(for: object)
+    
+    return object.isOperation
+      ? ""
+      : """
+      private func value<Value>(for keyPath: KeyPath<\(responseName), Value?>, codingKey: CodingKey) throws -> Value {
+        guard let value = self[keyPath: keyPath] else {
+          throw GraphQLResponseError.missingSelection(key: codingKey, type: "\(object.name)"
+          )
+        }
+
+        return value
+      }
+      """
   }
 }

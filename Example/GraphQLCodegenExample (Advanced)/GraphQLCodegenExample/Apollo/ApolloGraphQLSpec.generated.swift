@@ -81,14 +81,9 @@ enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
 // MARK: - ApolloModel
 
 struct QueryApolloModel: Codable {
-  private static let typename = "Query"
-
   let launch: Optional<LaunchApolloModel?>
-
   let launches: Optional<LaunchConnectionApolloModel>
-
   let me: Optional<UserApolloModel?>
-
   let tripsBooked: Optional<Int?>
 
   // MARK: - CodingKeys
@@ -102,38 +97,27 @@ struct QueryApolloModel: Codable {
 }
 
 struct LaunchConnectionApolloModel: Codable {
-  private static let typename = "LaunchConnection"
+  private let internalCursor: Optional<String>
+  private let internalHasMore: Optional<Bool>
+  private let internalLaunches: Optional<[LaunchApolloModel?]>
 
-  private let _cursor: Optional<String>
   func cursor() throws -> String {
-    guard let value = _cursor else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._cursor.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalCursor, codingKey: CodingKeys.internalCursor)
   }
 
-  private let _hasMore: Optional<Bool>
   func hasMore() throws -> Bool {
-    guard let value = _hasMore else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._hasMore.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalHasMore, codingKey: CodingKeys.internalHasMore)
   }
 
-  private let _launches: Optional<[LaunchApolloModel?]>
   func launches() throws -> [LaunchApolloModel?] {
-    guard let value = _launches else {
+    try value(for: \.internalLaunches, codingKey: CodingKeys.internalLaunches)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<LaunchConnectionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._launches.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "LaunchConnection"
       )
     }
 
@@ -143,69 +127,44 @@ struct LaunchConnectionApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _cursor = "cursor"
-    case _hasMore = "hasMore"
-    case _launches = "launches"
+    case internalCursor = "cursor"
+    case internalHasMore = "hasMore"
+    case internalLaunches = "launches"
   }
 }
 
 struct LaunchApolloModel: Codable {
-  private static let typename = "Launch"
+  private let internalId: Optional<String>
+  private let internalIsBooked: Optional<Bool>
+  private let internalMission: Optional<MissionApolloModel?>
+  private let internalRocket: Optional<RocketApolloModel?>
+  private let internalSite: Optional<String?>
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
   }
 
-  private let _isBooked: Optional<Bool>
   func isBooked() throws -> Bool {
-    guard let value = _isBooked else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._isBooked.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalIsBooked, codingKey: CodingKeys.internalIsBooked)
   }
 
-  private let _mission: Optional<MissionApolloModel?>
   func mission() throws -> MissionApolloModel? {
-    guard let value = _mission else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._mission.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalMission, codingKey: CodingKeys.internalMission)
   }
 
-  private let _rocket: Optional<RocketApolloModel?>
   func rocket() throws -> RocketApolloModel? {
-    guard let value = _rocket else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._rocket.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalRocket, codingKey: CodingKeys.internalRocket)
   }
 
-  private let _site: Optional<String?>
   func site() throws -> String? {
-    guard let value = _site else {
+    try value(for: \.internalSite, codingKey: CodingKeys.internalSite)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<LaunchApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._site.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Launch"
       )
     }
 
@@ -215,35 +174,31 @@ struct LaunchApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _id = "id"
-    case _isBooked = "isBooked"
-    case _mission = "mission"
-    case _rocket = "rocket"
-    case _site = "site"
+    case internalId = "id"
+    case internalIsBooked = "isBooked"
+    case internalMission = "mission"
+    case internalRocket = "rocket"
+    case internalSite = "site"
   }
 }
 
 struct MissionApolloModel: Codable {
-  private static let typename = "Mission"
+  private let internalMissionPatch: Optional<String?>
+  private let internalName: Optional<String?>
 
-  private let _missionPatch: Optional<String?>
   func missionPatch() throws -> String? {
-    guard let value = _missionPatch else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._missionPatch.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalMissionPatch, codingKey: CodingKeys.internalMissionPatch)
   }
 
-  private let _name: Optional<String?>
   func name() throws -> String? {
-    guard let value = _name else {
+    try value(for: \.internalName, codingKey: CodingKeys.internalName)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<MissionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._name.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Mission"
       )
     }
 
@@ -253,44 +208,33 @@ struct MissionApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _missionPatch = "missionPatch"
-    case _name = "name"
+    case internalMissionPatch = "missionPatch"
+    case internalName = "name"
   }
 }
 
 struct RocketApolloModel: Codable {
-  private static let typename = "Rocket"
+  private let internalId: Optional<String>
+  private let internalName: Optional<String?>
+  private let internalType: Optional<String?>
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
   }
 
-  private let _name: Optional<String?>
   func name() throws -> String? {
-    guard let value = _name else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._name.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalName, codingKey: CodingKeys.internalName)
   }
 
-  private let _type: Optional<String?>
   func type() throws -> String? {
-    guard let value = _type else {
+    try value(for: \.internalType, codingKey: CodingKeys.internalType)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<RocketApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._type.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "Rocket"
       )
     }
 
@@ -300,57 +244,39 @@ struct RocketApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _id = "id"
-    case _name = "name"
-    case _type = "type"
+    case internalId = "id"
+    case internalName = "name"
+    case internalType = "type"
   }
 }
 
 struct UserApolloModel: Codable {
-  private static let typename = "User"
+  private let internalEmail: Optional<String>
+  private let internalId: Optional<String>
+  private let internalProfileImage: Optional<String?>
+  private let internalTrips: Optional<[LaunchApolloModel?]>
 
-  private let _email: Optional<String>
   func email() throws -> String {
-    guard let value = _email else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._email.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalEmail, codingKey: CodingKeys.internalEmail)
   }
 
-  private let _id: Optional<String>
   func id() throws -> String {
-    guard let value = _id else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._id.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalId, codingKey: CodingKeys.internalId)
   }
 
-  private let _profileImage: Optional<String?>
   func profileImage() throws -> String? {
-    guard let value = _profileImage else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._profileImage.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalProfileImage, codingKey: CodingKeys.internalProfileImage)
   }
 
-  private let _trips: Optional<[LaunchApolloModel?]>
   func trips() throws -> [LaunchApolloModel?] {
-    guard let value = _trips else {
+    try value(for: \.internalTrips, codingKey: CodingKeys.internalTrips)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<UserApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._trips.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "User"
       )
     }
 
@@ -360,22 +286,17 @@ struct UserApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _email = "email"
-    case _id = "id"
-    case _profileImage = "profileImage"
-    case _trips = "trips"
+    case internalEmail = "email"
+    case internalId = "id"
+    case internalProfileImage = "profileImage"
+    case internalTrips = "trips"
   }
 }
 
 struct MutationApolloModel: Codable {
-  private static let typename = "Mutation"
-
   let bookTrips: Optional<TripUpdateResponseApolloModel>
-
   let cancelTrip: Optional<TripUpdateResponseApolloModel>
-
   let login: Optional<String?>
-
   let uploadProfileImage: Optional<UserApolloModel?>
 
   // MARK: - CodingKeys
@@ -389,38 +310,27 @@ struct MutationApolloModel: Codable {
 }
 
 struct TripUpdateResponseApolloModel: Codable {
-  private static let typename = "TripUpdateResponse"
+  private let internalLaunches: Optional<[LaunchApolloModel?]?>
+  private let internalMessage: Optional<String?>
+  private let internalSuccess: Optional<Bool>
 
-  private let _launches: Optional<[LaunchApolloModel?]?>
   func launches() throws -> [LaunchApolloModel?]? {
-    guard let value = _launches else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._launches.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalLaunches, codingKey: CodingKeys.internalLaunches)
   }
 
-  private let _message: Optional<String?>
   func message() throws -> String? {
-    guard let value = _message else {
-      throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._message.rawValue,
-        type: Self.typename
-      )
-    }
-
-    return value
+    try value(for: \.internalMessage, codingKey: CodingKeys.internalMessage)
   }
 
-  private let _success: Optional<Bool>
   func success() throws -> Bool {
-    guard let value = _success else {
+    try value(for: \.internalSuccess, codingKey: CodingKeys.internalSuccess)
+  }
+
+  private func value<Value>(for keyPath: KeyPath<TripUpdateResponseApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
+    guard let value = self[keyPath: keyPath] else {
       throw GraphQLResponseError.missingSelection(
-        key: CodingKeys._success.rawValue,
-        type: Self.typename
+        key: codingKey,
+        type: "TripUpdateResponse"
       )
     }
 
@@ -430,15 +340,13 @@ struct TripUpdateResponseApolloModel: Codable {
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case _launches = "launches"
-    case _message = "message"
-    case _success = "success"
+    case internalLaunches = "launches"
+    case internalMessage = "message"
+    case internalSuccess = "success"
   }
 }
 
 struct SubscriptionApolloModel: Codable {
-  private static let typename = "Subscription"
-
   let tripsBooked: Optional<Int?>
 
   // MARK: - CodingKeys

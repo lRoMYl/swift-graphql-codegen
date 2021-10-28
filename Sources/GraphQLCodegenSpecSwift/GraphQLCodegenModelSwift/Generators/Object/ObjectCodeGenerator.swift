@@ -72,22 +72,32 @@ extension ObjectCodeGenerator {
 
     let fieldsVariable = try sortedFields
       .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: objectType, field: $0) }
+      .joined(separator: "\n")
+    let fieldsVariableFunction = try sortedFields
+      .compactMap { try fieldSpecificationGenerator.variableFunctionDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n\n")
-    let fieldsCodingKey = sortedFields
-      .compactMap { fieldSpecificationGenerator.codingKeyDeclaration(object: objectType, field: $0) }
+
+    let fieldsCodingKey = try sortedFields
+      .compactMap { try fieldSpecificationGenerator.codingKeyDeclaration(object: objectType, field: $0) }
       .lines
 
     guard !fieldsCodingKey.isEmpty || !fieldsCodingKey.isEmpty else {
       throw ObjectCodeGeneratorError.emptyFields(name: objectType.name)
     }
 
+    let responseName = try entityNameProvider.name(for: objectType)
+
+    let valueFunctionDeclaration = try fieldSpecificationGenerator.valueFunctionDeclaration(with: objectType) ?? ""
+
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
-    struct \(try entityNameProvider.name(for: objectType)): Codable {
-      private static let typename = "\(objectType.name)"
-
+    struct \(responseName): Codable {
       \(fieldsVariable)
+
+      \(fieldsVariableFunction)
+
+      \(valueFunctionDeclaration)
 
       // MARK: - CodingKeys
 

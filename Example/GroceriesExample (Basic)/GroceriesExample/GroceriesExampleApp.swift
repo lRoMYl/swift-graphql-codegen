@@ -35,9 +35,9 @@ struct GroceriesExampleApp: App {
 
   func testGroceriesGraphQL() {
     let parameters = CampaignsQueryRequest(
-      vendorId: "x1yy",
       globalEntityId: "FP_SG",
-      locale: "en_SG"
+      locale: "en_SG",
+      vendorId: "x1yy"
     )
 
     groceriesRepository
