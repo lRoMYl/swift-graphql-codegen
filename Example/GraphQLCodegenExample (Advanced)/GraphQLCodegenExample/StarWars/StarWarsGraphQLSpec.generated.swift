@@ -114,10 +114,7 @@ struct DroidStarWarsModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<DroidStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Droid"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Droid")
     }
 
     return value
@@ -140,10 +137,7 @@ struct HumanStarWarsModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<HumanStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Human"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Human")
     }
 
     return value

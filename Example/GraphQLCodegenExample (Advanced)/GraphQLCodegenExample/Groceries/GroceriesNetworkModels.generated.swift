@@ -140,10 +140,7 @@ struct BenefitResponseModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<BenefitResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Benefit"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Benefit")
     }
 
     return value
@@ -201,10 +198,7 @@ struct CampaignAttributeResponseModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<CampaignAttributeResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "CampaignAttribute"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "CampaignAttribute")
     }
 
     return value
@@ -238,10 +232,7 @@ struct CampaignsResponseModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<CampaignsResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Campaigns"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Campaigns")
     }
 
     return value
@@ -276,10 +267,7 @@ struct DealResponseModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<DealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Deal"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Deal")
     }
 
     return value
@@ -308,10 +296,7 @@ struct ProductDealResponseModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<ProductDealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "ProductDeal"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "ProductDeal")
     }
 
     return value
@@ -375,9 +360,9 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     campaigns(
-      VendorID: $campaignsVendorId
       GlobalEntityID: $campaignsGlobalEntityId
       Locale: $campaignsLocale
+      VendorID: $campaignsVendorId
     ) {
        ...CampaignsFragment
     }

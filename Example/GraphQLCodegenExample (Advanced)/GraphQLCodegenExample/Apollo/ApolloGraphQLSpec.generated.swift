@@ -115,10 +115,7 @@ struct LaunchConnectionApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<LaunchConnectionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "LaunchConnection"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "LaunchConnection")
     }
 
     return value
@@ -162,10 +159,7 @@ struct LaunchApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<LaunchApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Launch"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Launch")
     }
 
     return value
@@ -196,10 +190,7 @@ struct MissionApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<MissionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Mission"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Mission")
     }
 
     return value
@@ -232,10 +223,7 @@ struct RocketApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<RocketApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "Rocket"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Rocket")
     }
 
     return value
@@ -274,10 +262,7 @@ struct UserApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<UserApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "User"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "User")
     }
 
     return value
@@ -328,10 +313,7 @@ struct TripUpdateResponseApolloModel: Codable {
 
   private func value<Value>(for keyPath: KeyPath<TripUpdateResponseApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
     guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(
-        key: codingKey,
-        type: "TripUpdateResponse"
-      )
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: "TripUpdateResponse")
     }
 
     return value
@@ -391,6 +373,7 @@ struct LaunchApolloQuery: GraphQLRequesting {
     return """
     launch(
       id: $launchId
+      launchMissionPatchSize: $launchMissionPatchSize
     ) {
        ...LaunchFragment
     }
@@ -444,8 +427,9 @@ struct LaunchesApolloQuery: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     launches(
-      pageSize: $launchesPageSize
       after: $launchesAfter
+      launchesMissionPatchSize: $launchesMissionPatchSize
+      pageSize: $launchesPageSize
     ) {
        ...LaunchConnectionFragment
     }
@@ -483,7 +467,9 @@ struct MeApolloQuery: GraphQLRequesting {
 
   func operationDefinition() -> String {
     return """
-    me {
+    me(
+      meMissionPatchSize: $meMissionPatchSize
+    ) {
        ...UserFragment
     }
     """
@@ -610,6 +596,7 @@ struct BookTripsApolloMutation: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     bookTrips(
+      bookTripsMissionPatchSize: $bookTripsMissionPatchSize
       launchIds: $bookTripsLaunchIds
     ) {
        ...TripUpdateResponseFragment
@@ -656,6 +643,7 @@ struct CancelTripApolloMutation: GraphQLRequesting {
   func operationDefinition() -> String {
     return """
     cancelTrip(
+      cancelTripMissionPatchSize: $cancelTripMissionPatchSize
       launchId: $cancelTripLaunchId
     ) {
        ...TripUpdateResponseFragment
@@ -741,6 +729,7 @@ struct UploadProfileImageApolloMutation: GraphQLRequesting {
     return """
     uploadProfileImage(
       file: $uploadProfileImageFile
+      uploadProfileImageMissionPatchSize: $uploadProfileImageMissionPatchSize
     ) {
        ...UserFragment
     }
