@@ -104,11 +104,21 @@ private extension RequestGenerator {
       )
     }
 
-    result.append(try requestParameterDeclaration(operation: operation, schema: schema))
+    result.append(try requestParameterDeclaration(operation: operation))
 
     return result
   }
 
+  /**
+   - Returns: Code for query defined in the GraphQL Schema. This is a convenience function to query as there it only requires arguments and selections
+   that are within the path of this query.
+   ~~~
+   // This request only ask for 1 response
+   query($id: String!) {
+     campaigns(id: $id)
+   }
+   ~~~
+   */
   func requestParameterDeclaration(
     operation: GraphQLAST.Operation,
     schema: Schema,
@@ -165,9 +175,23 @@ private extension RequestGenerator {
     return text
   }
 
+  /**
+   - Returns: Code that allows the combine all the queries in a single request. This would contains all the arguments and selections for the entire GraphQL schema.
+   Although this request contains all the requet and selections, you can still selectively choose to provide which request and selection to execute.
+   ~~~
+   // This request can query for 1 or more response in a single API call
+   query($campaignId: String!, $productId: String!) {
+    campaign(id: $id) {
+      name
+    }
+    product(id: $productId) {
+      name
+    }
+   }
+   ~~~
+   */
   func requestParameterDeclaration(
-    operation: GraphQLAST.Operation,
-    schema _: Schema
+    operation: GraphQLAST.Operation
   ) throws -> String {
     let returnObject = try operation.returnObject()
     let fields = returnObject.selectableFields(selectionMap: selectionMap)
