@@ -84,12 +84,10 @@ struct RequestInitializerGenerator {
 
 private extension RequestInitializerGenerator {
   func argumentDeclaration(inputValue: InputValue, field: Field, rootField: Field) throws -> String {
-    let isRootArgument = field.name == rootField.name && field.type == rootField.type
+    let key = try entityNameProvider.operationVariableKeyName(with: inputValue, field: field, rootField: rootField)
     let typeName = try entityNameProvider.name(for: inputValue.type)
 
-    return isRootArgument
-      ? "\(inputValue.name.camelCase): \(typeName)"
-      : "\(rootField.name.camelCase + field.name.pascalCase + inputValue.name.pascalCase): \(typeName)"
+    return "\(key): \(typeName)"
   }
 
   func assignmentDeclaration(inputValue: InputValue, field: Field, rootField: Field) throws -> String {

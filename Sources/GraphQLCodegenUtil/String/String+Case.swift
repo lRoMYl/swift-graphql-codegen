@@ -94,4 +94,8 @@ public extension String {
     let pascal = pascalCase
     return pascal[pascal.startIndex].lowercased() + pascal.dropFirst()
   }
+
+  func uppercasedFirstLetter() -> String {
+    return prefix(1).uppercased() + dropFirst()
+  }
 }

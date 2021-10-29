@@ -21,7 +21,13 @@ public extension String {
     formatOptions.trailingCommas = false
     formatOptions.shortOptionals = .exceptProperties
 
-    let formatted = try SwiftFormat.format(trimmed, options: formatOptions)
-    return formatted
+    do {
+      let formatted = try SwiftFormat.format(trimmed, options: formatOptions)
+      return formatted
+    } catch {
+      print("\(error)\n\(trimmed)")
+
+      throw error
+    }
   }
 }

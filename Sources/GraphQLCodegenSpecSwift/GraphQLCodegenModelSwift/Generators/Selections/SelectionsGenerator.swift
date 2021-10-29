@@ -37,6 +37,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
   private enum Variables {
     static let requestName = "requestName"
+    static let capitalizedRequestName = "capitalizedRequestName"
   }
 
   init(
@@ -126,7 +127,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       let possibleTypes = $0.possibleTypes
       let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
-        : "\t\\(\($0.name.camelCase).declaration(\(Variables.requestName): \(Variables.requestName))"
+        : "\t\\(\($0.name.camelCase).declaration(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
       let fragmentDeclaration: String
 
       if possibleTypes.count > 1 {
@@ -135,7 +136,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         \(
           try possibleTypes.map { possibleType in
             let objectType = try possibleType.objectType(objectTypeMap: objectTypeMap)
-            return "\t...\\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: objectType))"
+            return "\t...\\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: objectType))"
           }.lines
         )
         """
@@ -150,7 +151,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
       return try """
       let \($0.name.camelCase)Declaration = \"\"\"
-      fragment \\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
+      fragment \\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
       \(fragmentContent.lines)
       }
       \"\"\"
@@ -161,7 +162,9 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     let selectionDeclarationMap = [
       \(
         try structures.map {
-          "\"\\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: $0))\": \($0.name.camelCase)Declaration"
+          let fragment = "\\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: $0))"
+          let declaration = "\($0.name.camelCase)Declaration"
+          return "\"\(fragment)\": \(declaration)"
         }.joined(separator: ",\n")
       )
     ]
@@ -185,23 +188,14 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         \(assignments)
       }
 
-      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
+      \(selectionsFuncDeclaration()) {
+        \(capitalizedRequestNameDeclaration())
+
         \(selectionFragmentMap)
 
         \(selectionDeclarationMap)
 
-        let fragmentMaps = rootSelectionKeys
-          .map {
-            declaration(
-              selectionDeclarationMap: selectionDeclarationMap,
-              rootSelectionKey: $0
-            )
-          }
-          .reduce([String: String]()) { old, new in
-            old.merging(new, uniquingKeysWith: { _, new in new })
-          }
-
-        return fragmentMaps.values.joined(separator: "\\n")
+        \(fragmentMapDeclaration())
       }
     }
     """
@@ -310,7 +304,7 @@ extension SelectionsGenerator {
     // MARK: - Selections
 
     struct \(selectionsName): \(entityNameMap.selections) {
-      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
+      \(selectionsFuncDeclaration()) {
         \"\"
       }
     }
@@ -342,23 +336,14 @@ extension SelectionsGenerator {
 
       \(memberwiseInitializerDeclaration)
 
-      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
+      \(selectionsFuncDeclaration()) {
+        \(capitalizedRequestNameDeclaration())
+
         \(selectionFragmentMap)
 
         \(selectionDeclarationMap)
 
-        let fragmentMaps = rootSelectionKeys
-          .map {
-            declaration(
-              selectionDeclarationMap: selectionDeclarationMap,
-              rootSelectionKey: $0
-            )
-          }
-          .reduce([String: String]()) { old, new in
-            old.merging(new, uniquingKeysWith: { _, new in new })
-          }
-
-        return fragmentMaps.values.joined(separator: "\\n")
+        \(fragmentMapDeclaration())
       }
     }
     """
@@ -394,13 +379,12 @@ extension SelectionsGenerator {
       return ""
     }
 
-    let selectionVariableName = try variableName(for: field)
     guard let selectionEnumName = try entityNameProvider.selectionName(for: field) else {
       return ""
     }
 
     let result = """
-    let \(selectionVariableName): Set<\(selectionEnumName)>
+    let \(selectionEnumName.camelCase)s: Set<\(selectionEnumName)>
     """
 
     return result
@@ -440,7 +424,7 @@ extension SelectionsGenerator {
             let fragmentName = try entityNameProvider.fragmentName(for: $0)
 
             return """
-            ...\\(\(Variables.requestName))\(fragmentName)
+            ...\\(\(Variables.capitalizedRequestName))\(fragmentName)
             """
           }.joined(separator: "\n\t")
         )
@@ -452,7 +436,7 @@ extension SelectionsGenerator {
       let fieldTypeName = $0.type.namedType.name
       let selectionDeclaration = $0.type.namedType.isCompositeType || returnTypeSelectableFields.isEmpty
         ? ""
-        : "\t\\(\(fieldTypeName.camelCase)Selections.declaration(\(Variables.requestName): \(Variables.requestName)))"
+        : "\t\\(\(fieldTypeName.camelCase)Selections.declaration(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
 
       let fragmentContent: [String] = [
         selectionDeclaration,
@@ -463,7 +447,7 @@ extension SelectionsGenerator {
 
       return try """
       let \(fieldTypeName.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \\(\(Variables.requestName))\(fieldTypeName.pascalCase)Fragment on \(fieldTypeName) {
+      fragment \\(\(Variables.capitalizedRequestName))\(fieldTypeName.pascalCase)Fragment on \(fieldTypeName) {
       \(fragmentContentCode)
       }
       \"\"\"\n
@@ -498,8 +482,7 @@ extension SelectionsGenerator {
 
     let arguments = try filteredElements.compactMap {
       guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil }
-      let variableName = try self.variableName(for: $0)
-      return "\(variableName): Set<\(selectionName)> = .allFields"
+      return "\(selectionName.camelCase)s: Set<\(selectionName)> = .allFields"
     }.joined(separator: ",\n")
     let assignments = try filteredElements.compactMap {
       guard
@@ -524,7 +507,7 @@ extension SelectionsGenerator {
     let selectionDeclarationMapValues = try fieldMaps.compactMap { element in
       guard let fragmentName = try entityNameProvider.fragmentName(for: element.type.namedType) else { return nil }
       let selectionsDeclarationName = "\(element.type.namedType.name.camelCase)SelectionsDeclaration"
-      return "\"\\(\(Variables.requestName))\(fragmentName)\": \(selectionsDeclarationName)"
+      return "\"\\(\(Variables.capitalizedRequestName))\(fragmentName)\": \(selectionsDeclarationName)"
     }.joined(separator: ",\n")
 
     return """
@@ -533,14 +516,29 @@ extension SelectionsGenerator {
     ]
     """
   }
-}
 
-// MARK: - Naming
+  func selectionsFuncDeclaration() -> String {
+    "func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String"
+  }
 
-private extension SelectionsGenerator {
-  func variableName(for field: Field) throws -> String {
-    let returnName = try field.type.namedType.scalarType(scalarMap: scalarMap)
+  func capitalizedRequestNameDeclaration() -> String {
+    "let \(Variables.capitalizedRequestName) = \(Variables.requestName).prefix(1).uppercased() + \(Variables.requestName).dropFirst()"
+  }
 
-    return "\(returnName.camelCase)Selections"
+  func fragmentMapDeclaration() -> String {
+    """
+    let fragmentMaps = rootSelectionKeys
+      .map {
+        declaration(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKey: $0
+        )
+      }
+      .reduce([String: String]()) { old, new in
+        old.merging(new, uniquingKeysWith: { _, new in new })
+      }
+
+    return fragmentMaps.values.joined(separator: "\\n")
+    """
   }
 }

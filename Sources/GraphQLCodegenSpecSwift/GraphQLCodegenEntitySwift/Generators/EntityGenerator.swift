@@ -106,29 +106,26 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     // MARK: - \(entityNameMap.selection)+Declaration
 
-    extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
+    extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
       func declaration(requestName: String) -> String {
-        if count == 0 {
-          return Element.allCases.reduce(into: "") {
-            let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+        let values = count == 0
+          ? Element.allCases.map { $0 as Element }
+          : map { $0 as Element }
 
-            $0 += "\\n  \\(formatted)"
-          }
-        } else {
-          return reduce(into: "") {
-            let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+        let variablePrefix = "$\\(requestName.prefix(1).lowercased() + requestName.dropFirst())"
 
-            $0 += "\\n  \\(formatted)"
-          }
+        return values.reduce(into: "") {
+          let formatted = String(
+            format: $1.rawValue.replacingOccurrences(of: "$%@", with: variablePrefix),
+            requestName
+          )
+
+          $0 += "\\n  \\(formatted)"
         }
       }
     }
 
     extension Set where Element: GraphQLSelection {
-      static var requiredFields: Set<Element> {
-        []
-      }
-
       static var allFields: Set<Element> {
         Set(Element.allCases)
       }

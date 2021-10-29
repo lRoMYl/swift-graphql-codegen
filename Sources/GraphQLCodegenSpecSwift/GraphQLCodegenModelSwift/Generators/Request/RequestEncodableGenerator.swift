@@ -7,14 +7,17 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 struct RequestEncodableGenerator {
   private let selectionMap: SelectionMap?
   private let scalarMap: ScalarMap
+  private let entityNameProvider: EntityNameProviding
 
-  init(selectionMap: SelectionMap?, scalarMap: ScalarMap) {
+  init(selectionMap: SelectionMap?, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
     self.selectionMap = selectionMap
     self.scalarMap = scalarMap
+    self.entityNameProvider = entityNameProvider
   }
 
   func encodingDeclaration(field: Field, schema: Schema) throws -> String {
@@ -36,7 +39,7 @@ private extension RequestEncodableGenerator {
     )
     let codingKeyDeclarations = try nestedFields.map { nestedfield in
       try nestedfield.args.compactMap {
-        try $0.codingKeysDeclaration(with: nestedfield, rootField: field)
+        try codingKeysDeclaration(with: $0, field: nestedfield, rootField: field)
       }.lines
     }.lines
 
@@ -47,27 +50,29 @@ private extension RequestEncodableGenerator {
     """
   }
 
+  func codingKeysDeclaration(
+    with inputValue: InputValue,
+    field: Field,
+    rootField: Field
+  ) throws -> String {
+    let codingKeyName = try entityNameProvider.operationVariableKeyName(
+      with: inputValue,
+      field: field,
+      rootField: rootField
+    )
+    let operationVariableName = try entityNameProvider.operationVariableName(
+      with: inputValue,
+      field: field,
+      rootField: rootField
+    )
+
+    return """
+    \(inputValue.docs)
+    case \(codingKeyName) = \"\(operationVariableName)\"
+    """
+  }
+
   func emptyEncoder() -> String {
     "func encode(to _: Encoder) throws {}"
-  }
-}
-
-// MARK: - InputValue
-
-private extension InputValue {
-  func codingKeysDeclaration(with field: Field, rootField: Field) throws -> String {
-    let isRootArgument = field.name == rootField.name && field.type == rootField.type
-
-    let variableName = isRootArgument
-      ? name.camelCase
-      : rootField.name.camelCase + field.name.pascalCase + name.pascalCase
-    let argumentName = isRootArgument
-      ? (field.name + name.pascalCase).camelCase
-      : rootField.name.camelCase + field.name.pascalCase + name.pascalCase
-    
-    return """
-    \(docs)
-    case \(variableName) = \"\(argumentName)\"
-    """
   }
 }

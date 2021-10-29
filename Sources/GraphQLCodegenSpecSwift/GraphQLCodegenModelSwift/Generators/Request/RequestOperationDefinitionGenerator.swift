@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum RequestOperationDefinitionError: Error, LocalizedError {
   case missingFragment(context: String)
@@ -40,12 +41,12 @@ struct RequestOperationDefinitionGenerator {
         )
       }
 
-      selection = " {\n     ...\(field.name)\(fragmentName)\n}"
+      selection = " {\n     ...\(field.name.uppercasedFirstLetter())\(fragmentName)\n}"
     } else {
       selection = ""
     }
 
-    let operationArguments = variablesGenerator.operationArgumentsDeclaration(with: field)
+    let operationArguments = try variablesGenerator.operationArgumentsDeclaration(with: field)
       .joined(separator: "\n    ")
     let operationArgumentsDeclaration = operationArguments.isEmpty
       ? ""

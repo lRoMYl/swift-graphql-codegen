@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum RequestParameterError: Error, LocalizedError {
   case missingReturnType(context: String)
@@ -45,7 +46,8 @@ struct RequestGenerator: GraphQLCodeGenerating {
 
     self.codingKeysGenerator = RequestEncodableGenerator(
       selectionMap: selectionMap,
-      scalarMap: scalarMap
+      scalarMap: scalarMap,
+      entityNameProvider: entityNameProvider
     )
     self.variablesGenerator = RequestVariablesGenerator(
       scalarMap: scalarMap,
@@ -113,7 +115,9 @@ private extension RequestGenerator {
     field: Field
   ) throws -> String {
     let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
-    let rootSelectionKey = try entityNameProvider.fragmentName(for: field.type.namedType).map { "\"\(field.name)\($0)\"" } ?? ""
+    let rootSelectionKey = try entityNameProvider
+      .fragmentName(for: field.type.namedType)
+      .map { "\"\(field.name.uppercasedFirstLetter())\($0)\"" } ?? ""
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(field: field, schema: schema)
 

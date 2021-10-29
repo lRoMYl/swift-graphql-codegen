@@ -52,12 +52,14 @@ struct RequestVariablesGenerator {
       selectionMap: selectionMap
     )
 
-    let variables: String = nestedFields.reduce(into: [String]()) { result, nestedField in
-      result.append(contentsOf: nestedField.args.map {
-        let isRootArgument = nestedField.name == field.name && nestedField.type == field.type
-        let argumentName = isRootArgument
-          ? (nestedField.name.camelCase + $0.name.pascalCase).camelCase
-          : (field.name.camelCase + nestedField.name.pascalCase + $0.name.pascalCase).camelCase
+    let variables: String = try nestedFields.reduce(into: [String]()) { result, nestedField in
+      result.append(contentsOf: try nestedField.args.map {
+        let operationVariableName = try entityNameProvider.operationVariableName(
+          with: $0,
+          field: nestedField,
+          rootField: field
+        )
+
         switch $0.type {
         case let .named(objectRef):
           let typeName: String
@@ -65,31 +67,14 @@ struct RequestVariablesGenerator {
           case let .enum(name), let .inputObject(name), let .scalar(name):
             typeName = name
           }
-          return "$\(argumentName): \(typeName)"
+          return "$\(operationVariableName): \(typeName)"
         case let .nonNull(objectRef), let .list(objectRef):
-          return "$\(argumentName): \(objectRef.argument)!"
+          return "$\(operationVariableName): \(objectRef.argument)!"
         }
       })
     }
     .sorted(by: { $0 < $1 })
     .joined(separator: ",\n")
-
-//    let code = field.args.compactMap {
-//      switch $0.type {
-//      case let .named(objectRef):
-//        let typeName: String
-//        switch objectRef {
-//        case let .enum(name), let .inputObject(name), let .scalar(name):
-//          typeName = name
-//        }
-//        let argumentName = (field.name + $0.name.pascalCase).camelCase
-//
-//        return "$\(argumentName): \(typeName)"
-//      case let .nonNull(objectRef), let .list(objectRef):
-//        let argumentName = (field.name + $0.name.pascalCase).camelCase
-//        return "$\(argumentName): \(objectRef.argument)!"
-//      }
-//    }.lines
 
     guard !variables.isEmpty else {
       return nil
@@ -113,10 +98,15 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
-  func operationArgumentsDeclaration(with field: Field) -> [String] {
-    field.args.compactMap {
-      let argumentName = (field.name + $0.name.pascalCase).camelCase
-      return "\($0.name): $\(argumentName)"
+  func operationArgumentsDeclaration(with field: Field) throws -> [String] {
+    try field.args.compactMap {
+      let operationVariableName = try entityNameProvider.operationVariableName(
+        with: $0,
+        field: field,
+        rootField: field
+      )
+
+      return "\($0.name): $\(operationVariableName)"
     }
   }
 
