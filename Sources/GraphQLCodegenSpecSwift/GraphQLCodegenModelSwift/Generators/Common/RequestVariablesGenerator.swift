@@ -44,29 +44,58 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
-  func operationVariablesDeclaration(with field: Field) -> String? {
-    let code = field.args.compactMap {
-      switch $0.type {
-      case let .named(objectRef):
-        let typeName: String
-        switch objectRef {
-        case let .enum(name), let .inputObject(name), let .scalar(name):
-          typeName = name
+  func operationVariablesDeclaration(with field: Field, schema: Schema) throws -> String? {
+    let nestedFields = try field.nestedFields(
+      objects: schema.objects,
+      scalarMap: scalarMap,
+      excluded: [],
+      selectionMap: selectionMap
+    )
+
+    let variables: String = nestedFields.reduce(into: [String]()) { result, nestedField in
+      result.append(contentsOf: nestedField.args.map {
+        let isRootArgument = nestedField.name == field.name && nestedField.type == field.type
+        let argumentName = isRootArgument
+          ? (nestedField.name.camelCase + $0.name.pascalCase).camelCase
+          : (field.name.camelCase + nestedField.name.pascalCase + $0.name.pascalCase).camelCase
+        switch $0.type {
+        case let .named(objectRef):
+          let typeName: String
+          switch objectRef {
+          case let .enum(name), let .inputObject(name), let .scalar(name):
+            typeName = name
+          }
+          return "$\(argumentName): \(typeName)"
+        case let .nonNull(objectRef), let .list(objectRef):
+          return "$\(argumentName): \(objectRef.argument)!"
         }
-        let argumentName = (field.name + $0.name.pascalCase).camelCase
+      })
+    }
+    .sorted(by: { $0 < $1 })
+    .joined(separator: ",\n")
 
-        return "$\(argumentName): \(typeName)"
-      case let .nonNull(objectRef), let .list(objectRef):
-        let argumentName = (field.name + $0.name.pascalCase).camelCase
-        return "$\(argumentName): \(objectRef.argument)!"
-      }
-    }.lines
+//    let code = field.args.compactMap {
+//      switch $0.type {
+//      case let .named(objectRef):
+//        let typeName: String
+//        switch objectRef {
+//        case let .enum(name), let .inputObject(name), let .scalar(name):
+//          typeName = name
+//        }
+//        let argumentName = (field.name + $0.name.pascalCase).camelCase
+//
+//        return "$\(argumentName): \(typeName)"
+//      case let .nonNull(objectRef), let .list(objectRef):
+//        let argumentName = (field.name + $0.name.pascalCase).camelCase
+//        return "$\(argumentName): \(objectRef.argument)!"
+//      }
+//    }.lines
 
-    guard !code.isEmpty else {
+    guard !variables.isEmpty else {
       return nil
     }
 
-    return code
+    return variables
   }
 
   /**

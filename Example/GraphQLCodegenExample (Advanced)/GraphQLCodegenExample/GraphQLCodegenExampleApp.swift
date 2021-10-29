@@ -248,6 +248,22 @@ extension GraphQLCodegenExampleApp {
 
   func testApolloMutationsGraphQL() {
     apolloRepository
+      .cancelTrip(
+        with: CancelTripApolloMutation(
+          cancelTripMissionPatchSize: .large,
+          launchId: "101"
+        )
+      )
+      .subscribe(
+        onSuccess: { response in
+          print("Test Apollo Mutation success")
+        },
+        onFailure: { error in
+          print(error)
+        }
+      )
+      .disposed(by: disposeBag)
+    apolloRepository
       .update(
         with: ApolloMutation(
           cancelTrip: .init(cancelTripMissionPatchSize: .small, launchId: "101"),

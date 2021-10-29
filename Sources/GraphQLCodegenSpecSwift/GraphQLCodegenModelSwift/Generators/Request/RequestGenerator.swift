@@ -113,7 +113,7 @@ private extension RequestGenerator {
     field: Field
   ) throws -> String {
     let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
-    let rootSelectionKey = try entityNameProvider.fragmentName(for: field.type.namedType).map { "\"\($0)\"" } ?? ""
+    let rootSelectionKey = try entityNameProvider.fragmentName(for: field.type.namedType).map { "\"\(field.name)\($0)\"" } ?? ""
 
     let argumentVariables = try variablesGenerator.argumentVariablesDeclaration(field: field, schema: schema)
 
@@ -127,7 +127,7 @@ private extension RequestGenerator {
       schema: schema
     )
 
-    let operationArgumentCode: String = variablesGenerator.operationVariablesDeclaration(with: field)
+    let operationArgumentCode: String = try variablesGenerator.operationVariablesDeclaration(with: field, schema: schema)
       .map {"\n\($0)"} ?? ""
 
     let text = """
@@ -136,6 +136,7 @@ private extension RequestGenerator {
       // MARK: - \(entityNameMap.requestType)
 
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+      let requestName: String = "\(field.name)"
       let rootSelectionKeys: Set<String> = [\(rootSelectionKey)]
 
       \(argumentVariables)
@@ -149,6 +150,10 @@ private extension RequestGenerator {
       func operationArguments() -> String {
         \"\"\"\(operationArgumentCode)
         \"\"\"
+      }
+
+      func fragments(with selections: GraphQLSelections) -> String {
+        selections.declaration(for: self.requestName, rootSelectionKeys: rootSelectionKeys)
       }
     }
     """
@@ -185,6 +190,7 @@ private extension RequestGenerator {
     let text = """
     struct \(requestParameterName): \(entityName) {
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
+      let requestName: String = ""
       var rootSelectionKeys: Set<String> {
         return requests.reduce(into: Set<String>()) { result, request in
           request.rootSelectionKeys.forEach {
@@ -215,6 +221,12 @@ private extension RequestGenerator {
         requests
         .map { $0.operationArguments() }
         .joined(separator: "\\n")
+      }
+
+      func fragments(with selections: GraphQLSelections) -> String {
+        requests.map {
+          selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+        }.joined(separator: "\\n")
       }
     }
     """

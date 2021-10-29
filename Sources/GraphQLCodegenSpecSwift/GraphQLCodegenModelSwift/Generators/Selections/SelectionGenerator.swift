@@ -71,7 +71,7 @@ extension SelectionGenerator {
     }
 
     let enumCasesCode = try selectableFields.map {
-      try enumCaseDeclaration(name: $0.name, outputRef: $0.type, scalarMap: scalarMap)
+      try enumCaseDeclaration(name: $0.name, arguments: $0.args, outputRef: $0.type, scalarMap: scalarMap)
     }.lines
 
     let rawRepresentableCode = enumCasesCode.isEmpty
@@ -85,14 +85,39 @@ extension SelectionGenerator {
     """.format()
   }
 
-  func enumCaseDeclaration(name: String, outputRef: OutputTypeRef, scalarMap: ScalarMap) throws -> String {
+  func enumCaseDeclaration(
+    name: String,
+    arguments: [InputValue],
+    outputRef: OutputTypeRef,
+    scalarMap: ScalarMap
+  ) throws -> String {
     switch outputRef {
     case let .list(outputRef), let .nonNull(outputRef):
-      return try enumCaseDeclaration(name: name, outputRef: outputRef, scalarMap: scalarMap)
+      return try enumCaseDeclaration(name: name, arguments: arguments, outputRef: outputRef, scalarMap: scalarMap)
     case let .named(objectRef):
+      let funcDeclaration = arguments.isEmpty
+        ? ""
+        :"""
+        (
+          \(
+            arguments.map {
+              "\($0.name): $%@\(name.pascalCase + $0.name.pascalCase)"
+            }.lines
+          )
+        )
+        """
+
       switch objectRef {
       case .scalar, .enum:
-        return "case \(name.camelCase) = \"\(name)\""
+        if funcDeclaration.isEmpty {
+          return "case \(name.camelCase) = \"\(name)\""
+        } else {
+          return """
+          case \(name.camelCase) = \"\"\"
+          \(name)\(funcDeclaration)
+          \"\"\"
+          """
+        }
       case .object, .interface, .union:
         guard let fragmentName = try entityNameProvider.fragmentName(for: objectRef) else {
           throw SelectionGeneratorError.missingFragmentName(
@@ -102,8 +127,8 @@ extension SelectionGenerator {
 
         return """
         case \(name.camelCase) = \"\"\"
-        \(name) {
-          ...\(fragmentName)
+        \(name)\(funcDeclaration) {
+          ...%@\(fragmentName)
         }
         \"\"\"
         """

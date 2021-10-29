@@ -40,7 +40,7 @@ struct RequestOperationDefinitionGenerator {
         )
       }
 
-      selection = " {\n     ...\(fragmentName)\n}"
+      selection = " {\n     ...\(field.name)\(fragmentName)\n}"
     } else {
       selection = ""
     }

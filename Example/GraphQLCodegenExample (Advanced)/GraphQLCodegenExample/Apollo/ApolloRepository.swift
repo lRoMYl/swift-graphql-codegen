@@ -24,7 +24,25 @@ final class ApolloRepository {
   ) -> Single<MutationApolloModel> {
     apiClient.update(
       with: parameters,
-      selections: .init()
+      selections: ApolloMutationSelections(
+        mission: [.missionPatch, .name]
+      )
+    )
+    .map {
+      guard let data = $0.data else {
+        throw StarWarsRepositoryError.missingData
+      }
+
+      return data
+    }
+  }
+
+  func cancelTrip(
+    with parameters: CancelTripApolloMutation
+  ) -> Single<CancelTripMutationResponse> {
+    apiClient.cancelTrip(
+      with: parameters,
+      selections: CancelTripApolloMutationSelections()
     )
     .map {
       guard let data = $0.data else {

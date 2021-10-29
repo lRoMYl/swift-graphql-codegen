@@ -28,16 +28,17 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     protocol \(entityNameMap.requestParameter): Encodable {
       var requestType: \(entityNameMap.requestType) { get }
+      var requestName: String { get }
       var rootSelectionKeys: Set<String> { get }
 
       func operationDefinition() -> String
       func operationArguments() -> String
+      func fragments(with selections: GraphQLSelections) -> String
     }
 
-    protocol \(entityNameMap.selection): Hashable, CaseIterable {
-    }
+    protocol \(entityNameMap.selection): Hashable, CaseIterable {}
     protocol \(entityNameMap.selections) {
-      func declaration(with rootSelectionKeys: Set<String>) -> String
+      func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String
     }
 
     // MARK: - Enum
@@ -78,7 +79,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
           \\(parameters.operationDefinition())
         }
 
-        \\(selections.declaration(with: parameters.rootSelectionKeys))
+        \\(parameters.fragments(with: selections))
         \"\"\"
 
         try container.encode(parameters, forKey: .parameters)
@@ -106,11 +107,19 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // MARK: - \(entityNameMap.selection)+Declaration
 
     extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
-      var declaration: String {
+      func declaration(requestName: String) -> String {
         if count == 0 {
-          return Element.allCases.reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
+          return Element.allCases.reduce(into: "") {
+            let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+
+            $0 += "\\n  \\(formatted)"
+          }
         } else {
-          return reduce(into: "") { $0 += "\\n  \\($1.rawValue)" }
+          return reduce(into: "") {
+            let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+
+            $0 += "\\n  \\(formatted)"
+          }
         }
       }
     }

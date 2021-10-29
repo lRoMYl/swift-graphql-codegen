@@ -35,6 +35,10 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
   private let operationDefinitionGenerator: RequestOperationDefinitionGenerator
 
+  private enum Variables {
+    static let requestName = "requestName"
+  }
+
   init(
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
@@ -122,7 +126,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       let possibleTypes = $0.possibleTypes
       let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
-        : "\t\\(\($0.name.camelCase).declaration)"
+        : "\t\\(\($0.name.camelCase).declaration(\(Variables.requestName): \(Variables.requestName))"
       let fragmentDeclaration: String
 
       if possibleTypes.count > 1 {
@@ -131,7 +135,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         \(
           try possibleTypes.map { possibleType in
             let objectType = try possibleType.objectType(objectTypeMap: objectTypeMap)
-            return "\t...\(try entityNameProvider.fragmentName(for: objectType))"
+            return "\t...\\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: objectType))"
           }.lines
         )
         """
@@ -146,7 +150,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
       return try """
       let \($0.name.camelCase)Declaration = \"\"\"
-      fragment \(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
+      fragment \\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
       \(fragmentContent.lines)
       }
       \"\"\"
@@ -157,7 +161,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     let selectionDeclarationMap = [
       \(
         try structures.map {
-          "\"\(try entityNameProvider.fragmentName(for: $0))\": \($0.name.camelCase)Declaration"
+          "\"\\(\(Variables.requestName))\(try entityNameProvider.fragmentName(for: $0))\": \($0.name.camelCase)Declaration"
         }.joined(separator: ",\n")
       )
     ]
@@ -175,22 +179,13 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         }.lines
       )
 
-      private let operationDefinitionFormat: String = "%@"
-
-      func operationDefinition(with rootSelectionKeys: Set<String>) -> String {
-        String(
-          format: operationDefinitionFormat,
-          declaration(with: rootSelectionKeys)
-        )
-      }
-
       init(
         \(arguments)
       ) {
         \(assignments)
       }
 
-      func declaration(with rootSelectionKeys: Set<String>) -> String {
+      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
         \(selectionFragmentMap)
 
         \(selectionDeclarationMap)
@@ -315,7 +310,7 @@ extension SelectionsGenerator {
     // MARK: - Selections
 
     struct \(selectionsName): \(entityNameMap.selections) {
-      func declaration(with _: Set<String>) -> String {
+      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
         \"\"
       }
     }
@@ -347,7 +342,7 @@ extension SelectionsGenerator {
 
       \(memberwiseInitializerDeclaration)
 
-      func declaration(with rootSelectionKeys: Set<String>) -> String {
+      func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String {
         \(selectionFragmentMap)
 
         \(selectionDeclarationMap)
@@ -445,7 +440,7 @@ extension SelectionsGenerator {
             let fragmentName = try entityNameProvider.fragmentName(for: $0)
 
             return """
-            ...\(fragmentName)
+            ...\\(\(Variables.requestName))\(fragmentName)
             """
           }.joined(separator: "\n\t")
         )
@@ -457,7 +452,7 @@ extension SelectionsGenerator {
       let fieldTypeName = $0.type.namedType.name
       let selectionDeclaration = $0.type.namedType.isCompositeType || returnTypeSelectableFields.isEmpty
         ? ""
-        : "\t\\(\(fieldTypeName.camelCase)Selections.declaration)"
+        : "\t\\(\(fieldTypeName.camelCase)Selections.declaration(\(Variables.requestName): \(Variables.requestName)))"
 
       let fragmentContent: [String] = [
         selectionDeclaration,
@@ -468,7 +463,7 @@ extension SelectionsGenerator {
 
       return try """
       let \(fieldTypeName.camelCase)SelectionsDeclaration = \"\"\"
-      fragment \(fieldTypeName.pascalCase)Fragment on \(fieldTypeName) {
+      fragment \\(\(Variables.requestName))\(fieldTypeName.pascalCase)Fragment on \(fieldTypeName) {
       \(fragmentContentCode)
       }
       \"\"\"\n
@@ -529,7 +524,7 @@ extension SelectionsGenerator {
     let selectionDeclarationMapValues = try fieldMaps.compactMap { element in
       guard let fragmentName = try entityNameProvider.fragmentName(for: element.type.namedType) else { return nil }
       let selectionsDeclarationName = "\(element.type.namedType.name.camelCase)SelectionsDeclaration"
-      return "\"\(fragmentName)\": \(selectionsDeclarationName)"
+      return "\"\\(\(Variables.requestName))\(fragmentName)\": \(selectionsDeclarationName)"
     }.joined(separator: ",\n")
 
     return """

@@ -8,16 +8,17 @@ import Foundation
 
 protocol GraphQLRequesting: Encodable {
   var requestType: GraphQLRequestType { get }
+  var requestName: String { get }
   var rootSelectionKeys: Set<String> { get }
 
   func operationDefinition() -> String
   func operationArguments() -> String
+  func fragments(with selections: GraphQLSelections) -> String
 }
 
 protocol GraphQLSelection: Hashable, CaseIterable {}
-
 protocol GraphQLSelections {
-  func declaration(with rootSelectionKeys: Set<String>) -> String
+  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String
 }
 
 // MARK: - Enum
@@ -58,7 +59,7 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
       \(parameters.operationDefinition())
     }
 
-    \(selections.declaration(with: parameters.rootSelectionKeys))
+    \(parameters.fragments(with: selections))
     """
 
     try container.encode(parameters, forKey: .parameters)
@@ -86,11 +87,19 @@ enum GraphQLResponseError: Error, LocalizedError {
 // MARK: - GraphQLSelection+Declaration
 
 extension Collection where Element: GraphQLSelection, Element: RawRepresentable {
-  var declaration: String {
+  func declaration(requestName: String) -> String {
     if count == 0 {
-      return Element.allCases.reduce(into: "") { $0 += "\n  \($1.rawValue)" }
+      return Element.allCases.reduce(into: "") {
+        let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+
+        $0 += "\n  \(formatted)"
+      }
     } else {
-      return reduce(into: "") { $0 += "\n  \($1.rawValue)" }
+      return reduce(into: "") {
+        let formatted = String(format: $1.rawValue as? String ?? "", requestName)
+
+        $0 += "\n  \(formatted)"
+      }
     }
   }
 }
