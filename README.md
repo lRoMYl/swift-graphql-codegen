@@ -215,6 +215,12 @@ HTTPS connection failed due to proxy configuration, check your `~/.gitconfig` an
 insteadOf = https://github.com/
 ```
 
+---
+```
+Failed to create file at /API/Core/GraphQLEntities.generated.swift
+```
+Make sure the path exists, if not create the defined folder manually
+
 # Alternatives
 
 ## [apollo-ios](https://github.com/apollographql/apollo-ios)
