@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenUtil
+import GraphQLCodegenNameSwift
 import SwiftFormat
 
 public enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
@@ -24,14 +25,16 @@ public enum GraphQLCodegenEntitySwiftError: Error, LocalizedError {
 
 public struct GraphQLCodegenEntitySwift {
   private let entityNameMap: EntityNameMap
+  private let entityNameProvider: EntityNameProviding
 
   private let generators: [GraphQLCodeGenerating]
 
-  public init(entityNameMap: EntityNameMap) {
+  public init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
+    self.entityNameProvider = entityNameProvider
 
     self.generators = [
-      EntityGenerator(entityNameMap: entityNameMap)
+      EntityGenerator(entityNameMap: entityNameMap, entityNameProvider: entityNameProvider)
     ]
   }
 

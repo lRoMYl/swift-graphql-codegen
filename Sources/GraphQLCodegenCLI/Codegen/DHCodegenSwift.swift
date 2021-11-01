@@ -77,7 +77,10 @@ struct DHCodegenSwift {
   }
 
   func entityCode(schema: Schema) throws -> String {
-    let generator = GraphQLCodegenEntitySwift(entityNameMap: entityNameMap)
+    let generator = GraphQLCodegenEntitySwift(
+      entityNameMap: entityNameMap,
+      entityNameProvider: entityNameProvider
+    )
 
     let generatedCode = try generator.code(schema: schema)
 

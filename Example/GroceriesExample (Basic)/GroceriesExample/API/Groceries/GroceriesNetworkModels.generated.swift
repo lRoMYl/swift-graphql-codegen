@@ -358,7 +358,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     campaigns(
       VendorID: $campaignsVendorId
@@ -370,7 +370,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $campaignsGlobalEntityId: String!,
     $campaignsLocale: String!,
@@ -378,8 +378,8 @@ struct CampaignsQueryRequest: GraphQLRequesting {
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -416,21 +416,21 @@ struct QueryRequest: GraphQLRequesting {
     }
   }
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     requests
-      .map { $0.operationDefinition() }
+      .map { $0.requestQuery() }
       .joined(separator: "\n")
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     requests
-      .map { $0.operationArguments() }
+      .map { $0.requestArguments() }
       .joined(separator: "\n")
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
+  func requestFragments(with selections: GraphQLSelections) -> String {
     requests.map {
-      selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+      selections.requestFragments(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
     }.joined(separator: "\n")
   }
 }
@@ -510,36 +510,36 @@ struct QueryRequestSelections: GraphQLSelections {
     self.productDeal = productDeal
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let benefitDeclaration = """
     fragment \(capitalizedRequestName)BenefitFragment on Benefit {
-    	\(benefit.declaration(requestName: capitalizedRequestName))
+    	\(benefit.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let campaignAttributeDeclaration = """
     fragment \(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-    	\(campaignAttribute.declaration(requestName: capitalizedRequestName))
+    	\(campaignAttribute.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let campaignsDeclaration = """
     fragment \(capitalizedRequestName)CampaignsFragment on Campaigns {
-    	\(campaigns.declaration(requestName: capitalizedRequestName))
+    	\(campaigns.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let dealDeclaration = """
     fragment \(capitalizedRequestName)DealFragment on Deal {
-    	\(deal.declaration(requestName: capitalizedRequestName))
+    	\(deal.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let productDealDeclaration = """
     fragment \(capitalizedRequestName)ProductDealFragment on ProductDeal {
-    	\(productDeal.declaration(requestName: capitalizedRequestName))
+    	\(productDeal.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -553,7 +553,7 @@ struct QueryRequestSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -589,36 +589,36 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
     self.productDealSelections = productDealSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let benefitSelectionsDeclaration = """
     fragment \(capitalizedRequestName)BenefitFragment on Benefit {
-    	\(benefitSelections.declaration(requestName: capitalizedRequestName))
+    	\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let campaignAttributeSelectionsDeclaration = """
     fragment \(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-    	\(campaignAttributeSelections.declaration(requestName: capitalizedRequestName))
+    	\(campaignAttributeSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let campaignsSelectionsDeclaration = """
     fragment \(capitalizedRequestName)CampaignsFragment on Campaigns {
-    	\(campaignsSelections.declaration(requestName: capitalizedRequestName))
+    	\(campaignsSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let dealSelectionsDeclaration = """
     fragment \(capitalizedRequestName)DealFragment on Deal {
-    	\(dealSelections.declaration(requestName: capitalizedRequestName))
+    	\(dealSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let productDealSelectionsDeclaration = """
     fragment \(capitalizedRequestName)ProductDealFragment on ProductDeal {
-    	\(productDealSelections.declaration(requestName: capitalizedRequestName))
+    	\(productDealSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -632,7 +632,7 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )

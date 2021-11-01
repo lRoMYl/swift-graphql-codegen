@@ -370,7 +370,7 @@ struct LaunchApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     launch(
       id: $launchId
@@ -380,15 +380,15 @@ struct LaunchApolloQuery: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $launchId: ID!,
     $launchMissionPatchSize: PatchSize
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -430,7 +430,7 @@ struct LaunchesApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     launches(
       pageSize: $launchesPageSize
@@ -441,7 +441,7 @@ struct LaunchesApolloQuery: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $launchesAfter: String,
     $launchesMissionPatchSize: PatchSize,
@@ -449,8 +449,8 @@ struct LaunchesApolloQuery: GraphQLRequesting {
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -476,7 +476,7 @@ struct MeApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     me {
        ...MeUserFragment
@@ -484,14 +484,14 @@ struct MeApolloQuery: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $meMissionPatchSize: PatchSize
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -510,19 +510,19 @@ struct TripsBookedApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     tripsBooked
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -571,21 +571,21 @@ struct ApolloQuery: GraphQLRequesting {
     }
   }
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     requests
-      .map { $0.operationDefinition() }
+      .map { $0.requestQuery() }
       .joined(separator: "\n")
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     requests
-      .map { $0.operationArguments() }
+      .map { $0.requestArguments() }
       .joined(separator: "\n")
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
+  func requestFragments(with selections: GraphQLSelections) -> String {
     requests.map {
-      selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+      selections.requestFragments(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
     }.joined(separator: "\n")
   }
 }
@@ -620,7 +620,7 @@ struct BookTripsApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     bookTrips(
       launchIds: $bookTripsLaunchIds
@@ -630,15 +630,15 @@ struct BookTripsApolloMutation: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $bookTripsLaunchIds: [ID]!,
     $bookTripsMissionPatchSize: PatchSize
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -672,7 +672,7 @@ struct CancelTripApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     cancelTrip(
       launchId: $cancelTripLaunchId
@@ -682,15 +682,15 @@ struct CancelTripApolloMutation: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $cancelTripLaunchId: ID!,
     $cancelTripMissionPatchSize: PatchSize
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -718,7 +718,7 @@ struct LoginApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     login(
       email: $loginEmail
@@ -726,14 +726,14 @@ struct LoginApolloMutation: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $loginEmail: String
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -767,7 +767,7 @@ struct UploadProfileImageApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     uploadProfileImage(
       file: $uploadProfileImageFile
@@ -777,15 +777,15 @@ struct UploadProfileImageApolloMutation: GraphQLRequesting {
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     $uploadProfileImageFile: Upload!,
     $uploadProfileImageMissionPatchSize: PatchSize
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -834,21 +834,21 @@ struct ApolloMutation: GraphQLRequesting {
     }
   }
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     requests
-      .map { $0.operationDefinition() }
+      .map { $0.requestQuery() }
       .joined(separator: "\n")
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     requests
-      .map { $0.operationArguments() }
+      .map { $0.requestArguments() }
       .joined(separator: "\n")
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
+  func requestFragments(with selections: GraphQLSelections) -> String {
     requests.map {
-      selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+      selections.requestFragments(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
     }.joined(separator: "\n")
   }
 }
@@ -868,19 +868,19 @@ struct TripsBookedApolloSubscription: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     return """
     tripsBooked
     """
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     """
     """
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
-    selections.declaration(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
@@ -917,21 +917,21 @@ struct ApolloSubscription: GraphQLRequesting {
     }
   }
 
-  func operationDefinition() -> String {
+  func requestQuery() -> String {
     requests
-      .map { $0.operationDefinition() }
+      .map { $0.requestQuery() }
       .joined(separator: "\n")
   }
 
-  func operationArguments() -> String {
+  func requestArguments() -> String {
     requests
-      .map { $0.operationArguments() }
+      .map { $0.requestArguments() }
       .joined(separator: "\n")
   }
 
-  func fragments(with selections: GraphQLSelections) -> String {
+  func requestFragments(with selections: GraphQLSelections) -> String {
     requests.map {
-      selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+      selections.requestFragments(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
     }.joined(separator: "\n")
   }
 }
@@ -1060,42 +1060,42 @@ struct ApolloQuerySelections: GraphQLSelections {
     self.user = user
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchConnectionDeclaration = """
     fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.declaration(requestName: capitalizedRequestName))
+    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let launchDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.declaration(requestName: capitalizedRequestName))
+    	\(launch.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.declaration(requestName: capitalizedRequestName))
+    	\(mission.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.declaration(requestName: capitalizedRequestName))
+    	\(rocket.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let userDeclaration = """
     fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.declaration(requestName: capitalizedRequestName))
+    	\(user.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.declaration(requestName: capitalizedRequestName))
+    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1110,7 +1110,7 @@ struct ApolloQuerySelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1143,30 +1143,30 @@ struct LaunchesApolloQuerySelections: GraphQLSelections {
     self.rocketSelections = rocketSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let launchConnectionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnectionSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchConnectionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1179,7 +1179,7 @@ struct LaunchesApolloQuerySelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1209,24 +1209,24 @@ struct LaunchApolloQuerySelections: GraphQLSelections {
     self.rocketSelections = rocketSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1238,7 +1238,7 @@ struct LaunchApolloQuerySelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1271,30 +1271,30 @@ struct MeApolloQuerySelections: GraphQLSelections {
     self.userSelections = userSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let userSelectionsDeclaration = """
     fragment \(capitalizedRequestName)UserFragment on User {
-    	\(userSelections.declaration(requestName: capitalizedRequestName))
+    	\(userSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1307,7 +1307,7 @@ struct MeApolloQuerySelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1323,7 +1323,7 @@ struct MeApolloQuerySelections: GraphQLSelections {
 // MARK: - Selections
 
 struct TripsBookedApolloQuerySelections: GraphQLSelections {
-  func declaration(for _: String, rootSelectionKeys _: Set<String>) -> String {
+  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
     ""
   }
 }
@@ -1352,42 +1352,42 @@ struct ApolloMutationSelections: GraphQLSelections {
     self.user = user
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchConnectionDeclaration = """
     fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.declaration(requestName: capitalizedRequestName))
+    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let launchDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.declaration(requestName: capitalizedRequestName))
+    	\(launch.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.declaration(requestName: capitalizedRequestName))
+    	\(mission.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.declaration(requestName: capitalizedRequestName))
+    	\(rocket.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let userDeclaration = """
     fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.declaration(requestName: capitalizedRequestName))
+    	\(user.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.declaration(requestName: capitalizedRequestName))
+    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1402,7 +1402,7 @@ struct ApolloMutationSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1435,30 +1435,30 @@ struct BookTripsApolloMutationSelections: GraphQLSelections {
     self.tripUpdateResponseSelections = tripUpdateResponseSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let tripUpdateResponseSelectionsDeclaration = """
     fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponseSelections.declaration(requestName: capitalizedRequestName))
+    	\(tripUpdateResponseSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1471,7 +1471,7 @@ struct BookTripsApolloMutationSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1504,30 +1504,30 @@ struct CancelTripApolloMutationSelections: GraphQLSelections {
     self.tripUpdateResponseSelections = tripUpdateResponseSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let tripUpdateResponseSelectionsDeclaration = """
     fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponseSelections.declaration(requestName: capitalizedRequestName))
+    	\(tripUpdateResponseSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1540,7 +1540,7 @@ struct CancelTripApolloMutationSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1556,7 +1556,7 @@ struct CancelTripApolloMutationSelections: GraphQLSelections {
 // MARK: - Selections
 
 struct LoginApolloMutationSelections: GraphQLSelections {
-  func declaration(for _: String, rootSelectionKeys _: Set<String>) -> String {
+  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
     ""
   }
 }
@@ -1581,30 +1581,30 @@ struct UploadProfileImageApolloMutationSelections: GraphQLSelections {
     self.userSelections = userSelections
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchSelectionsDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.declaration(requestName: capitalizedRequestName))
+    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionSelectionsDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.declaration(requestName: capitalizedRequestName))
+    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketSelectionsDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.declaration(requestName: capitalizedRequestName))
+    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let userSelectionsDeclaration = """
     fragment \(capitalizedRequestName)UserFragment on User {
-    	\(userSelections.declaration(requestName: capitalizedRequestName))
+    	\(userSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1617,7 +1617,7 @@ struct UploadProfileImageApolloMutationSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1654,42 +1654,42 @@ struct ApolloSubscriptionSelections: GraphQLSelections {
     self.user = user
   }
 
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
     let launchConnectionDeclaration = """
     fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.declaration(requestName: capitalizedRequestName))
+    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let launchDeclaration = """
     fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.declaration(requestName: capitalizedRequestName))
+    	\(launch.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let missionDeclaration = """
     fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.declaration(requestName: capitalizedRequestName))
+    	\(mission.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let rocketDeclaration = """
     fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.declaration(requestName: capitalizedRequestName))
+    	\(rocket.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let userDeclaration = """
     fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.declaration(requestName: capitalizedRequestName))
+    	\(user.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
     let tripUpdateResponseDeclaration = """
     fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.declaration(requestName: capitalizedRequestName))
+    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1704,7 +1704,7 @@ struct ApolloSubscriptionSelections: GraphQLSelections {
 
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )
@@ -1720,7 +1720,7 @@ struct ApolloSubscriptionSelections: GraphQLSelections {
 // MARK: - Selections
 
 struct TripsBookedApolloSubscriptionSelections: GraphQLSelections {
-  func declaration(for _: String, rootSelectionKeys _: Set<String>) -> String {
+  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
     ""
   }
 }

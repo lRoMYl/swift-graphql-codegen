@@ -8,12 +8,15 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenNameSwift
 
 struct EntityGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
+  private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap) {
+  init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
+    self.entityNameProvider = entityNameProvider
   }
 
   func code(schema _: Schema) throws -> String {
@@ -31,14 +34,14 @@ struct EntityGenerator: GraphQLCodeGenerating {
       var requestName: String { get }
       var rootSelectionKeys: Set<String> { get }
 
-      func operationDefinition() -> String
-      func operationArguments() -> String
-      func fragments(with selections: GraphQLSelections) -> String
+      func \(entityNameProvider.requestQueryName)() -> String
+      func \(entityNameProvider.requestArgumentsName)() -> String
+      func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String
     }
 
     protocol \(entityNameMap.selection): Hashable, CaseIterable {}
     protocol \(entityNameMap.selections) {
-      func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String
+      func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String
     }
 
     // MARK: - Enum
@@ -69,21 +72,21 @@ struct EntityGenerator: GraphQLCodeGenerating {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         let requestTypeCode = parameters.requestType.rawValue
-        let operationArguments = parameters.operationArguments()
-        let operationArgumentCode = operationArguments.isEmpty
+        let requestArguments = parameters.\(entityNameProvider.requestArgumentsName)()
+        let requestArgumentsCode = requestArguments.isEmpty
           ? ""
-          : " (\\(operationArguments))"
+          : " (\\(requestArguments))"
 
-        let operationDefinition = \"\"\"
-        \\(requestTypeCode)\\(operationArgumentCode) {
-          \\(parameters.operationDefinition())
+        let requestQuery = \"\"\"
+        \\(requestTypeCode)\\(requestArgumentsCode) {
+          \\(parameters.\(entityNameProvider.requestQueryName)())
         }
 
-        \\(parameters.fragments(with: selections))
+        \\(parameters.\(entityNameProvider.requestFragmentsName)(with: selections))
         \"\"\"
 
         try container.encode(parameters, forKey: .parameters)
-        try container.encode(operationDefinition, forKey: .query)
+        try container.encode(requestQuery, forKey: .query)
       }
     }
 
@@ -104,10 +107,10 @@ struct EntityGenerator: GraphQLCodeGenerating {
       }
     }
 
-    // MARK: - \(entityNameMap.selection)+Declaration
+    // MARK: - \(entityNameMap.selection)+Fragments
 
-    extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
-      func declaration(requestName: String) -> String {
+    extension Collection where Element: \(entityNameMap.selection) & RawRepresentable, Element.RawValue == String {
+      func \(entityNameProvider.requestFragmentsName)(requestName: String) -> String {
         let values = count == 0
           ? Element.allCases.map { $0 as Element }
           : map { $0 as Element }
@@ -125,16 +128,16 @@ struct EntityGenerator: GraphQLCodeGenerating {
       }
     }
 
-    extension Set where Element: GraphQLSelection {
+    extension Set where Element: \(entityNameMap.selection) {
       static var allFields: Set<Element> {
         Set(Element.allCases)
       }
     }
 
-    // MARK: - \(entityNameMap.selections)+Declaration
+    // MARK: - \(entityNameMap.selections)+fragments
 
     extension \(entityNameMap.selections) {
-      func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
+      func \(entityNameProvider.requestFragmentsName)(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
         var dictionary = [String: String]()
         dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 

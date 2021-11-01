@@ -161,13 +161,13 @@ private extension RequestGenerator {
 
       \(operationDefinition)
 
-      func operationArguments() -> String {
+      func \(entityNameProvider.requestArgumentsName)() -> String {
         \"\"\"\(operationArgumentCode)
         \"\"\"
       }
 
-      func fragments(with selections: GraphQLSelections) -> String {
-        selections.declaration(for: self.requestName, rootSelectionKeys: rootSelectionKeys)
+      func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String {
+        selections.requestFragments(for: self.requestName, rootSelectionKeys: rootSelectionKeys)
       }
     }
     """
@@ -239,21 +239,21 @@ private extension RequestGenerator {
         }
       }
 
-      func operationDefinition() -> String {
+      func \(entityNameProvider.requestQueryName)() -> String {
         requests
-          .map { $0.operationDefinition() }
+          .map { $0.\(entityNameProvider.requestQueryName)() }
           .joined(separator: "\\n")
       }
 
-      func operationArguments() -> String {
+      func \(entityNameProvider.requestArgumentsName)() -> String {
         requests
-        .map { $0.operationArguments() }
+        .map { $0.\(entityNameProvider.requestArgumentsName)() }
         .joined(separator: "\\n")
       }
 
-      func fragments(with selections: GraphQLSelections) -> String {
+      func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String {
         requests.map {
-          selections.declaration(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
+          selections.\(entityNameProvider.requestFragmentsName)(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
         }.joined(separator: "\\n")
       }
     }

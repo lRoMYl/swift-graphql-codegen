@@ -127,7 +127,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       let possibleTypes = $0.possibleTypes
       let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
-        : "\t\\(\($0.name.camelCase).declaration(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
+        : "\t\\(\($0.name.camelCase).requestFragments(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
       let fragmentDeclaration: String
 
       if possibleTypes.count > 1 {
@@ -436,7 +436,7 @@ extension SelectionsGenerator {
       let fieldTypeName = $0.type.namedType.name
       let selectionDeclaration = $0.type.namedType.isCompositeType || returnTypeSelectableFields.isEmpty
         ? ""
-        : "\t\\(\(fieldTypeName.camelCase)Selections.declaration(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
+        : "\t\\(\(fieldTypeName.camelCase)Selections.requestFragments(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
 
       let fragmentContent: [String] = [
         selectionDeclaration,
@@ -518,7 +518,7 @@ extension SelectionsGenerator {
   }
 
   func selectionsFuncDeclaration() -> String {
-    "func declaration(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String"
+    "func requestFragments(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String"
   }
 
   func capitalizedRequestNameDeclaration() -> String {
@@ -529,7 +529,7 @@ extension SelectionsGenerator {
     """
     let fragmentMaps = rootSelectionKeys
       .map {
-        declaration(
+        requestFragments(
           selectionDeclarationMap: selectionDeclarationMap,
           rootSelectionKey: $0
         )

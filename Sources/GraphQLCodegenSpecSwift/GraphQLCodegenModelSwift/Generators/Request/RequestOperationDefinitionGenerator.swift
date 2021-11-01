@@ -55,7 +55,7 @@ struct RequestOperationDefinitionGenerator {
     return try """
     // MARK: - Operation Definition
 
-    func operationDefinition() -> String {
+    func \(entityNameProvider.requestQueryName)() -> String {
       return \"\"\"
       \("\(field.name)\(operationArgumentsDeclaration)\(selection)")
       \"\"\"

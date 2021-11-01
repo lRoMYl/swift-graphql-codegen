@@ -11,14 +11,14 @@ protocol GraphQLRequesting: Encodable {
   var requestName: String { get }
   var rootSelectionKeys: Set<String> { get }
 
-  func operationDefinition() -> String
-  func operationArguments() -> String
-  func fragments(with selections: GraphQLSelections) -> String
+  func requestQuery() -> String
+  func requestArguments() -> String
+  func requestFragments(with selections: GraphQLSelections) -> String
 }
 
 protocol GraphQLSelection: Hashable, CaseIterable {}
 protocol GraphQLSelections {
-  func declaration(for requestName: String, rootSelectionKeys: Set<String>) -> String
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String
 }
 
 // MARK: - Enum
@@ -49,21 +49,21 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
     let requestTypeCode = parameters.requestType.rawValue
-    let operationArguments = parameters.operationArguments()
-    let operationArgumentCode = operationArguments.isEmpty
+    let requestArguments = parameters.requestArguments()
+    let requestArgumentsCode = requestArguments.isEmpty
       ? ""
-      : " (\(operationArguments))"
+      : " (\(requestArguments))"
 
-    let operationDefinition = """
-    \(requestTypeCode)\(operationArgumentCode) {
-      \(parameters.operationDefinition())
+    let requestQuery = """
+    \(requestTypeCode)\(requestArgumentsCode) {
+      \(parameters.requestQuery())
     }
 
-    \(parameters.fragments(with: selections))
+    \(parameters.requestFragments(with: selections))
     """
 
     try container.encode(parameters, forKey: .parameters)
-    try container.encode(operationDefinition, forKey: .query)
+    try container.encode(requestQuery, forKey: .query)
   }
 }
 
@@ -84,10 +84,10 @@ enum GraphQLResponseError: Error, LocalizedError {
   }
 }
 
-// MARK: - GraphQLSelection+Declaration
+// MARK: - GraphQLSelection+Fragments
 
 extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
-  func declaration(requestName: String) -> String {
+  func requestFragments(requestName: String) -> String {
     let values = count == 0
       ? Element.allCases.map { $0 as Element }
       : map { $0 as Element }
@@ -111,10 +111,10 @@ extension Set where Element: GraphQLSelection {
   }
 }
 
-// MARK: - GraphQLSelections+Declaration
+// MARK: - GraphQLSelections+fragments
 
 extension GraphQLSelections {
-  func declaration(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
+  func requestFragments(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
     var dictionary = [String: String]()
     dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 

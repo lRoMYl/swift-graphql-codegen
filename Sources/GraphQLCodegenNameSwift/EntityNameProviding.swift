@@ -56,4 +56,8 @@ public extension EntityNameProviding {
     let selectionName = try self.selectionName(for: objectTypeRef).camelCase
     return "\(selectionName)s"
   }
+
+  var requestQueryName: String { "requestQuery" }
+  var requestArgumentsName: String { "requestArguments" }
+  var requestFragmentsName: String { "requestFragments" }
 }
