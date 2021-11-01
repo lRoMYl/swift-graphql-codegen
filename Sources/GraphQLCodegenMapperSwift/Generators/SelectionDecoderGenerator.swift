@@ -46,7 +46,7 @@ struct SelectionDecoderGenerator: Generating {
     self.entityNameMap = entityNameMap
     self.selectionMap = selectionMap
 
-    self.mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: entityNameMap.apiClientPrefix)
+    self.mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: "")
   }
 
   func code(schema: Schema) throws -> String {

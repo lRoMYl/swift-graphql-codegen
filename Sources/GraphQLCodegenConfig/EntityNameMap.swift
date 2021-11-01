@@ -47,10 +47,6 @@ public struct EntityNameMap {
   public let union: String
   public let `enum`: String
 
-  // MARK: - API Client Entities
-
-  public let apiClientPrefix: String
-
   // MARK: - CodingKeys
 
   enum CodingKeys: String, CodingKey {
@@ -68,7 +64,6 @@ public struct EntityNameMap {
     case interface
     case union
     case `enum`
-    case apiClientPrefix
   }
 
   // MARK: - Initializers
@@ -87,8 +82,7 @@ public struct EntityNameMap {
     inputObject: String,
     interface: String,
     union: String,
-    enum: String,
-    apiClientPrefix: String
+    enum: String
   ) {
     self.request = request
     self.requestType = requestType
@@ -104,7 +98,6 @@ public struct EntityNameMap {
     self.interface = interface
     self.union = union
     self.enum = `enum`
-    self.apiClientPrefix = apiClientPrefix
   }
 
   public init(response: EntityNameMapResponse) {
@@ -124,8 +117,7 @@ public struct EntityNameMap {
       inputObject: response.inputObject ?? defaultValue.inputObject,
       interface: response.interface ?? defaultValue.interface,
       union: response.union ?? defaultValue.union,
-      enum: response.enum ?? defaultValue.enum,
-      apiClientPrefix: response.apiClientPrefix ?? defaultValue.apiClientPrefix
+      enum: response.enum ?? defaultValue.enum
     )
   }
 }
@@ -148,8 +140,7 @@ public extension EntityNameMap {
       inputObject: "GraphQLInputObject",
       interface: "GraphQLInterfaceObject",
       union: "GraphQLUnionObject",
-      enum: "GraphQLEnumObject",
-      apiClientPrefix: "GraphQL"
+      enum: "GraphQLEnumObject"
     )
   }()
 }

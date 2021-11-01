@@ -30,8 +30,13 @@ struct ApiClientGenerator: Generating {
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
-    self.apiClientPrefix = entityNameMap.apiClientPrefix
+  init(
+    entityNameMap: EntityNameMap,
+    scalarMap: ScalarMap,
+    entityNameProvider: EntityNameProviding,
+    apiClientPrefix: String
+  ) {
+    self.apiClientPrefix = apiClientPrefix
     self.apiClientName = entityNameMap.apiClientName(apiClientPrefix: apiClientPrefix)
     self.apiClientErrorName = entityNameMap.apiClientErrorName(apiClientPrefix: apiClientPrefix)
     self.apiClientProtocolName = entityNameMap.apiClientProtocolName(apiClientPrefix: apiClientPrefix)
@@ -134,7 +139,7 @@ extension ApiClientGenerator {
     // Root operation
     let responseDataText = try entityNameProvider.responseDataName(with: operation)
     let requestQueryName = entityNameProvider.requestQueryName
-    
+
     codes.append("""
     \(try funcSignatureCode(operation: operation)) {
       let resource = \(resourceParameterName)(

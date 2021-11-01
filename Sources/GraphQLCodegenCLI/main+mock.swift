@@ -107,7 +107,8 @@ func mockAdvancedCoreExample() {
       groceriesSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(groceriesOutputPath)ApiClient.generated.swift",
-      "--config-path", groceriesConfig
+      "--config-path", groceriesConfig,
+      "--api-client-prefix", "Groceries"
     ]
   )
 
@@ -138,7 +139,8 @@ func mockAdvancedCoreExample() {
       starwarsSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(starwarsOutputPath)GraphQLApiClient.generated.swift",
-      "--config-path", starwarsConfig
+      "--config-path", starwarsConfig,
+      "--api-client-prefix", "StarWars"
     ]
   )
 
@@ -180,7 +182,8 @@ func mockAdvancedCoreExample() {
       apolloSchema,
       "--target", CodegenTarget.dhApiClient.rawValue,
       "--output", "\(apolloOutputPath)GraphQLApiClient.generated.swift",
-      "--config-path", apolloConfig
+      "--config-path", apolloConfig,
+      "--api-client-prefix", "Apollo"
     ]
   )
 

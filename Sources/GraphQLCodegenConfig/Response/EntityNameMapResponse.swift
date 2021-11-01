@@ -33,10 +33,6 @@ public struct EntityNameMapResponse: Decodable {
   public let union: String?
   public let `enum`: String?
 
-  // MARK: - API Client Entities
-
-  public let apiClientPrefix: String?
-
   // MARK: - CodingKeys
 
   enum CodingKeys: String, CodingKey {
@@ -54,7 +50,6 @@ public struct EntityNameMapResponse: Decodable {
     case interface
     case union
     case `enum`
-    case apiClientPrefix
   }
 
   public init(
@@ -71,8 +66,7 @@ public struct EntityNameMapResponse: Decodable {
     inputObject: String? = nil,
     interface: String? = nil,
     union: String? = nil,
-    enum: String? = nil,
-    apiClientPrefix: String? = nil
+    enum: String? = nil
   ) {
     self.request = request
     self.requestType = requestType
@@ -88,7 +82,6 @@ public struct EntityNameMapResponse: Decodable {
     self.interface = interface
     self.union = union
     self.enum = `enum`
-    self.apiClientPrefix = apiClientPrefix
   }
 }
 
@@ -109,8 +102,7 @@ extension EntityNameMapResponse {
       inputObject: entityNameMapResponse.inputObject ?? inputObject,
       interface: entityNameMapResponse.interface ?? interface,
       union: entityNameMapResponse.union ?? union,
-      enum: entityNameMapResponse.enum ?? `enum`,
-      apiClientPrefix: entityNameMapResponse.apiClientPrefix ?? apiClientPrefix
+      enum: entityNameMapResponse.enum ?? `enum`
     )
   }
 }

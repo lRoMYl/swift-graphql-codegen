@@ -17,17 +17,20 @@ struct DHCodegenSwift {
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let selectionMap: SelectionMap?
+  private let apiClientPrefix: String
 
   private let entityNameProvider: EntityNameProviding
 
   init(
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
-    selectionMap: SelectionMap?
+    selectionMap: SelectionMap?,
+    apiClientPrefix: String
   ) {
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
     self.selectionMap = selectionMap
+    self.apiClientPrefix = apiClientPrefix
 
     self.entityNameProvider = DHEntityNameProvider(
       scalarMap: scalarMap,
@@ -55,7 +58,8 @@ struct DHCodegenSwift {
     let generator = try GraphQLCodegenDHApiClientSwift(
       entityNameMap: entityNameMap,
       scalarMap: scalarMap,
-      entityNameProvider: entityNameProvider
+      entityNameProvider: entityNameProvider,
+      apiClientPrefix: apiClientPrefix
     )
     let generatedCode = try generator.code(schema: schema)
 

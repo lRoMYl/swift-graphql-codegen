@@ -20,8 +20,7 @@ public struct GraphQLCodegenSpecSwiftConfig {
       inputObject: "RequestModel",
       interface: "InterfaceResponseModel",
       union: "UnionResponseModel",
-      enum: "EnumResponseModel",
-      apiClientPrefix: "GraphQL"
+      enum: "EnumResponseModel"
     )
 
     return ConfigResponse(

@@ -20,7 +20,7 @@ struct MapperErrorGenerator: Generating {
   }
 
   func code(schema: Schema) throws -> String {
-    let mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: entityNameMap.apiClientPrefix)
+    let mapperErrorName = entityNameProvider.mapperErrorName(apiClientPrefix: "")
 
     return """
     // MARK: - MapperError

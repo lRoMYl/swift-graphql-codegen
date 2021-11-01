@@ -41,8 +41,7 @@ extension EntityNameMap {
       inputObject: inputObject ?? defaultEntityNameMap.inputObject,
       interface: interface ?? defaultEntityNameMap.interface,
       union: union ?? defaultEntityNameMap.union,
-      enum: `enum` ?? defaultEntityNameMap.enum,
-      apiClientPrefix: apiClientPrefix ?? defaultEntityNameMap.apiClientPrefix
+      enum: `enum` ?? defaultEntityNameMap.enum
     )
   }
 }

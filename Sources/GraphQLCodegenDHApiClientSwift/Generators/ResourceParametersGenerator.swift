@@ -26,8 +26,13 @@ struct ResourceParametersGenerator: Generating {
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
 
-  init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) {
-    self.apiClientPrefix = entityNameMap.apiClientPrefix
+  init(
+    entityNameMap: EntityNameMap,
+    scalarMap: ScalarMap,
+    entityNameProvider: EntityNameProviding,
+    apiClientPrefix: String
+  ) {
+    self.apiClientPrefix = apiClientPrefix
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider

@@ -70,6 +70,8 @@ extension GraphQLCodegenCLI {
     func generateCode(with target: CodegenTarget) {
       var arguments = [schema]
 
+      arguments.append(contentsOf: ["--api-client-prefix", apiClientPrefix])
+
       // If target type is introspection, ignore the schema source and use remote only
       if target == .introspection {
         arguments.append(contentsOf: ["--schema-source", SchemaSource.remote.rawValue])

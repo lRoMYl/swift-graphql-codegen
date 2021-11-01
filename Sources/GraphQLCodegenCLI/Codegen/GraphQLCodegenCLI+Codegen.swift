@@ -60,6 +60,9 @@ extension GraphQLCodegenCLI {
     )
     var output: String
 
+    @Option(help: "API Client Prefix")
+    var apiClientPrefix: String = "GraphQL"
+
     @Option(help: "Path and name of the config file")
     var configPath: String?
 
@@ -112,7 +115,8 @@ private extension GraphQLCodegenCLI.Codegen {
     let codegen = DHCodegenSwift(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      apiClientPrefix: apiClientPrefix
     )
 
     switch target {

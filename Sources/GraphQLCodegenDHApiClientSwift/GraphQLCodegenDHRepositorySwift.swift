@@ -26,26 +26,35 @@ public struct GraphQLCodegenDHApiClientSwift {
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
+  private let apiClientPrefix: String
 
   /// Generators
   private let generators: [Generating]
 
-  public init(entityNameMap: EntityNameMap, scalarMap: ScalarMap, entityNameProvider: EntityNameProviding) throws {
+  public init(
+    entityNameMap: EntityNameMap,
+    scalarMap: ScalarMap,
+    entityNameProvider: EntityNameProviding,
+    apiClientPrefix: String
+  ) throws {
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider
+    self.apiClientPrefix = apiClientPrefix
 
     self.generators = [
       HeaderGenerator(),
       ApiClientGenerator(
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,
-        entityNameProvider: self.entityNameProvider
+        entityNameProvider: self.entityNameProvider,
+        apiClientPrefix: self.apiClientPrefix
       ),
       ResourceParametersGenerator(
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,
-        entityNameProvider: entityNameProvider
+        entityNameProvider: entityNameProvider,
+        apiClientPrefix: self.apiClientPrefix
       )
     ]
   }
