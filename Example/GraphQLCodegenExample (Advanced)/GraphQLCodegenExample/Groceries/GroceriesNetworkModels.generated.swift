@@ -1,9 +1,9 @@
 // @generated
 // Do not edit this generated file
 // swiftlint:disable all
+// swiftformat:disable all
 
 import Foundation
-
 // MARK: - EnumResponseModel
 
 enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
@@ -146,6 +146,13 @@ struct BenefitResponseModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalProductId = try container.decodeOptionalIfPresent(String.self, forKey: .internalProductId)
+    internalQuantity = try container.decodeOptionalIfPresent(Int.self, forKey: .internalQuantity)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -204,6 +211,19 @@ struct CampaignAttributeResponseModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalAutoApplied = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalAutoApplied)
+    internalBenefits = try container.decodeOptionalIfPresent([BenefitResponseModel]?.self, forKey: .internalBenefits)
+    internalCampaignType = try container.decodeOptionalIfPresent(CampaignTypeEnumResponseModel.self, forKey: .internalCampaignType)
+    internalDescription = try container.decodeOptionalIfPresent(String.self, forKey: .internalDescription)
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
+    internalRedemptionLimit = try container.decodeOptionalIfPresent(Double.self, forKey: .internalRedemptionLimit)
+    internalSource = try container.decodeOptionalIfPresent(CampaignSourceEnumResponseModel.self, forKey: .internalSource)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -236,6 +256,13 @@ struct CampaignsResponseModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalCampaignAttributes = try container.decodeOptionalIfPresent([CampaignAttributeResponseModel?]?.self, forKey: .internalCampaignAttributes)
+    internalProductDeals = try container.decodeOptionalIfPresent([ProductDealResponseModel?]?.self, forKey: .internalProductDeals)
   }
 
   // MARK: - CodingKeys
@@ -273,6 +300,14 @@ struct DealResponseModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalCampaignId = try container.decodeOptionalIfPresent(String.self, forKey: .internalCampaignId)
+    internalDiscountTag = try container.decodeOptionalIfPresent(String.self, forKey: .internalDiscountTag)
+    internalTriggerQuantity = try container.decodeOptionalIfPresent(Int.self, forKey: .internalTriggerQuantity)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -302,6 +337,13 @@ struct ProductDealResponseModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalDeals = try container.decodeOptionalIfPresent([DealResponseModel?]?.self, forKey: .internalDeals)
+    internalProductId = try container.decodeOptionalIfPresent(String.self, forKey: .internalProductId)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -319,6 +361,9 @@ struct QueryResponseModel: Codable {
     case campaigns
   }
 }
+
+
+
 
 // MARK: - GraphQLRequesting
 

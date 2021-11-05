@@ -107,4 +107,22 @@ struct FieldCodeGenerator {
       }
       """
   }
+
+  func initializerDeclaration(with objectType: ObjectType, fields: [Field]) throws -> String {
+    guard !objectType.isOperation else { return "" }
+
+    return """
+    init(from decoder: Decoder) throws {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+
+      \(
+        try fields.map { field in
+          let variable = try entityNameProvider.responseInternalVariableName(with: field)
+          let type: String = try entityNameProvider.name(for: field.type)
+          return "\(variable) = try container.decodeOptionalIfPresent(\(type).self, forKey: .\(variable))"
+        }.lines
+      )
+    }
+    """
+  }
 }

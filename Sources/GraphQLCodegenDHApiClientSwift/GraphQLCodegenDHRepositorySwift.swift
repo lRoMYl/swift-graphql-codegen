@@ -60,7 +60,7 @@ public struct GraphQLCodegenDHApiClientSwift {
   }
 
   public func code(schema: Schema) throws -> String {
-    let code = try generators.map { try $0.code(schema: schema) }.lines
+    let code = try generators.map { try $0.code(schema: schema).format() }.lines
 
     let formattedCode: String
 

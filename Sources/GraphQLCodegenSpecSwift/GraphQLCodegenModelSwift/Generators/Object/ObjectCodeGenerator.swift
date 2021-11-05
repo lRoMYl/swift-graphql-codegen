@@ -76,6 +76,7 @@ extension ObjectCodeGenerator {
     let fieldsVariableFunction = try sortedFields
       .compactMap { try fieldSpecificationGenerator.variableFunctionDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n\n")
+    let initializer = try fieldSpecificationGenerator.initializerDeclaration(with: objectType, fields: sortedFields)
 
     let fieldsCodingKey = try sortedFields
       .compactMap { try fieldSpecificationGenerator.codingKeyDeclaration(object: objectType, field: $0) }
@@ -98,6 +99,8 @@ extension ObjectCodeGenerator {
       \(fieldsVariableFunction)
 
       \(valueFunctionDeclaration)
+
+      \(initializer)
 
       // MARK: - CodingKeys
 

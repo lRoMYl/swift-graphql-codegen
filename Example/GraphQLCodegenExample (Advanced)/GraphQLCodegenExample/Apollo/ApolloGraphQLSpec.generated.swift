@@ -1,9 +1,9 @@
 // @generated
 // Do not edit this generated file
 // swiftlint:disable all
+// swiftformat:disable all
 
 import Foundation
-
 // MARK: - ApolloEnumModel
 
 enum PatchSizeApolloEnumModel: RawRepresentable, Codable {
@@ -84,7 +84,7 @@ struct QueryApolloModel: Codable {
   let launch: Optional<LaunchApolloModel?>
   let launches: Optional<LaunchConnectionApolloModel>
   let me: Optional<UserApolloModel?>
-  let tripsBooked: Optional<Int?>
+  let totalTripsBooked: Optional<Int?>
 
   // MARK: - CodingKeys
 
@@ -92,7 +92,7 @@ struct QueryApolloModel: Codable {
     case launch
     case launches
     case me
-    case tripsBooked
+    case totalTripsBooked
   }
 }
 
@@ -119,6 +119,14 @@ struct LaunchConnectionApolloModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalCursor = try container.decodeOptionalIfPresent(String.self, forKey: .internalCursor)
+    internalHasMore = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalHasMore)
+    internalLaunches = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalLaunches)
   }
 
   // MARK: - CodingKeys
@@ -165,6 +173,16 @@ struct LaunchApolloModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalIsBooked = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalIsBooked)
+    internalMission = try container.decodeOptionalIfPresent(MissionApolloModel?.self, forKey: .internalMission)
+    internalRocket = try container.decodeOptionalIfPresent(RocketApolloModel?.self, forKey: .internalRocket)
+    internalSite = try container.decodeOptionalIfPresent(String?.self, forKey: .internalSite)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -194,6 +212,13 @@ struct MissionApolloModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalMissionPatch = try container.decodeOptionalIfPresent(String?.self, forKey: .internalMissionPatch)
+    internalName = try container.decodeOptionalIfPresent(String?.self, forKey: .internalName)
   }
 
   // MARK: - CodingKeys
@@ -227,6 +252,14 @@ struct RocketApolloModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalName = try container.decodeOptionalIfPresent(String?.self, forKey: .internalName)
+    internalType = try container.decodeOptionalIfPresent(String?.self, forKey: .internalType)
   }
 
   // MARK: - CodingKeys
@@ -266,6 +299,15 @@ struct UserApolloModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalEmail = try container.decodeOptionalIfPresent(String.self, forKey: .internalEmail)
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalProfileImage = try container.decodeOptionalIfPresent(String?.self, forKey: .internalProfileImage)
+    internalTrips = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalTrips)
   }
 
   // MARK: - CodingKeys
@@ -319,6 +361,14 @@ struct TripUpdateResponseApolloModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalLaunches = try container.decodeOptionalIfPresent([LaunchApolloModel?]?.self, forKey: .internalLaunches)
+    internalMessage = try container.decodeOptionalIfPresent(String?.self, forKey: .internalMessage)
+    internalSuccess = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalSuccess)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -337,6 +387,9 @@ struct SubscriptionApolloModel: Codable {
     case tripsBooked
   }
 }
+
+
+
 
 // MARK: - GraphQLRequesting
 
@@ -495,12 +548,12 @@ struct MeApolloQuery: GraphQLRequesting {
   }
 }
 
-/// TripsBookedApolloQuery
-struct TripsBookedApolloQuery: GraphQLRequesting {
+/// TotalTripsBookedApolloQuery
+struct TotalTripsBookedApolloQuery: GraphQLRequesting {
   // MARK: - GraphQLRequestType
 
   let requestType: GraphQLRequestType = .query
-  let requestName: String = "tripsBooked"
+  let requestName: String = "totalTripsBooked"
   let rootSelectionKeys: Set<String> = []
 
   func encode(to _: Encoder) throws {}
@@ -512,7 +565,7 @@ struct TripsBookedApolloQuery: GraphQLRequesting {
 
   func requestQuery() -> String {
     return """
-    tripsBooked
+    totalTripsBooked
     """
   }
 
@@ -540,14 +593,14 @@ struct ApolloQuery: GraphQLRequesting {
   let launch: LaunchApolloQuery?
   let launches: LaunchesApolloQuery?
   let me: MeApolloQuery?
-  let tripsBooked: TripsBookedApolloQuery?
+  let totalTripsBooked: TotalTripsBookedApolloQuery?
 
   private var requests: [GraphQLRequesting] {
     let requests: [GraphQLRequesting?] = [
       launch,
       launches,
       me,
-      tripsBooked
+      totalTripsBooked
     ]
 
     return requests.compactMap { $0 }
@@ -557,12 +610,12 @@ struct ApolloQuery: GraphQLRequesting {
     launch: LaunchApolloQuery? = nil,
     launches: LaunchesApolloQuery? = nil,
     me: MeApolloQuery? = nil,
-    tripsBooked: TripsBookedApolloQuery? = nil
+    totalTripsBooked: TotalTripsBookedApolloQuery? = nil
   ) {
     self.launch = launch
     self.launches = launches
     self.me = me
-    self.tripsBooked = tripsBooked
+    self.totalTripsBooked = totalTripsBooked
   }
 
   func encode(to encoder: Encoder) throws {
@@ -948,8 +1001,8 @@ struct MeQueryResponse: Codable {
   let me: UserApolloModel?
 }
 
-struct TripsBookedQueryResponse: Codable {
-  let tripsBooked: Int?
+struct TotalTripsBookedQueryResponse: Codable {
+  let totalTripsBooked: Int?
 }
 
 struct BookTripsMutationResponse: Codable {
@@ -1322,7 +1375,7 @@ struct MeApolloQuerySelections: GraphQLSelections {
 
 // MARK: - Selections
 
-struct TripsBookedApolloQuerySelections: GraphQLSelections {
+struct TotalTripsBookedApolloQuerySelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
     ""
   }

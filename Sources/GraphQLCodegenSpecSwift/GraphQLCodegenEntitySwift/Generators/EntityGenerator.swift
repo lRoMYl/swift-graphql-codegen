@@ -24,6 +24,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
+    // swiftformat:disable all
 
     import Foundation
 
@@ -163,6 +164,19 @@ struct EntityGenerator: GraphQLCodeGenerating {
         }
 
         return dictionary
+      }
+    }
+
+    extension KeyedDecodingContainer {
+      func decodeOptionalIfPresent<T>(
+        _ type: T.Type,
+        forKey key: KeyedDecodingContainer<K>.Key
+      ) throws -> T? where T: Decodable {
+        guard contains(key) else {
+          return nil
+        }
+
+        return Optional(try decode(type, forKey: key))
       }
     }
     """

@@ -1,9 +1,9 @@
 // @generated
 // Do not edit this generated file
 // swiftlint:disable all
+// swiftformat:disable all
 
 import Foundation
-
 // MARK: - StarWarsEnumModel
 
 /// One of the films in the Star Wars Trilogy
@@ -120,6 +120,13 @@ struct DroidStarWarsModel: Codable {
     return value
   }
 
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
+  }
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -141,6 +148,12 @@ struct HumanStarWarsModel: Codable {
     }
 
     return value
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
   }
 
   // MARK: - CodingKeys

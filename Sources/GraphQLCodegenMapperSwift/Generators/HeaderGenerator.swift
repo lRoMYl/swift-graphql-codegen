@@ -32,6 +32,7 @@ struct HeaderGenerator: Generating {
     // @generated
     // Do not edit this generated file
     // swiftlint:disable all
+    // swiftformat:disable all
 
     import ApiClient
     import Foundation

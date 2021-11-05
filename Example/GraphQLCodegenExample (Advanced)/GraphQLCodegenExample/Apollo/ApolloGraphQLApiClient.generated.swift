@@ -1,11 +1,11 @@
 // @generated
 // Do not edit this generated file
 // swiftlint:disable all
+// swiftformat:disable all
 
 import ApiClient
 import Foundation
 import RxSwift
-
 // MARK: - ApolloApiClientProtocol
 
 protocol ApolloApiClientProtocol {
@@ -25,10 +25,10 @@ protocol ApolloApiClientProtocol {
     with request: MeApolloQuery,
     selections: MeApolloQuerySelections
   ) -> Single<ApiResponse<MeQueryResponse>>
-  func tripsBooked(
-    with request: TripsBookedApolloQuery,
-    selections: TripsBookedApolloQuerySelections
-  ) -> Single<ApiResponse<TripsBookedQueryResponse>>
+  func totalTripsBooked(
+    with request: TotalTripsBookedApolloQuery,
+    selections: TotalTripsBookedApolloQuerySelections
+  ) -> Single<ApiResponse<TotalTripsBookedQueryResponse>>
   func update(
     with request: ApolloMutation,
     selections: ApolloMutationSelections
@@ -127,13 +127,13 @@ final class ApolloApiClient: ApolloApiClientProtocol {
     )
   }
 
-  func tripsBooked(
-    with request: TripsBookedApolloQuery,
-    selections: TripsBookedApolloQuerySelections
-  ) -> Single<ApiResponse<TripsBookedQueryResponse>> {
+  func totalTripsBooked(
+    with request: TotalTripsBookedApolloQuery,
+    selections: TotalTripsBookedApolloQuerySelections
+  ) -> Single<ApiResponse<TotalTripsBookedQueryResponse>> {
     let resource = ApolloResourceParametersProvider(
       resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .queryTripsBooked(request: request, selections: selections)
+      resourceBodyParameters: .queryTotalTripsBooked(request: request, selections: selections)
     )
 
     return executeGraphQLQuery(
@@ -158,7 +158,7 @@ final class ApolloApiClient: ApolloApiClientProtocol {
           (request.launches, result.data?.launches),
           (request.launch, result.data?.launch),
           (request.me, result.data?.me),
-          (request.tripsBooked, result.data?.tripsBooked)
+          (request.totalTripsBooked, result.data?.totalTripsBooked)
         ]
 
         try responseExpectations.forEach {
@@ -373,7 +373,7 @@ struct ApolloResourceParametersProvider: ResourceParameters {
     case queryLaunches(request: LaunchesApolloQuery, selections: LaunchesApolloQuerySelections)
     case queryLaunch(request: LaunchApolloQuery, selections: LaunchApolloQuerySelections)
     case queryMe(request: MeApolloQuery, selections: MeApolloQuerySelections)
-    case queryTripsBooked(request: TripsBookedApolloQuery, selections: TripsBookedApolloQuerySelections)
+    case queryTotalTripsBooked(request: TotalTripsBookedApolloQuery, selections: TotalTripsBookedApolloQuerySelections)
     case query(request: ApolloQuery, selections: ApolloQuerySelections)
     case updateBookTrips(request: BookTripsApolloMutation, selections: BookTripsApolloMutationSelections)
     case updateCancelTrip(request: CancelTripApolloMutation, selections: CancelTripApolloMutationSelections)
@@ -391,7 +391,7 @@ struct ApolloResourceParametersProvider: ResourceParameters {
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .queryMe(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .queryTripsBooked(request, selections):
+      case let .queryTotalTripsBooked(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .query(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
