@@ -35,8 +35,8 @@ struct EntityGenerator: GraphQLCodeGenerating {
       var requestName: String { get }
       var rootSelectionKeys: Set<String> { get }
 
-      func \(entityNameProvider.requestQueryName)() -> String
-      func \(entityNameProvider.requestArgumentsName)() -> String
+      var \(entityNameProvider.requestQueryName): String { get }
+      var \(entityNameProvider.requestArgumentsName): String { get }
       func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String
     }
 
@@ -73,14 +73,14 @@ struct EntityGenerator: GraphQLCodeGenerating {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         let requestTypeCode = parameters.requestType.rawValue
-        let requestArguments = parameters.\(entityNameProvider.requestArgumentsName)()
+        let requestArguments = parameters.\(entityNameProvider.requestArgumentsName)
         let requestArgumentsCode = requestArguments.isEmpty
           ? ""
           : " (\\(requestArguments))"
 
         let requestQuery = \"\"\"
         \\(requestTypeCode)\\(requestArgumentsCode) {
-          \\(parameters.\(entityNameProvider.requestQueryName)())
+          \\(parameters.\(entityNameProvider.requestQueryName))
         }
 
         \\(parameters.\(entityNameProvider.requestFragmentsName)(with: selections))

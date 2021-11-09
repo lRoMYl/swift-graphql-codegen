@@ -164,7 +164,7 @@ final class ApolloApiClient: ApolloApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }
@@ -252,7 +252,7 @@ final class ApolloApiClient: ApolloApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }
@@ -295,7 +295,7 @@ final class ApolloApiClient: ApolloApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }

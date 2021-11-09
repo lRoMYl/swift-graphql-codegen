@@ -266,7 +266,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw StarWarsApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }
@@ -309,7 +309,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw StarWarsApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }
@@ -352,7 +352,7 @@ final class StarWarsApiClient: StarWarsApiClientProtocol {
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw StarWarsApiClientError.missingData(
-              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery()) }"
+              context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
             )
           }
         }

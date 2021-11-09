@@ -12,8 +12,8 @@ protocol GraphQLRequesting: Encodable {
   var requestName: String { get }
   var rootSelectionKeys: Set<String> { get }
 
-  func requestQuery() -> String
-  func requestArguments() -> String
+  var requestQuery: String { get }
+  var requestArguments: String { get }
   func requestFragments(with selections: GraphQLSelections) -> String
 }
 
@@ -50,14 +50,14 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
     let requestTypeCode = parameters.requestType.rawValue
-    let requestArguments = parameters.requestArguments()
+    let requestArguments = parameters.requestArguments
     let requestArgumentsCode = requestArguments.isEmpty
       ? ""
       : " (\(requestArguments))"
 
     let requestQuery = """
     \(requestTypeCode)\(requestArgumentsCode) {
-      \(parameters.requestQuery())
+      \(parameters.requestQuery)
     }
 
     \(parameters.requestFragments(with: selections))

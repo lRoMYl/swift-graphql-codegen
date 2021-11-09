@@ -403,8 +403,8 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     campaigns(
       VendorID: $campaignsVendorId
       GlobalEntityID: $campaignsGlobalEntityId
@@ -413,15 +413,15 @@ struct CampaignsQueryRequest: GraphQLRequesting {
        ...CampaignsCampaignsFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $campaignsGlobalEntityId: String!,
     $campaignsLocale: String!,
     $campaignsVendorId: String!
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -461,15 +461,15 @@ struct QueryRequest: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 

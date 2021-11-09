@@ -326,21 +326,21 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     character(
       id: $characterId
     ) {
        ...CharacterCharacterUnionFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $characterId: ID!
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -362,18 +362,18 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     characters {
        ...CharactersCharacterFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -406,21 +406,21 @@ struct DroidStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     droid(
       id: $droidId
     ) {
        ...DroidDroidFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $droidId: ID!
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -442,18 +442,18 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     droids {
        ...DroidsDroidFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -484,19 +484,19 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     greeting(
       input: $greetingInput
     )
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $greetingInput: Greeting
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -529,21 +529,21 @@ struct HumanStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     human(
       id: $humanId
     ) {
        ...HumanHumanFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $humanId: ID!
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -565,18 +565,18 @@ struct HumansStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     humans {
        ...HumansHumanFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -598,18 +598,18 @@ struct LukeStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     luke {
        ...LukeHumanFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -631,16 +631,16 @@ struct TimeStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     time
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -662,16 +662,16 @@ struct WhoamiStarWarsQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     whoami
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -747,15 +747,15 @@ struct StarWarsQuery: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 
@@ -781,16 +781,16 @@ struct MutateStarWarsMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     mutate
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -830,15 +830,15 @@ struct StarWarsMutation: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 
@@ -864,16 +864,16 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     number
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -913,15 +913,15 @@ struct StarWarsSubscription: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 

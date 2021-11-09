@@ -162,7 +162,7 @@ extension ApiClientGenerator {
           try responseExpectations.forEach {
             if let request = $0.0, $0.1 == nil {
               throw \(apiClientErrorName).missingData(
-                context: "Missing data for \\(request.requestType.rawValue) { \\(request.\(requestQueryName)()) }"
+                context: "Missing data for \\(request.requestType.rawValue) { \\(request.\(requestQueryName)) }"
               )
             }
           }

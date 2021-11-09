@@ -37,12 +37,20 @@ final class GroceriesRepository: GroceriesRepositoring {
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign?> {
-    apiClient.campaigns(
-      with: parameters,
-      selections: CampaignsQueryRequestSelections(
-        campaignAttributeSelections: [.id, .name, .source],
-        campaignsSelections: .allFields
-      )
+    let request = CampaignsQueryRequest(
+      globalEntityId: "FP_SG",
+      locale: "en_SG",
+      vendorId: "x1yy"
+    )
+
+    let selections = CampaignsQueryRequestSelections(
+      campaignAttributeSelections: [.id, .benefits],
+      campaignsSelections: .allFields
+    )
+
+    return apiClient.campaigns(
+      with: request,
+      selections: selections
     )
     .map {
       guard let responseModel = $0.data?.campaigns else {

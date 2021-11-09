@@ -423,22 +423,22 @@ struct LaunchApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     launch(
       id: $launchId
     ) {
        ...LaunchLaunchFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $launchId: ID!,
     $launchMissionPatchSize: PatchSize
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -483,8 +483,8 @@ struct LaunchesApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     launches(
       pageSize: $launchesPageSize
       after: $launchesAfter
@@ -492,15 +492,15 @@ struct LaunchesApolloQuery: GraphQLRequesting {
        ...LaunchesLaunchConnectionFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $launchesAfter: String,
     $launchesMissionPatchSize: PatchSize,
     $launchesPageSize: Int
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -529,19 +529,19 @@ struct MeApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     me {
        ...MeUserFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $meMissionPatchSize: PatchSize
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -563,16 +563,16 @@ struct TotalTripsBookedApolloQuery: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     totalTripsBooked
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -624,15 +624,15 @@ struct ApolloQuery: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 
@@ -673,22 +673,22 @@ struct BookTripsApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     bookTrips(
       launchIds: $bookTripsLaunchIds
     ) {
        ...BookTripsTripUpdateResponseFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $bookTripsLaunchIds: [ID]!,
     $bookTripsMissionPatchSize: PatchSize
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -725,22 +725,22 @@ struct CancelTripApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     cancelTrip(
       launchId: $cancelTripLaunchId
     ) {
        ...CancelTripTripUpdateResponseFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $cancelTripLaunchId: ID!,
     $cancelTripMissionPatchSize: PatchSize
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -771,19 +771,19 @@ struct LoginApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     login(
       email: $loginEmail
     )
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $loginEmail: String
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -820,22 +820,22 @@ struct UploadProfileImageApolloMutation: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     uploadProfileImage(
       file: $uploadProfileImageFile
     ) {
        ...UploadProfileImageUserFragment
     }
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     $uploadProfileImageFile: Upload!,
     $uploadProfileImageMissionPatchSize: PatchSize
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -887,15 +887,15 @@ struct ApolloMutation: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 
@@ -921,16 +921,16 @@ struct TripsBookedApolloSubscription: GraphQLRequesting {
 
   // MARK: - Operation Definition
 
-  func requestQuery() -> String {
-    return """
+  let requestQuery: String = {
+    """
     tripsBooked
     """
-  }
+  }()
 
-  func requestArguments() -> String {
+  let requestArguments: String = {
     """
     """
-  }
+  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -970,15 +970,15 @@ struct ApolloSubscription: GraphQLRequesting {
     }
   }
 
-  func requestQuery() -> String {
+  var requestQuery: String {
     requests
-      .map { $0.requestQuery() }
+      .map { $0.requestQuery }
       .joined(separator: "\n")
   }
 
-  func requestArguments() -> String {
+  var requestArguments: String {
     requests
-      .map { $0.requestArguments() }
+      .map { $0.requestArguments }
       .joined(separator: "\n")
   }
 

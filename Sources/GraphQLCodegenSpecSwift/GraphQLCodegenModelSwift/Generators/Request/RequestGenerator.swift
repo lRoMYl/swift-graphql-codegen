@@ -161,10 +161,10 @@ private extension RequestGenerator {
 
       \(operationDefinition)
 
-      func \(entityNameProvider.requestArgumentsName)() -> String {
+      let \(entityNameProvider.requestArgumentsName): String = {
         \"\"\"\(operationArgumentCode)
         \"\"\"
-      }
+      }()
 
       func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String {
         selections.requestFragments(for: self.requestName, rootSelectionKeys: rootSelectionKeys)
@@ -239,15 +239,15 @@ private extension RequestGenerator {
         }
       }
 
-      func \(entityNameProvider.requestQueryName)() -> String {
+      var \(entityNameProvider.requestQueryName): String {
         requests
-          .map { $0.\(entityNameProvider.requestQueryName)() }
+          .map { $0.\(entityNameProvider.requestQueryName) }
           .joined(separator: "\\n")
       }
 
-      func \(entityNameProvider.requestArgumentsName)() -> String {
+      var \(entityNameProvider.requestArgumentsName): String {
         requests
-        .map { $0.\(entityNameProvider.requestArgumentsName)() }
+        .map { $0.\(entityNameProvider.requestArgumentsName) }
         .joined(separator: "\\n")
       }
 

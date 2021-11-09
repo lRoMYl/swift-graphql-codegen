@@ -199,8 +199,8 @@ extension GraphQLCodegenExampleApp {
     starWarsRepository
       .query(
         with: StarWarsQuery(
-          character: .init(id: "1000"),
-          characters: .init()
+          character: CharacterStarWarsQuery(id: "1000"),
+          characters: CharactersStarWarsQuery()
         )
       )
       .subscribe(

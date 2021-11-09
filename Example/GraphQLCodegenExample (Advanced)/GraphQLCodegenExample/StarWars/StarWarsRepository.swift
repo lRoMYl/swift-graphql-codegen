@@ -61,7 +61,18 @@ final class StarWarsRepository {
   func query(
     with parameters: StarWarsQuery
   ) -> Single<QueryStarWarsModel> {
-    apiClient.query( with: parameters, selections: .init())
+    let request = StarWarsQuery(
+      character: CharacterStarWarsQuery(id: "1000"),
+      characters: CharactersStarWarsQuery(),
+      droid: DroidStarWarsQuery(id: "1001")
+    )
+
+    let selections = StarWarsQuerySelections(
+      droid: .allFields,
+      human: .allFields
+    )
+
+    return apiClient.query(with: request, selections: selections)
       .map {
         guard let data = $0.data else {
           throw StarWarsRepositoryError.missingData
