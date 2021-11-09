@@ -105,19 +105,11 @@ struct DroidStarWarsModel: Codable {
   private let internalName: Optional<String>
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   func name() throws -> String {
-    try value(for: \.internalName, codingKey: CodingKeys.internalName)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<DroidStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Droid")
-    }
-
-    return value
+    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
   }
 
   init(from decoder: Decoder) throws {
@@ -139,15 +131,7 @@ struct HumanStarWarsModel: Codable {
   private let internalId: Optional<String>
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<HumanStarWarsModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Human")
-    }
-
-    return value
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   init(from decoder: Decoder) throws {

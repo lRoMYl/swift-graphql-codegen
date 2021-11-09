@@ -102,23 +102,15 @@ struct LaunchConnectionApolloModel: Codable {
   private let internalLaunches: Optional<[LaunchApolloModel?]>
 
   func cursor() throws -> String {
-    try value(for: \.internalCursor, codingKey: CodingKeys.internalCursor)
+    try value(for: \Self.internalCursor, codingKey: CodingKeys.internalCursor)
   }
 
   func hasMore() throws -> Bool {
-    try value(for: \.internalHasMore, codingKey: CodingKeys.internalHasMore)
+    try value(for: \Self.internalHasMore, codingKey: CodingKeys.internalHasMore)
   }
 
   func launches() throws -> [LaunchApolloModel?] {
-    try value(for: \.internalLaunches, codingKey: CodingKeys.internalLaunches)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<LaunchConnectionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "LaunchConnection")
-    }
-
-    return value
+    try value(for: \Self.internalLaunches, codingKey: CodingKeys.internalLaunches)
   }
 
   init(from decoder: Decoder) throws {
@@ -146,31 +138,23 @@ struct LaunchApolloModel: Codable {
   private let internalSite: Optional<String?>
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   func isBooked() throws -> Bool {
-    try value(for: \.internalIsBooked, codingKey: CodingKeys.internalIsBooked)
+    try value(for: \Self.internalIsBooked, codingKey: CodingKeys.internalIsBooked)
   }
 
   func mission() throws -> MissionApolloModel? {
-    try value(for: \.internalMission, codingKey: CodingKeys.internalMission)
+    try value(for: \Self.internalMission, codingKey: CodingKeys.internalMission)
   }
 
   func rocket() throws -> RocketApolloModel? {
-    try value(for: \.internalRocket, codingKey: CodingKeys.internalRocket)
+    try value(for: \Self.internalRocket, codingKey: CodingKeys.internalRocket)
   }
 
   func site() throws -> String? {
-    try value(for: \.internalSite, codingKey: CodingKeys.internalSite)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<LaunchApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Launch")
-    }
-
-    return value
+    try value(for: \Self.internalSite, codingKey: CodingKeys.internalSite)
   }
 
   init(from decoder: Decoder) throws {
@@ -199,19 +183,11 @@ struct MissionApolloModel: Codable {
   private let internalName: Optional<String?>
 
   func missionPatch() throws -> String? {
-    try value(for: \.internalMissionPatch, codingKey: CodingKeys.internalMissionPatch)
+    try value(for: \Self.internalMissionPatch, codingKey: CodingKeys.internalMissionPatch)
   }
 
   func name() throws -> String? {
-    try value(for: \.internalName, codingKey: CodingKeys.internalName)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<MissionApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Mission")
-    }
-
-    return value
+    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
   }
 
   init(from decoder: Decoder) throws {
@@ -235,23 +211,15 @@ struct RocketApolloModel: Codable {
   private let internalType: Optional<String?>
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   func name() throws -> String? {
-    try value(for: \.internalName, codingKey: CodingKeys.internalName)
+    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
   }
 
   func type() throws -> String? {
-    try value(for: \.internalType, codingKey: CodingKeys.internalType)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<RocketApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Rocket")
-    }
-
-    return value
+    try value(for: \Self.internalType, codingKey: CodingKeys.internalType)
   }
 
   init(from decoder: Decoder) throws {
@@ -278,27 +246,19 @@ struct UserApolloModel: Codable {
   private let internalTrips: Optional<[LaunchApolloModel?]>
 
   func email() throws -> String {
-    try value(for: \.internalEmail, codingKey: CodingKeys.internalEmail)
+    try value(for: \Self.internalEmail, codingKey: CodingKeys.internalEmail)
   }
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   func profileImage() throws -> String? {
-    try value(for: \.internalProfileImage, codingKey: CodingKeys.internalProfileImage)
+    try value(for: \Self.internalProfileImage, codingKey: CodingKeys.internalProfileImage)
   }
 
   func trips() throws -> [LaunchApolloModel?] {
-    try value(for: \.internalTrips, codingKey: CodingKeys.internalTrips)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<UserApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "User")
-    }
-
-    return value
+    try value(for: \Self.internalTrips, codingKey: CodingKeys.internalTrips)
   }
 
   init(from decoder: Decoder) throws {
@@ -342,23 +302,15 @@ struct TripUpdateResponseApolloModel: Codable {
   private let internalSuccess: Optional<Bool>
 
   func launches() throws -> [LaunchApolloModel?]? {
-    try value(for: \.internalLaunches, codingKey: CodingKeys.internalLaunches)
+    try value(for: \Self.internalLaunches, codingKey: CodingKeys.internalLaunches)
   }
 
   func message() throws -> String? {
-    try value(for: \.internalMessage, codingKey: CodingKeys.internalMessage)
+    try value(for: \Self.internalMessage, codingKey: CodingKeys.internalMessage)
   }
 
   func success() throws -> Bool {
-    try value(for: \.internalSuccess, codingKey: CodingKeys.internalSuccess)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<TripUpdateResponseApolloModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "TripUpdateResponse")
-    }
-
-    return value
+    try value(for: \Self.internalSuccess, codingKey: CodingKeys.internalSuccess)
   }
 
   init(from decoder: Decoder) throws {

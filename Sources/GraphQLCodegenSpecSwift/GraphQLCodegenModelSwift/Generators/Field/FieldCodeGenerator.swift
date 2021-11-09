@@ -61,7 +61,7 @@ struct FieldCodeGenerator {
       let innerVariableName = try entityNameProvider.responseInternalVariableName(with: field)
       let declaration = """
       func \(variableName)() throws -> \(type) {
-        try value(for: \\.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName))
+        try value(for: \\Self.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName))
       }
       """
 
@@ -89,23 +89,6 @@ struct FieldCodeGenerator {
     } else {
       return nil
     }
-  }
-
-  func valueFunctionDeclaration(with object: Structure) throws -> String? {
-    let responseName = try entityNameProvider.name(for: object)
-    
-    return object.isOperation
-      ? ""
-      : """
-      private func value<Value>(for keyPath: KeyPath<\(responseName), Value?>, codingKey: CodingKey) throws -> Value {
-        guard let value = self[keyPath: keyPath] else {
-          throw GraphQLResponseError.missingSelection(key: codingKey, type: "\(object.name)"
-          )
-        }
-
-        return value
-      }
-      """
   }
 
   func initializerDeclaration(with objectType: ObjectType, fields: [Field]) throws -> String {

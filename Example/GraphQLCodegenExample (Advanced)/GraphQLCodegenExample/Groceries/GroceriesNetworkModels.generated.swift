@@ -131,19 +131,11 @@ struct BenefitResponseModel: Codable {
   private let internalQuantity: Optional<Int>
 
   func productId() throws -> String {
-    try value(for: \.internalProductId, codingKey: CodingKeys.internalProductId)
+    try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId)
   }
 
   func quantity() throws -> Int {
-    try value(for: \.internalQuantity, codingKey: CodingKeys.internalQuantity)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<BenefitResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Benefit")
-    }
-
-    return value
+    try value(for: \Self.internalQuantity, codingKey: CodingKeys.internalQuantity)
   }
 
   init(from decoder: Decoder) throws {
@@ -172,43 +164,35 @@ struct CampaignAttributeResponseModel: Codable {
   private let internalSource: Optional<CampaignSourceEnumResponseModel>
 
   func autoApplied() throws -> Bool {
-    try value(for: \.internalAutoApplied, codingKey: CodingKeys.internalAutoApplied)
+    try value(for: \Self.internalAutoApplied, codingKey: CodingKeys.internalAutoApplied)
   }
 
   func benefits() throws -> [BenefitResponseModel]? {
-    try value(for: \.internalBenefits, codingKey: CodingKeys.internalBenefits)
+    try value(for: \Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
   }
 
   func campaignType() throws -> CampaignTypeEnumResponseModel {
-    try value(for: \.internalCampaignType, codingKey: CodingKeys.internalCampaignType)
+    try value(for: \Self.internalCampaignType, codingKey: CodingKeys.internalCampaignType)
   }
 
   func description() throws -> String {
-    try value(for: \.internalDescription, codingKey: CodingKeys.internalDescription)
+    try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription)
   }
 
   func id() throws -> String {
-    try value(for: \.internalId, codingKey: CodingKeys.internalId)
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
   }
 
   func name() throws -> String {
-    try value(for: \.internalName, codingKey: CodingKeys.internalName)
+    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
   }
 
   func redemptionLimit() throws -> Double {
-    try value(for: \.internalRedemptionLimit, codingKey: CodingKeys.internalRedemptionLimit)
+    try value(for: \Self.internalRedemptionLimit, codingKey: CodingKeys.internalRedemptionLimit)
   }
 
   func source() throws -> CampaignSourceEnumResponseModel {
-    try value(for: \.internalSource, codingKey: CodingKeys.internalSource)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<CampaignAttributeResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "CampaignAttribute")
-    }
-
-    return value
+    try value(for: \Self.internalSource, codingKey: CodingKeys.internalSource)
   }
 
   init(from decoder: Decoder) throws {
@@ -243,19 +227,11 @@ struct CampaignsResponseModel: Codable {
   private let internalProductDeals: Optional<[ProductDealResponseModel?]?>
 
   func campaignAttributes() throws -> [CampaignAttributeResponseModel?]? {
-    try value(for: \.internalCampaignAttributes, codingKey: CodingKeys.internalCampaignAttributes)
+    try value(for: \Self.internalCampaignAttributes, codingKey: CodingKeys.internalCampaignAttributes)
   }
 
   func productDeals() throws -> [ProductDealResponseModel?]? {
-    try value(for: \.internalProductDeals, codingKey: CodingKeys.internalProductDeals)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<CampaignsResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Campaigns")
-    }
-
-    return value
+    try value(for: \Self.internalProductDeals, codingKey: CodingKeys.internalProductDeals)
   }
 
   init(from decoder: Decoder) throws {
@@ -279,25 +255,17 @@ struct DealResponseModel: Codable {
   private let internalTriggerQuantity: Optional<Int>
 
   func campaignId() throws -> String {
-    try value(for: \.internalCampaignId, codingKey: CodingKeys.internalCampaignId)
+    try value(for: \Self.internalCampaignId, codingKey: CodingKeys.internalCampaignId)
   }
 
   /// things that would change across products for a campaign
   func discountTag() throws -> String {
-    try value(for: \.internalDiscountTag, codingKey: CodingKeys.internalDiscountTag)
+    try value(for: \Self.internalDiscountTag, codingKey: CodingKeys.internalDiscountTag)
   }
 
   /// buy 3 get 1 free
   func triggerQuantity() throws -> Int {
-    try value(for: \.internalTriggerQuantity, codingKey: CodingKeys.internalTriggerQuantity)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<DealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "Deal")
-    }
-
-    return value
+    try value(for: \Self.internalTriggerQuantity, codingKey: CodingKeys.internalTriggerQuantity)
   }
 
   init(from decoder: Decoder) throws {
@@ -322,19 +290,11 @@ struct ProductDealResponseModel: Codable {
   private let internalProductId: Optional<String>
 
   func deals() throws -> [DealResponseModel?]? {
-    try value(for: \.internalDeals, codingKey: CodingKeys.internalDeals)
+    try value(for: \Self.internalDeals, codingKey: CodingKeys.internalDeals)
   }
 
   func productId() throws -> String {
-    try value(for: \.internalProductId, codingKey: CodingKeys.internalProductId)
-  }
-
-  private func value<Value>(for keyPath: KeyPath<ProductDealResponseModel, Value?>, codingKey: CodingKey) throws -> Value {
-    guard let value = self[keyPath: keyPath] else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: "ProductDeal")
-    }
-
-    return value
+    try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId)
   }
 
   init(from decoder: Decoder) throws {

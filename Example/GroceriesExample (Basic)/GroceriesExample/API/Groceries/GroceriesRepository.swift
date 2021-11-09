@@ -44,7 +44,7 @@ final class GroceriesRepository: GroceriesRepositoring {
     )
 
     let selections = CampaignsQueryRequestSelections(
-      campaignAttributeSelections: [.id, .benefits],
+      campaignAttributeSelections: [.id, .name, .source, .benefits],
       campaignsSelections: .allFields
     )
 

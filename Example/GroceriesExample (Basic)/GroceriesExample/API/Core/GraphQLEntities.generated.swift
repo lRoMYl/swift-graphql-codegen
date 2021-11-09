@@ -156,3 +156,16 @@ extension KeyedDecodingContainer {
     return Optional(try decode(type, forKey: key))
   }
 }
+
+extension Decodable {
+  func value<Model, Value>(for keyPath: KeyPath<Model, Value?>, codingKey: CodingKey) throws -> Value {
+    guard
+      let model = self as? Model,
+      let value = model[keyPath: keyPath]
+    else {
+      throw GraphQLResponseError.missingSelection(key: codingKey, type: String(describing: Model.self))
+    }
+
+    return value
+  }
+}

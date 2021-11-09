@@ -88,8 +88,6 @@ extension ObjectCodeGenerator {
 
     let responseName = try entityNameProvider.name(for: objectType)
 
-    let valueFunctionDeclaration = try fieldSpecificationGenerator.valueFunctionDeclaration(with: objectType) ?? ""
-
     // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
     // with Decodable conformance
     return """
@@ -97,8 +95,6 @@ extension ObjectCodeGenerator {
       \(fieldsVariable)
 
       \(fieldsVariableFunction)
-
-      \(valueFunctionDeclaration)
 
       \(initializer)
 
