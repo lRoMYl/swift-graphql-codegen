@@ -32,6 +32,7 @@ Supports GraphQL Native Feature
 - [x] Introspection
 - [x] Root level query
 - [ ] Directive, no plan to support it atm.
+- [ ] Aliases, no plan to support it atm.
 
 Support DH Custom Feature
 - [x] SPM package
