@@ -53,7 +53,7 @@ Support DH Custom Feature
 
 TODO
 - [x] Nested field selection with arguments is not handled yet
-- [ ] ApiClientPrefix needs to be removed from EntityNameMap
+- [x] ApiClientPrefix needs to be removed from EntityNameMap
 - [ ] Ramp up test cases
 - [ ] Ramp up documentation
 
