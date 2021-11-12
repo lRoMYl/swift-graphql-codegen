@@ -32,6 +32,7 @@ Supports GraphQL Native Feature
 - [x] Introspection
 - [x] Root level query
 - [ ] Directive, no plan to support it atm.
+- [ ] Aliases, no plan to support it atm.
 
 Support DH Custom Feature
 - [x] SPM package
@@ -53,7 +54,7 @@ Support DH Custom Feature
 
 TODO
 - [x] Nested field selection with arguments is not handled yet
-- [ ] ApiClientPrefix needs to be removed from EntityNameMap
+- [x] ApiClientPrefix needs to be removed from EntityNameMap
 - [ ] Ramp up test cases
 - [ ] Ramp up documentation
 
@@ -127,7 +128,7 @@ Optional mapper class can be used to defined how to map the response model into 
 The mapper would then generate the selections based on which field will be used for the mapping to query only the fields used during the mapping logic.
 
 e.g. 
-- `VenderResponseModel` have 10 fields; `id`, `name`, `source` and etc.
+- `VendorResponseModel` have 10 fields; `id`, `name`, `source` and etc.
 - In the example below, we have a `Vendor` application/model which is used within the app
 - Define which fields in `VendorResponseModel` are required to populate the `Vendor` domain model, in this case example only 2 fields are are used.
 - The mapper class will compute all the selections used for this mapping and create a selections based on that, in this case 2 selections
@@ -135,7 +136,7 @@ e.g.
 - Using the mapper, we can guarantee the code to be build-time safe. (Unless if there is a bug in the generated code)
 - However, using mapper is optional as this is a separate module but mapping and selections generation will need to be done manually and there is a risk of selections not being the same as the field expected from the response.
 
-```
+```Swift
 // Auto generated NetworkModel
 let request = VendorQueryRequest(
   name: "vendor name", 
