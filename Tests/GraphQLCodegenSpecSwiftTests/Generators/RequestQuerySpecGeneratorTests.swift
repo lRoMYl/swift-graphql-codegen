@@ -12,7 +12,7 @@
 import XCTest
 
 final class RequestQuerySpecGeneratorTests: XCTestCase {
-  func testOperationDefinition() throws {
+  func testRequestQuery() throws {
     let generator = self.generator
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
@@ -41,7 +41,7 @@ final class RequestQuerySpecGeneratorTests: XCTestCase {
     XCTAssertEqual(declaration, expectedDeclaration)
   }
 
-  func testOperationDefintionWithoutArg() throws {
+  func testRequestQueryWithoutArg() throws {
     let generator = self.generator
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
@@ -68,7 +68,7 @@ final class RequestQuerySpecGeneratorTests: XCTestCase {
     XCTAssertEqual(declaration, expectedDeclaration)
   }
 
-  func testOperationDefinitionWithoutArgumentAndFragment() throws {
+  func testRequestQueryWithoutArgumentAndFragment() throws {
     let generator = self.generator
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
@@ -94,7 +94,7 @@ final class RequestQuerySpecGeneratorTests: XCTestCase {
   }
 }
 
-private extension RequestOperationSpecGeneratorTests {
+private extension RequestQuerySpecGeneratorTests {
   var generator: RequestQueryCodeGenerator {
     let scalarMap = ScalarMap.default
     let entityNameMap = EntityNameMap.default
