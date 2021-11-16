@@ -44,8 +44,6 @@ final class InterfaceCodeGeneratorTests: XCTestCase {
 
       private enum CodingKeys: String, CodingKey {
         case __typename
-        case id
-        case name
       }
 
       init(from decoder: Decoder) throws {

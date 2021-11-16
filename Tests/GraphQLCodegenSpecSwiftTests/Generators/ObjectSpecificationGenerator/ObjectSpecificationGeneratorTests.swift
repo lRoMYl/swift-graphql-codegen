@@ -57,15 +57,29 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     // MARK: - GraphQLObject
 
     struct DiscountGraphQLObject: Codable {
-      let type: DiscountTypeGraphQLObject
+      private let internalType: Optional<DiscountTypeGraphQLObject>
+      private let internalValue: Optional<Double>
 
-      let value: Double
+      func type() throws -> DiscountTypeGraphQLObject {
+        try value(for: \\Self.internalType, codingKey: CodingKeys.internalType)
+      }
+
+      func value() throws -> Double {
+        try value(for: \\Self.internalValue, codingKey: CodingKeys.internalValue)
+      }
+
+      init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        internalType = try container.decodeOptionalIfPresent(DiscountTypeGraphQLObject.self, forKey: .internalType)
+        internalValue = try container.decodeOptionalIfPresent(Double.self, forKey: .internalValue)
+      }
 
       // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
-        case type
-        case value
+        case internalType = "type"
+        case internalValue = "value"
       }
     }
     """.format()
@@ -95,21 +109,43 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     // MARK: - GraphQLObject
 
     struct DroidGraphQLObject: Codable {
-      let appearsIn: [EpisodeGraphQLEnumObject]
+      private let internalAppearsIn: Optional<[EpisodeGraphQLEnumObject]>
+      private let internalId: Optional<String>
+      private let internalName: Optional<String>
+      private let internalPrimaryFunction: Optional<String>
 
-      let id: String
+      func appearsIn() throws -> [EpisodeGraphQLEnumObject] {
+        try value(for: \\Self.internalAppearsIn, codingKey: CodingKeys.internalAppearsIn)
+      }
 
-      let name: String
+      func id() throws -> String {
+        try value(for: \\Self.internalId, codingKey: CodingKeys.internalId)
+      }
 
-      let primaryFunction: String
+      func name() throws -> String {
+        try value(for: \\Self.internalName, codingKey: CodingKeys.internalName)
+      }
+
+      func primaryFunction() throws -> String {
+        try value(for: \\Self.internalPrimaryFunction, codingKey: CodingKeys.internalPrimaryFunction)
+      }
+
+      init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        internalAppearsIn = try container.decodeOptionalIfPresent([EpisodeGraphQLEnumObject].self, forKey: .internalAppearsIn)
+        internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+        internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
+        internalPrimaryFunction = try container.decodeOptionalIfPresent(String.self, forKey: .internalPrimaryFunction)
+      }
 
       // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
-        case appearsIn
-        case id
-        case name
-        case primaryFunction
+        case internalAppearsIn = "appearsIn"
+        case internalId = "id"
+        case internalName = "name"
+        case internalPrimaryFunction = "primaryFunction"
       }
     }
     """.format()
@@ -139,25 +175,51 @@ final class ObjectSpecificationGeneratorTests: XCTestCase {
     // MARK: - GraphQLObject
 
     struct HumanGraphQLObject: Codable {
-      let appearsIn: [EpisodeGraphQLEnumObject]
+      private let internalAppearsIn: Optional<[EpisodeGraphQLEnumObject]>
+      private let internalHomePlanet: Optional<String?>
+      private let internalId: Optional<String>
+      private let internalInfoUrl: Optional<String?>
+      private let internalName: Optional<String>
+
+      func appearsIn() throws -> [EpisodeGraphQLEnumObject] {
+        try value(for: \\Self.internalAppearsIn, codingKey: CodingKeys.internalAppearsIn)
+      }
 
       /// The home planet of the human, or null if unknown.
-      let homePlanet: String?
+      func homePlanet() throws -> String? {
+        try value(for: \\Self.internalHomePlanet, codingKey: CodingKeys.internalHomePlanet)
+      }
 
-      let id: String
+      func id() throws -> String {
+        try value(for: \\Self.internalId, codingKey: CodingKeys.internalId)
+      }
 
-      let infoUrl: String?
+      func infoUrl() throws -> String? {
+        try value(for: \\Self.internalInfoUrl, codingKey: CodingKeys.internalInfoUrl)
+      }
 
-      let name: String
+      func name() throws -> String {
+        try value(for: \\Self.internalName, codingKey: CodingKeys.internalName)
+      }
+
+      init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        internalAppearsIn = try container.decodeOptionalIfPresent([EpisodeGraphQLEnumObject].self, forKey: .internalAppearsIn)
+        internalHomePlanet = try container.decodeOptionalIfPresent(String?.self, forKey: .internalHomePlanet)
+        internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+        internalInfoUrl = try container.decodeOptionalIfPresent(String?.self, forKey: .internalInfoUrl)
+        internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
+      }
 
       // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
-        case appearsIn
-        case homePlanet
-        case id
-        case infoUrl = "infoURL"
-        case name
+        case internalAppearsIn = "appearsIn"
+        case internalHomePlanet = "homePlanet"
+        case internalId = "id"
+        case internalInfoUrl = "infoURL"
+        case internalName = "name"
       }
     }
     """.format()
