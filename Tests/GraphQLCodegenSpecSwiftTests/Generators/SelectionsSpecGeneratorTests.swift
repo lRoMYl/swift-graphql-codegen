@@ -13,7 +13,7 @@
 @testable import GraphQLDownloader
 import XCTest
 
-final class RequestParameterSelectionsSpecificationGeneratorTests: XCTestCase {
+final class SelectionsSpecGeneratorTests: XCTestCase {
   private lazy var entityNameStrategy: EntityNameProviding = {
     DHEntityNameProvider(
       scalarMap: .default,

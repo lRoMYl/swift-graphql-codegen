@@ -11,7 +11,7 @@
 @testable import GraphQLCodegenSpecSwift
 import XCTest
 
-final class InterfaceCodeGeneratorTests: XCTestCase {
+final class InterfaceSpecGeneratorTests: XCTestCase {
   func testGeneratedCode() throws {
     let scalarMap = ScalarMap.default
     let selectionMap: SelectionMap? = nil

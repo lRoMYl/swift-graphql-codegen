@@ -11,7 +11,7 @@
 @testable import GraphQLCodegenSpecSwift
 import XCTest
 
-final class EnumSpecificationGeneratorTests: XCTestCase {
+final class EnumSpecGeneratorTests: XCTestCase {
   func testCustomEntityNameMapGeneratedCode() throws {
     let discountEnumType = EnumType(
       name: "DiscountType",

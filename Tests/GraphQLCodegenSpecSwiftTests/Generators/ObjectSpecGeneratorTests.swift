@@ -11,7 +11,7 @@
 @testable import GraphQLCodegenSpecSwift
 import XCTest
 
-final class ObjectSpecificationGeneratorTests: XCTestCase {
+final class ObjectSpecGeneratorTests: XCTestCase {
   private let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
   func testGeneratedCode() throws {
