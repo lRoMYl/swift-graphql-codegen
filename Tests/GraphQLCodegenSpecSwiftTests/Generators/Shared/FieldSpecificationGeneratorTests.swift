@@ -29,12 +29,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expectation = try """
-    let id: String
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalId: Optional<String>
     """.format()
 
-    XCTAssertEqual(declaration, expectation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func id() throws -> String {
+      try value(for: \\Self.internalId, codingKey: CodingKeys.internalId)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testNullableScalar() throws {
@@ -47,12 +55,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expectation = try """
-    let id: String?
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalId: Optional<String?>
     """.format()
 
-    XCTAssertEqual(declaration, expectation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func id() throws -> String? {
+      try value(for: \\Self.internalId, codingKey: CodingKeys.internalId)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testObject() throws {
@@ -65,12 +81,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let discount: DiscountGraphQLObject
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalDiscount: Optional<DiscountGraphQLObject>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func discount() throws -> DiscountGraphQLObject {
+      try value(for: \\Self.internalDiscount, codingKey: CodingKeys.internalDiscount)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testNullableObject() throws {
@@ -83,12 +107,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let discount: DiscountGraphQLObject?
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalDiscount: Optional<DiscountGraphQLObject?>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func discount() throws -> DiscountGraphQLObject? {
+      try value(for: \\Self.internalDiscount, codingKey: CodingKeys.internalDiscount)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testEnum() throws {
@@ -101,12 +133,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let campaignSource: CampaignSourceGraphQLEnumObject
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalCampaignSource: Optional<CampaignSourceGraphQLEnumObject>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func campaignSource() throws -> CampaignSourceGraphQLEnumObject {
+      try value(for: \\Self.internalCampaignSource, codingKey: CodingKeys.internalCampaignSource)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testNullableEnum() throws {
@@ -119,12 +159,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let campaignSource: CampaignSourceGraphQLEnumObject?
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalCampaignSource: Optional<CampaignSourceGraphQLEnumObject?>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func campaignSource() throws -> CampaignSourceGraphQLEnumObject? {
+      try value(for: \\Self.internalCampaignSource, codingKey: CodingKeys.internalCampaignSource)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testListScalar() throws {
@@ -137,12 +185,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let benefits: [String]
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalBenefits: Optional<[String]>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func benefits() throws -> [String] {
+      try value(for: \\Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testNullableListScalar() throws {
@@ -155,12 +211,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let benefits: [String]?
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalBenefits: Optional<[String]?>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func benefits() throws -> [String]? {
+      try value(for: \\Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testListNullableScalar() throws {
@@ -173,12 +237,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let benefits: [String?]
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalBenefits: Optional<[String?]>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func benefits() throws -> [String?] {
+      try value(for: \\Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testNullableListNullableScalar() throws {
@@ -191,12 +263,20 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let declaration = try self.declaration(field: field)
-    let expecation = try """
-    let benefits: [String?]?
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalBenefits: Optional<[String?]?>
     """.format()
 
-    XCTAssertEqual(declaration, expecation)
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field)
+    let publicVariableExpectation = try """
+    func benefits() throws -> [String?]? {
+      try value(for: \\Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
   }
 
   func testCodingKey() throws {
@@ -211,7 +291,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try codingKeyDeclaration(field: field)
     let expecation = try """
-    case benefits = "benefits"
+    case internalBenefits = "benefits"
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -229,7 +309,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     let declaration = try codingKeyDeclaration(field: field)
     let expecation = try """
-    case benefits = "Benefits"
+    case internalBenefits = "Benefits"
     """.format()
 
     XCTAssertEqual(declaration, expecation)
@@ -237,7 +317,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 }
 
 private extension FieldSpecificationGeneratorTests {
-  func declaration(objectName: String = "object name", field: Field) throws -> String? {
+  func internalVariableDeclaration(objectName: String = "object name", field: Field) throws -> String? {
     let object = ObjectType(
       kind: .object,
       name: objectName,
@@ -246,7 +326,22 @@ private extension FieldSpecificationGeneratorTests {
       interfaces: []
     )
 
-    return try defaultGenerator.variableDeclaration(
+    return try defaultGenerator.internalVariableDeclaration(
+      object: object,
+      field: field
+    )?.format()
+  }
+
+  func publicVariableDeclaration(objectName: String = "object name", field: Field) throws -> String? {
+    let object = ObjectType(
+      kind: .object,
+      name: objectName,
+      description: nil,
+      fields: [field],
+      interfaces: []
+    )
+
+    return try defaultGenerator.publicVariableDeclaration(
       object: object,
       field: field
     )?.format()

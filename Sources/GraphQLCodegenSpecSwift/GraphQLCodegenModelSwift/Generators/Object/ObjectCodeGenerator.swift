@@ -71,10 +71,10 @@ extension ObjectCodeGenerator {
       : objectType.selectableFields(selectionMap: selectionMap)
 
     let fieldsVariable = try sortedFields
-      .compactMap { try fieldSpecificationGenerator.variableDeclaration(object: objectType, field: $0) }
+      .compactMap { try fieldSpecificationGenerator.internalVariableDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n")
     let fieldsVariableFunction = try sortedFields
-      .compactMap { try fieldSpecificationGenerator.variableFunctionDeclaration(object: objectType, field: $0) }
+      .compactMap { try fieldSpecificationGenerator.publicVariableDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n\n")
     let initializer = try fieldSpecificationGenerator.initializerDeclaration(with: objectType, fields: sortedFields)
 

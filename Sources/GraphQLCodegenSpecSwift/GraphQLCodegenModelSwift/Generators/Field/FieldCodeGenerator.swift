@@ -28,7 +28,7 @@ struct FieldCodeGenerator {
     self.entityNameProvider = entityNameProvider
   }
 
-  func variableDeclaration(object: Structure, field: Field) throws -> String? {
+  func internalVariableDeclaration(object: Structure, field: Field) throws -> String? {
     if object.isOperation {
       // If structure is operation, all fields are generated with optional
       let type: String = try entityNameProvider.name(for: field.type)
@@ -50,7 +50,7 @@ struct FieldCodeGenerator {
     }
   }
 
-  func variableFunctionDeclaration(object: Structure, field: Field) throws -> String? {
+  func publicVariableDeclaration(object: Structure, field: Field) throws -> String? {
     guard !object.isOperation else { return nil }
 
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)

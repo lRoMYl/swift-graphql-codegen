@@ -146,10 +146,10 @@ extension GraphQLCodegenExampleApp {
       .subscribe(
         onSuccess: { response in
           switch response {
-          case .human:
-            print("Starwars character union query request as human success")
-          default:
-            print("Starwars character union query request as human failed xxxx")
+          case let .human(human):
+            print("Human: \(human)")
+          case let .droid(droid):
+            print("Droid: \(droid)")
           }
         },
         onFailure: { error in
