@@ -12,7 +12,7 @@
 import XCTest
 
 final class InputObjectSpecGeneratorTests: XCTestCase {
-  func test() throws {
+  func testInputObjects() throws {
     let generator = InputObjectCodeGenerator(
       scalarMap: .default,
       entityNameMap: .default,
