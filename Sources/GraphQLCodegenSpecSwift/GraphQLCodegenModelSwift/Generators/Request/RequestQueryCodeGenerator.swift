@@ -22,7 +22,7 @@ enum RequestOperationDefinitionError: Error, LocalizedError {
   }
 }
 
-struct RequestOperationDefinitionGenerator {
+struct RequestQueryCodeGenerator {
   private let variablesGenerator: RequestVariablesGenerator
   private let entityNameProvider: EntityNameProviding
 
@@ -53,8 +53,6 @@ struct RequestOperationDefinitionGenerator {
       : "(\n    \(operationArguments)\n)"
 
     return try """
-    // MARK: - Operation Definition
-
     let \(entityNameProvider.requestQueryName): String = {
       \"\"\"
       \("\(field.name)\(operationArgumentsDeclaration)\(selection)")
