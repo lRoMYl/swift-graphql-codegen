@@ -116,4 +116,3 @@ final class ResourceParameterGeneratorTests: XCTestCase {
     XCTAssertEqual(declaration, expectedDeclaration)
   }
 }
-
