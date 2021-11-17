@@ -82,4 +82,30 @@ final class DHEntityNameProviderTests: XCTestCase {
       "Return selection name with object name as prefix"
     )
   }
+
+  func testSelectionVariableNameForObject() throws {
+    let objectType = ObjectType(
+      name: "ObjectName",
+      description: nil,
+      fields: [],
+      interfaces: []
+    )
+
+    let entityNameProvider = DHEntityNameProvider(
+      scalarMap: .default,
+      entityNameMap: .default
+    )
+
+    let declarationForObjectType = try entityNameProvider.selectionsVariableName(for: objectType)
+    let expectedDeclarationForObjectType = "objectNameSelections"
+
+    XCTAssertEqual(declarationForObjectType, expectedDeclarationForObjectType)
+
+    let objectTypeRef = ObjectTypeRef.named(.object("ObjectName"))
+
+    let declarationForObjectTypeRef = try entityNameProvider.selectionsVariableName(for: objectTypeRef)
+    let expectedDeclarationForObjectTypeRef = "objectNameSelections"
+
+    XCTAssertEqual(declarationForObjectTypeRef, expectedDeclarationForObjectTypeRef)
+  }
 }
