@@ -22,10 +22,10 @@ final class SelectionSpecGeneratorTests: XCTestCase {
   )
 
   func testObjectSelection() throws {
-    let starWarsSchema = try Schema.schema(from: "CampaignSelectionsTestSchema")
-    let schemaMap = try SchemaMap(schema: starWarsSchema)
+    let groceriesSchema = try Schema.schema(from: "CampaignSelectionsTestSchema")
+    let schemaMap = try SchemaMap(schema: groceriesSchema)
 
-    guard let droidObject = starWarsSchema.object(name: "CampaignAttribute") else {
+    guard let droidObject = groceriesSchema.object(name: "CampaignAttribute") else {
       XCTFail("Unable to find CampaignAttribute object")
       return
     }
