@@ -76,6 +76,13 @@ let package = Package(
     .testTarget(
       name: "GraphQLStringCaseTests",
       dependencies: ["SwiftFormat", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLDownloader"]
+    ),
+    .testTarget(
+      name: "GraphQLCodegenDHApiClientSwiftTests",
+      dependencies: ["GraphQLCodegenDHApiClientSwift", "GraphQLDownloader"],
+      resources: [
+        .process("Resources")
+      ]
     )
   ]
 )
