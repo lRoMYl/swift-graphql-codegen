@@ -50,13 +50,16 @@ Support DH Custom Feature
 - [x] DH flavor APIClient
 - [x] Provide service dependency injection for DH flavor APIClient
 - [x] DHSwift subcommand to simplify code generation
-- [ ] Mapper class, the mapping logic will also be used to compute the selections automatically
 
 TODO
 - [x] Nested field selection with arguments is not handled yet
 - [x] ApiClientPrefix needs to be removed from EntityNameMap
-- [ ] Ramp up test cases
+- [x] Ramp up test cases
 - [ ] Ramp up documentation
+
+Future
+- [ ] Mapper class, the mapping logic will also be used to compute the selections automatically
+- [ ] Rewrite code generator using Sourcery?
 
 ## Installation
 ```
