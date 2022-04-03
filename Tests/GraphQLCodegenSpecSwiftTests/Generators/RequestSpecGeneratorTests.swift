@@ -312,7 +312,7 @@ final class RequestSpecGeneratorTests: XCTestCase {
       let requestArguments: String = {
         """
         $campaignAttributeBenefits: [String!]!,
-        $campaignAttributeOptionalBenefits: String!,
+        $campaignAttributeOptionalBenefits: [String],
         $campaignAttributeVendorId: String!
         """
       }()
