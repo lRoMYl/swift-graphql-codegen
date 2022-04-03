@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
+import GraphQLCodegenUtil
 
 enum ObjectCodeGeneratorError: Error, LocalizedError {
   case emptyFields(name: String)
@@ -49,7 +50,20 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let code = try schema.objects.compactMap {
+    let schemaMap = try SchemaMap(schema: schema)
+
+    let objects = try schema.operations.map {
+      try $0.returnObject()
+        .nestedFields(schema: schema, scalarMap: scalarMap, selectionMap: selectionMap)
+        .unique(by: { $0.type.namedType.name })
+        .sorted(by: .namedType)
+        .compactMap {
+          try $0.returnObjectType(schemaMap: schemaMap)
+        }
+    }
+      .reduce([], +)
+
+    let code = try objects.map {
       try declaration($0)
     }.lines
 

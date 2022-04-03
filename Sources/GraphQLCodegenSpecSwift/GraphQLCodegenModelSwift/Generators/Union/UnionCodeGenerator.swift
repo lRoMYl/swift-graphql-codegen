@@ -35,7 +35,18 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
   func code(schema: Schema) throws -> String {
     let objectTypeMap = ObjectTypeMap(schema: schema)
 
-    let code = try schema.unions.compactMap { union -> String in
+    let schemaMap = try SchemaMap(schema: schema)
+
+    let unions = try schema.operations.map {
+      try $0.type
+        .nestedFields(schema: schema, scalarMap: scalarMap, selectionMap: selectionMap)
+        .unique(by: { $0.type.namedType.name })
+        .sorted(by: .namedType)
+    }
+    .reduce([], +)
+    .compactMap { try schemaMap.unionTypeMap.value(from: $0.type.namedType) }
+
+    let code = try unions.compactMap { union -> String in
       let possibleObjectTypes = try union.possibleTypes.compactMap {
         try $0.objectType(objectTypeMap: objectTypeMap)
       }
