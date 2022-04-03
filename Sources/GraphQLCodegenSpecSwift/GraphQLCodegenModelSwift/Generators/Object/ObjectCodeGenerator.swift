@@ -67,7 +67,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
 extension ObjectCodeGenerator {
   func declaration(_ objectType: ObjectType) throws -> String {
     let sortedFields = objectType.isOperation
-      ? objectType.fields.sorted(by: .name)
+      ? objectType.selectableFields(selectionMap: selectionMap).sorted(by: .name)
       : objectType.selectableFields(selectionMap: selectionMap)
 
     let fieldsVariable = try sortedFields
