@@ -1,4 +1,4 @@
-# DHGraphQLCodegen [WIP]
+# DHGraphQLCodegen
 
 DH GraphQL Codegen Tool
 - Plain Swift Types without external dependencies
@@ -15,6 +15,13 @@ let request = VendorQueryRequest(
 repository.vendor(with: request) { ... }
 ```
 
+Further reading
+- [GETSTARTED.md](GETSTARTED.md) Step by step tutorial with examples on how to setup and integrate with the code generation tool.
+- [CONFIG.md](CONFIG.md) Overview on how to setup the config file
+- [STRUCTURE.md](STRUCTURE.md) For overview of the entire code generation implementation structure
+- [ADVANCED.md](ADVANCED.md) For detailed explanation of each sub-commands beyond `dh-swift`
+
+## Reference
 Code implementation is created based on [swift-graphl AST](https://github.com/maticzav/swift-graphql)
 
 ## Roadmap
@@ -55,20 +62,47 @@ TODO
 - [x] Nested field selection with arguments is not handled yet
 - [x] ApiClientPrefix needs to be removed from EntityNameMap
 - [x] Ramp up test cases
-- [ ] Ramp up documentation
+- [x] Ramp up documentation
 
 Future
 - [ ] Mapper class, the mapping logic will also be used to compute the selections automatically
 - [ ] Rewrite code generator using Sourcery?
 
+## Pre-requisite
+- MacOS 12.2.1 and above
+- XCode 13.2.1 and above
+
 ## Installation
 ```
 brew tap lromyl/tap
 
-brew install dh-graphql-codegen
+brew install dh-graphql-codegen-ios
 # if there are conflict, use the command below instead 
 brew install lromyl/tap/dh-graphql-codegen
 ```
+
+## Setup
+
+For this code generation tool, we would need to create a environment variable for github api token, `HOMEBREW_GITHUB_API_TOKEN`.
+
+To configure it, you can follow the steps belows;
+
+**Creating Github API Token**
+- Goto https://github.com/settings/tokens/new
+  - If the link is broken, you can locate it in your `Github Settings -> Developer Settings -> Personal Access Tokens`
+- Tap on `Generate new token` at the top of the page
+- [Optional] Recommended to write in the `Note` field to indicate this access token is exclusively for homebrew
+- [Optional] Change the `Expiration` from the default value of 30 days to something longer or no expiration, you can revoke this access token anytime when necessary
+- [Required] In `Select scopes` field, tick the `repo` checkbox as this would be required for the codegen library, no other scopes are required for this codegen.
+- Tap on `Generate token` at the bottom of the page.
+- [Important] You will be redirected back to `Personal Access Tokens` page and be shown the raw value of the access token you've just created, `copy` it to a temporary notepad as you will only be shown this value once.
+- [Optional] In `Personal Access Tokens` page, you will see a `Configure SSO` button next to your access token, tap on it and authorize your organization SSO for this token.
+
+**Adding Github API Token to Environment Variable**
+- Locate either `~/.bash_profile` or `~/.zshenv` (If you're using zsh) to update environment variables
+  - If it doesn't exist, you can create it by using `touch ~/.bash_profile` or `~/.zshenv` in the terminal
+- Add `export HOMEBREW_GITHUB_API_TOKEN="put your token"` into the file, save it
+- Restart the terminal
 
 ## How to use
 
@@ -106,6 +140,23 @@ Example command
 dh-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
 ```
 ---
+
+## How to create new release
+
+**Manual**
+- Draft a new release [here](https://github.com/lRoMYl/dh-graphql-codegen-ios/releases) just like any other Github release.
+- Download the Source code (tar.gz) for the release you've just created
+- Obtain the sha256 of the tar.gz file. For example, you can use this [online tool](https://emn178.github.io/online-tools/sha256_checksum.html)
+- Goto [homebrew-pd-tap-ios](https://github.com/lRoMYl/homebrew-tap) to update the homebrew formulae for this new release
+  - Locate `dh-graphql-codegen.rb`
+  - Update the `url` field to point to the new release url, generally we only need to update the version portion of the url. E.g. `https://github.com/lRoMYl/dh-graphql-codegen-ios/archive/refs/tags/`0.3.1`.tar.gz`
+  - Update the `sha` field with the new release tar.gz sha256
+- Use `brew install --build-from-source dh-graphql-codegen-ios.rb` command to test if the build succeded locally
+- Create a new PR in [homebrew-pd-tap-ios](https://github.com/lRoMYl/dh-graphql-codegen-ios) with the changes in `dh-graphql-codegen-ios.rb`
+
+**Automated**
+- Its possible to just write a script in [homebrew-pd-tap-ios](https://github.com/lRoMYl/homebrew-tap) to update the version and sha256 with a single command line
+- Will work on this later on when its necessary as there is some issues with the command to generate sha256 locally on my current local machine to test it properly.
 
 ### Example App
 In both of the example app, just run `make install` command to install all the dependencies from carthage
@@ -147,7 +198,7 @@ let request = VendorQueryRequest(
 )
 
 // Auto generated DH flavor ApiClient
-// Repository is not generated by the code generation tool
+// Repository is not generated by the code generation tool, if you use Repository in your codebase, create it yourself and use apiClient in your repository code.
 let vendor = apiClient.vendor(
   with: request, 
   selections: VendorQuerySelections(
@@ -223,7 +274,7 @@ insteadOf = https://github.com/
 ```
 Failed to create file at /API/Core/GraphQLEntities.generated.swift
 ```
-Make sure the path exists, if not create the defined folder manually
+Make sure the directory path exist, if not create it manually and retry again
 
 # Alternatives
 
