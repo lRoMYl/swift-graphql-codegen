@@ -18,7 +18,7 @@ extension Campaign {
       attributes: try campaign
         .campaignAttributes()?
         .compactMap { attribute in
-          return try attribute.map { try CampaignAttribute(with: $0) }
+          return try CampaignAttribute(with: attribute)
         },
       productDeals: nil
 //      productDeals: try campaign
