@@ -50,10 +50,11 @@ struct SelectionGenerator: GraphQLCodeGenerating {
 
       return try selectableFields.map {
         try $0.nestedTypeFields(
-          objects: schema.objects,
-          scalarMap: scalarMap,
+          schema: schema,
           excluded: [],
-          selectionMap: selectionMap
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap
         )
       }.reduce([], +)
     }.reduce([], +)

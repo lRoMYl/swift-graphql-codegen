@@ -115,10 +115,11 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
       return try selectableFields.map {
         try $0.nestedTypeFields(
-          objects: schema.objects,
-          scalarMap: scalarMap,
+          schema: schema,
           excluded: [],
-          selectionMap: selectionMap
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap
         )
       }.reduce([], +)
     }
@@ -246,7 +247,11 @@ extension SelectionsGenerator {
     }
 
     let nestedFields = try returnObjectType
-      .nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap, selectionMap: selectionMap)
+      .nestedFields(
+        schema: schemaMap.schema,
+        scalarMap: scalarMap,
+        selectionMap: selectionMap
+      )
 
     return try structureDeclaration(
       operation: operation,
@@ -274,7 +279,7 @@ extension SelectionsGenerator {
     try possibleObjectTypes.forEach {
       nestedFields.append(
         contentsOf: try $0.nestedFields(
-          objects: schemaMap.schema.objects,
+          schema: schemaMap.schema,
           scalarMap: scalarMap,
           selectionMap: selectionMap
         )
@@ -310,7 +315,7 @@ extension SelectionsGenerator {
     try possibleObjectTypes.forEach {
       nestedFields.append(
         contentsOf: try $0.nestedFields(
-          objects: schemaMap.schema.objects,
+          schema: schemaMap.schema,
           scalarMap: scalarMap,
           selectionMap: selectionMap
         )

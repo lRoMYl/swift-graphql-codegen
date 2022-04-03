@@ -26,9 +26,13 @@ public extension Field {
     case .enum, .scalar:
       break
     case let .interface(interfaceType):
+      fields.append(Field(with: interfaceType))
+
       let possibleObjectTypes = try interfaceType.possibleObjectTypes(objectTypeMap: objectTypeMap)
       objectTypes.append(contentsOf: possibleObjectTypes)
     case let .union(unionType):
+      fields.append(Field(with: unionType))
+
       let possibleObjectTypes = try unionType.possibleObjectTypes(objectTypeMap: objectTypeMap)
       objectTypes.append(contentsOf: possibleObjectTypes)
     case let .object(objectType):
@@ -70,57 +74,6 @@ public extension Field {
             )
           )
         }
-      }
-    }
-
-    return fields
-      .unique(by: { $0.type.namedType.name })
-      .sorted(by: sortType)
-  }
-
-  /// Fields which are defined with `Type` in GraphQL schema
-  func nestedTypeFields(
-    objects: [ObjectType],
-    scalarMap: ScalarMap,
-    excluded: [Field],
-    selectionMap: SelectionMap?,
-    sortType: FieldSortType = .name
-  ) throws -> [Field] {
-    guard
-      let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
-    else {
-      return []
-    }
-
-    var fields = [Field]()
-
-    switch returnObjectType.kind {
-    case .object, .interface, .union:
-      fields.append(self)
-    case .enumeration, .inputObject, .scalar:
-      break
-    }
-
-    try returnObjectType.selectableFields(selectionMap: selectionMap).filter {
-      $0.type.namedType != self.type.namedType && !excluded.contains($0)
-    }.forEach {
-      switch $0.type {
-      case let .named(outputRef):
-        switch outputRef {
-        case .object, .interface, .union:
-          fields.append($0)
-        case .enum, .scalar:
-          break
-        }
-      case .list, .nonNull:
-        fields.append(
-          contentsOf: try $0.nestedTypeFields(
-            objects: objects,
-            scalarMap: scalarMap,
-            excluded: excluded + fields,
-            selectionMap: selectionMap
-          )
-        )
       }
     }
 

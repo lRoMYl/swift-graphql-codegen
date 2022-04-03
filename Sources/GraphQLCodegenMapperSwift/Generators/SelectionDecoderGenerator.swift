@@ -51,6 +51,7 @@ struct SelectionDecoderGenerator: Generating {
 
   func code(schema: Schema) throws -> String {
     let schemaMap = try SchemaMap(schema: schema)
+    let objectTypeMap = ObjectTypeMap(schema: schema)
 
     let operationCode = try schema.operations.compactMap { operation in
       try operation.type.fields.compactMap { field in
@@ -67,10 +68,11 @@ struct SelectionDecoderGenerator: Generating {
 
         let nestedFields: [Field] = (
           try field.nestedTypeFields(
-            objects: schema.objects,
-            scalarMap: scalarMap,
+            schema: schema,
             excluded: [],
+            scalarMap: scalarMap,
             selectionMap: selectionMap,
+            objectTypeMap: objectTypeMap,
             sortType: .namedType
           )
         )
@@ -95,7 +97,7 @@ struct SelectionDecoderGenerator: Generating {
 
       let nestedFields: [Field] = (
         try objectType.nestedFields(
-          objects: schema.objects,
+          schema: schema,
           scalarMap: scalarMap,
           selectionMap: selectionMap,
           sortType: .namedType
@@ -129,7 +131,7 @@ struct SelectionDecoderGenerator: Generating {
         result.append(Field(with: objectType))
         result.append(
           contentsOf: try objectType.nestedFields(
-            objects: schema.objects,
+            schema: schema,
             scalarMap: scalarMap,
             selectionMap: selectionMap
           )
@@ -165,7 +167,7 @@ struct SelectionDecoderGenerator: Generating {
         result.append(Field(with: objectType))
         result.append(
           contentsOf: try objectType.nestedFields(
-            objects: schema.objects,
+            schema: schema,
             scalarMap: scalarMap,
             selectionMap: selectionMap
           )
@@ -452,29 +454,30 @@ private extension SelectionDecoderGenerator {
       if
         let selectionDecoderName = try entityNameProvider.selectionDecoderName(outputRef: outputRef)
       {
-        let nestedFields = try field.nestedTypeFields(
-          objects: schemaMap.schema.objects,
-          scalarMap: scalarMap,
-          excluded: [],
-          selectionMap: selectionMap
-        )
+      let nestedFields = try field.nestedTypeFields(
+        schema: schemaMap.schema,
+        excluded: [],
+        scalarMap: scalarMap,
+        selectionMap: selectionMap,
+        objectTypeMap: ObjectTypeMap(schema: schemaMap.schema)
+      )
 
-        let selectionsDeclarations = try nestedFields.compactMap { field in
-          guard
-            let selectionsVariableName = try entityNameProvider.selectionsVariableName(
-              for: field.type.namedType,
-              entityNameProvider: entityNameProvider
-            )
-          else {
-            return nil
-          }
-
-          return """
-          \(selectionsVariableName) = decoder.\(selectionsVariableName)
-          """
-        }.joined(separator: "\n")
+      let selectionsDeclarations = try nestedFields.compactMap { field in
+        guard
+          let selectionsVariableName = try entityNameProvider.selectionsVariableName(
+            for: field.type.namedType,
+               entityNameProvider: entityNameProvider
+          )
+        else {
+          return nil
+        }
 
         return """
+          \(selectionsVariableName) = decoder.\(selectionsVariableName)
+          """
+      }.joined(separator: "\n")
+
+      return """
         let decoder = \(selectionDecoderName)(
           response: value,
           \(Variables.populateSelections): \(Variables.populateSelections)
@@ -535,8 +538,8 @@ extension SelectionDecoderGenerator {
       return try primitiveFuncDeclaration(field: field)
     } else {
       return isComposite
-        ? try compositeFuncDeclaration(field: field, schemaMap: schemaMap)
-        : try genericFuncDeclaration(field: field, schemaMap: schemaMap)
+      ? try compositeFuncDeclaration(field: field, schemaMap: schemaMap)
+      : try genericFuncDeclaration(field: field, schemaMap: schemaMap)
     }
   }
 
