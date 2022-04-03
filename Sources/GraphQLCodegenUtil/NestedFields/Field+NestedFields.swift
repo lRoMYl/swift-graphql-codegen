@@ -9,6 +9,75 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 public extension Field {
+  func nestedTypeFields(
+    schema: Schema,
+    excluded: [Field],
+    scalarMap: ScalarMap,
+    selectionMap: SelectionMap?,
+    objectTypeMap: ObjectTypeMap,
+    sortType: FieldSortType = .name
+  ) throws -> [Field] {
+    let namedType = schema.type(name: type.namedType.name)
+
+    var fields = [Field]()
+    var objectTypes = [ObjectType]()
+
+    switch namedType {
+    case .enum, .scalar:
+      break
+    case let .interface(interfaceType):
+      let possibleObjectTypes = try interfaceType.possibleObjectTypes(objectTypeMap: objectTypeMap)
+      objectTypes.append(contentsOf: possibleObjectTypes)
+    case let .union(unionType):
+      let possibleObjectTypes = try unionType.possibleObjectTypes(objectTypeMap: objectTypeMap)
+      objectTypes.append(contentsOf: possibleObjectTypes)
+    case let .object(objectType):
+      objectTypes.append(objectType)
+    case .inputObject:
+      break
+    case .none:
+      break
+    }
+
+    try objectTypes.forEach {
+      switch $0.kind {
+      case .object, .interface, .union:
+        fields.append(Field(with: $0))
+      case .enumeration, .inputObject, .scalar:
+        break
+      }
+
+      try $0.selectableFields(selectionMap: selectionMap).filter {
+        $0.type.namedType != self.type.namedType && !excluded.contains($0)
+      }.forEach {
+        switch $0.type {
+        case let .named(outputRef):
+          switch outputRef {
+          case .object, .interface, .union:
+            fields.append($0)
+          case .enum, .scalar:
+            break
+          }
+        case .list, .nonNull:
+          fields.append(
+            contentsOf: try $0.nestedTypeFields(
+              schema: schema,
+              excluded: excluded + fields,
+              scalarMap: scalarMap,
+              selectionMap: selectionMap,
+              objectTypeMap: objectTypeMap,
+              sortType: sortType
+            )
+          )
+        }
+      }
+    }
+
+    return fields
+      .unique(by: { $0.type.namedType.name })
+      .sorted(by: sortType)
+  }
+
   /// Fields which are defined with `Type` in GraphQL schema
   func nestedTypeFields(
     objects: [ObjectType],
