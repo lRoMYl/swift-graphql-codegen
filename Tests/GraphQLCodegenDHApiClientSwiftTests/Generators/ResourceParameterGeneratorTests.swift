@@ -13,6 +13,7 @@ import XCTest
 final class ResourceParameterGeneratorTests: XCTestCase {
   func testResourceParameter() throws {
     let generator = ResourceParametersGenerator(
+      selectionMap: nil,
       entityNameMap: .default,
       scalarMap: .default,
       entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default),

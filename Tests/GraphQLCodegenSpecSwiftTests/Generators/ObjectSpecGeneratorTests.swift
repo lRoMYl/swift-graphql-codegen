@@ -12,7 +12,10 @@
 import XCTest
 
 final class ObjectSpecGeneratorTests: XCTestCase {
-  private let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+  private let entityNameProvider = DHEntityNameProvider(
+    scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
+    entityNameMap: .default
+  )
 
   func testGeneratedCode() throws {
     let discountObjectType = ObjectType(
@@ -41,9 +44,10 @@ final class ObjectSpecGeneratorTests: XCTestCase {
 
     let schema = Schema(
       types: [
-        NamedType.object(discountObjectType)
+        NamedType.object(discountObjectType),
+        queryObject(outputType: .named(.object("Discount")))
       ],
-      query: ""
+      query: "Query"
     )
 
     let generator = ObjectCodeGenerator(
@@ -82,6 +86,16 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         case internalValue = "value"
       }
     }
+
+    struct QueryGraphQLObject: Codable {
+      let test: Optional<DiscountGraphQLObject>
+
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case test
+      }
+    }
     """.format()
 
     XCTAssertEqual(declaration, expected)
@@ -90,14 +104,15 @@ final class ObjectSpecGeneratorTests: XCTestCase {
   func testDroidStarWarsObject() throws {
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
 
-    let whitelist = ["Droid"]
+    let whitelist = ["Droid", "Query"]
     let characterInterfaceObjects = starWarsSchema.types.filter {
       whitelist.contains($0.name)
     }
-    let schema = Schema(types: characterInterfaceObjects, query: "")
+    let schema = Schema(types: characterInterfaceObjects, query: "Query")
 
     let generator = ObjectCodeGenerator(
-      scalarMap: ScalarMap.default, selectionMap: nil,
+      scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
+      selectionMap: ["Query": ["droid"]],
       entityNameMap: .default,
       entityNameProvider: entityNameProvider
     )
@@ -148,6 +163,16 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         case internalPrimaryFunction = "primaryFunction"
       }
     }
+
+    struct QueryGraphQLObject: Codable {
+      let droid: Optional<DroidGraphQLObject?>
+
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case droid
+      }
+    }
     """.format()
 
     XCTAssertEqual(formattedCode, expected)
@@ -156,14 +181,15 @@ final class ObjectSpecGeneratorTests: XCTestCase {
   func testHumanStarWarsObject() throws {
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
 
-    let whitelist = ["Human"]
+    let whitelist = ["Human", "Query"]
     let characterInterfaceObjects = starWarsSchema.types.filter {
       whitelist.contains($0.name)
     }
-    let schema = Schema(types: characterInterfaceObjects, query: "")
+    let schema = Schema(types: characterInterfaceObjects, query: "Query")
 
     let generator = ObjectCodeGenerator(
-      scalarMap: ScalarMap.default, selectionMap: nil,
+      scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
+      selectionMap: ["Query": ["human"]],
       entityNameMap: .default,
       entityNameProvider: entityNameProvider
     )
@@ -222,8 +248,40 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         case internalName = "name"
       }
     }
+
+    struct QueryGraphQLObject: Codable {
+      let human: Optional<HumanGraphQLObject?>
+
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case human
+      }
+    }
     """.format()
 
     XCTAssertEqual(formattedCode, expected)
+  }
+}
+
+private extension ObjectSpecGeneratorTests {
+  func queryObject(outputName: String = "test", outputType: OutputTypeRef) -> NamedType {
+    NamedType.object(
+      ObjectType(
+        name: "Query",
+        description: nil,
+        fields: [
+          .init(
+            name: "test",
+            description: nil,
+            args: [],
+            type: .nonNull(outputType),
+            isDeprecated: false,
+            deprecationReason: nil
+          )
+        ],
+        interfaces: []
+      )
+    )
   }
 }

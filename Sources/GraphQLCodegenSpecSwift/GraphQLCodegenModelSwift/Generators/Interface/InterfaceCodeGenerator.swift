@@ -39,7 +39,20 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let objectTypeMap = ObjectTypeMap(schema: schema)
-    let code = try schema.interfaces.map { try self.code(interface: $0, objectTypeMap: objectTypeMap) }.lines
+    let schemaMap = try SchemaMap(schema: schema)
+
+    let interfaces = try schema.operations.map {
+      try $0.type
+        .nestedFields(schema: schema, scalarMap: scalarMap, selectionMap: selectionMap)
+        .unique(by: { $0.type.namedType.name })
+        .sorted(by: .namedType)
+    }
+    .reduce([], +)
+    .compactMap { try schemaMap.interfaceTypeMap.value(from: $0.type.namedType) }
+
+    let code = try interfaces.compactMap {
+      return try self.code(interface: $0, objectTypeMap: objectTypeMap)
+    }.lines
 
     guard !code.isEmpty else { return "" }
 

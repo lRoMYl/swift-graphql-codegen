@@ -60,17 +60,7 @@ struct RequestVariablesGenerator {
           rootField: field
         )
 
-        switch $0.type {
-        case let .named(objectRef):
-          let typeName: String
-          switch objectRef {
-          case let .enum(name), let .inputObject(name), let .scalar(name):
-            typeName = name
-          }
-          return "$\(operationVariableName): \(typeName)"
-        case let .nonNull(objectRef), let .list(objectRef):
-          return "$\(operationVariableName): \(objectRef.argument)!"
-        }
+        return "$\(operationVariableName): \($0.type.argument)"
       })
     }
     .sorted(by: { $0 < $1 })

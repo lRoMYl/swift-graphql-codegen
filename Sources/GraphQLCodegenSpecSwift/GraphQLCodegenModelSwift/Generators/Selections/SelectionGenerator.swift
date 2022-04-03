@@ -42,12 +42,48 @@ struct SelectionGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let schemaMap = try SchemaMap(schema: schema)
+    let objectTypeMap = ObjectTypeMap(schema: schema)
 
-    let code = try schema.objects.map {
-      try selectionDeclaration(objectType: $0, schemaMap: schemaMap)
+    // Extract all fields that can be selected from root-level operations
+    let fields: [Field] = try schema.operations.map {
+      let selectableFields = $0.type.selectableFields(selectionMap: selectionMap)
+
+      return try selectableFields.map {
+        try $0.nestedTypeFields(
+          schema: schema,
+          excluded: [],
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap
+        )
+      }.reduce([], +)
+    }.reduce([], +)
+
+    // Extract all nested fields from the fields
+    let nestedTypeFields: [Field] = try fields.map {
+      try $0.nestedTypeFields(
+        schema: schema,
+        excluded: [],
+        scalarMap: scalarMap,
+        selectionMap: selectionMap,
+        objectTypeMap: objectTypeMap
+      )
     }
-    .filter { !$0.isEmpty }
-    .lines
+      .reduce([], +)
+      .unique(by: { $0.type.namedType.name })
+      .sorted(by: .namedType)
+
+    // Generate selection code from the nested fields
+    let code = try nestedTypeFields
+      .compactMap {
+        guard
+          let returnObjectType = try $0.returnObjectType(schemaMap: schemaMap)
+        else { return nil }
+
+        return try selectionDeclaration(objectType: returnObjectType, schemaMap: schemaMap)
+      }
+      .filter { !$0.isEmpty }
+      .lines
 
     guard !code.isEmpty else { return "" }
 

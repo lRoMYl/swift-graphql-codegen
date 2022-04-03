@@ -17,6 +17,14 @@ protocol GroceriesApiClientProtocol {
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestSelections
   ) -> Single<ApiResponse<CampaignsQueryResponse>>
+  func products(
+    with request: ProductsQueryRequest,
+    selections: ProductsQueryRequestSelections
+  ) -> Single<ApiResponse<ProductsQueryResponse>>
+  func shopDetails(
+    with request: ShopDetailsQueryRequest,
+    selections: ShopDetailsQueryRequestSelections
+  ) -> Single<ApiResponse<ShopDetailsQueryResponse>>
 }
 
 enum GroceriesApiClientError: Error, LocalizedError {
@@ -59,6 +67,34 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
     )
   }
 
+  func products(
+    with request: ProductsQueryRequest,
+    selections: ProductsQueryRequestSelections
+  ) -> Single<ApiResponse<ProductsQueryResponse>> {
+    let resource = GroceriesResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .queryProducts(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
+      resource: resource
+    )
+  }
+
+  func shopDetails(
+    with request: ShopDetailsQueryRequest,
+    selections: ShopDetailsQueryRequestSelections
+  ) -> Single<ApiResponse<ShopDetailsQueryResponse>> {
+    let resource = GroceriesResourceParametersProvider(
+      resourceParametersConfigurator: resourceParametersConfigurator,
+      resourceBodyParameters: .queryShopDetails(request: request, selections: selections)
+    )
+
+    return executeGraphQLQuery(
+      resource: resource
+    )
+  }
+
   func query(
     with request: QueryRequest,
     selections: QueryRequestSelections
@@ -73,7 +109,9 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
     return response
       .map { result in
         let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
-          (request.campaigns, result.data?.campaigns)
+          (request.campaigns, result.data?.campaigns),
+          (request.products, result.data?.products),
+          (request.shopDetails, result.data?.shopDetails)
         ]
 
         try responseExpectations.forEach {
@@ -121,11 +159,17 @@ protocol GroceriesResourceParametersConfigurating {
 struct GroceriesResourceParametersProvider: ResourceParameters {
   enum BodyParameters {
     case queryCampaigns(request: CampaignsQueryRequest, selections: CampaignsQueryRequestSelections)
+    case queryProducts(request: ProductsQueryRequest, selections: ProductsQueryRequestSelections)
+    case queryShopDetails(request: ShopDetailsQueryRequest, selections: ShopDetailsQueryRequestSelections)
     case query(request: QueryRequest, selections: QueryRequestSelections)
 
     func bodyParameters() -> Any? {
       switch self {
       case let .queryCampaigns(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryProducts(request, selections):
+        return bodyParameters(request: request, selections: selections as GraphQLSelections)
+      case let .queryShopDetails(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)
       case let .query(request, selections):
         return bodyParameters(request: request, selections: selections as GraphQLSelections)

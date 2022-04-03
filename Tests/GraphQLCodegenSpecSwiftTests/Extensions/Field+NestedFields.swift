@@ -8,6 +8,7 @@
 @testable import GraphQLAST
 @testable import GraphQLCodegenConfig
 @testable import GraphQLCodegenSpecSwift
+@testable import GraphQLCodegenUtil
 import XCTest
 
 final class FieldNestedFieldsTests: XCTestCase {
@@ -24,7 +25,11 @@ final class FieldNestedFieldsTests: XCTestCase {
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let allNestedFields = try campaignRequestField.nestedTypeFields(
-      objects: schema.objects, scalarMap: ScalarMap.default, excluded: [], selectionMap: nil
+      schema: schema,
+      excluded: [],
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
+      objectTypeMap: schema.objectTypeMap
     )
 
     XCTAssertEqual(allNestedFields.count, 2)
@@ -43,7 +48,11 @@ final class FieldNestedFieldsTests: XCTestCase {
     let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
     let allNestedFields = try campaignRequestField.nestedTypeFields(
-      objects: schema.objects, scalarMap: ScalarMap.default, excluded: [], selectionMap: nil
+      schema: schema,
+      excluded: [],
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
+      objectTypeMap: schema.objectTypeMap
     )
 
     XCTAssertEqual(allNestedFields.count, 2)

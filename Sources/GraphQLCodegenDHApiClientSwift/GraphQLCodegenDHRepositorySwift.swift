@@ -23,6 +23,7 @@ enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
 }
 
 public struct GraphQLCodegenDHApiClientSwift {
+  private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
@@ -32,11 +33,13 @@ public struct GraphQLCodegenDHApiClientSwift {
   private let generators: [Generating]
 
   public init(
+    selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
     scalarMap: ScalarMap,
     entityNameProvider: EntityNameProviding,
     apiClientPrefix: String
   ) throws {
+    self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider
@@ -45,12 +48,14 @@ public struct GraphQLCodegenDHApiClientSwift {
     self.generators = [
       HeaderGenerator(),
       ApiClientGenerator(
+        selectionMap: selectionMap,
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,
         entityNameProvider: self.entityNameProvider,
         apiClientPrefix: self.apiClientPrefix
       ),
       ResourceParametersGenerator(
+        selectionMap: selectionMap,
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,
         entityNameProvider: entityNameProvider,

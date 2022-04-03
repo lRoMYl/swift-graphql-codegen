@@ -50,7 +50,7 @@ final class EnumSpecGeneratorTests: XCTestCase {
         NamedType.enum(discountEnumType),
         NamedType.enum(campainSourceEnumType)
       ],
-      query: ""
+      query: "Query"
     )
 
     let entityNameMap = EntityNameMap.mock(enum: "Enum")
@@ -176,7 +176,7 @@ final class EnumSpecGeneratorTests: XCTestCase {
         NamedType.enum(discountEnumType),
         NamedType.enum(campainSourceEnumType)
       ],
-      query: ""
+      query: "Query"
     )
 
     let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)

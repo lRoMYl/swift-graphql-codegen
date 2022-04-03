@@ -9,16 +9,8 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 public extension ObjectType {
-  func nestedFieldMap(objects: [ObjectType], scalarMap: ScalarMap, selectionMap: SelectionMap?) throws -> FieldMap {
-    let fieldMap = try selectableFields(selectionMap: selectionMap).flatMap {
-      try $0.nestedTypeFields(objects: objects, scalarMap: scalarMap, excluded: [], selectionMap: selectionMap)
-    }.toDictionary(with: { (try? $0.type.namedType.scalarType(scalarMap: scalarMap)) ?? $0.type.namedType.name })
-
-    return fieldMap
-  }
-
   func nestedFields(
-    objects: [ObjectType],
+    schema: Schema,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     sortType: FieldSortType = .name
@@ -32,13 +24,16 @@ public extension ObjectType {
       break
     }
 
+    let objectTypeMap = schema.objectTypeMap
+
     try self.selectableFields(selectionMap: selectionMap).forEach {
       fields.append(
         contentsOf: try $0.nestedTypeFields(
-          objects: objects,
-          scalarMap: scalarMap,
+          schema: schema,
           excluded: [],
-          selectionMap: selectionMap
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap
         )
       )
     }

@@ -28,6 +28,7 @@ struct MapperGenerator: Generating {
 
   func code(schema: Schema) throws -> String {
     let schemaMap = try SchemaMap(schema: schema)
+    let objectTypeMap = schema.objectTypeMap
 
     let comment = "// MARK: - Mappers"
     let codes: String = try schema.operations.compactMap { operation in
@@ -45,10 +46,11 @@ struct MapperGenerator: Generating {
         let responseName = try entityNameProvider.name(for: field.type.namedType)
 
         let nestedFields: [Field] = try field.nestedTypeFields(
-          objects: schema.objects,
-          scalarMap: scalarMap,
+          schema: schema,
           excluded: [],
+          scalarMap: scalarMap,
           selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap,
           sortType: .namedType
         )
 

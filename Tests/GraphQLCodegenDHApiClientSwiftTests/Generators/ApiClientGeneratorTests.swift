@@ -13,6 +13,7 @@ import XCTest
 final class ApiClientGeneratorTests: XCTestCase {
   func testApiClient() throws {
     let generator = ApiClientGenerator(
+      selectionMap: nil,
       entityNameMap: .default,
       scalarMap: .default,
       entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default),

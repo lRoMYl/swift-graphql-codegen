@@ -26,11 +26,13 @@ struct ApiClientGenerator: Generating {
   private let apiClientErrorName: String
   private let apiClientProtocolName: String
 
+  private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
 
   init(
+    selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
     scalarMap: ScalarMap,
     entityNameProvider: EntityNameProviding,
@@ -40,6 +42,7 @@ struct ApiClientGenerator: Generating {
     self.apiClientName = entityNameMap.apiClientName(apiClientPrefix: apiClientPrefix)
     self.apiClientErrorName = entityNameMap.apiClientErrorName(apiClientPrefix: apiClientPrefix)
     self.apiClientProtocolName = entityNameMap.apiClientProtocolName(apiClientPrefix: apiClientPrefix)
+    self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider
@@ -92,9 +95,11 @@ struct ApiClientGenerator: Generating {
 
 extension ApiClientGenerator {
   func protocolCode(with operation: GraphQLAST.Operation) throws -> String {
-    var funcDeclarations: [String] = try operation.type.fields.map {
-      try funcSignatureCode(field: $0, operation: operation)
-    }
+    var funcDeclarations: [String] = try operation
+      .type
+      .selectableFields(selectionMap: selectionMap).map {
+        try funcSignatureCode(field: $0, operation: operation)
+      }
 
     funcDeclarations.insert(try funcSignatureCode(operation: operation), at: 0)
 
@@ -118,7 +123,7 @@ extension ApiClientGenerator {
     let resourceParameterName = entityNameMap.resourceParametersName(apiClientPrefix: apiClientPrefix)
     let resourceParametersConfiguratorVariable = entityNameMap.resourceParametersConfiguratorVariableName()
 
-    var codes: [String] = try operation.type.fields.map {
+    var codes: [String] = try operation.type.selectableFields(selectionMap: selectionMap).map {
       let funcSignature = try funcSignatureCode(field: $0, operation: operation)
       let enumName = $0.enumName(with: operation)
 
@@ -153,7 +158,7 @@ extension ApiClientGenerator {
         .map { result in
           let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
             \(
-              operation.type.fields.map {
+              operation.type.selectableFields(selectionMap: selectionMap).map {
                 "(request.\($0.name), result.data?.\($0.name))"
               }.joined(separator: ",\n")
             )

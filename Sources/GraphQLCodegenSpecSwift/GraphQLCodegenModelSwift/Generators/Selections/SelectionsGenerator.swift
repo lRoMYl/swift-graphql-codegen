@@ -66,7 +66,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     try schema.operations.map { operation in
-      let fields = operation.type.fields
+      let fields = operation.type.selectableFields(selectionMap: selectionMap)
       var selections = try fields.map { field in
         try code(operation: operation, field: field, schema: schema)
       }
@@ -106,8 +106,42 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
   }
 
   func code(operation: GraphQLAST.Operation, schema: Schema) throws -> String {
+    let schemaMap = try SchemaMap(schema: schema)
     let objectTypeMap = ObjectTypeMap(schema: schema)
-    let objects = schema.objects.filter { !$0.isOperation }.sorted()
+
+    // Extract all fields that can be selected from root-level operations
+    let fields: [Field] = try schema.operations.map {
+      let selectableFields = $0.type.selectableFields(selectionMap: selectionMap)
+
+      return try selectableFields.map {
+        try $0.nestedTypeFields(
+          schema: schema,
+          excluded: [],
+          scalarMap: scalarMap,
+          selectionMap: selectionMap,
+          objectTypeMap: objectTypeMap
+        )
+      }.reduce([], +)
+    }
+      .reduce([], +)
+
+    // Extract all nested fields from the fields
+    let nestedTypeFields: [Field] = try fields.map {
+      try $0.nestedTypeFields(
+        schema: schema,
+        excluded: [],
+        scalarMap: scalarMap,
+        selectionMap: selectionMap,
+        objectTypeMap: objectTypeMap
+      )
+    }
+    .reduce([], +)
+    .unique(by: { $0.type.namedType.name })
+    .sorted(by: .namedType)
+
+    let objects = try nestedTypeFields.compactMap {
+      try $0.returnObjectType(schemaMap: schemaMap)
+    }
 
     let arguments = try objects.compactMap {
       let selectionName = try entityNameProvider.selectionName(for: $0)
@@ -119,9 +153,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       "self.\($0.name.camelCase) = \($0.name.camelCase)"
     }.lines
 
-    let structures = schema.objects.filter { !$0.isOperation } as [Structure]
-      + schema.interfaces as [Structure]
-      + schema.unions as [Structure]
+    let structures = objects as [Structure]
 
     let selectionFragmentMap = try structures.map {
       let possibleTypes = $0.possibleTypes
@@ -215,7 +247,11 @@ extension SelectionsGenerator {
     }
 
     let nestedFields = try returnObjectType
-      .nestedFields(objects: schemaMap.schema.objects, scalarMap: scalarMap, selectionMap: selectionMap)
+      .nestedFields(
+        schema: schemaMap.schema,
+        scalarMap: scalarMap,
+        selectionMap: selectionMap
+      )
 
     return try structureDeclaration(
       operation: operation,
@@ -243,7 +279,7 @@ extension SelectionsGenerator {
     try possibleObjectTypes.forEach {
       nestedFields.append(
         contentsOf: try $0.nestedFields(
-          objects: schemaMap.schema.objects,
+          schema: schemaMap.schema,
           scalarMap: scalarMap,
           selectionMap: selectionMap
         )
@@ -279,7 +315,7 @@ extension SelectionsGenerator {
     try possibleObjectTypes.forEach {
       nestedFields.append(
         contentsOf: try $0.nestedFields(
-          objects: schemaMap.schema.objects,
+          schema: schemaMap.schema,
           scalarMap: scalarMap,
           selectionMap: selectionMap
         )

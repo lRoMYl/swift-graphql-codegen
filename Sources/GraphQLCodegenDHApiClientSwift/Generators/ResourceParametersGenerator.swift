@@ -22,17 +22,20 @@ enum ResourceGeneratorError: Error, LocalizedError {
 struct ResourceParametersGenerator: Generating {
   private let apiClientPrefix: String
 
+  private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
 
   init(
+    selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
     scalarMap: ScalarMap,
     entityNameProvider: EntityNameProviding,
     apiClientPrefix: String
   ) {
     self.apiClientPrefix = apiClientPrefix
+    self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider
@@ -130,7 +133,7 @@ struct ResourceParametersGenerator: Generating {
 
 extension ResourceParametersGenerator {
   func resourceParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
-    var enumCases = try operation.type.fields.map { field -> String in
+    var enumCases = try operation.type.selectableFields(selectionMap: selectionMap).map { field -> String in
       let enumName = field.enumName(with: operation)
       let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
       let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
@@ -152,14 +155,17 @@ extension ResourceParametersGenerator {
   func bodyParametersCases(with operation: GraphQLAST.Operation) throws -> [String] {
     let selectionsName = entityNameMap.selections
 
-    var enumCases = operation.type.fields.map { field -> String in
-      let enumName = field.enumName(with: operation)
+    var enumCases = operation
+      .type
+      .selectableFields(selectionMap: selectionMap)
+      .map { field -> String in
+        let enumName = field.enumName(with: operation)
 
-      return """
-      case let .\(enumName)(request, selections):
-        return bodyParameters(request: request, selections: selections as \(selectionsName))
-      """
-    }
+        return """
+        case let .\(enumName)(request, selections):
+          return bodyParameters(request: request, selections: selections as \(selectionsName))
+        """
+      }
 
     enumCases.append(
       """

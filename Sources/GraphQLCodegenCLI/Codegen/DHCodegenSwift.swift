@@ -56,6 +56,7 @@ struct DHCodegenSwift {
     schema: Schema
   ) throws -> String {
     let generator = try GraphQLCodegenDHApiClientSwift(
+      selectionMap: selectionMap,
       entityNameMap: entityNameMap,
       scalarMap: scalarMap,
       entityNameProvider: entityNameProvider,
