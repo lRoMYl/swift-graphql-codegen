@@ -69,6 +69,9 @@ extension GraphQLCodegenCLI {
     @Flag(help: "Show extra logging for debugging purposes")
     var verbose: Bool = false
 
+    @Flag(help: "Specify if the generated code could use throwable getter introduced in Swift 5.5")
+    var isThrowableGetterEnabled: Bool = false
+
     public init() {
     }
 
@@ -113,6 +116,7 @@ private extension GraphQLCodegenCLI.Codegen {
     let generatedCodeData: Data?
 
     let codegen = DHCodegenSwift(
+      isThrowableGetterEnabled: isThrowableGetterEnabled,
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
       selectionMap: selectionMap,

@@ -22,6 +22,7 @@ enum GraphQLCodegenModelSwiftError: Error, LocalizedError {
 }
 
 public struct GraphQLCodegenModelSwift {
+  private let isThrowableGetterEnabled: Bool
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
@@ -30,11 +31,13 @@ public struct GraphQLCodegenModelSwift {
   private let generators: [GraphQLCodeGenerating]
 
   public init(
+    isThrowableGetterEnabled: Bool,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
     entityNameProvider: EntityNameProviding
   ) throws {
+    self.isThrowableGetterEnabled = isThrowableGetterEnabled
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
@@ -48,6 +51,7 @@ public struct GraphQLCodegenModelSwift {
         entityNameProvider: self.entityNameProvider
       ),
       ObjectCodeGenerator(
+        isThrowableGetterEnabled: isThrowableGetterEnabled,
         scalarMap: self.scalarMap,
         selectionMap: self.selectionMap,
         entityNameMap: self.entityNameMap,

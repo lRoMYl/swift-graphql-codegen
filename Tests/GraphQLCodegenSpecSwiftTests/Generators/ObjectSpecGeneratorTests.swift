@@ -51,7 +51,9 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     )
 
     let generator = ObjectCodeGenerator(
-      scalarMap: ScalarMap.default, selectionMap: nil,
+      isThrowableGetterEnabled: false,
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
       entityNameMap: .default,
       entityNameProvider: entityNameProvider
     )
@@ -111,6 +113,7 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     let schema = Schema(types: characterInterfaceObjects, query: "Query")
 
     let generator = ObjectCodeGenerator(
+      isThrowableGetterEnabled: false,
       scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
       selectionMap: ["Query": ["droid"]],
       entityNameMap: .default,
@@ -188,6 +191,7 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     let schema = Schema(types: characterInterfaceObjects, query: "Query")
 
     let generator = ObjectCodeGenerator(
+      isThrowableGetterEnabled: false,
       scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
       selectionMap: ["Query": ["human"]],
       entityNameMap: .default,

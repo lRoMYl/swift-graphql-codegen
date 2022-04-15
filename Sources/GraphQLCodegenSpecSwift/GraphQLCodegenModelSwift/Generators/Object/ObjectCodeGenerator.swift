@@ -23,6 +23,7 @@ enum ObjectCodeGeneratorError: Error, LocalizedError {
 }
 
 struct ObjectCodeGenerator: GraphQLCodeGenerating {
+  private let isThrowableGetterEnabled: Bool
   private let scalarMap: ScalarMap
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
@@ -31,11 +32,13 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
   init(
+    isThrowableGetterEnabled: Bool,
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
     entityNameMap: EntityNameMap,
     entityNameProvider: EntityNameProviding
   ) {
+    self.isThrowableGetterEnabled = isThrowableGetterEnabled
     self.scalarMap = scalarMap
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
@@ -88,7 +91,13 @@ extension ObjectCodeGenerator {
       .compactMap { try fieldSpecificationGenerator.internalVariableDeclaration(object: objectType, field: $0) }
       .joined(separator: "\n")
     let fieldsVariableFunction = try sortedFields
-      .compactMap { try fieldSpecificationGenerator.publicVariableDeclaration(object: objectType, field: $0) }
+      .compactMap {
+        try fieldSpecificationGenerator.publicVariableDeclaration(
+          object: objectType,
+          field: $0,
+          isThrowableGetterEnabled: isThrowableGetterEnabled
+        )
+      }
       .joined(separator: "\n\n")
     let initializer = try fieldSpecificationGenerator.initializerDeclaration(with: objectType, fields: sortedFields)
 

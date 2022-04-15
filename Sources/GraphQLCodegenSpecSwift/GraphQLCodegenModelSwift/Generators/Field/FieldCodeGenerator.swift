@@ -50,7 +50,11 @@ struct FieldCodeGenerator {
     }
   }
 
-  func publicVariableDeclaration(object: Structure, field: Field) throws -> String? {
+  func publicVariableDeclaration(
+    object: Structure,
+    field: Field,
+    isThrowableGetterEnabled: Bool
+  ) throws -> String? {
     guard !object.isOperation else { return nil }
 
     let isSelectable = object.isSelectable(field: field, selectionMap: selectionMap)
@@ -59,11 +63,21 @@ struct FieldCodeGenerator {
       let type: String = try entityNameProvider.name(for: field.type)
       let variableName = field.name.camelCase
       let innerVariableName = try entityNameProvider.responseInternalVariableName(with: field)
-      let declaration = """
-      func \(variableName)() throws -> \(type) {
-        try value(for: \\Self.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName))
+      let declaration: String
+
+      if !isThrowableGetterEnabled {
+        declaration = """
+        func \(variableName)() throws -> \(type) {
+          try value(for: \\Self.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName))
+        }
+        """
+      } else {
+        declaration = """
+        var \(variableName): \(type) {
+          get throws { try value(for: \\Self.\(innerVariableName), codingKey: CodingKeys.\(innerVariableName)) }
+        }
+        """
       }
-      """
 
       let texts: [String] = [
         field.docs,

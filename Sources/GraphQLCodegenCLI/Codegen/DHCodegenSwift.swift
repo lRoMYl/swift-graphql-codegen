@@ -14,6 +14,7 @@ import GraphQLCodegenSpecSwift
 import GraphQLCodegenDHApiClientSwift
 
 struct DHCodegenSwift {
+  private let isThrowableGetterEnabled: Bool
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let selectionMap: SelectionMap?
@@ -22,11 +23,13 @@ struct DHCodegenSwift {
   private let entityNameProvider: EntityNameProviding
 
   init(
+    isThrowableGetterEnabled: Bool,
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
     selectionMap: SelectionMap?,
     apiClientPrefix: String
   ) {
+    self.isThrowableGetterEnabled = isThrowableGetterEnabled
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
     self.selectionMap = selectionMap
@@ -42,6 +45,7 @@ struct DHCodegenSwift {
     schema: Schema
   ) throws -> String {
     let generator = try GraphQLCodegenModelSwift(
+      isThrowableGetterEnabled: isThrowableGetterEnabled,
       scalarMap: scalarMap,
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,

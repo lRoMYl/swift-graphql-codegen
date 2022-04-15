@@ -61,6 +61,9 @@ extension GraphQLCodegenCLI {
     @Option
     var apiClientPrefix: String
 
+    @Flag(help: "Specify if the generated code could use throwable getter introduced in Swift 5.5")
+    var isThrowableGetterEnabled: Bool = false
+
     func run() throws {
       targets.forEach {
         generateCode(with: $0)
@@ -69,6 +72,10 @@ extension GraphQLCodegenCLI {
 
     func generateCode(with target: CodegenTarget) {
       var arguments = [schema]
+
+      if isThrowableGetterEnabled {
+        arguments.append(contentsOf: ["--is-throwable-getter-enabled"])
+      }
 
       arguments.append(contentsOf: ["--api-client-prefix", apiClientPrefix])
 

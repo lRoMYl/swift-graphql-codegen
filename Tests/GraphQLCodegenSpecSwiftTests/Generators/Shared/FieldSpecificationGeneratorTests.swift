@@ -314,6 +314,32 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
 
     XCTAssertEqual(declaration, expecation)
   }
+
+  func testThrowableGetter() throws {
+    let field = Field(
+      name: "id",
+      description: nil,
+      args: [],
+      type: .nonNull(.named(.scalar("String"))),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
+
+    let internalVariableDeclaration = try self.internalVariableDeclaration(field: field)
+    let internalVariableExpectation = try """
+    private let internalId: Optional<String>
+    """.format()
+
+    let publicVariableDeclaration = try self.publicVariableDeclaration(field: field, isThrowableGetterEnabled: true)
+    let publicVariableExpectation = try """
+    var id: String {
+      get throws { try value(for: \\Self.internalId, codingKey: CodingKeys.internalId) }
+    }
+    """.format()
+
+    XCTAssertEqual(internalVariableDeclaration, internalVariableExpectation)
+    XCTAssertEqual(publicVariableDeclaration, publicVariableExpectation)
+  }
 }
 
 private extension FieldSpecificationGeneratorTests {
@@ -332,7 +358,11 @@ private extension FieldSpecificationGeneratorTests {
     )?.format()
   }
 
-  func publicVariableDeclaration(objectName: String = "object name", field: Field) throws -> String? {
+  func publicVariableDeclaration(
+    objectName: String = "object name",
+    field: Field,
+    isThrowableGetterEnabled: Bool = false
+  ) throws -> String? {
     let object = ObjectType(
       kind: .object,
       name: objectName,
@@ -343,7 +373,8 @@ private extension FieldSpecificationGeneratorTests {
 
     return try defaultGenerator.publicVariableDeclaration(
       object: object,
-      field: field
+      field: field,
+      isThrowableGetterEnabled: isThrowableGetterEnabled
     )?.format()
   }
 
