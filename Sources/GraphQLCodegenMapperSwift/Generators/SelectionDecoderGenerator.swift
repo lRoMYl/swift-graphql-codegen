@@ -122,9 +122,9 @@ struct SelectionDecoderGenerator: Generating {
 
       let responseName = try entityNameProvider.name(for: interfaceType)
 
-      let possibleObjectTypes = try interfaceType.possibleTypes.compactMap {
+      let possibleObjectTypes = try interfaceType.possibleTypes?.compactMap {
         try $0.objectType(objectTypeMap: schemaMap.objectTypeMap)
-      }
+      } ?? []
       .unique(by: { $0.name })
 
       let nestedFields: [Field] = try possibleObjectTypes.reduce(into: []) { result, objectType in
@@ -158,9 +158,9 @@ struct SelectionDecoderGenerator: Generating {
 
       let responseName = try entityNameProvider.name(for: unionType)
 
-      let possibleObjectTypes = try unionType.possibleTypes.compactMap {
+      let possibleObjectTypes = try unionType.possibleTypes?.compactMap {
         try $0.objectType(objectTypeMap: schemaMap.objectTypeMap)
-      }
+      } ?? []
       .unique(by: { $0.name })
 
       let nestedFields: [Field] = try possibleObjectTypes.reduce(into: []) { result, objectType in
@@ -282,7 +282,7 @@ private extension SelectionDecoderGenerator {
 extension SelectionDecoderGenerator {
   func selectionDeclaration(structure: Structure, nestedFields: [Field]) throws -> String {
     if structure.isCompositeType {
-      return try structure.possibleTypes.compactMap { possibleTypeRef in
+      return try structure.possibleTypes?.compactMap { possibleTypeRef in
         let selectionName = try entityNameProvider.selectionName(for: possibleTypeRef)
         let selectionsVariableName = try entityNameProvider.selectionsVariableName(
           for: possibleTypeRef
@@ -291,7 +291,7 @@ extension SelectionDecoderGenerator {
         return """
         private(set) var \(selectionsVariableName) = Set<\(selectionName)>()
         """
-      }.lines
+      }.lines ?? ""
     } else {
       return try nestedFields.compactMap {
         guard

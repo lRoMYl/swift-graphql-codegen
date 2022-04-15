@@ -68,7 +68,7 @@ private extension SelectionMockGenerator {
   }
 
   func selectionMock(type: InterfaceType) throws -> String {
-    guard let firstPossibleType = type.possibleTypes.first else {
+    guard let firstPossibleType = type.possibleTypes?.first else {
       throw SelectionMockGeneratorError.emptyPossibleTypes
     }
 
@@ -82,7 +82,7 @@ private extension SelectionMockGenerator {
   }
 
   func selectionMock(type: UnionType) throws -> String {
-    guard let firstPossibleType = type.possibleTypes.first else {
+    guard let firstPossibleType = type.possibleTypes?.first else {
       throw SelectionMockGeneratorError.emptyPossibleTypes
     }
 

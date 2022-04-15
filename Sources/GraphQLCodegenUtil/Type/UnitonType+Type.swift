@@ -13,9 +13,9 @@ extension UnionType: Structure {
 
 public extension UnionType {
   func possibleObjectTypes(objectTypeMap: ObjectTypeMap) throws -> [ObjectType] {
-    try possibleTypes.compactMap {
+    try possibleTypes?.compactMap {
       try $0.objectType(objectTypeMap: objectTypeMap)
-    }
+    } ?? []
   }
 
   var isCompositeType: Bool { true }

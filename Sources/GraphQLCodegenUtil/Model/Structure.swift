@@ -11,6 +11,6 @@ public protocol Structure: NamedTypeProtocol {
   var kind: NamedTypeKind { get }
   var name: String { get }
   var fields: [Field] { get }
-  var possibleTypes: [ObjectTypeRef] { get }
+  var possibleTypes: [ObjectTypeRef]? { get }
   var isCompositeType: Bool { get }
 }

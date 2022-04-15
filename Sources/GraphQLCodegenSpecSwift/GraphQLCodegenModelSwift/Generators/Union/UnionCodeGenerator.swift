@@ -47,9 +47,9 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
     .compactMap { try schemaMap.unionTypeMap.value(from: $0.type.namedType) }
 
     let code = try unions.compactMap { union -> String in
-      let possibleObjectTypes = try union.possibleTypes.compactMap {
+      let possibleObjectTypes = try union.possibleTypes?.compactMap {
         try $0.objectType(objectTypeMap: objectTypeMap)
-      }
+      } ?? []
       let codingKeys = possibleObjectTypes
         .flatMap { ($0 as Structure).selectableFields(selectionMap: selectionMap) }
         .unique(by: { $0.name })

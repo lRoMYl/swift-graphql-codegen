@@ -156,7 +156,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     let structures = objects as [Structure]
 
     let selectionFragmentMap = try structures.map {
-      let possibleTypes = $0.possibleTypes
+      let possibleTypes = $0.possibleTypes ?? []
       let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
         ? ""
         : "\t\\(\($0.name.camelCase).requestFragments(\(Variables.requestName): \(Variables.capitalizedRequestName)))"

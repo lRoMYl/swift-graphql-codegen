@@ -77,7 +77,7 @@ public struct InterfaceType: NamedTypeProtocol, Decodable, Equatable {
 
   public let fields: [Field]
   public let interfaces: [InterfaceTypeRef]?
-  public let possibleTypes: [ObjectTypeRef]
+  public let possibleTypes: [ObjectTypeRef]?
 }
 
 public struct UnionType: NamedTypeProtocol, Decodable, Equatable {
@@ -85,7 +85,7 @@ public struct UnionType: NamedTypeProtocol, Decodable, Equatable {
   public let name: String
   public let description: String?
 
-  public let possibleTypes: [ObjectTypeRef]
+  public let possibleTypes: [ObjectTypeRef]?
 }
 
 public struct EnumType: NamedTypeProtocol, Decodable, Equatable {

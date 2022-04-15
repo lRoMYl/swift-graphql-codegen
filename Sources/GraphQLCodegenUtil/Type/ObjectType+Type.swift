@@ -9,7 +9,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 
 extension ObjectType: Structure {
-  public var possibleTypes: [ObjectTypeRef] {
+  public var possibleTypes: [ObjectTypeRef]? {
     [ObjectTypeRef.named(ObjectRef.object(name))]
   }
 
