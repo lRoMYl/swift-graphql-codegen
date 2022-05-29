@@ -181,7 +181,7 @@ private extension GraphQLCodegenCLI.Codegen {
 
 private extension GraphQLCodegenCLI.Codegen {
   var outputFilename: String {
-    output.split(separator: "/").last ?? ""
+    String(output.split(separator: "/").last ?? "")
   }
 
   func startLog(measurementLogger: MeasurementLogger, spinner: Spinner) {
