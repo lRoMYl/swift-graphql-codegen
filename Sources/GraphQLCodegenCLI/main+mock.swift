@@ -6,7 +6,7 @@
 //
 
 func mockBasicExample() {
-  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/swift-graphql-codegen/Example/GroceriesExample (Basic)"
 
   // Generate schema.json from
   let remoteGroceriesSchema = "https://sg-st.fd-api.com/groceries-graphql-gateway/query"
@@ -31,7 +31,7 @@ func mockBasicExample() {
 }
 
 func mockBasicCoreExample() throws {
-  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/swift-graphql-codegen/Example/GroceriesExample (Basic)"
 
   let groceriesSchema = "\(examplePath)/GraphQL/groceries-schema.json"
   let groceriesConfig = "\(examplePath)/GraphQL/groceries-config.json"
@@ -66,7 +66,7 @@ func mockBasicCoreExample() throws {
 }
 
 func mockAdvancedCoreExample() {
-  let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GraphQLCodegenExample (Advanced)"
+  let examplePath = "/Users/r.cheah/Repos/lRoMYl/swift-graphql-codegen/Example/GraphQLCodegenExample (Advanced)"
 
   // --- Groceries Introspection
   let groceriesIntrospectionOutput = examplePath + "/GraphQL/groceries-schema.json"

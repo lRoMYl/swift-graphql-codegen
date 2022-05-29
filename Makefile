@@ -1,5 +1,5 @@
-TOOL_NAME = dh-graphql-codegen
-REPO_NAME = dh-graphql-codegen-ios
+TOOL_NAME = swift-graphql-codegen
+REPO_NAME = swift-graphql-codegen
 VERSION = $(shell git describe --abbrev=0 --tags)
 
 PREFIX = /usr/local

@@ -76,9 +76,9 @@ Future
 ```
 brew tap lromyl/tap
 
-brew install dh-graphql-codegen-ios
+brew install swift-graphql-codegen
 # if there are conflict, use the command below instead 
-brew install lromyl/tap/dh-graphql-codegen
+brew install lromyl/tap/swift-graphql-codegen
 ```
 
 ## Setup
@@ -118,7 +118,7 @@ To configure it, you can follow the steps belows;
 
 Example command
 ```
-dh-graphql-codegen introspection "https://www.domain.com" --output-path "directory_name"
+swift-graphql-codegen introspection "https://www.domain.com" --output-path "directory_name"
 ```
 
 ---
@@ -133,26 +133,26 @@ dh-graphql-codegen introspection "https://www.domain.com" --output-path "directo
 | option | `--schema-source`| Yes | Source of the schema, `local` and `remote` |
 | option | `--config-path` | Yes | File path of the configuration |
 
-There are other optional option that can be used to manipulate the generated file names, type `dh-graphql-codegen dh-swift --help` command to see the full list
+There are other optional option that can be used to manipulate the generated file names, type `swift-graphql-codegen dh-swift --help` command to see the full list
 
 Example command
 ```
-dh-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
+swift-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
 ```
 ---
 
 ## How to create new release
 
 **Manual**
-- Draft a new release [here](https://github.com/lRoMYl/dh-graphql-codegen-ios/releases) just like any other Github release.
+- Draft a new release [here](https://github.com/lRoMYl/swift-graphql-codegen/releases) just like any other Github release.
 - Download the Source code (tar.gz) for the release you've just created
 - Obtain the sha256 of the tar.gz file. For example, you can use this [online tool](https://emn178.github.io/online-tools/sha256_checksum.html)
 - Goto [homebrew-pd-tap-ios](https://github.com/lRoMYl/homebrew-tap) to update the homebrew formulae for this new release
-  - Locate `dh-graphql-codegen.rb`
-  - Update the `url` field to point to the new release url, generally we only need to update the version portion of the url. E.g. `https://github.com/lRoMYl/dh-graphql-codegen-ios/archive/refs/tags/`0.3.1`.tar.gz`
+  - Locate `swift-graphql-codegen.rb`
+  - Update the `url` field to point to the new release url, generally we only need to update the version portion of the url. E.g. `https://github.com/lRoMYl/swift-graphql-codegen/archive/refs/tags/`0.3.1`.tar.gz`
   - Update the `sha` field with the new release tar.gz sha256
-- Use `brew install --build-from-source dh-graphql-codegen-ios.rb` command to test if the build succeded locally
-- Create a new PR in [homebrew-pd-tap-ios](https://github.com/lRoMYl/dh-graphql-codegen-ios) with the changes in `dh-graphql-codegen-ios.rb`
+- Use `brew install --build-from-source swift-graphql-codegen.rb` command to test if the build succeded locally
+- Create a new PR in [homebrew-pd-tap-ios](https://github.com/lRoMYl/swift-graphql-codegen) with the changes in `swift-graphql-codegen.rb`
 
 **Automated**
 - Its possible to just write a script in [homebrew-pd-tap-ios](https://github.com/lRoMYl/homebrew-tap) to update the version and sha256 with a single command line
@@ -161,14 +161,14 @@ dh-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-p
 ### Example App
 In both of the example app, just run `make install` command to install all the dependencies from carthage
 
-In `Advanced Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen graph-ql-codengen` using all the option to customize the output
+In `Advanced Example`, you can look at the `Makefile` to see how to use `swift-graphql-codegen` using all the option to customize the output
 ```
 make codegen-groceries
 make codegen-starwars
 make codegen-appolo
 ```
 
-In `Basic Example`, you can look at the `Makefile` to see how to use `dh-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
+In `Basic Example`, you can look at the `Makefile` to see how to use `swift-graphql-codegen dh-swift` to generate all the files using only 3 option to achieve similar result to `Advanced Example`
 ```
 make codegen-groceries
 ```
@@ -253,7 +253,7 @@ let vendor = apiClient.vendor(
 - install all dh carthage dependencies
 - run `make install` to install dh-graphlq-codegen-ios
 - Build the example app, it will attempt to run the make script on each build phases to generate the latest GraphQL specification
-- Look at example app `Makefile` for more examples to use the dh-graphql-codegen
+- Look at example app `Makefile` for more examples to use the swift-graphql-codegen
 
 ---
 
@@ -281,24 +281,24 @@ Make sure the directory path exist, if not create it manually and retry again
 ## [apollo-ios](https://github.com/apollographql/apollo-ios)
 apollo-ios is the most popular GraphQL codegeneration tool for Swift that comes with networking layer, web socket, caching and etc.
 
-The a few key differences between apollo-ios and dh-graphql-codegen
-- dh-graphql-codegen generated codes have no external dependencies, so you can continue to use whichever networking framework in your project without importing a new dependencies.
-- dh-graphql-codegen handle on generate most of the common `GraphQL Operation` on code level so you don't have to write a single line of GraphQL syntax.
+The a few key differences between apollo-ios and swift-graphql-codegen
+- swift-graphql-codegen generated codes have no external dependencies, so you can continue to use whichever networking framework in your project without importing a new dependencies.
+- swift-graphql-codegen handle on generate most of the common `GraphQL Operation` on code level so you don't have to write a single line of GraphQL syntax.
 - apollo-ios generate unique models for every single `GraphQL Operation` you include in the projects so there are a lot of redundant codes, it can easily have more than ten thousands lines of generated code if you have a moderate size backend with more than 10 `GraphQL Operation`.
   - Using the [Apollo Fullstack Tutorial](https://apollo-fullstack-tutorial.herokuapp.com/) as a benchmark
   - apollo-ios will generate `8000+` lines of code for `15` `GraphQL Operation`
-  - dh-graphql-codegen will generate `2000+` lines of code irregardless of how many `GraphQL Operation` you will need.
+  - swift-graphql-codegen will generate `2000+` lines of code irregardless of how many `GraphQL Operation` you will need.
   - For our use case, the backend are much larger than the sample project in the tutorial and have at least `50+` `GraphQL Operation`, thus using apollo-ios is not feasible at all.
 
 ## [swift-graphl](https://github.com/maticzav/swift-graphql)
 
-dh-graphql-codegen is designed with swift-grapqhl as a reference so there are a lot of similarities in how it works
+swift-graphql-codegen is designed with swift-grapqhl as a reference so there are a lot of similarities in how it works
 
 The key differences are
-- dh-grapqhl-codegen generated code doesn't have dependencies on any networking layer
-- dh-graphql-codegen request and selection is done on request model, so it's decoupled from the mapping logic while swift-grapqhl derived the selections directly from the mapping logic.
+- swift-grapqhl-codegen generated code doesn't have dependencies on any networking layer
+- swift-graphql-codegen request and selection is done on request model, so it's decoupled from the mapping logic while swift-grapqhl derived the selections directly from the mapping logic.
   - `swift-graphql` mapping and selection logic is tightly coupled so you will need to define how the mapping is done before a request can be executed. 
   - This approach provide build-time safety at the expense of more boilerplate up-front and possibly a violation of single responsibility.
-  - `dh-graphql-codegen` decoupled both selection and mapping logic so it's possible to execute the query without defining the mapping logic.
+  - `swift-graphql-codegen` decoupled both selection and mapping logic so it's possible to execute the query without defining the mapping logic.
   - The mapping-selection logic can be included in the next phase as an optional module which provides build-time safety.
-  - `dh-graphql-codegen` defined selections and arguments on request parameter while `swift-graphql` defined it through mapping logic. Both implementations are entirely different so please read the code example for more insight.
+  - `swift-graphql-codegen` defined selections and arguments on request parameter while `swift-graphql` defined it through mapping logic. Both implementations are entirely different so please read the code example for more insight.

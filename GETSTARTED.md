@@ -46,7 +46,7 @@ API_CLIENT_PREFIX = "Groceries"
 ```
 install:
   brew tap lromyl/tap
-	brew install dh-graphql-codegen-ios
+	brew install swift-graphql-codegen
 ```
 
 - Installing the mobile GraphQL code generator using Homebrew
@@ -54,10 +54,10 @@ install:
 ## Step 3: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
 introspection:
-	dh-graphql-codegen-ios introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
+	swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
 ```
 
-- The code generator has a built in sub-command to perform introspection conveniently, `dh-graphql-codegen-ios introspection`.
+- The code generator has a built in sub-command to perform introspection conveniently, `swift-graphql-codegen introspection`.
 - This command would fetch the GraphQL schema from the provided URL and then generating the GraphQL Abstract Syntax Tree as `schema.json` in the provided output path.
 
 ## Step 4: Generating code using local schema and config
@@ -66,7 +66,7 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	dh-graphql-codegen-ios dh-swift $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
+	swift-graphql-codegen dh-swift $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
 ```
 
 - Using the sub-command `dh-swift`, it conveniently generate multiple files with default naming convention for classes and file name with a single command.
@@ -139,7 +139,7 @@ It's pretty self-explanatory from the example variables above, the structure of 
 ```
 install:
   brew tap lromy/tap
-	brew install dh-graphql-codegen-ios
+	brew install swift-graphql-codegen
 ```
 
 - No difference here from the simple tutorial
@@ -147,8 +147,8 @@ install:
 ## Step 3: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
 introspection:
-	dh-graphql-codegen-ios introspection $(GROCERIES_SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH) --output $(GROCERIES_SCHEMA)
-  dh-graphql-codegen-ios introspection $(STARWARS_SCHEMA_URL) --output $(STARWARS_SCHEMA)
+	swift-graphql-codegen introspection $(GROCERIES_SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH) --output $(GROCERIES_SCHEMA)
+  swift-graphql-codegen introspection $(STARWARS_SCHEMA_URL) --output $(STARWARS_SCHEMA)
 ```
 
 - 2 key differences from the simple tutorials;
@@ -162,8 +162,8 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	dh-graphql-codegen-ios dh-swift $(GROCERIES_SCHEMA) --output-path $(GROCERIES_CODEGEN_OUTPUT_PATH) --config-path $(GROCERIES_CONFIG) --api-client-prefix $(GROCERIES_API_CLIENT_PREFIX)
-  dh-graphql-codegen-ios dh-swift $(STARWARS_SCHEMA) --output-path $(STARWARS_CODEGEN_OUTPUT_PATH) --config-path $(STARWARS_CONFIG) --api-client-prefix $(STARWARS_API_CLIENT_PREFIX)
+	swift-graphql-codegen dh-swift $(GROCERIES_SCHEMA) --output-path $(GROCERIES_CODEGEN_OUTPUT_PATH) --config-path $(GROCERIES_CONFIG) --api-client-prefix $(GROCERIES_API_CLIENT_PREFIX)
+  swift-graphql-codegen dh-swift $(STARWARS_SCHEMA) --output-path $(STARWARS_CODEGEN_OUTPUT_PATH) --config-path $(STARWARS_CONFIG) --api-client-prefix $(STARWARS_API_CLIENT_PREFIX)
 ```
 
 - Similar to introspection, we're executing the same command twice with respective project variables

@@ -4,10 +4,10 @@
 import PackageDescription
 
 let package = Package(
-  name: "DHGraphQLCodegen",
+  name: "SwiftGraphQLCodegen",
   platforms: [.macOS(.v10_15)],
   products: [
-    .executable(name: "dh-graphql-codegen", targets: ["GraphQLCodegenCLI"])
+    .executable(name: "swift-graphql-codegen", targets: ["GraphQLCodegenCLI"])
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),

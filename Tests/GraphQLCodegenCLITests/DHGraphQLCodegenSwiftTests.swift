@@ -12,7 +12,7 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
       return
     }
 
-    let fooBinary = productsDirectory.appendingPathComponent("dh-graphql-codegen")
+    let fooBinary = productsDirectory.appendingPathComponent("swift-graphql-codegen")
 
     let process = Process()
 
@@ -33,7 +33,7 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
     XCTAssertEqual(
       output,
       """
-      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: dh-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  dh-swift\n\n  See \'dh-graphql-codegen help <subcommand>\' for detailed help.\n
+      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: swift-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  dh-swift\n\n  See \'swift-graphql-codegen help <subcommand>\' for detailed help.\n
       """
     )
   }

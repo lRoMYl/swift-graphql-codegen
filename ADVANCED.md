@@ -6,7 +6,7 @@ In this section, we will be exploring in details how to use all the sub-command 
 You can also look at the example folders for the simple (`dh-swift`) and advanced (`codegen`) examples in real projects.
 
 # codegen
-`dh-graphql-codegen-ios codegen` subcommand is used specifically to generate files given the arguments
+`swift-graphql-codegen codegen` subcommand is used specifically to generate files given the arguments
 
 | Name | Type | Description | Example Value |
 | - | - | - | - |
@@ -58,7 +58,7 @@ Please be noted, all customization to target output will use `output-path` optio
 
 Example:
 ```
-dh-graphql-codegen-ios dh-swift schema schema.json --output-path`: `Users/Download/` --specification-output test.swift
+swift-graphql-codegen dh-swift schema schema.json --output-path`: `Users/Download/` --specification-output test.swift
 ```
 Would generates the following files:
 - `Users/Download/Core/GraphQLEntities.generated.swift`, default value for `entity-output`
@@ -70,7 +70,7 @@ Notice that the specified `output-path` is used as a shared directory for all th
 For `GraphQLEntities.swift`, the default value includes a `Core/` as a path so the file is generated in `Users/Download/Core/`.
 
 ```
-dh-graphql-codegen-ios dh-swift schema schema.json --output-path`: `Users/Download/` --entity-output test.swift
+swift-graphql-codegen dh-swift schema schema.json --output-path`: `Users/Download/` --entity-output test.swift
 ```
 Would generates the following files:
 - `Users/Download/test.swift`, overwritten value for `entity-output`

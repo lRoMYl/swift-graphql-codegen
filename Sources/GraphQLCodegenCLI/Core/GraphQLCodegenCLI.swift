@@ -52,9 +52,9 @@ enum GraphQLCodegenCLIError: Error {
 
 struct GraphQLCodegenCLI: ParsableCommand {
   public static var configuration = CommandConfiguration(
-    commandName: "dh-graphql-codegen",
-    abstract: "DH GraphQL Codegeneration Tool",
-    version: "0.0.1",
+    commandName: "swift-graphql-codegen",
+    abstract: "Swift GraphQL Codegeneration Tool",
+    version: "0.8.0",
     subcommands: [Codegen.self, Introspection.self, DHSwift.self]
   )
 }
