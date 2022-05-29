@@ -100,49 +100,60 @@ public extension Field {
     scalarMap: ScalarMap,
     excluded: [Field],
     selectionMap: SelectionMap?,
-    sortType: FieldSortType = .name
+    sortType: FieldSortType = .name,
+    schemaMap: SchemaMap
   ) throws -> [Field] {
     var fields = [Field]()
     fields.append(self)
 
-    guard
-      let returnObjectType = objects.first(where: { $0.name == type.namedType.name })
-    else {
-      return fields
+    let returnObjectTypes: [ObjectType]
+
+    if let returnObjectType = objects.first(where: { $0.name == type.namedType.name }) {
+      returnObjectTypes = [returnObjectType]
+    } else if let possibleObjectTypes = try self.possibleObjectTypes(schemaMap: schemaMap) {
+      returnObjectTypes = possibleObjectTypes
+    } else {
+      returnObjectTypes = []
     }
 
-    let selectableFields = returnObjectType.selectableFields(selectionMap: selectionMap).filter {
-      $0.type.namedType != self.type.namedType && !excluded.contains($0)
-    }
-    let filteredSelectableFields = selectableFields.filter {
-      $0.type.namedType != self.type.namedType && !excluded.contains($0)
-    }
+    guard !returnObjectTypes.isEmpty else { return fields }
 
-    try filteredSelectableFields.forEach {
-      switch $0.type {
-      case let .named(outputRef):
-        switch outputRef {
-        case .object, .interface, .union:
-          fields.append($0)
-          let innerNestedFields = try $0.nestedFields(
-            objects: objects,
-            scalarMap: scalarMap,
-            excluded: excluded + fields,
-            selectionMap: selectionMap
+    try returnObjectTypes.forEach { returnObjectType in
+      let selectableFields = returnObjectType.selectableFields(selectionMap: selectionMap).filter {
+        $0.type.namedType != self.type.namedType && !excluded.contains($0)
+      }
+      let filteredSelectableFields = selectableFields.filter {
+        $0.type.namedType != self.type.namedType && !excluded.contains($0)
+      }
+
+      try filteredSelectableFields.forEach {
+        switch $0.type {
+        case let .named(outputRef):
+          switch outputRef {
+          case .object, .interface, .union:
+            fields.append($0)
+            let innerNestedFields = try $0.nestedFields(
+              objects: objects,
+              scalarMap: scalarMap,
+              excluded: excluded + fields,
+              selectionMap: selectionMap,
+              schemaMap: schemaMap
+            )
+            fields.append(contentsOf: innerNestedFields)
+          case .enum, .scalar:
+            fields.append($0)
+          }
+        case .list, .nonNull:
+          fields.append(
+            contentsOf: try $0.nestedFields(
+              objects: objects,
+              scalarMap: scalarMap,
+              excluded: excluded + fields,
+              selectionMap: selectionMap,
+              schemaMap: schemaMap
+            )
           )
-          fields.append(contentsOf: innerNestedFields)
-        case .enum, .scalar:
-          fields.append($0)
         }
-      case .list, .nonNull:
-        fields.append(
-          contentsOf: try $0.nestedFields(
-            objects: objects,
-            scalarMap: scalarMap,
-            excluded: excluded + fields,
-            selectionMap: selectionMap
-          )
-        )
       }
     }
 

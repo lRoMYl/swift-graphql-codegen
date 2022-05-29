@@ -57,4 +57,27 @@ final class FieldNestedFieldsTests: XCTestCase {
 
     XCTAssertEqual(allNestedFields.count, 2)
   }
+
+  func testShopDetailsNestedFields() throws {
+    let shopDetailsRequestField = Field(
+      name: "shopItems",
+      description: nil,
+      args: [],
+      type: .list(.nonNull(.named(.interface("ShopItem")))),
+      isDeprecated: false,
+      deprecationReason: nil
+    )
+
+    let schema = try Schema.schema(from: "CampaignSelectionsTestSchema")
+
+    let allNestedFields = try shopDetailsRequestField.nestedTypeFields(
+      schema: schema,
+      excluded: [],
+      scalarMap: ScalarMap.default,
+      selectionMap: nil,
+      objectTypeMap: schema.objectTypeMap
+    )
+
+    XCTAssertEqual(allNestedFields.count, 7)
+  }
 }

@@ -7,6 +7,7 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 import GraphQLCodegenNameSwift
 
 struct RequestEncodableGenerator {
@@ -23,19 +24,20 @@ struct RequestEncodableGenerator {
   func encodingDeclaration(field: Field, schema: Schema) throws -> String {
     field.args.isEmpty
       ? emptyEncoder()
-      : try codingKeys(with: field, objects: schema.objects)
+      : try codingKeys(with: field, objects: schema.objects, schema: schema)
   }
 }
 
 // MARK: - RequestParameterEncodableGenerator
 
 private extension RequestEncodableGenerator {
-  func codingKeys(with field: Field, objects: [ObjectType]) throws -> String {
+  func codingKeys(with field: Field, objects: [ObjectType], schema: Schema) throws -> String {
     let nestedFields = try field.nestedFields(
       objects: objects,
       scalarMap: scalarMap,
       excluded: [],
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      schemaMap: SchemaMap(schema: schema)
     )
     let codingKeyDeclarations = try nestedFields.map { nestedfield in
       try nestedfield.args.compactMap {

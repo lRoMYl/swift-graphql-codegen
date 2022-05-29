@@ -8,6 +8,7 @@
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 import GraphQLCodegenNameSwift
 
 struct RequestVariablesGenerator {
@@ -49,7 +50,8 @@ struct RequestVariablesGenerator {
       objects: schema.objects,
       scalarMap: scalarMap,
       excluded: [],
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      schemaMap: SchemaMap(schema: schema)
     )
 
     let variables: String = try nestedFields.reduce(into: [String]()) { result, nestedField in
@@ -108,7 +110,8 @@ struct RequestVariablesGenerator {
       objects: schema.objects,
       scalarMap: scalarMap,
       excluded: [],
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      schemaMap: SchemaMap(schema: schema)
     )
     let argumentVariables = try nestedFields.compactMap {
       let argumentVariablesDeclaration = try self.argumentVariablesDeclaration(

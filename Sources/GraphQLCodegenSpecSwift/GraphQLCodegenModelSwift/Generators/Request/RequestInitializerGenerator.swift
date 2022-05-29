@@ -7,6 +7,7 @@
 
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 import GraphQLCodegenNameSwift
 
 struct RequestInitializerGenerator {
@@ -32,7 +33,8 @@ struct RequestInitializerGenerator {
       objects: schema.objects,
       scalarMap: scalarMap,
       excluded: [],
-      selectionMap: selectionMap
+      selectionMap: selectionMap,
+      schemaMap: SchemaMap(schema: schema)
     )
 
     let arguments: String = try nestedFields.reduce(into: [String]()) { result, nestedField in
