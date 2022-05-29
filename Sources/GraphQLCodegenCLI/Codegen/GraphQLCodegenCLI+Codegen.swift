@@ -6,6 +6,7 @@
 //
 
 import ArgumentParser
+import CLISpinner
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
@@ -73,16 +74,14 @@ extension GraphQLCodegenCLI {
     @Flag(help: "Specify if the generated code could use throwable getter introduced in Swift 5.5")
     var isThrowableGetterEnabled: Bool = false
 
+    private let measurementLogger = MeasurementLogger()
+    private let spinner = Spinner(pattern: .dots, color: .lightCyan)
+
     public init() {
     }
 
     public func run() throws {
-      let filename = output.split(separator: "/").last ?? ""
-      let measurementLogger = MeasurementLogger()
-
-      measurementLogger.start()
-
-      print("GraphQL Codegen started for \(filename) (\(target.rawValue))")
+      startLog()
 
       let config = try fetchConfig()
       let generatedCodeData: Data?
@@ -105,20 +104,7 @@ extension GraphQLCodegenCLI {
 
       let success = FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
 
-      if !success {
-        print("Failed to create file at \(output), please ensure the provided directory exist")
-      } else {
-        if verbose {
-          print("File succesfully created/updated at \(output)")
-        }
-
-        measurementLogger.stop()
-        let measurement = measurementLogger.executedSecondsText == nil
-          ? ""
-          : " in \(measurementLogger.executedSecondsText!)"
-
-        print("GraphQL Codegen completed for \(filename) (\(target.rawValue))\(measurement)")
-      }
+      finishLog(withSuccess: success)
     }
   }
 }
@@ -184,5 +170,38 @@ private extension GraphQLCodegenCLI.Codegen {
 
   func entityNameMap(config: Config?) -> EntityNameMap {
     config?.entityNameMap ?? .default
+  }
+}
+
+// MARK: - Logging
+
+private extension GraphQLCodegenCLI.Codegen {
+  func startLog() {
+    let filename = output.split(separator: "/").last ?? ""
+
+    measurementLogger.start()
+
+    spinner.text = "GraphQL Codegen started for \(filename) (\(target.rawValue))"
+    spinner.start()
+  }
+
+  func finishLog(withSuccess success: Bool) {
+    if !success {
+      spinner.fail(
+        text: "Failed to create file at \(output), please ensure the provided directory exist"
+      )
+    } else {
+      measurementLogger.stop()
+      let measurement = measurementLogger.executedSecondsText == nil
+        ? ""
+        : " in \(measurementLogger.executedSecondsText!)"
+      let filename = output.split(separator: "/").last ?? ""
+
+      spinner.succeed(text: "GraphQL Codegen completed for \(filename) (\(target.rawValue))\(measurement)")
+
+      if verbose {
+        print("File succesfully created/updated at \(output)")
+      }
+    }
   }
 }

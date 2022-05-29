@@ -11,7 +11,8 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.41.2"),
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.0")
+    .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.0"),
+    .package(url: "https://github.com/kiliankoe/CLISpinner", .upToNextMajor(from: "0.4.0"))
   ],
   targets: [
     .target(
@@ -49,7 +50,8 @@ let package = Package(
         "GraphQLCodegenDHApiClientSwift",
         "GraphQLCodegenMapperSwift",
         "GraphQLDownloader",
-        .product(name: "ArgumentParser", package: "swift-argument-parser")
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .product(name: "CLISpinner", package: "CLISpinner")
       ]
     ),
     .target(
