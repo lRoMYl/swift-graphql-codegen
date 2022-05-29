@@ -85,7 +85,8 @@ extension GraphQLCodegenCLI {
         color: .lightCyan
       )
 
-      startLog(measurementLogger: measurementLogger, spinner: spinner)
+      measurementLogger.start()
+      spinner.start()
 
       let config = try fetchConfig()
       let generatedCodeData: Data?
@@ -182,11 +183,6 @@ private extension GraphQLCodegenCLI.Codegen {
 private extension GraphQLCodegenCLI.Codegen {
   var outputFilename: String {
     String(output.split(separator: "/").last ?? "")
-  }
-
-  func startLog(measurementLogger: MeasurementLogger, spinner: Spinner) {
-    measurementLogger.start()
-    spinner.start()
   }
 
   func finishLog(measurementLogger: MeasurementLogger, spinner: Spinner, success: Bool) {
