@@ -74,14 +74,14 @@ extension GraphQLCodegenCLI {
     @Flag(help: "Specify if the generated code could use throwable getter introduced in Swift 5.5")
     var isThrowableGetterEnabled: Bool = false
 
-    private let measurementLogger = MeasurementLogger()
-    private let spinner = Spinner(pattern: .dots, color: .lightCyan)
-
     public init() {
     }
 
     public func run() throws {
-      startLog()
+      let measurementLogger = MeasurementLogger()
+      let spinner = Spinner(pattern: .dots, color: .lightCyan)
+
+      startLog(measurementLogger: measurementLogger, spinner: spinner)
 
       let config = try fetchConfig()
       let generatedCodeData: Data?
@@ -104,7 +104,7 @@ extension GraphQLCodegenCLI {
 
       let success = FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
 
-      finishLog(withSuccess: success)
+      finishLog(measurementLogger: measurementLogger, spinner: spinner, success: success)
     }
   }
 }
@@ -176,7 +176,7 @@ private extension GraphQLCodegenCLI.Codegen {
 // MARK: - Logging
 
 private extension GraphQLCodegenCLI.Codegen {
-  func startLog() {
+  func startLog(measurementLogger: MeasurementLogger, spinner: Spinner) {
     let filename = output.split(separator: "/").last ?? ""
 
     measurementLogger.start()
@@ -185,7 +185,7 @@ private extension GraphQLCodegenCLI.Codegen {
     spinner.start()
   }
 
-  func finishLog(withSuccess success: Bool) {
+  func finishLog(measurementLogger: MeasurementLogger, spinner: Spinner, success: Bool) {
     if !success {
       spinner.fail(
         text: "Failed to create file at \(output), please ensure the provided directory exist"

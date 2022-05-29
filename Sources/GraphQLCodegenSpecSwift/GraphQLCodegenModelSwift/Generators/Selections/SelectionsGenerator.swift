@@ -123,102 +123,24 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
         )
       }.reduce([], +)
     }
-      .reduce([], +)
-
-    // Extract all nested fields from the fields
-    let nestedTypeFields: [Field] = try fields.map {
-      try $0.nestedTypeFields(
-        schema: schema,
-        excluded: [],
-        scalarMap: scalarMap,
-        selectionMap: selectionMap,
-        objectTypeMap: objectTypeMap
-      )
-    }
     .reduce([], +)
     .unique(by: { $0.type.namedType.name })
     .sorted(by: .namedType)
 
-    let objects = try nestedTypeFields.compactMap {
-      try $0.returnObjectType(schemaMap: schemaMap)
-    }
-
-    let arguments = try objects.compactMap {
-      let selectionName = try entityNameProvider.selectionName(for: $0)
-
-      return "\($0.name.camelCase): Set<\(selectionName)> = .allFields"
-    }.joined(separator: ",\n")
-
-    let assignments = objects.map {
-      "self.\($0.name.camelCase) = \($0.name.camelCase)"
-    }.lines
-
-    let structures = objects as [Structure]
-
-    let selectionFragmentMap = try structures.map {
-      let possibleTypes = $0.possibleTypes ?? []
-      let selectableDeclaration = $0.isCompositeType || $0.selectableFields(selectionMap: selectionMap).isEmpty
-        ? ""
-        : "\t\\(\($0.name.camelCase).requestFragments(\(Variables.requestName): \(Variables.capitalizedRequestName)))"
-      let fragmentDeclaration: String
-
-      if possibleTypes.count > 1 {
-        fragmentDeclaration = """
-        \t__typename
-        \(
-          try possibleTypes.map { possibleType in
-            let objectType = try possibleType.objectType(objectTypeMap: objectTypeMap)
-            return "\t...\\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: objectType))"
-          }.lines
-        )
-        """
-      } else {
-        fragmentDeclaration = ""
-      }
-
-      let fragmentContent: [String] = [
-        selectableDeclaration,
-        fragmentDeclaration
-      ].filter { !$0.isEmpty }
-
-      return try """
-      let \($0.name.camelCase)Declaration = \"\"\"
-      fragment \\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: $0)) on \($0.name) {
-      \(fragmentContent.lines)
-      }
-      \"\"\"
-      """.format()
-    }.lines
-
-    let selectionDeclarationMap = """
-    let selectionDeclarationMap = [
-      \(
-        try structures.map {
-          let fragment = "\\(\(Variables.capitalizedRequestName))\(try entityNameProvider.fragmentName(for: $0))"
-          let declaration = "\($0.name.camelCase)Declaration"
-          return "\"\(fragment)\": \(declaration)"
-        }.joined(separator: ",\n")
-      )
-    ]
-    """
+    let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fields, schemaMap: schemaMap)
+    let memberwiseInitializerDeclaration = try self.memberwiseInitializerDeclaration(
+      fieldMaps: fields,
+      operation: operation,
+      schemaMap: schemaMap
+    )
+    let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fields, schemaMap: schemaMap)
+    let selectionDeclarationMap = try self.selectionDeclarationMap(fieldMaps: fields)
 
     return """
     struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
-      \(
-        try objects.compactMap {
-          let selectionName = try entityNameProvider.selectionName(for: $0)
+      \(selectionDeclarations)
 
-          return """
-          let \($0.name.camelCase): Set<\(selectionName)>
-          """
-        }.lines
-      )
-
-      init(
-        \(arguments)
-      ) {
-        \(assignments)
-      }
+      \(memberwiseInitializerDeclaration)
 
       \(selectionsFuncDeclaration()) {
         \(capitalizedRequestNameDeclaration())
