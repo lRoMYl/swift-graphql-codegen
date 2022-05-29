@@ -45,8 +45,26 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
-  func operationVariablesDeclaration(with field: Field, schema: Schema) throws -> String? {
-    let nestedFields = try field.nestedFields(
+  func operationVariablesDeclaration(with field: Field, schema: Schema) throws -> [(key: String, value: String)]? {
+    var variables = [(String, String)]()
+
+    try field.args.forEach {
+      let operationVariableName = try entityNameProvider.operationVariableName(
+        with: $0,
+        field: field,
+        rootField: field
+      )
+      let key = "$\(operationVariableName)"
+
+      variables.append((key, "\(key): \($0.type.argument)"))
+    }
+
+    return variables
+  }
+
+  /// Optional variables that might be required depending on the selected fields
+  func operationSubVariablesDeclaration(with field: Field, schema: Schema) throws -> [(key: String, value: String)]? {
+    var nestedFields = try field.nestedFields(
       objects: schema.objects,
       scalarMap: scalarMap,
       excluded: [],
@@ -54,19 +72,25 @@ struct RequestVariablesGenerator {
       schemaMap: SchemaMap(schema: schema)
     )
 
-    let variables: String = try nestedFields.reduce(into: [String]()) { result, nestedField in
-      result.append(contentsOf: try nestedField.args.map {
+    // Remove the original field as its handled by operationVariablesDeclaration
+    if let index = nestedFields.firstIndex(of: field) {
+      nestedFields.remove(at: index)
+    }
+
+    var variables = [(String, String)]()
+
+    try nestedFields.forEach { nestedField in
+      try nestedField.args.forEach {
         let operationVariableName = try entityNameProvider.operationVariableName(
           with: $0,
           field: nestedField,
           rootField: field
         )
 
-        return "$\(operationVariableName): \($0.type.argument)"
-      })
+        let key = "$\(operationVariableName)"
+        variables.append((key, "\(key): \($0.type.argument)"))
+      }
     }
-    .sorted(by: { $0 < $1 })
-    .joined(separator: ",\n")
 
     guard !variables.isEmpty else {
       return nil

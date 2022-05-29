@@ -144,8 +144,18 @@ private extension RequestGenerator {
       schema: schema
     )
 
-    let operationArgumentCode: String = try variablesGenerator.operationVariablesDeclaration(with: field, schema: schema)
-      .map {"\n\($0)"} ?? ""
+    let operationArgumentCode: String = try variablesGenerator.operationVariablesDeclaration(
+      with: field,
+      schema: schema
+    )?
+    .map { "(\"\($0.key)\", \"\($0.value)\")" }
+    .joined(separator: ",\n") ?? ""
+    let operationSubArgumentCode: String = try variablesGenerator.operationSubVariablesDeclaration(
+      with: field,
+      schema: schema
+    )?
+    .map { "(\"\($0.key)\", \"\($0.value)\")" }
+    .joined(separator: ",\n") ?? ""
 
     let text = """
     /// \(requestParameterName)
@@ -164,10 +174,15 @@ private extension RequestGenerator {
 
       \(operationDefinition)
 
-      let \(entityNameProvider.requestArgumentsName): String = {
-        \"\"\"\(operationArgumentCode)
-        \"\"\"
-      }()
+      let \(entityNameProvider.requestArgumentsName): [(key: String, value: String)] = [
+        \(operationArgumentCode)
+      ]
+
+      let sub\(entityNameProvider.requestArgumentsName.pascalCase): [(key: String, value: String)] = [
+        \(operationSubArgumentCode)
+      ]
+
+      \(requestArgumentCode)
 
       func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String {
         selections.requestFragments(for: self.requestName, rootSelectionKeys: rootSelectionKeys)
@@ -248,11 +263,19 @@ private extension RequestGenerator {
           .joined(separator: "\\n")
       }
 
-      var \(entityNameProvider.requestArgumentsName): String {
-        requests
-        .map { $0.\(entityNameProvider.requestArgumentsName) }
-        .joined(separator: "\\n")
+      var \(entityNameProvider.requestArgumentsName): [(key: String, value: String)] {
+        requests.reduce(into:  [(key: String, value: String)](), { result, element in
+          result.append(contentsOf: element.requestArguments)
+        })
       }
+
+      var sub\(entityNameProvider.requestArgumentsName.pascalCase): [(key: String, value: String)] {
+        requests.reduce(into:  [(key: String, value: String)](), { result, element in
+          result.append(contentsOf: element.subRequestArguments)
+        })
+      }
+
+      \(requestArgumentCode)
 
       func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String {
         requests.map {
@@ -263,5 +286,25 @@ private extension RequestGenerator {
     """
 
     return text
+  }
+}
+
+private extension RequestGenerator {
+  var requestArgumentCode: String {
+    """
+    func \(entityNameProvider.requestArgumentsName)(with selections: \(entityNameMap.selections)) -> String {
+      let requestFragments = self.requestFragments(with: selections)
+      var selectedSubRequestArguments = [(key: String, value: String)]()
+      subRequestArguments.forEach {
+        if requestFragments.contains($0.key) {
+          selectedSubRequestArguments.append($0)
+        }
+      }
+      let arguments = requestArguments + selectedSubRequestArguments
+      return arguments.isEmpty
+        ? ""
+        : " (\\(arguments.map { $0.value }.joined(separator: ",\\n")))"
+    }
+    """
   }
 }

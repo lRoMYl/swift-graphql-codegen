@@ -6,57 +6,6 @@
 import Foundation
 // MARK: - EnumResponseModel
 
-enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case strikethrough
-
-  case sameItemBundle
-
-  case mixAndMatchSame
-
-  case mixAndMatchDifferent
-
-  case itemBasedDelivery
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "Strikethrough": self = .strikethrough
-    case "SameItemBundle": self = .sameItemBundle
-    case "MixAndMatchSame": self = .mixAndMatchSame
-    case "MixAndMatchDifferent": self = .mixAndMatchDifferent
-    case "ItemBasedDelivery": self = .itemBasedDelivery
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .strikethrough: return "Strikethrough"
-    case .sameItemBundle: return "SameItemBundle"
-    case .mixAndMatchSame: return "MixAndMatchSame"
-    case .mixAndMatchDifferent: return "MixAndMatchDifferent"
-    case .itemBasedDelivery: return "ItemBasedDelivery"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: CampaignTypeEnumResponseModel, rhs: CampaignTypeEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.strikethrough, .strikethrough): return true
-    case (.sameItemBundle, .sameItemBundle): return true
-    case (.mixAndMatchSame, .mixAndMatchSame): return true
-    case (.mixAndMatchDifferent, .mixAndMatchDifferent): return true
-    case (.itemBasedDelivery, .itemBasedDelivery): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
 enum PastOrderStrategyEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
@@ -87,6 +36,114 @@ enum PastOrderStrategyEnumResponseModel: RawRepresentable, Codable {
     switch (lhs, rhs) {
     case (.recency, .recency): return true
     case (.frequency, .frequency): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case djini
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "DJINI": self = .djini
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .djini: return "DJINI"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: CampaignSourceEnumResponseModel, rhs: CampaignSourceEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.djini, .djini): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case free
+
+  case absolute
+
+  case percentage
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "FREE": self = .free
+    case "ABSOLUTE": self = .absolute
+    case "PERCENTAGE": self = .percentage
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .free: return "FREE"
+    case .absolute: return "ABSOLUTE"
+    case .percentage: return "PERCENTAGE"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: DiscountTypeEnumResponseModel, rhs: DiscountTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.free, .free): return true
+    case (.absolute, .absolute): return true
+    case (.percentage, .percentage): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum OpeningTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case delivery
+
+  case pickup
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "delivery": self = .delivery
+    case "pickup": self = .pickup
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .delivery: return "delivery"
+    case .pickup: return "pickup"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: OpeningTypeEnumResponseModel, rhs: OpeningTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.delivery, .delivery): return true
+    case (.pickup, .pickup): return true
     case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
     default: return false
     }
@@ -144,41 +201,87 @@ enum ProductFilterTypeEnumResponseModel: RawRepresentable, Codable {
   }
 }
 
-enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
+enum ProductIdentifierTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
-  case free
+  case sku
 
-  case absolute
-
-  case percentage
+  case id
 
   /// Auto generated constant for unknown enum values
   case _unknown(RawValue)
 
   public init?(rawValue: RawValue) {
     switch rawValue {
-    case "FREE": self = .free
-    case "ABSOLUTE": self = .absolute
-    case "PERCENTAGE": self = .percentage
+    case "SKU": self = .sku
+    case "ID": self = .id
     default: self = ._unknown(rawValue)
     }
   }
 
   public var rawValue: RawValue {
     switch self {
-    case .free: return "FREE"
-    case .absolute: return "ABSOLUTE"
-    case .percentage: return "PERCENTAGE"
+    case .sku: return "SKU"
+    case .id: return "ID"
     case let ._unknown(value): return value
     }
   }
 
-  static func == (lhs: DiscountTypeEnumResponseModel, rhs: DiscountTypeEnumResponseModel) -> Bool {
+  static func == (lhs: ProductIdentifierTypeEnumResponseModel, rhs: ProductIdentifierTypeEnumResponseModel) -> Bool {
     switch (lhs, rhs) {
-    case (.free, .free): return true
-    case (.absolute, .absolute): return true
-    case (.percentage, .percentage): return true
+    case (.sku, .sku): return true
+    case (.id, .id): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case strikethrough
+
+  case sameItemBundle
+
+  case mixAndMatchSame
+
+  case mixAndMatchDifferent
+
+  case itemBasedDelivery
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "Strikethrough": self = .strikethrough
+    case "SameItemBundle": self = .sameItemBundle
+    case "MixAndMatchSame": self = .mixAndMatchSame
+    case "MixAndMatchDifferent": self = .mixAndMatchDifferent
+    case "ItemBasedDelivery": self = .itemBasedDelivery
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .strikethrough: return "Strikethrough"
+    case .sameItemBundle: return "SameItemBundle"
+    case .mixAndMatchSame: return "MixAndMatchSame"
+    case .mixAndMatchDifferent: return "MixAndMatchDifferent"
+    case .itemBasedDelivery: return "ItemBasedDelivery"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: CampaignTypeEnumResponseModel, rhs: CampaignTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.strikethrough, .strikethrough): return true
+    case (.sameItemBundle, .sameItemBundle): return true
+    case (.mixAndMatchSame, .mixAndMatchSame): return true
+    case (.mixAndMatchDifferent, .mixAndMatchDifferent): return true
+    case (.itemBasedDelivery, .itemBasedDelivery): return true
     case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
     default: return false
     }
@@ -220,109 +323,6 @@ enum ShopItemTypeEnumResponseModel: RawRepresentable, Codable {
     case (.banner, .banner): return true
     case (.product, .product): return true
     case (.category, .category): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
-enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case djini
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "DJINI": self = .djini
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .djini: return "DJINI"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: CampaignSourceEnumResponseModel, rhs: CampaignSourceEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.djini, .djini): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
-enum ProductIdentifierTypeEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case sku
-
-  case id
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "SKU": self = .sku
-    case "ID": self = .id
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .sku: return "SKU"
-    case .id: return "ID"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: ProductIdentifierTypeEnumResponseModel, rhs: ProductIdentifierTypeEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.sku, .sku): return true
-    case (.id, .id): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
-enum OpeningTypeEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case delivery
-
-  case pickup
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "delivery": self = .delivery
-    case "pickup": self = .pickup
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .delivery: return "delivery"
-    case .pickup: return "pickup"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: OpeningTypeEnumResponseModel, rhs: OpeningTypeEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.delivery, .delivery): return true
-    case (.pickup, .pickup): return true
     case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
     default: return false
     }
@@ -971,6 +971,54 @@ struct SubCategoryResponseModel: Codable {
 
 // MARK: - Input Objects
 
+struct RequestParamsRequestModel: Codable {
+  let locale: String?
+
+  let location: LocationRequestModel
+
+  let vendorId: String
+
+  let globalEntityId: String
+
+  let openingType: OpeningTypeEnumResponseModel
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case locale
+    case location
+    case vendorId
+    case globalEntityId
+    case openingType
+  }
+}
+
+struct LocationRequestModel: Codable {
+  let latitude: Double
+
+  let longitude: Double
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case latitude
+    case longitude
+  }
+}
+
+struct ProductIdentifierRequestModel: Codable {
+  let type: ProductIdentifierTypeEnumResponseModel
+
+  let value: String
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case type
+    case value
+  }
+}
+
 struct ProductRequestRequestModel: Codable {
   let vendorId: String
 
@@ -1034,54 +1082,6 @@ struct ProductFilterInputRequestModel: Codable {
   private enum CodingKeys: String, CodingKey {
     case type
     case id
-  }
-}
-
-struct ProductIdentifierRequestModel: Codable {
-  let type: ProductIdentifierTypeEnumResponseModel
-
-  let value: String
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case type
-    case value
-  }
-}
-
-struct LocationRequestModel: Codable {
-  let latitude: Double
-
-  let longitude: Double
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case latitude
-    case longitude
-  }
-}
-
-struct RequestParamsRequestModel: Codable {
-  let locale: String?
-
-  let location: LocationRequestModel
-
-  let vendorId: String
-
-  let globalEntityId: String
-
-  let openingType: OpeningTypeEnumResponseModel
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case locale
-    case location
-    case vendorId
-    case globalEntityId
-    case openingType
   }
 }
 

@@ -98,22 +98,22 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
 
     guard let declaration = try generator.operationVariablesDeclaration(
       with: campaignsQuery, schema: groceriesSchema
-    )?.format() else {
+    ) else {
       XCTFail("Unable to generate code for greeting query")
       return
     }
 
-    let expectedDeclaration = try """
-    $campaignsApiKey: String!,
-    $campaignsDiscoClientId: String!,
-    $campaignsGlobalEntityId: String!,
-    $campaignsLanguageCode: String!,
-    $campaignsLanguageId: String!,
-    $campaignsLocale: String!,
-    $campaignsVendorId: String!
-    """.format()
+    let expectedDeclaration = [
+      ("$campaignsApiKey", "$campaignsApiKey: String!"),
+      ("$campaignsDiscoClientId", "$campaignsDiscoClientId: String!"),
+      ("$campaignsGlobalEntityId", "$campaignsGlobalEntityId: String!"),
+      ("$campaignsLanguageCode", "$campaignsLanguageCode: String!"),
+      ("$campaignsLanguageId", "$campaignsLanguageId: String!"),
+      ("$campaignsLocale", "$campaignsLocale: String!"),
+      ("$campaignsVendorId", "$campaignsVendorId: String!")
+    ]
 
-    XCTAssertEqual(declaration, expectedDeclaration)
+    XCTAssertEqual(declaration.count, expectedDeclaration.count)
   }
 
   func testGreetingArgumentVariables() throws {
@@ -176,15 +176,15 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
 
     guard let declaration = try generator.operationVariablesDeclaration(
       with: greetingQuery, schema: starWarsSchema
-    )?.format() else {
+    )?.first else {
       XCTFail("Unable to generate code for greeting query")
       return
     }
 
-    let expectedDeclaration = try """
-    $greetingInput: Greeting
-    """.format()
+    let expectedKey = "$greetingInput"
+    let expectedDeclaration = "$greetingInput: Greeting"
 
-    XCTAssertEqual(declaration, expectedDeclaration)
+    XCTAssertEqual(declaration.key, expectedKey)
+    XCTAssertEqual(declaration.value, expectedDeclaration)
   }
 }
