@@ -51,14 +51,27 @@ public extension Field {
         break
       }
 
-      try $0.selectableFields(selectionMap: selectionMap).filter {
+      let selectableFields = $0.selectableFields(selectionMap: selectionMap).filter {
         $0.type.namedType != self.type.namedType && !excluded.contains($0)
-      }.forEach {
+      }
+
+      try selectableFields.forEach {
         switch $0.type {
         case let .named(outputRef):
           switch outputRef {
           case .object, .interface, .union:
             fields.append($0)
+
+            fields.append(
+              contentsOf: try $0.nestedTypeFields(
+                schema: schema,
+                excluded: excluded + fields,
+                scalarMap: scalarMap,
+                selectionMap: selectionMap,
+                objectTypeMap: objectTypeMap,
+                sortType: sortType
+              )
+            )
           case .enum, .scalar:
             break
           }
