@@ -6,39 +6,6 @@
 import Foundation
 // MARK: - EnumResponseModel
 
-/// CampaignSource
-enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case djini
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "DJINI": self = .djini
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .djini: return "DJINI"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: CampaignSourceEnumResponseModel, rhs: CampaignSourceEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.djini, .djini): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
-/// CampaignType
 enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
@@ -90,7 +57,93 @@ enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
   }
 }
 
-/// DiscountType
+enum PastOrderStrategyEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case recency
+
+  case frequency
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "Recency": self = .recency
+    case "Frequency": self = .frequency
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .recency: return "Recency"
+    case .frequency: return "Frequency"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: PastOrderStrategyEnumResponseModel, rhs: PastOrderStrategyEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.recency, .recency): return true
+    case (.frequency, .frequency): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum ProductFilterTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case banner
+
+  case campaign
+
+  case category
+
+  case swimlane
+
+  case pastOrder
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "Banner": self = .banner
+    case "Campaign": self = .campaign
+    case "Category": self = .category
+    case "Swimlane": self = .swimlane
+    case "PastOrder": self = .pastOrder
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .banner: return "Banner"
+    case .campaign: return "Campaign"
+    case .category: return "Category"
+    case .swimlane: return "Swimlane"
+    case .pastOrder: return "PastOrder"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: ProductFilterTypeEnumResponseModel, rhs: ProductFilterTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.banner, .banner): return true
+    case (.campaign, .campaign): return true
+    case (.category, .category): return true
+    case (.swimlane, .swimlane): return true
+    case (.pastOrder, .pastOrder): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
 enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
@@ -132,49 +185,6 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
   }
 }
 
-/// ProductFilterType
-enum ProductFilterTypeEnumResponseModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case campaign
-
-  case category
-
-  case swimlane
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "Campaign": self = .campaign
-    case "Category": self = .category
-    case "Swimlane": self = .swimlane
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .campaign: return "Campaign"
-    case .category: return "Category"
-    case .swimlane: return "Swimlane"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: ProductFilterTypeEnumResponseModel, rhs: ProductFilterTypeEnumResponseModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.campaign, .campaign): return true
-    case (.category, .category): return true
-    case (.swimlane, .swimlane): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
-/// ShopItemType
 enum ShopItemTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
@@ -216,62 +226,110 @@ enum ShopItemTypeEnumResponseModel: RawRepresentable, Codable {
   }
 }
 
-// MARK: - ResponseModel
+enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
 
-struct BannerResponseModel: Codable {
-  private let internalBannerUrl: Optional<String>
-  private let internalGlobalId: Optional<String>
-  private let internalIsStatic: Optional<Bool>
-  private let internalName: Optional<String>
-  private let internalPosition: Optional<Int>
-  private let internalTargetAudience: Optional<String>
+  case djini
 
-  func bannerUrl() throws -> String {
-    try value(for: \Self.internalBannerUrl, codingKey: CodingKeys.internalBannerUrl)
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "DJINI": self = .djini
+    default: self = ._unknown(rawValue)
+    }
   }
 
-  func globalId() throws -> String {
-    try value(for: \Self.internalGlobalId, codingKey: CodingKeys.internalGlobalId)
+  public var rawValue: RawValue {
+    switch self {
+    case .djini: return "DJINI"
+    case let ._unknown(value): return value
+    }
   }
 
-  func isStatic() throws -> Bool {
-    try value(for: \Self.internalIsStatic, codingKey: CodingKeys.internalIsStatic)
-  }
-
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
-  }
-
-  func position() throws -> Int {
-    try value(for: \Self.internalPosition, codingKey: CodingKeys.internalPosition)
-  }
-
-  func targetAudience() throws -> String {
-    try value(for: \Self.internalTargetAudience, codingKey: CodingKeys.internalTargetAudience)
-  }
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    internalBannerUrl = try container.decodeOptionalIfPresent(String.self, forKey: .internalBannerUrl)
-    internalGlobalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalGlobalId)
-    internalIsStatic = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalIsStatic)
-    internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
-    internalPosition = try container.decodeOptionalIfPresent(Int.self, forKey: .internalPosition)
-    internalTargetAudience = try container.decodeOptionalIfPresent(String.self, forKey: .internalTargetAudience)
-  }
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case internalBannerUrl = "bannerUrl"
-    case internalGlobalId = "globalID"
-    case internalIsStatic = "isStatic"
-    case internalName = "name"
-    case internalPosition = "position"
-    case internalTargetAudience = "targetAudience"
+  static func == (lhs: CampaignSourceEnumResponseModel, rhs: CampaignSourceEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.djini, .djini): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
   }
 }
+
+enum ProductIdentifierTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case sku
+
+  case id
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "SKU": self = .sku
+    case "ID": self = .id
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .sku: return "SKU"
+    case .id: return "ID"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: ProductIdentifierTypeEnumResponseModel, rhs: ProductIdentifierTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.sku, .sku): return true
+    case (.id, .id): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+enum OpeningTypeEnumResponseModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case delivery
+
+  case pickup
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "delivery": self = .delivery
+    case "pickup": self = .pickup
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .delivery: return "delivery"
+    case .pickup: return "pickup"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: OpeningTypeEnumResponseModel, rhs: OpeningTypeEnumResponseModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.delivery, .delivery): return true
+    case (.pickup, .pickup): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
+// MARK: - ResponseModel
 
 struct BenefitResponseModel: Codable {
   private let internalProductId: Optional<String>
@@ -528,6 +586,61 @@ struct DealResponseModel: Codable {
   }
 }
 
+struct FoodLabellingResponseModel: Codable {
+  private let internalAdditives: Optional<FoodLabellingInfoResponseModel?>
+  private let internalAllergens: Optional<FoodLabellingInfoResponseModel?>
+  private let internalNutritionFacts: Optional<[FoodLabellingInfoResponseModel?]?>
+  private let internalProductClaims: Optional<[FoodLabellingInfoResponseModel?]?>
+  private let internalProductInfos: Optional<[FoodLabellingInfoResponseModel?]?>
+  private let internalWarnings: Optional<FoodLabellingInfoResponseModel?>
+
+  func additives() throws -> FoodLabellingInfoResponseModel? {
+    try value(for: \Self.internalAdditives, codingKey: CodingKeys.internalAdditives)
+  }
+
+  func allergens() throws -> FoodLabellingInfoResponseModel? {
+    try value(for: \Self.internalAllergens, codingKey: CodingKeys.internalAllergens)
+  }
+
+  func nutritionFacts() throws -> [FoodLabellingInfoResponseModel?]? {
+    try value(for: \Self.internalNutritionFacts, codingKey: CodingKeys.internalNutritionFacts)
+  }
+
+  func productClaims() throws -> [FoodLabellingInfoResponseModel?]? {
+    try value(for: \Self.internalProductClaims, codingKey: CodingKeys.internalProductClaims)
+  }
+
+  func productInfos() throws -> [FoodLabellingInfoResponseModel?]? {
+    try value(for: \Self.internalProductInfos, codingKey: CodingKeys.internalProductInfos)
+  }
+
+  func warnings() throws -> FoodLabellingInfoResponseModel? {
+    try value(for: \Self.internalWarnings, codingKey: CodingKeys.internalWarnings)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalAdditives = try container.decodeOptionalIfPresent(FoodLabellingInfoResponseModel?.self, forKey: .internalAdditives)
+    internalAllergens = try container.decodeOptionalIfPresent(FoodLabellingInfoResponseModel?.self, forKey: .internalAllergens)
+    internalNutritionFacts = try container.decodeOptionalIfPresent([FoodLabellingInfoResponseModel?]?.self, forKey: .internalNutritionFacts)
+    internalProductClaims = try container.decodeOptionalIfPresent([FoodLabellingInfoResponseModel?]?.self, forKey: .internalProductClaims)
+    internalProductInfos = try container.decodeOptionalIfPresent([FoodLabellingInfoResponseModel?]?.self, forKey: .internalProductInfos)
+    internalWarnings = try container.decodeOptionalIfPresent(FoodLabellingInfoResponseModel?.self, forKey: .internalWarnings)
+  }
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case internalAdditives = "additives"
+    case internalAllergens = "allergens"
+    case internalNutritionFacts = "nutritionFacts"
+    case internalProductClaims = "productClaims"
+    case internalProductInfos = "productInfos"
+    case internalWarnings = "warnings"
+  }
+}
+
 struct PageInfoResponseModel: Codable {
   private let internalIsLast: Optional<Bool>
   private let internalPageNumber: Optional<Int>
@@ -556,18 +669,26 @@ struct PageInfoResponseModel: Codable {
 }
 
 struct ProductResponseModel: Codable {
+  private let internalAttributes: Optional<[ProductAttributeResponseModel]?>
   private let internalDescription: Optional<String>
   private let internalFavourite: Optional<Bool>
+  private let internalFoodLabelling: Optional<FoodLabellingResponseModel?>
   private let internalGlobalCatalogId: Optional<String>
   private let internalGlobalCatalogVendorId: Optional<String>
   private let internalIsAvailable: Optional<Bool>
   private let internalName: Optional<String>
   private let internalOriginalPrice: Optional<Double>
+  private let internalPackagingCharge: Optional<Double>
+  private let internalParentId: Optional<String>
   private let internalPrice: Optional<Double>
   private let internalProductId: Optional<String>
   private let internalStockAmount: Optional<Int>
-  private let internalTags: Optional<[String]?>
+  private let internalTags: Optional<[String]>
   private let internalUrls: Optional<[String]>
+
+  func attributes() throws -> [ProductAttributeResponseModel]? {
+    try value(for: \Self.internalAttributes, codingKey: CodingKeys.internalAttributes)
+  }
 
   func description() throws -> String {
     try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription)
@@ -575,6 +696,10 @@ struct ProductResponseModel: Codable {
 
   func favourite() throws -> Bool {
     try value(for: \Self.internalFavourite, codingKey: CodingKeys.internalFavourite)
+  }
+
+  func foodLabelling() throws -> FoodLabellingResponseModel? {
+    try value(for: \Self.internalFoodLabelling, codingKey: CodingKeys.internalFoodLabelling)
   }
 
   func globalCatalogId() throws -> String {
@@ -597,6 +722,14 @@ struct ProductResponseModel: Codable {
     try value(for: \Self.internalOriginalPrice, codingKey: CodingKeys.internalOriginalPrice)
   }
 
+  func packagingCharge() throws -> Double {
+    try value(for: \Self.internalPackagingCharge, codingKey: CodingKeys.internalPackagingCharge)
+  }
+
+  func parentId() throws -> String {
+    try value(for: \Self.internalParentId, codingKey: CodingKeys.internalParentId)
+  }
+
   func price() throws -> Double {
     try value(for: \Self.internalPrice, codingKey: CodingKeys.internalPrice)
   }
@@ -609,7 +742,7 @@ struct ProductResponseModel: Codable {
     try value(for: \Self.internalStockAmount, codingKey: CodingKeys.internalStockAmount)
   }
 
-  func tags() throws -> [String]? {
+  func tags() throws -> [String] {
     try value(for: \Self.internalTags, codingKey: CodingKeys.internalTags)
   }
 
@@ -620,35 +753,70 @@ struct ProductResponseModel: Codable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
+    internalAttributes = try container.decodeOptionalIfPresent([ProductAttributeResponseModel]?.self, forKey: .internalAttributes)
     internalDescription = try container.decodeOptionalIfPresent(String.self, forKey: .internalDescription)
     internalFavourite = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalFavourite)
+    internalFoodLabelling = try container.decodeOptionalIfPresent(FoodLabellingResponseModel?.self, forKey: .internalFoodLabelling)
     internalGlobalCatalogId = try container.decodeOptionalIfPresent(String.self, forKey: .internalGlobalCatalogId)
     internalGlobalCatalogVendorId = try container.decodeOptionalIfPresent(String.self, forKey: .internalGlobalCatalogVendorId)
     internalIsAvailable = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalIsAvailable)
     internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
     internalOriginalPrice = try container.decodeOptionalIfPresent(Double.self, forKey: .internalOriginalPrice)
+    internalPackagingCharge = try container.decodeOptionalIfPresent(Double.self, forKey: .internalPackagingCharge)
+    internalParentId = try container.decodeOptionalIfPresent(String.self, forKey: .internalParentId)
     internalPrice = try container.decodeOptionalIfPresent(Double.self, forKey: .internalPrice)
     internalProductId = try container.decodeOptionalIfPresent(String.self, forKey: .internalProductId)
     internalStockAmount = try container.decodeOptionalIfPresent(Int.self, forKey: .internalStockAmount)
-    internalTags = try container.decodeOptionalIfPresent([String]?.self, forKey: .internalTags)
+    internalTags = try container.decodeOptionalIfPresent([String].self, forKey: .internalTags)
     internalUrls = try container.decodeOptionalIfPresent([String].self, forKey: .internalUrls)
   }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
+    case internalAttributes = "attributes"
     case internalDescription = "description"
     case internalFavourite = "favourite"
+    case internalFoodLabelling = "foodLabelling"
     case internalGlobalCatalogId = "globalCatalogID"
     case internalGlobalCatalogVendorId = "globalCatalogVendorID"
     case internalIsAvailable = "isAvailable"
     case internalName = "name"
     case internalOriginalPrice = "originalPrice"
+    case internalPackagingCharge = "packagingCharge"
+    case internalParentId = "parentID"
     case internalPrice = "price"
     case internalProductId = "productID"
     case internalStockAmount = "stockAmount"
     case internalTags = "tags"
     case internalUrls = "urls"
+  }
+}
+
+struct ProductAttributeResponseModel: Codable {
+  private let internalKey: Optional<String>
+  private let internalValue: Optional<String>
+
+  func key() throws -> String {
+    try value(for: \Self.internalKey, codingKey: CodingKeys.internalKey)
+  }
+
+  func value() throws -> String {
+    try value(for: \Self.internalValue, codingKey: CodingKeys.internalValue)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalKey = try container.decodeOptionalIfPresent(String.self, forKey: .internalKey)
+    internalValue = try container.decodeOptionalIfPresent(String.self, forKey: .internalValue)
+  }
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case internalKey = "key"
+    case internalValue = "value"
   }
 }
 
@@ -680,10 +848,10 @@ struct ProductDealResponseModel: Codable {
 }
 
 struct ProductFilterResultResponseModel: Codable {
-  private let internalItems: Optional<[ProductResponseModel?]?>
+  private let internalItems: Optional<[ProductResponseModel]?>
   private let internalPageInfo: Optional<PageInfoResponseModel?>
 
-  func items() throws -> [ProductResponseModel?]? {
+  func items() throws -> [ProductResponseModel]? {
     try value(for: \Self.internalItems, codingKey: CodingKeys.internalItems)
   }
 
@@ -694,7 +862,7 @@ struct ProductFilterResultResponseModel: Codable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
-    internalItems = try container.decodeOptionalIfPresent([ProductResponseModel?]?.self, forKey: .internalItems)
+    internalItems = try container.decodeOptionalIfPresent([ProductResponseModel]?.self, forKey: .internalItems)
     internalPageInfo = try container.decodeOptionalIfPresent(PageInfoResponseModel?.self, forKey: .internalPageInfo)
   }
 
@@ -722,10 +890,37 @@ struct QueryResponseModel: Codable {
 
 struct ShopDetailsResponseModel: Codable {
   private let internalCategories: Optional<[CategoryTreeResponseModel]?>
-  private let internalShopItemsList: Optional<[ShopItemsListResponseModel]?>
+  private let internalShopItemsResponse: Optional<ShopItemsResponseResponseModel?>
 
   func categories() throws -> [CategoryTreeResponseModel]? {
     try value(for: \Self.internalCategories, codingKey: CodingKeys.internalCategories)
+  }
+
+  func shopItemsResponse() throws -> ShopItemsResponseResponseModel? {
+    try value(for: \Self.internalShopItemsResponse, codingKey: CodingKeys.internalShopItemsResponse)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalCategories = try container.decodeOptionalIfPresent([CategoryTreeResponseModel]?.self, forKey: .internalCategories)
+    internalShopItemsResponse = try container.decodeOptionalIfPresent(ShopItemsResponseResponseModel?.self, forKey: .internalShopItemsResponse)
+  }
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case internalCategories = "categories"
+    case internalShopItemsResponse = "shopItemsResponse"
+  }
+}
+
+struct ShopItemsResponseResponseModel: Codable {
+  private let internalPageInfo: Optional<PageInfoResponseModel?>
+  private let internalShopItemsList: Optional<[ShopItemsListResponseModel]?>
+
+  func pageInfo() throws -> PageInfoResponseModel? {
+    try value(for: \Self.internalPageInfo, codingKey: CodingKeys.internalPageInfo)
   }
 
   func shopItemsList() throws -> [ShopItemsListResponseModel]? {
@@ -735,49 +930,15 @@ struct ShopDetailsResponseModel: Codable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
-    internalCategories = try container.decodeOptionalIfPresent([CategoryTreeResponseModel]?.self, forKey: .internalCategories)
+    internalPageInfo = try container.decodeOptionalIfPresent(PageInfoResponseModel?.self, forKey: .internalPageInfo)
     internalShopItemsList = try container.decodeOptionalIfPresent([ShopItemsListResponseModel]?.self, forKey: .internalShopItemsList)
   }
 
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
-    case internalCategories = "categories"
+    case internalPageInfo = "pageInfo"
     case internalShopItemsList = "shopItemsList"
-  }
-}
-
-struct ShopItemsListResponseModel: Codable {
-  private let internalHeadline: Optional<String>
-  private let internalShopItemType: Optional<ShopItemTypeEnumResponseModel>
-  private let internalShopItems: Optional<[ShopItemInterfaceResponseModel]?>
-
-  func headline() throws -> String {
-    try value(for: \Self.internalHeadline, codingKey: CodingKeys.internalHeadline)
-  }
-
-  func shopItemType() throws -> ShopItemTypeEnumResponseModel {
-    try value(for: \Self.internalShopItemType, codingKey: CodingKeys.internalShopItemType)
-  }
-
-  func shopItems() throws -> [ShopItemInterfaceResponseModel]? {
-    try value(for: \Self.internalShopItems, codingKey: CodingKeys.internalShopItems)
-  }
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    internalHeadline = try container.decodeOptionalIfPresent(String.self, forKey: .internalHeadline)
-    internalShopItemType = try container.decodeOptionalIfPresent(ShopItemTypeEnumResponseModel.self, forKey: .internalShopItemType)
-    internalShopItems = try container.decodeOptionalIfPresent([ShopItemInterfaceResponseModel]?.self, forKey: .internalShopItems)
-  }
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case internalHeadline = "headline"
-    case internalShopItemType = "shopItemType"
-    case internalShopItems = "shopItems"
   }
 }
 
@@ -810,6 +971,59 @@ struct SubCategoryResponseModel: Codable {
 
 // MARK: - Input Objects
 
+struct ProductRequestRequestModel: Codable {
+  let vendorId: String
+
+  let globalEntityId: String
+
+  let locale: String
+
+  let productIdentifier: ProductIdentifierRequestModel
+
+  let customerId: String?
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case vendorId = "vendorID"
+    case globalEntityId = "globalEntityID"
+    case locale
+    case productIdentifier
+    case customerId = "customerID"
+  }
+}
+
+struct ProductsFilterRequestRequestModel: Codable {
+  let vendorId: String
+
+  let globalEntityId: String
+
+  let locale: String
+
+  let platform: String?
+
+  let customerId: String?
+
+  let page: Int?
+
+  let filters: [ProductFilterInputRequestModel]?
+
+  let isDarkstore: Bool
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case vendorId = "vendorID"
+    case globalEntityId = "globalEntityID"
+    case locale
+    case platform
+    case customerId = "customerID"
+    case page
+    case filters
+    case isDarkstore
+  }
+}
+
 struct ProductFilterInputRequestModel: Codable {
   let type: ProductFilterTypeEnumResponseModel
 
@@ -820,6 +1034,54 @@ struct ProductFilterInputRequestModel: Codable {
   private enum CodingKeys: String, CodingKey {
     case type
     case id
+  }
+}
+
+struct ProductIdentifierRequestModel: Codable {
+  let type: ProductIdentifierTypeEnumResponseModel
+
+  let value: String
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case type
+    case value
+  }
+}
+
+struct LocationRequestModel: Codable {
+  let latitude: Double
+
+  let longitude: Double
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case latitude
+    case longitude
+  }
+}
+
+struct RequestParamsRequestModel: Codable {
+  let locale: String?
+
+  let location: LocationRequestModel
+
+  let vendorId: String
+
+  let globalEntityId: String
+
+  let openingType: OpeningTypeEnumResponseModel
+
+  // MARK: - CodingKeys
+
+  private enum CodingKeys: String, CodingKey {
+    case locale
+    case location
+    case vendorId
+    case globalEntityId
+    case openingType
   }
 }
 
@@ -836,6 +1098,8 @@ struct ShopDetailsRequestRequestModel: Codable {
 
   let platform: String
 
+  let pastOrderStrategy: PastOrderStrategyEnumResponseModel?
+
   // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
@@ -845,48 +1109,10 @@ struct ShopDetailsRequestRequestModel: Codable {
     case customerId = "customerID"
     case locale
     case platform
+    case pastOrderStrategy
   }
 }
 
-// MARK: - InterfaceResponseModel
-
-enum ShopItemInterfaceResponseModel: Codable {
-  case category(CategoryResponseModel)
-  case banner(BannerResponseModel)
-  case product(ProductResponseModel)
-
-  enum Typename: String, Decodable {
-    case category = "Category"
-    case banner = "Banner"
-    case product = "Product"
-  }
-
-  private enum CodingKeys: String, CodingKey {
-    case __typename
-  }
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    let singleValueContainer = try decoder.singleValueContainer()
-    let type = try container.decode(Typename.self, forKey: .__typename)
-
-    switch type {
-    case .category:
-      let value = try singleValueContainer.decode(CategoryResponseModel.self)
-      self = .category(value)
-    case .banner:
-      let value = try singleValueContainer.decode(BannerResponseModel.self)
-      self = .banner(value)
-    case .product:
-      let value = try singleValueContainer.decode(ProductResponseModel.self)
-      self = .product(value)
-    }
-  }
-
-  func encode(to _: Encoder) throws {
-    fatalError("Not implemented yet")
-  }
-}
 
 
 // MARK: - GraphQLRequesting
@@ -960,64 +1186,28 @@ struct ProductsQueryRequest: GraphQLRequesting {
 
   // MARK: - Arguments
 
-  let vendorId: String
+  let productsAttributesKeys: [String]?
 
-  let globalEntityId: String
-
-  let locale: String
-
-  let platform: String?
-
-  let customerId: String?
-
-  let page: Int?
-
-  let filters: [ProductFilterInputRequestModel?]?
+  let input: ProductsFilterRequestRequestModel?
 
   private enum CodingKeys: String, CodingKey {
-    case vendorId = "productsVendorId"
+    case productsAttributesKeys
 
-    case globalEntityId = "productsGlobalEntityId"
-
-    case locale = "productsLocale"
-
-    case platform = "productsPlatform"
-
-    case customerId = "productsCustomerId"
-
-    case page = "productsPage"
-
-    case filters = "productsFilters"
+    case input = "productsInput"
   }
 
   init(
-    customerId: String?,
-    filters: [ProductFilterInputRequestModel?]?,
-    globalEntityId: String,
-    locale: String,
-    page: Int?,
-    platform: String?,
-    vendorId: String
+    input: ProductsFilterRequestRequestModel?,
+    productsAttributesKeys: [String]?
   ) {
-    self.customerId = customerId
-    self.filters = filters
-    self.globalEntityId = globalEntityId
-    self.locale = locale
-    self.page = page
-    self.platform = platform
-    self.vendorId = vendorId
+    self.input = input
+    self.productsAttributesKeys = productsAttributesKeys
   }
 
   let requestQuery: String = {
     """
     products(
-      vendorID: $productsVendorId
-      globalEntityID: $productsGlobalEntityId
-      locale: $productsLocale
-      platform: $productsPlatform
-      customerID: $productsCustomerId
-      page: $productsPage
-      filters: $productsFilters
+      input: $productsInput
     ) {
        ...ProductsProductFilterResultFragment
     }
@@ -1026,13 +1216,8 @@ struct ProductsQueryRequest: GraphQLRequesting {
 
   let requestArguments: String = {
     """
-    $productsCustomerId: String,
-    $productsFilters: ProductFilterInput!,
-    $productsGlobalEntityId: String!,
-    $productsLocale: String!,
-    $productsPage: Int,
-    $productsPlatform: String,
-    $productsVendorId: String!
+    $productsAttributesKeys: [String!],
+    $productsInput: ProductsFilterRequest
     """
   }()
 
@@ -1053,14 +1238,20 @@ struct ShopDetailsQueryRequest: GraphQLRequesting {
 
   let input: ShopDetailsRequestRequestModel?
 
+  let shopDetailsShopItemsResponsePage: Int
+
   private enum CodingKeys: String, CodingKey {
     case input = "shopDetailsInput"
+
+    case shopDetailsShopItemsResponsePage
   }
 
   init(
-    input: ShopDetailsRequestRequestModel?
+    input: ShopDetailsRequestRequestModel?,
+    shopDetailsShopItemsResponsePage: Int
   ) {
     self.input = input
+    self.shopDetailsShopItemsResponsePage = shopDetailsShopItemsResponsePage
   }
 
   let requestQuery: String = {
@@ -1075,7 +1266,8 @@ struct ShopDetailsQueryRequest: GraphQLRequesting {
 
   let requestArguments: String = {
     """
-    $shopDetailsInput: ShopDetailsRequest
+    $shopDetailsInput: ShopDetailsRequest,
+    $shopDetailsShopItemsResponsePage: Int!
     """
   }()
 
@@ -1230,24 +1422,81 @@ enum DealSelection: String, GraphQLSelection {
   case triggerQuantity
 }
 
+enum FoodLabellingSelection: String, GraphQLSelection {
+  case additives = """
+  additives {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+  case allergens = """
+  allergens {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+  case nutritionFacts = """
+  nutritionFacts {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+  case productClaims = """
+  productClaims {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+  case productInfos = """
+  productInfos {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+  case warnings = """
+  warnings {
+    ...%@FoodLabellingInfoFragment
+  }
+  """
+}
+
+enum FoodLabellingInfoSelection: String, GraphQLSelection {
+  case labelTitle
+  case labelValues
+}
+
 enum PageInfoSelection: String, GraphQLSelection {
   case isLast
   case pageNumber
 }
 
 enum ProductSelection: String, GraphQLSelection {
+  case attributes = """
+  attributes(
+    keys: $%@AttributesKeys
+  ) {
+    ...%@ProductAttributeFragment
+  }
+  """
   case description
   case favourite
+  case foodLabelling = """
+  foodLabelling {
+    ...%@FoodLabellingFragment
+  }
+  """
   case globalCatalogId = "globalCatalogID"
   case globalCatalogVendorId = "globalCatalogVendorID"
   case isAvailable
   case name
   case originalPrice
+  case packagingCharge
+  case parentId = "parentID"
   case price
   case productId = "productID"
   case stockAmount
   case tags
   case urls
+}
+
+enum ProductAttributeSelection: String, GraphQLSelection {
+  case key
+  case value
 }
 
 enum ProductDealSelection: String, GraphQLSelection {
@@ -1278,19 +1527,37 @@ enum ShopDetailsSelection: String, GraphQLSelection {
     ...%@CategoryTreeFragment
   }
   """
-  case shopItemsList = """
-  shopItemsList {
-    ...%@ShopItemsListFragment
+  case shopItemsResponse = """
+  shopItemsResponse(
+    page: $%@ShopItemsResponsePage
+  ) {
+    ...%@ShopItemsResponseFragment
   }
   """
 }
 
 enum ShopItemsListSelection: String, GraphQLSelection {
   case headline
+  case shopItemId = "shopItemID"
   case shopItemType
   case shopItems = """
   shopItems {
     ...%@ShopItemFragment
+  }
+  """
+  case swimlaneFilterType
+  case trackingId = "trackingID"
+}
+
+enum ShopItemsResponseSelection: String, GraphQLSelection {
+  case pageInfo = """
+  pageInfo {
+    ...%@PageInfoFragment
+  }
+  """
+  case shopItemsList = """
+  shopItemsList {
+    ...%@ShopItemsListFragment
   }
   """
 }
@@ -1308,12 +1575,16 @@ struct QueryRequestSelections: GraphQLSelections {
   let category: Set<CategorySelection>
   let categoryTree: Set<CategoryTreeSelection>
   let deal: Set<DealSelection>
+  let foodLabelling: Set<FoodLabellingSelection>
+  let foodLabellingInfo: Set<FoodLabellingInfoSelection>
   let pageInfo: Set<PageInfoSelection>
   let product: Set<ProductSelection>
+  let productAttribute: Set<ProductAttributeSelection>
   let productDeal: Set<ProductDealSelection>
   let productFilterResult: Set<ProductFilterResultSelection>
   let shopDetails: Set<ShopDetailsSelection>
   let shopItemsList: Set<ShopItemsListSelection>
+  let shopItemsResponse: Set<ShopItemsResponseSelection>
   let subCategory: Set<SubCategorySelection>
 
   init(
@@ -1324,12 +1595,16 @@ struct QueryRequestSelections: GraphQLSelections {
     category: Set<CategorySelection> = .allFields,
     categoryTree: Set<CategoryTreeSelection> = .allFields,
     deal: Set<DealSelection> = .allFields,
+    foodLabelling: Set<FoodLabellingSelection> = .allFields,
+    foodLabellingInfo: Set<FoodLabellingInfoSelection> = .allFields,
     pageInfo: Set<PageInfoSelection> = .allFields,
     product: Set<ProductSelection> = .allFields,
+    productAttribute: Set<ProductAttributeSelection> = .allFields,
     productDeal: Set<ProductDealSelection> = .allFields,
     productFilterResult: Set<ProductFilterResultSelection> = .allFields,
     shopDetails: Set<ShopDetailsSelection> = .allFields,
     shopItemsList: Set<ShopItemsListSelection> = .allFields,
+    shopItemsResponse: Set<ShopItemsResponseSelection> = .allFields,
     subCategory: Set<SubCategorySelection> = .allFields
   ) {
     self.banner = banner
@@ -1339,12 +1614,16 @@ struct QueryRequestSelections: GraphQLSelections {
     self.category = category
     self.categoryTree = categoryTree
     self.deal = deal
+    self.foodLabelling = foodLabelling
+    self.foodLabellingInfo = foodLabellingInfo
     self.pageInfo = pageInfo
     self.product = product
+    self.productAttribute = productAttribute
     self.productDeal = productDeal
     self.productFilterResult = productFilterResult
     self.shopDetails = shopDetails
     self.shopItemsList = shopItemsList
+    self.shopItemsResponse = shopItemsResponse
     self.subCategory = subCategory
   }
 
@@ -1393,6 +1672,18 @@ struct QueryRequestSelections: GraphQLSelections {
     }
     """
 
+    let foodLabellingDeclaration = """
+    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
+    	\(foodLabelling.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
+    let foodLabellingInfoDeclaration = """
+    fragment \(capitalizedRequestName)FoodLabellingInfoFragment on FoodLabellingInfo {
+    	\(foodLabellingInfo.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
     let pageInfoDeclaration = """
     fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
     	\(pageInfo.requestFragments(requestName: capitalizedRequestName))
@@ -1402,6 +1693,12 @@ struct QueryRequestSelections: GraphQLSelections {
     let productDeclaration = """
     fragment \(capitalizedRequestName)ProductFragment on Product {
     	\(product.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
+    let productAttributeDeclaration = """
+    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
+    	\(productAttribute.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1429,6 +1726,12 @@ struct QueryRequestSelections: GraphQLSelections {
     }
     """
 
+    let shopItemsResponseDeclaration = """
+    fragment \(capitalizedRequestName)ShopItemsResponseFragment on ShopItemsResponse {
+    	\(shopItemsResponse.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
     let subCategoryDeclaration = """
     fragment \(capitalizedRequestName)SubCategoryFragment on SubCategory {
     	\(subCategory.requestFragments(requestName: capitalizedRequestName))
@@ -1443,12 +1746,16 @@ struct QueryRequestSelections: GraphQLSelections {
       "\(capitalizedRequestName)CategoryFragment": categoryDeclaration,
       "\(capitalizedRequestName)CategoryTreeFragment": categoryTreeDeclaration,
       "\(capitalizedRequestName)DealFragment": dealDeclaration,
+      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingDeclaration,
+      "\(capitalizedRequestName)FoodLabellingInfoFragment": foodLabellingInfoDeclaration,
       "\(capitalizedRequestName)PageInfoFragment": pageInfoDeclaration,
       "\(capitalizedRequestName)ProductFragment": productDeclaration,
+      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeDeclaration,
       "\(capitalizedRequestName)ProductDealFragment": productDealDeclaration,
       "\(capitalizedRequestName)ProductFilterResultFragment": productFilterResultDeclaration,
       "\(capitalizedRequestName)ShopDetailsFragment": shopDetailsDeclaration,
       "\(capitalizedRequestName)ShopItemsListFragment": shopItemsListDeclaration,
+      "\(capitalizedRequestName)ShopItemsResponseFragment": shopItemsResponseDeclaration,
       "\(capitalizedRequestName)SubCategoryFragment": subCategoryDeclaration
     ]
 
@@ -1549,22 +1856,34 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
 // MARK: - Selections
 
 struct ProductsQueryRequestSelections: GraphQLSelections {
+  let foodLabellingSelections: Set<FoodLabellingSelection>
   let pageInfoSelections: Set<PageInfoSelection>
   let productSelections: Set<ProductSelection>
+  let productAttributeSelections: Set<ProductAttributeSelection>
   let productFilterResultSelections: Set<ProductFilterResultSelection>
 
   init(
+    foodLabellingSelections: Set<FoodLabellingSelection> = .allFields,
     pageInfoSelections: Set<PageInfoSelection> = .allFields,
     productSelections: Set<ProductSelection> = .allFields,
+    productAttributeSelections: Set<ProductAttributeSelection> = .allFields,
     productFilterResultSelections: Set<ProductFilterResultSelection> = .allFields
   ) {
+    self.foodLabellingSelections = foodLabellingSelections
     self.pageInfoSelections = pageInfoSelections
     self.productSelections = productSelections
+    self.productAttributeSelections = productAttributeSelections
     self.productFilterResultSelections = productFilterResultSelections
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
     let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let foodLabellingSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
+    	\(foodLabellingSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
 
     let pageInfoSelectionsDeclaration = """
     fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
@@ -1578,6 +1897,12 @@ struct ProductsQueryRequestSelections: GraphQLSelections {
     }
     """
 
+    let productAttributeSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
+    	\(productAttributeSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
     let productFilterResultSelectionsDeclaration = """
     fragment \(capitalizedRequestName)ProductFilterResultFragment on ProductFilterResult {
     	\(productFilterResultSelections.requestFragments(requestName: capitalizedRequestName))
@@ -1585,8 +1910,10 @@ struct ProductsQueryRequestSelections: GraphQLSelections {
     """
 
     let selectionDeclarationMap = [
+      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingSelectionsDeclaration,
       "\(capitalizedRequestName)PageInfoFragment": pageInfoSelectionsDeclaration,
       "\(capitalizedRequestName)ProductFragment": productSelectionsDeclaration,
+      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeSelectionsDeclaration,
       "\(capitalizedRequestName)ProductFilterResultFragment": productFilterResultSelectionsDeclaration
     ]
 
@@ -1611,27 +1938,39 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
   let bannerSelections: Set<BannerSelection>
   let categorySelections: Set<CategorySelection>
   let categoryTreeSelections: Set<CategoryTreeSelection>
+  let foodLabellingSelections: Set<FoodLabellingSelection>
+  let pageInfoSelections: Set<PageInfoSelection>
   let productSelections: Set<ProductSelection>
+  let productAttributeSelections: Set<ProductAttributeSelection>
   let shopDetailsSelections: Set<ShopDetailsSelection>
 
   let shopItemsListSelections: Set<ShopItemsListSelection>
+  let shopItemsResponseSelections: Set<ShopItemsResponseSelection>
   let subCategorySelections: Set<SubCategorySelection>
 
   init(
     bannerSelections: Set<BannerSelection> = .allFields,
     categorySelections: Set<CategorySelection> = .allFields,
     categoryTreeSelections: Set<CategoryTreeSelection> = .allFields,
+    foodLabellingSelections: Set<FoodLabellingSelection> = .allFields,
+    pageInfoSelections: Set<PageInfoSelection> = .allFields,
     productSelections: Set<ProductSelection> = .allFields,
+    productAttributeSelections: Set<ProductAttributeSelection> = .allFields,
     shopDetailsSelections: Set<ShopDetailsSelection> = .allFields,
     shopItemsListSelections: Set<ShopItemsListSelection> = .allFields,
+    shopItemsResponseSelections: Set<ShopItemsResponseSelection> = .allFields,
     subCategorySelections: Set<SubCategorySelection> = .allFields
   ) {
     self.bannerSelections = bannerSelections
     self.categorySelections = categorySelections
     self.categoryTreeSelections = categoryTreeSelections
+    self.foodLabellingSelections = foodLabellingSelections
+    self.pageInfoSelections = pageInfoSelections
     self.productSelections = productSelections
+    self.productAttributeSelections = productAttributeSelections
     self.shopDetailsSelections = shopDetailsSelections
     self.shopItemsListSelections = shopItemsListSelections
+    self.shopItemsResponseSelections = shopItemsResponseSelections
     self.subCategorySelections = subCategorySelections
   }
 
@@ -1656,9 +1995,27 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
     }
     """
 
+    let foodLabellingSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
+    	\(foodLabellingSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
+    let pageInfoSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
+    	\(pageInfoSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
     let productSelectionsDeclaration = """
     fragment \(capitalizedRequestName)ProductFragment on Product {
     	\(productSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
+    let productAttributeSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
+    	\(productAttributeSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1671,8 +2028,8 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
     let shopItemSelectionsDeclaration = """
     fragment \(capitalizedRequestName)ShopItemFragment on ShopItem {
     	__typename
-    	...\(capitalizedRequestName)CategoryFragment
     	...\(capitalizedRequestName)BannerFragment
+    	...\(capitalizedRequestName)CategoryFragment
     	...\(capitalizedRequestName)ProductFragment
     }
     """
@@ -1680,6 +2037,12 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
     let shopItemsListSelectionsDeclaration = """
     fragment \(capitalizedRequestName)ShopItemsListFragment on ShopItemsList {
     	\(shopItemsListSelections.requestFragments(requestName: capitalizedRequestName))
+    }
+    """
+
+    let shopItemsResponseSelectionsDeclaration = """
+    fragment \(capitalizedRequestName)ShopItemsResponseFragment on ShopItemsResponse {
+    	\(shopItemsResponseSelections.requestFragments(requestName: capitalizedRequestName))
     }
     """
 
@@ -1693,10 +2056,14 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
       "\(capitalizedRequestName)BannerFragment": bannerSelectionsDeclaration,
       "\(capitalizedRequestName)CategoryFragment": categorySelectionsDeclaration,
       "\(capitalizedRequestName)CategoryTreeFragment": categoryTreeSelectionsDeclaration,
+      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingSelectionsDeclaration,
+      "\(capitalizedRequestName)PageInfoFragment": pageInfoSelectionsDeclaration,
       "\(capitalizedRequestName)ProductFragment": productSelectionsDeclaration,
+      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeSelectionsDeclaration,
       "\(capitalizedRequestName)ShopDetailsFragment": shopDetailsSelectionsDeclaration,
       "\(capitalizedRequestName)ShopItemFragment": shopItemSelectionsDeclaration,
       "\(capitalizedRequestName)ShopItemsListFragment": shopItemsListSelectionsDeclaration,
+      "\(capitalizedRequestName)ShopItemsResponseFragment": shopItemsResponseSelectionsDeclaration,
       "\(capitalizedRequestName)SubCategoryFragment": subCategorySelectionsDeclaration
     ]
 

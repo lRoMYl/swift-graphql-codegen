@@ -9,7 +9,7 @@ func mockBasicExample() {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/dh-graphql-codegen-ios/Example/GroceriesExample (Basic)"
 
   // Generate schema.json from
-  let remoteGroceriesSchema = "https://sg-st.fd-api.com/groceries-product-service/query"
+  let remoteGroceriesSchema = "https://sg-st.fd-api.com/groceries-graphql-gateway/query"
   let introspectionOutputPath = examplePath + "/GraphQL/"
 
   GraphQLCodegenCLI.Introspection.main([
