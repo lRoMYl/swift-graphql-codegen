@@ -79,7 +79,11 @@ extension GraphQLCodegenCLI {
 
     public func run() throws {
       let measurementLogger = MeasurementLogger()
-      let spinner = Spinner(pattern: .dots, color: .lightCyan)
+      let spinner = Spinner(
+        pattern: .dots,
+        text: "GraphQL Codegen started for \(outputFilename) (\(target.rawValue))",
+        color: .lightCyan
+      )
 
       startLog(measurementLogger: measurementLogger, spinner: spinner)
 
@@ -176,12 +180,12 @@ private extension GraphQLCodegenCLI.Codegen {
 // MARK: - Logging
 
 private extension GraphQLCodegenCLI.Codegen {
+  var outputFilename: String {
+    output.split(separator: "/").last ?? ""
+  }
+
   func startLog(measurementLogger: MeasurementLogger, spinner: Spinner) {
-    let filename = output.split(separator: "/").last ?? ""
-
     measurementLogger.start()
-
-    spinner.text = "GraphQL Codegen started for \(filename) (\(target.rawValue))"
     spinner.start()
   }
 
@@ -195,9 +199,8 @@ private extension GraphQLCodegenCLI.Codegen {
       let measurement = measurementLogger.executedSecondsText == nil
         ? ""
         : " in \(measurementLogger.executedSecondsText!)"
-      let filename = output.split(separator: "/").last ?? ""
 
-      spinner.succeed(text: "GraphQL Codegen completed for \(filename) (\(target.rawValue))\(measurement)")
+      spinner.succeed(text: "GraphQL Codegen completed for \(outputFilename) (\(target.rawValue))\(measurement)")
 
       if verbose {
         print("File succesfully created/updated at \(output)")
