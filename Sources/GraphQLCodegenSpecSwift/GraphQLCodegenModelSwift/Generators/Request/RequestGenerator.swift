@@ -96,13 +96,16 @@ private extension RequestGenerator {
   ) throws -> [String] {
     let returnObject = try operation.returnObject()
 
-    var result: [String] = try returnObject.selectableFields(selectionMap: selectionMap).map { field in
-      try requestParameterDeclaration(
-        operation: operation,
-        schema: schema,
-        field: field
-      )
-    }
+    var result: [String] = try returnObject
+      .selectableFields(selectionMap: selectionMap)
+      .sorted(by: .namedType)
+      .map { field in
+        try requestParameterDeclaration(
+          operation: operation,
+          schema: schema,
+          field: field
+        )
+      }
 
     result.append(try requestParameterDeclaration(operation: operation))
 

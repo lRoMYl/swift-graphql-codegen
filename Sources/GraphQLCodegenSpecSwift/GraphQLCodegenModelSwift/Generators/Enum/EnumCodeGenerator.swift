@@ -21,7 +21,7 @@ struct EnumCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let code = try schema.enums.map {
+    let code = try schema.enums.sorted(by: { $0.name > $1.name }).map {
       try $0.declaration(entityNameProvider: entityNameProvider)
     }.lines
 

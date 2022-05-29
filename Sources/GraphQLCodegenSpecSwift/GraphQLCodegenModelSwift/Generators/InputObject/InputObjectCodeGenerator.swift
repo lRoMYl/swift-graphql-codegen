@@ -30,7 +30,7 @@ struct InputObjectCodeGenerator: GraphQLCodeGenerating {
   }
 
   func code(schema: Schema) throws -> String {
-    let codes = try schema.inputObjects.compactMap {
+    let codes = try schema.inputObjects.sorted(by: { $0.name > $1.name }).compactMap {
       try declaration(inputObjectType: $0)
     }.lines
 
