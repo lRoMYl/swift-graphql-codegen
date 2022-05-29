@@ -79,14 +79,9 @@ extension GraphQLCodegenCLI {
 
     public func run() throws {
       let measurementLogger = MeasurementLogger()
-      let spinner = Spinner(
-        pattern: .dots,
-        text: "GraphQL Codegen started for \(outputFilename) (\(target.rawValue))",
-        color: .lightCyan
-      )
+      let spinner = Spinner(pattern: .dots, color: .lightCyan)
 
-      measurementLogger.start()
-      spinner.start()
+      startLog(measurementLogger: measurementLogger, spinner: spinner)
 
       let config = try fetchConfig()
       let generatedCodeData: Data?
@@ -185,6 +180,13 @@ private extension GraphQLCodegenCLI.Codegen {
     String(output.split(separator: "/").last ?? "")
   }
 
+  func startLog(measurementLogger: MeasurementLogger, spinner: Spinner) {
+    measurementLogger.start()
+
+    spinner.text = "Generating \(outputFilename) (\(target.rawValue))"
+    spinner.start()
+  }
+
   func finishLog(measurementLogger: MeasurementLogger, spinner: Spinner, success: Bool) {
     if !success {
       spinner.fail(
@@ -196,7 +198,7 @@ private extension GraphQLCodegenCLI.Codegen {
         ? ""
         : " in \(measurementLogger.executedSecondsText!)"
 
-      spinner.succeed(text: "GraphQL Codegen completed for \(outputFilename) (\(target.rawValue))\(measurement)")
+      spinner.succeed(text: "Generated \(outputFilename) (\(target.rawValue))\(measurement)")
 
       if verbose {
         print("File succesfully created/updated at \(output)")
