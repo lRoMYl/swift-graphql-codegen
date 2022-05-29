@@ -34,14 +34,16 @@ final class SelectionSpecGeneratorTests: XCTestCase {
     let expectedDeclaration = try #"""
     enum CampaignAttributeSelection: String, GraphQLSelection {
       case autoApplied
-      case benefits
-      case campaignType
-      case description
-      case discount = """
-      discount {
-        ...%@DiscountFragment
+      case benefits = """
+      benefits {
+        ...%@BenefitFragment
       }
       """
+      case campaignEndTime
+      case campaignType
+      case description
+      case discountType
+      case discountValue
       case id
       case name
       case redemptionLimit

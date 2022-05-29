@@ -42,14 +42,6 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
     let globalEntityId: String
 
     let locale: String
-
-    let languageId: String
-
-    let languageCode: String
-
-    let apiKey: String
-
-    let discoClientId: String
     """.format()
 
     XCTAssertEqual(declaration, expectedDeclaration)
@@ -75,10 +67,6 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
     VendorID: $campaignsVendorId
     GlobalEntityID: $campaignsGlobalEntityId
     Locale: $campaignsLocale
-    LanguageID: $campaignsLanguageId
-    LanguageCode: $campaignsLanguageCode
-    APIKey: $campaignsApiKey
-    DiscoClientID: $campaignsDiscoClientId
     """.format()
 
     XCTAssertEqual(declaration, expectedDeclaration)
@@ -104,13 +92,9 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
     }
 
     let expectedDeclaration = [
-      ("$campaignsApiKey", "$campaignsApiKey: String!"),
-      ("$campaignsDiscoClientId", "$campaignsDiscoClientId: String!"),
+      ("$campaignsVendorId", "$campaignsVendorId: String!"),
       ("$campaignsGlobalEntityId", "$campaignsGlobalEntityId: String!"),
-      ("$campaignsLanguageCode", "$campaignsLanguageCode: String!"),
-      ("$campaignsLanguageId", "$campaignsLanguageId: String!"),
-      ("$campaignsLocale", "$campaignsLocale: String!"),
-      ("$campaignsVendorId", "$campaignsVendorId: String!")
+      ("$campaignsLocale", "$campaignsLocale: String!")
     ]
 
     XCTAssertEqual(declaration.count, expectedDeclaration.count)

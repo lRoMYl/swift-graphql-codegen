@@ -39,7 +39,11 @@ final class GraphQLCodegenEntitySwiftTests: XCTestCase {
       var rootSelectionKeys: Set<String> { get }
 
       var requestQuery: String { get }
-      var requestArguments: String { get }
+
+      var requestArguments: [(key: String, value: String)] { get }
+      var subRequestArguments: [(key: String, value: String)] { get }
+
+      func requestArguments(with selections: GraphQLSelections) -> String
       func requestFragments(with selections: GraphQLSelections) -> String
     }
 
@@ -76,13 +80,10 @@ final class GraphQLCodegenEntitySwiftTests: XCTestCase {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         let requestTypeCode = parameters.requestType.rawValue
-        let requestArguments = parameters.requestArguments
-        let requestArgumentsCode = requestArguments.isEmpty
-          ? ""
-          : " (\(requestArguments))"
+        let requestArguments = parameters.requestArguments(with: selections)
 
         let requestQuery = """
-        \(requestTypeCode)\(requestArgumentsCode) {
+        \(requestTypeCode)\(requestArguments) {
           \(parameters.requestQuery)
         }
 

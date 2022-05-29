@@ -56,28 +56,34 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
     // MARK: - Selections
 
     struct CampaignsGraphQLQuerySelections: GraphQLSelections {
+      let benefitSelections: Set<BenefitSelection>
       let campaignAttributeSelections: Set<CampaignAttributeSelection>
       let campaignsSelections: Set<CampaignsSelection>
       let dealSelections: Set<DealSelection>
-      let discountSelections: Set<DiscountSelection>
       let productDealSelections: Set<ProductDealSelection>
 
       init(
+        benefitSelections: Set<BenefitSelection> = .allFields,
         campaignAttributeSelections: Set<CampaignAttributeSelection> = .allFields,
         campaignsSelections: Set<CampaignsSelection> = .allFields,
         dealSelections: Set<DealSelection> = .allFields,
-        discountSelections: Set<DiscountSelection> = .allFields,
         productDealSelections: Set<ProductDealSelection> = .allFields
       ) {
+        self.benefitSelections = benefitSelections
         self.campaignAttributeSelections = campaignAttributeSelections
         self.campaignsSelections = campaignsSelections
         self.dealSelections = dealSelections
-        self.discountSelections = discountSelections
         self.productDealSelections = productDealSelections
       }
 
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
         let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+        let benefitSelectionsDeclaration = \"\"\"
+        fragment \\(capitalizedRequestName)BenefitFragment on Benefit {
+        \t\\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
+        }
+        \"\"\"
 
         let campaignAttributeSelectionsDeclaration = \"\"\"
         fragment \\(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
@@ -97,12 +103,6 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
         }
         \"\"\"
 
-        let discountSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)DiscountFragment on Discount {
-        \t\\(discountSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
         let productDealSelectionsDeclaration = \"\"\"
         fragment \\(capitalizedRequestName)ProductDealFragment on ProductDeal {
         \t\\(productDealSelections.requestFragments(requestName: capitalizedRequestName))
@@ -110,10 +110,10 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
         \"\"\"
 
         let selectionDeclarationMap = [
+          "\\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
           "\\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
           "\\(capitalizedRequestName)CampaignsFragment": campaignsSelectionsDeclaration,
           "\\(capitalizedRequestName)DealFragment": dealSelectionsDeclaration,
-          "\\(capitalizedRequestName)DiscountFragment": discountSelectionsDeclaration,
           "\\(capitalizedRequestName)ProductDealFragment": productDealSelectionsDeclaration
         ]
 
@@ -162,19 +162,25 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
     // MARK: - Selections
 
     struct CampaignAttributeGraphQLQuerySelections: GraphQLSelections {
+      let benefitSelections: Set<BenefitSelection>
       let campaignAttributeSelections: Set<CampaignAttributeSelection>
-      let discountSelections: Set<DiscountSelection>
 
       init(
-        campaignAttributeSelections: Set<CampaignAttributeSelection> = .allFields,
-        discountSelections: Set<DiscountSelection> = .allFields
+        benefitSelections: Set<BenefitSelection> = .allFields,
+        campaignAttributeSelections: Set<CampaignAttributeSelection> = .allFields
       ) {
+        self.benefitSelections = benefitSelections
         self.campaignAttributeSelections = campaignAttributeSelections
-        self.discountSelections = discountSelections
       }
 
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
         let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+        let benefitSelectionsDeclaration = \"\"\"
+        fragment \\(capitalizedRequestName)BenefitFragment on Benefit {
+        \t\\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
+        }
+        \"\"\"
 
         let campaignAttributeSelectionsDeclaration = \"\"\"
         fragment \\(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
@@ -182,15 +188,9 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
         }
         \"\"\"
 
-        let discountSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)DiscountFragment on Discount {
-        \t\\(discountSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
         let selectionDeclarationMap = [
-          "\\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
-          "\\(capitalizedRequestName)DiscountFragment": discountSelectionsDeclaration
+          "\\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
+          "\\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration
         ]
 
         let fragmentMaps = rootSelectionKeys

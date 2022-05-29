@@ -25,97 +25,6 @@ final class RequestSpecGeneratorTests: XCTestCase {
     let expectedDeclaration = try #"""
     // MARK: - GraphQLRequestParameter
 
-    /// CampaignAttributeGraphQLQuery
-    struct CampaignAttributeGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
-      let requestType: GraphQLRequestType = .query
-      let requestName: String = "campaignAttribute"
-      let rootSelectionKeys: Set<String> = ["CampaignAttributeCampaignAttributeFragment"]
-
-      // MARK: - Arguments
-
-      let vendorId: String
-
-      let globalEntityId: String
-
-      let locale: String
-
-      let languageId: String?
-
-      let languageCode: String?
-
-      let apiKey: String
-
-      let discoClientId: String
-
-      private enum CodingKeys: String, CodingKey {
-        case vendorId = "campaignAttributeVendorId"
-
-        case globalEntityId = "campaignAttributeGlobalEntityId"
-
-        case locale = "campaignAttributeLocale"
-
-        case languageId = "campaignAttributeLanguageId"
-
-        case languageCode = "campaignAttributeLanguageCode"
-
-        case apiKey = "campaignAttributeApiKey"
-
-        case discoClientId = "campaignAttributeDiscoClientId"
-      }
-
-      init(
-        apiKey: String,
-        discoClientId: String,
-        globalEntityId: String,
-        languageCode: String?,
-        languageId: String?,
-        locale: String,
-        vendorId: String
-      ) {
-        self.apiKey = apiKey
-        self.discoClientId = discoClientId
-        self.globalEntityId = globalEntityId
-        self.languageCode = languageCode
-        self.languageId = languageId
-        self.locale = locale
-        self.vendorId = vendorId
-      }
-
-      let requestQuery: String = {
-        """
-        campaignAttribute(
-          VendorID: $campaignAttributeVendorId
-          GlobalEntityID: $campaignAttributeGlobalEntityId
-          Locale: $campaignAttributeLocale
-          LanguageID: $campaignAttributeLanguageId
-          LanguageCode: $campaignAttributeLanguageCode
-          APIKey: $campaignAttributeApiKey
-          DiscoClientID: $campaignAttributeDiscoClientId
-        ) {
-           ...CampaignAttributeCampaignAttributeFragment
-        }
-        """
-      }()
-
-      let requestArguments: String = {
-        """
-        $campaignAttributeApiKey: String!,
-        $campaignAttributeDiscoClientId: String!,
-        $campaignAttributeGlobalEntityId: String!,
-        $campaignAttributeLanguageCode: String,
-        $campaignAttributeLanguageId: String,
-        $campaignAttributeLocale: String!,
-        $campaignAttributeVendorId: String!
-        """
-      }()
-
-      func requestFragments(with selections: GraphQLSelections) -> String {
-        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
-      }
-    }
-
     /// CampaignsGraphQLQuery
     struct CampaignsGraphQLQuery: GraphQLRequestParameter {
       // MARK: - GraphQLRequestType
@@ -132,44 +41,20 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       let locale: String
 
-      let languageId: String
-
-      let languageCode: String
-
-      let apiKey: String
-
-      let discoClientId: String
-
       private enum CodingKeys: String, CodingKey {
         case vendorId = "campaignsVendorId"
 
         case globalEntityId = "campaignsGlobalEntityId"
 
         case locale = "campaignsLocale"
-
-        case languageId = "campaignsLanguageId"
-
-        case languageCode = "campaignsLanguageCode"
-
-        case apiKey = "campaignsApiKey"
-
-        case discoClientId = "campaignsDiscoClientId"
       }
 
       init(
-        apiKey: String,
-        discoClientId: String,
         globalEntityId: String,
-        languageCode: String,
-        languageId: String,
         locale: String,
         vendorId: String
       ) {
-        self.apiKey = apiKey
-        self.discoClientId = discoClientId
         self.globalEntityId = globalEntityId
-        self.languageCode = languageCode
-        self.languageId = languageId
         self.locale = locale
         self.vendorId = vendorId
       }
@@ -180,27 +65,349 @@ final class RequestSpecGeneratorTests: XCTestCase {
           VendorID: $campaignsVendorId
           GlobalEntityID: $campaignsGlobalEntityId
           Locale: $campaignsLocale
-          LanguageID: $campaignsLanguageId
-          LanguageCode: $campaignsLanguageCode
-          APIKey: $campaignsApiKey
-          DiscoClientID: $campaignsDiscoClientId
         ) {
            ...CampaignsCampaignsFragment
         }
         """
       }()
 
-      let requestArguments: String = {
+      let requestArguments: [(key: String, value: String)] = [
+        ("$campaignsVendorId", "$campaignsVendorId: String!"),
+        ("$campaignsGlobalEntityId", "$campaignsGlobalEntityId: String!"),
+        ("$campaignsLocale", "$campaignsLocale: String!")
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
+
+      func requestFragments(with selections: GraphQLSelections) -> String {
+        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+      }
+    }
+
+    /// ProductDetailsGraphQLQuery
+    struct ProductDetailsGraphQLQuery: GraphQLRequestParameter {
+      // MARK: - GraphQLRequestType
+
+      let requestType: GraphQLRequestType = .query
+      let requestName: String = "productDetails"
+      let rootSelectionKeys: Set<String> = ["ProductDetailsProductDetailsFragment"]
+
+      // MARK: - Arguments
+
+      let productDetailsAttributesKeys: [String]?
+
+      let productDetailsCrossSellProductsPlatform: String
+
+      let productDetailsCrossSellProductsConfig: String
+
+      let productDetailsCrossSellProductsIsDarkstore: Bool
+
+      let input: ProductRequestGraphQLInputObject?
+
+      private enum CodingKeys: String, CodingKey {
+        case productDetailsAttributesKeys
+
+        case productDetailsCrossSellProductsPlatform
+
+        case productDetailsCrossSellProductsConfig
+
+        case productDetailsCrossSellProductsIsDarkstore
+
+        case input = "productDetailsInput"
+      }
+
+      init(
+        input: ProductRequestGraphQLInputObject?,
+        productDetailsAttributesKeys: [String]?,
+        productDetailsCrossSellProductsConfig: String,
+        productDetailsCrossSellProductsIsDarkstore: Bool,
+        productDetailsCrossSellProductsPlatform: String
+      ) {
+        self.input = input
+        self.productDetailsAttributesKeys = productDetailsAttributesKeys
+        self.productDetailsCrossSellProductsConfig = productDetailsCrossSellProductsConfig
+        self.productDetailsCrossSellProductsIsDarkstore = productDetailsCrossSellProductsIsDarkstore
+        self.productDetailsCrossSellProductsPlatform = productDetailsCrossSellProductsPlatform
+      }
+
+      let requestQuery: String = {
         """
-        $campaignsApiKey: String!,
-        $campaignsDiscoClientId: String!,
-        $campaignsGlobalEntityId: String!,
-        $campaignsLanguageCode: String!,
-        $campaignsLanguageId: String!,
-        $campaignsLocale: String!,
-        $campaignsVendorId: String!
+        productDetails(
+          input: $productDetailsInput
+        ) {
+           ...ProductDetailsProductDetailsFragment
+        }
         """
       }()
+
+      let requestArguments: [(key: String, value: String)] = [
+        ("$productDetailsInput", "$productDetailsInput: ProductRequest")
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+        ("$productDetailsAttributesKeys", "$productDetailsAttributesKeys: [String!]"),
+        ("$productDetailsCrossSellProductsPlatform", "$productDetailsCrossSellProductsPlatform: String!"),
+        ("$productDetailsCrossSellProductsConfig", "$productDetailsCrossSellProductsConfig: String!"),
+        ("$productDetailsCrossSellProductsIsDarkstore", "$productDetailsCrossSellProductsIsDarkstore: Boolean!")
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
+
+      func requestFragments(with selections: GraphQLSelections) -> String {
+        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+      }
+    }
+
+    /// ProductsGraphQLQuery
+    struct ProductsGraphQLQuery: GraphQLRequestParameter {
+      // MARK: - GraphQLRequestType
+
+      let requestType: GraphQLRequestType = .query
+      let requestName: String = "products"
+      let rootSelectionKeys: Set<String> = ["ProductsProductFilterResultFragment"]
+
+      // MARK: - Arguments
+
+      let productsAttributesKeys: [String]?
+
+      let input: ProductsFilterRequestGraphQLInputObject?
+
+      private enum CodingKeys: String, CodingKey {
+        case productsAttributesKeys
+
+        case input = "productsInput"
+      }
+
+      init(
+        input: ProductsFilterRequestGraphQLInputObject?,
+        productsAttributesKeys: [String]?
+      ) {
+        self.input = input
+        self.productsAttributesKeys = productsAttributesKeys
+      }
+
+      let requestQuery: String = {
+        """
+        products(
+          input: $productsInput
+        ) {
+           ...ProductsProductFilterResultFragment
+        }
+        """
+      }()
+
+      let requestArguments: [(key: String, value: String)] = [
+        ("$productsInput", "$productsInput: ProductsFilterRequest")
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+        ("$productsAttributesKeys", "$productsAttributesKeys: [String!]")
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
+
+      func requestFragments(with selections: GraphQLSelections) -> String {
+        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+      }
+    }
+
+    /// ServiceGraphQLQuery
+    struct ServiceGraphQLQuery: GraphQLRequestParameter {
+      // MARK: - GraphQLRequestType
+
+      let requestType: GraphQLRequestType = .query
+      let requestName: String = "service"
+      let rootSelectionKeys: Set<String> = ["ServiceServiceFragment"]
+
+      func encode(to _: Encoder) throws {}
+
+      init(
+      ) {}
+
+      let requestQuery: String = {
+        """
+        service {
+           ...ServiceServiceFragment
+        }
+        """
+      }()
+
+      let requestArguments: [(key: String, value: String)] = [
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
+
+      func requestFragments(with selections: GraphQLSelections) -> String {
+        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+      }
+    }
+
+    /// ShopDetailsGraphQLQuery
+    struct ShopDetailsGraphQLQuery: GraphQLRequestParameter {
+      // MARK: - GraphQLRequestType
+
+      let requestType: GraphQLRequestType = .query
+      let requestName: String = "shopDetails"
+      let rootSelectionKeys: Set<String> = ["ShopDetailsShopDetailsFragment"]
+
+      // MARK: - Arguments
+
+      let shopDetailsAttributesKeys: [String]?
+
+      let input: ShopDetailsRequestGraphQLInputObject?
+
+      let shopDetailsShopItemsResponsePage: Int
+
+      private enum CodingKeys: String, CodingKey {
+        case shopDetailsAttributesKeys
+
+        case input = "shopDetailsInput"
+
+        case shopDetailsShopItemsResponsePage
+      }
+
+      init(
+        input: ShopDetailsRequestGraphQLInputObject?,
+        shopDetailsAttributesKeys: [String]?,
+        shopDetailsShopItemsResponsePage: Int
+      ) {
+        self.input = input
+        self.shopDetailsAttributesKeys = shopDetailsAttributesKeys
+        self.shopDetailsShopItemsResponsePage = shopDetailsShopItemsResponsePage
+      }
+
+      let requestQuery: String = {
+        """
+        shopDetails(
+          input: $shopDetailsInput
+        ) {
+           ...ShopDetailsShopDetailsFragment
+        }
+        """
+      }()
+
+      let requestArguments: [(key: String, value: String)] = [
+        ("$shopDetailsInput", "$shopDetailsInput: ShopDetailsRequest")
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+        ("$shopDetailsAttributesKeys", "$shopDetailsAttributesKeys: [String!]"),
+        ("$shopDetailsShopItemsResponsePage", "$shopDetailsShopItemsResponsePage: Int!")
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
+
+      func requestFragments(with selections: GraphQLSelections) -> String {
+        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+      }
+    }
+
+    /// ServiceGraphQLQuery
+    struct ServiceGraphQLQuery: GraphQLRequestParameter {
+      // MARK: - GraphQLRequestType
+
+      let requestType: GraphQLRequestType = .query
+      let requestName: String = "_service"
+      let rootSelectionKeys: Set<String> = ["_service_ServiceFragment"]
+
+      func encode(to _: Encoder) throws {}
+
+      init(
+      ) {}
+
+      let requestQuery: String = {
+        """
+        _service {
+           ..._service_ServiceFragment
+        }
+        """
+      }()
+
+      let requestArguments: [(key: String, value: String)] = [
+      ]
+
+      let subRequestArguments: [(key: String, value: String)] = [
+      ]
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
+          }
+        }
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+      }
 
       func requestFragments(with selections: GraphQLSelections) -> String {
         selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -218,24 +425,40 @@ final class RequestSpecGeneratorTests: XCTestCase {
         }
       }
 
-      let campaignAttribute: CampaignAttributeGraphQLQuery?
+      let _service: ServiceGraphQLQuery?
       let campaigns: CampaignsGraphQLQuery?
+      let productDetails: ProductDetailsGraphQLQuery?
+      let products: ProductsGraphQLQuery?
+      let service: ServiceGraphQLQuery?
+      let shopDetails: ShopDetailsGraphQLQuery?
 
       private var requests: [GraphQLRequesting] {
         let requests: [GraphQLRequesting?] = [
-          campaignAttribute,
-          campaigns
+          _service,
+          campaigns,
+          productDetails,
+          products,
+          service,
+          shopDetails
         ]
 
         return requests.compactMap { $0 }
       }
 
       init(
-        campaignAttribute: CampaignAttributeGraphQLQuery? = nil,
-        campaigns: CampaignsGraphQLQuery? = nil
+        service: ServiceGraphQLQuery? = nil,
+        campaigns: CampaignsGraphQLQuery? = nil,
+        productDetails: ProductDetailsGraphQLQuery? = nil,
+        products: ProductsGraphQLQuery? = nil,
+        service: ServiceGraphQLQuery? = nil,
+        shopDetails: ShopDetailsGraphQLQuery? = nil
       ) {
-        self.campaignAttribute = campaignAttribute
+        self.service = service
         self.campaigns = campaigns
+        self.productDetails = productDetails
+        self.products = products
+        self.service = service
+        self.shopDetails = shopDetails
       }
 
       func encode(to encoder: Encoder) throws {
@@ -250,121 +473,30 @@ final class RequestSpecGeneratorTests: XCTestCase {
           .joined(separator: "\n")
       }
 
-      var requestArguments: String {
-        requests
-          .map { $0.requestArguments }
-          .joined(separator: "\n")
-      }
-
-      func requestFragments(with selections: GraphQLSelections) -> String {
-        requests.map {
-          selections.requestFragments(for: $0.requestName, rootSelectionKeys: rootSelectionKeys)
-        }.joined(separator: "\n")
-      }
-    }
-
-    /// CampaignAttributeGraphQLMutation
-    struct CampaignAttributeGraphQLMutation: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
-      let requestType: GraphQLRequestType = .mutation
-      let requestName: String = "campaignAttribute"
-      let rootSelectionKeys: Set<String> = ["CampaignAttributeCampaignAttributeFragment"]
-
-      // MARK: - Arguments
-
-      let vendorId: String
-
-      let benefits: [String]
-
-      let optionalBenefits: [String?]?
-
-      private enum CodingKeys: String, CodingKey {
-        case vendorId = "campaignAttributeVendorId"
-
-        case benefits = "campaignAttributeBenefits"
-
-        case optionalBenefits = "campaignAttributeOptionalBenefits"
-      }
-
-      init(
-        benefits: [String],
-        optionalBenefits: [String?]?,
-        vendorId: String
-      ) {
-        self.benefits = benefits
-        self.optionalBenefits = optionalBenefits
-        self.vendorId = vendorId
-      }
-
-      let requestQuery: String = {
-        """
-        campaignAttribute(
-          VendorID: $campaignAttributeVendorId
-          Benefits: $campaignAttributeBenefits
-          OptionalBenefits: $campaignAttributeOptionalBenefits
-        ) {
-           ...CampaignAttributeCampaignAttributeFragment
+      var requestArguments: [(key: String, value: String)] {
+        requests.reduce(into: [(key: String, value: String)]()) { result, element in
+          result.append(contentsOf: element.requestArguments)
         }
-        """
-      }()
-
-      let requestArguments: String = {
-        """
-        $campaignAttributeBenefits: [String!]!,
-        $campaignAttributeOptionalBenefits: [String],
-        $campaignAttributeVendorId: String!
-        """
-      }()
-
-      func requestFragments(with selections: GraphQLSelections) -> String {
-        selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
       }
-    }
 
-    struct GraphQLMutation: GraphQLRequestParameter {
-      let requestType: GraphQLRequestType = .mutation
-      let requestName: String = ""
-      var rootSelectionKeys: Set<String> {
-        return requests.reduce(into: Set<String>()) { result, request in
-          request.rootSelectionKeys.forEach {
-            result.insert($0)
+      var subRequestArguments: [(key: String, value: String)] {
+        requests.reduce(into: [(key: String, value: String)]()) { result, element in
+          result.append(contentsOf: element.subRequestArguments)
+        }
+      }
+
+      func requestArguments(with selections: GraphQLSelections) -> String {
+        let requestFragments = self.requestFragments(with: selections)
+        var selectedSubRequestArguments = [(key: String, value: String)]()
+        subRequestArguments.forEach {
+          if requestFragments.contains($0.key) {
+            selectedSubRequestArguments.append($0)
           }
         }
-      }
-
-      let campaignAttribute: CampaignAttributeGraphQLMutation?
-
-      private var requests: [GraphQLRequesting] {
-        let requests: [GraphQLRequesting?] = [
-          campaignAttribute
-        ]
-
-        return requests.compactMap { $0 }
-      }
-
-      init(
-        campaignAttribute: CampaignAttributeGraphQLMutation? = nil
-      ) {
-        self.campaignAttribute = campaignAttribute
-      }
-
-      func encode(to encoder: Encoder) throws {
-        try requests.forEach {
-          try $0.encode(to: encoder)
-        }
-      }
-
-      var requestQuery: String {
-        requests
-          .map { $0.requestQuery }
-          .joined(separator: "\n")
-      }
-
-      var requestArguments: String {
-        requests
-          .map { $0.requestArguments }
-          .joined(separator: "\n")
+        let arguments = requestArguments + selectedSubRequestArguments
+        return arguments.isEmpty
+          ? ""
+          : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
       }
 
       func requestFragments(with selections: GraphQLSelections) -> String {

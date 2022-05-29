@@ -25,8 +25,17 @@ final class InputObjectSpecGeneratorTests: XCTestCase {
     let expectedDeclaration = try """
     // MARK: - Input Objects
 
-    struct GreetingGraphQLInputObject: Codable {
+    struct GreetingOptionsGraphQLInputObject: Codable {
+      let prefix: String?
 
+      // MARK: - CodingKeys
+
+      private enum CodingKeys: String, CodingKey {
+        case prefix
+      }
+    }
+
+    struct GreetingGraphQLInputObject: Codable {
       let language: LanguageGraphQLEnumObject?
 
       let name: String
@@ -34,18 +43,8 @@ final class InputObjectSpecGeneratorTests: XCTestCase {
       // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
-        case language = "language"
-        case name = "name"
-      }
-    }
-
-    struct GreetingOptionsGraphQLInputObject: Codable {
-      let prefix: String?
-
-      // MARK: - CodingKeys
-
-      private enum CodingKeys: String, CodingKey {
-        case prefix = "prefix"
+        case language
+        case name
       }
     }
     """.format()
