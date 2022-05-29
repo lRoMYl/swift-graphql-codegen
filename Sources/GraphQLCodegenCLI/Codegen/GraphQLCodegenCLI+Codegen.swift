@@ -9,6 +9,7 @@ import ArgumentParser
 import Foundation
 import GraphQLAST
 import GraphQLCodegenConfig
+import GraphQLCodegenUtil
 
 extension GraphQLCodegenCLI {
   struct Codegen: ParsableCommand {
@@ -76,6 +77,13 @@ extension GraphQLCodegenCLI {
     }
 
     public func run() throws {
+      let filename = output.split(separator: "/").last ?? ""
+      let measurementLogger = MeasurementLogger()
+
+      measurementLogger.start()
+
+      print("GraphQL Codegen started for \(filename) (\(target.rawValue))")
+
       let config = try fetchConfig()
       let generatedCodeData: Data?
 
@@ -98,7 +106,18 @@ extension GraphQLCodegenCLI {
       let success = FileManager().createFile(atPath: output, contents: generatedCodeData, attributes: [:])
 
       if !success {
-        print("Failed to create file at \(output)")
+        print("Failed to create file at \(output), please ensure the provided directory exist")
+      } else {
+        if verbose {
+          print("File succesfully created/updated at \(output)")
+        }
+
+        measurementLogger.stop()
+        let measurement = measurementLogger.executedSecondsText == nil
+          ? ""
+          : " in \(measurementLogger.executedSecondsText!)"
+
+        print("GraphQL Codegen completed for \(filename) (\(target.rawValue))\(measurement)")
       }
     }
   }
