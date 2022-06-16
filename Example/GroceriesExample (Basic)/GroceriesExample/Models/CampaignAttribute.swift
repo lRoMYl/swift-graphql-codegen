@@ -24,12 +24,12 @@ struct CampaignAttribute {
 extension CampaignAttribute {
   init(with campaignAttribute: CampaignAttributeResponseModel) throws {
     self = CampaignAttribute(
-      id: try campaignAttribute.id(),
-      name: try campaignAttribute.name(),
-      description: (try? campaignAttribute.description()) ?? "",
+      id: try campaignAttribute.id,
+      name: try campaignAttribute.name,
+      description: (try? campaignAttribute.description) ?? "",
       customVariableNotInResponse: "",
-      source: CampaignAttribute.Source(with: try campaignAttribute.source()),
-      responseSource: try campaignAttribute.source()
+      source: CampaignAttribute.Source(with: try campaignAttribute.source),
+      responseSource: try campaignAttribute.source
     )
   }
 }

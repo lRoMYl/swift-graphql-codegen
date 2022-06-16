@@ -26,7 +26,8 @@ func mockBasicExample() {
     groceriesSchema,
     "--config-path", groceriesConfig,
     "--output-path", outputPath,
-    "--api-client-prefix", "Groceries"
+    "--api-client-prefix", "Groceries",
+    "--is-throwable-getter-enabled"
   ])
 }
 

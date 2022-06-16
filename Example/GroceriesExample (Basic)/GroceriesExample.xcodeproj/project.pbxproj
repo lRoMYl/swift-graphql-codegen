@@ -222,7 +222,6 @@
 				F858078D270D54AA00947AD3 /* Frameworks */,
 				F858078E270D54AA00947AD3 /* Resources */,
 				F85807CD270D690700947AD3 /* Embed Frameworks */,
-				F89E1238273A4FC7007E7F35 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -276,26 +275,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		F89E1238273A4FC7007E7F35 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nmake codegen-groceries\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F858078C270D54AA00947AD3 /* Sources */ = {

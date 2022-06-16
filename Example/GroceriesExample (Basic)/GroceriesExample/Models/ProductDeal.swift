@@ -15,7 +15,7 @@ struct ProductDeal {
 extension ProductDeal {
   init(with productDeal: ProductDealResponseModel) throws {
     self = ProductDeal(
-      productId: try productDeal.productId(),
+      productId: try productDeal.productId,
       deals: nil
     )
   }

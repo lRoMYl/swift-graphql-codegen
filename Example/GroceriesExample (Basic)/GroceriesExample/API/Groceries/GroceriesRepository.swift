@@ -12,13 +12,26 @@ enum GroceriesRepositoryError: Error {
   case missingData
 }
 
+struct GraphQLResponseErrorExtension: Decodable {
+  let selectionSet: String?
+}
+
 protocol GroceriesRepositoring {
   func campaigns(
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign?>
 
+  func shopDetails(
+    with parameters: ShopDetailsQueryRequest
+  ) -> Single<ShopDetailsResponseModel?>
+
+  func products(
+    with parameters: ProductsQueryRequest
+  ) -> Single<ProductFilterResultResponseModel?>
+
   func query(
-    with parameters: CampaignsQueryRequest
+    campaignQueryRequest: CampaignsQueryRequest,
+    shopDetailsQueryRequest: ShopDetailsQueryRequest
   ) -> Single<QueryResponseModel>
 }
 
@@ -46,25 +59,70 @@ final class GroceriesRepository: GroceriesRepositoring {
       with: parameters,
       selections: selections
     )
-    .map {
-      guard let responseModel = $0.data?.campaigns else {
-        throw GroceriesRepositoryError.missingData
-      }
+      .map {
+        guard let responseModel = $0.data?.data?.campaigns else {
+          throw GroceriesRepositoryError.missingData
+        }
 
-      return try self.campaignMapper.map(response: responseModel)
-    }
+        return try self.campaignMapper.map(response: responseModel)
+      }
+  }
+
+  func shopDetails(
+    with parameters: ShopDetailsQueryRequest
+  ) -> Single<ShopDetailsResponseModel?> {
+    let selections = ShopDetailsQueryRequestSelections(
+      shopDetailsSelections: .allFields,
+      shopItemsListSelections: .allFields
+    )
+
+    return apiClient.shopDetails(
+      with: parameters,
+      selections: selections
+    )
+      .map {
+        guard let responseModel = $0.data?.data?.shopDetails else {
+          throw GroceriesRepositoryError.missingData
+        }
+
+        return responseModel
+      }
+  }
+
+  func products(
+    with parameters: ProductsQueryRequest
+  ) -> Single<ProductFilterResultResponseModel?> {
+    let selections = ProductsQueryRequestSelections(
+      pageInfoSelections: .allFields,
+      productSelections: .allFields,
+      productFilterResultSelections: .allFields
+    )
+
+    return apiClient.products(
+      with: parameters,
+      selections: selections
+    )
+      .map {
+        guard let responseModel = $0.data?.data?.products else {
+          throw GroceriesRepositoryError.missingData
+        }
+
+        return responseModel
+      }
   }
 
   func query(
-    with parameters: CampaignsQueryRequest
+    campaignQueryRequest: CampaignsQueryRequest,
+    shopDetailsQueryRequest: ShopDetailsQueryRequest
   ) -> Single<QueryResponseModel> {
     apiClient.query(
       with: QueryRequest(
-        campaigns: parameters
+        campaigns: campaignQueryRequest,
+        shopDetails: shopDetailsQueryRequest
       ),
       selections: QueryRequestSelections()
     ).map {
-      guard let responseModel = $0.data else {
+      guard let responseModel = $0.data?.data else {
         throw GroceriesRepositoryError.missingData
       }
 

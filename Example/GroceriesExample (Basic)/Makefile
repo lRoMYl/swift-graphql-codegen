@@ -1,4 +1,4 @@
-SCHEMA_URL = "https://sg-st.fd-api.com/groceries-product-service/query"
+SCHEMA_URL = "https://sg.fd-api.com/groceries-graphql-gateway/query"
 SCHEMA = "GraphQL/schema.json"
 CONFIG = "GraphQL/config.json"
 OUTPUT_PATH = "GroceriesExample/API/"
@@ -10,8 +10,8 @@ install:
 	brew tap lromyl/tap
 	brew install swift-graphql-codegen
 
-codegen-introspection:
+graphql-introspection:
 	swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_PATH)
 
-codegen-groceries:
-	swift-graphql-codegen dh-swift $(SCHEMA) --output-path $(OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
+graphql-codegen:
+	swift-graphql-codegen dh-swift $(SCHEMA) --output-path $(OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX) --is-throwable-getter-enabled

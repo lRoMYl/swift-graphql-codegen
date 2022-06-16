@@ -110,7 +110,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     // MARK: - \(entityNameMap.response)
 
-    struct \(entityNameMap.response)<ResponseData: Codable>: Codable {
+    struct \(entityNameMap.response)<ResponseData: \(entityNameProvider.responseType)>: \(entityNameProvider.responseType) {
       let data: ResponseData?
       let errors: [\(entityNameMap.responseError)]?
     }

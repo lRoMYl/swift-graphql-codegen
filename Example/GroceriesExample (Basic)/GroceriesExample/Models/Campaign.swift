@@ -16,7 +16,7 @@ extension Campaign {
   init(with campaign: CampaignsResponseModel) throws {
     self = Campaign(
       attributes: try campaign
-        .campaignAttributes()?
+        .campaignAttributes?
         .compactMap { attribute in
           return try CampaignAttribute(with: attribute)
         },

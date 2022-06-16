@@ -324,28 +324,28 @@ struct BannerResponseModel: Decodable {
   private let internalPosition: Optional<Int>
   private let internalTargetAudience: Optional<String>
 
-  func bannerUrl() throws -> String {
-    try value(for: \Self.internalBannerUrl, codingKey: CodingKeys.internalBannerUrl)
+  var bannerUrl: String {
+    get throws { try value(for: \Self.internalBannerUrl, codingKey: CodingKeys.internalBannerUrl) }
   }
 
-  func globalId() throws -> String {
-    try value(for: \Self.internalGlobalId, codingKey: CodingKeys.internalGlobalId)
+  var globalId: String {
+    get throws { try value(for: \Self.internalGlobalId, codingKey: CodingKeys.internalGlobalId) }
   }
 
-  func isStatic() throws -> Bool {
-    try value(for: \Self.internalIsStatic, codingKey: CodingKeys.internalIsStatic)
+  var isStatic: Bool {
+    get throws { try value(for: \Self.internalIsStatic, codingKey: CodingKeys.internalIsStatic) }
   }
 
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
+  var name: String {
+    get throws { try value(for: \Self.internalName, codingKey: CodingKeys.internalName) }
   }
 
-  func position() throws -> Int {
-    try value(for: \Self.internalPosition, codingKey: CodingKeys.internalPosition)
+  var position: Int {
+    get throws { try value(for: \Self.internalPosition, codingKey: CodingKeys.internalPosition) }
   }
 
-  func targetAudience() throws -> String {
-    try value(for: \Self.internalTargetAudience, codingKey: CodingKeys.internalTargetAudience)
+  var targetAudience: String {
+    get throws { try value(for: \Self.internalTargetAudience, codingKey: CodingKeys.internalTargetAudience) }
   }
 
   init(from decoder: Decoder) throws {
@@ -373,12 +373,12 @@ struct BenefitResponseModel: Decodable {
   private let internalProductId: Optional<String>
   private let internalQuantity: Optional<Int>
 
-  func productId() throws -> String {
-    try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId)
+  var productId: String {
+    get throws { try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId) }
   }
 
-  func quantity() throws -> Int {
-    try value(for: \Self.internalQuantity, codingKey: CodingKeys.internalQuantity)
+  var quantity: Int {
+    get throws { try value(for: \Self.internalQuantity, codingKey: CodingKeys.internalQuantity) }
   }
 
   init(from decoder: Decoder) throws {
@@ -407,48 +407,48 @@ struct CampaignAttributeResponseModel: Decodable {
   private let internalRedemptionLimit: Optional<Double>
   private let internalSource: Optional<CampaignSourceEnumResponseModel>
 
-  func autoApplied() throws -> Bool {
-    try value(for: \Self.internalAutoApplied, codingKey: CodingKeys.internalAutoApplied)
+  var autoApplied: Bool {
+    get throws { try value(for: \Self.internalAutoApplied, codingKey: CodingKeys.internalAutoApplied) }
   }
 
-  func benefits() throws -> [BenefitResponseModel]? {
-    try value(for: \Self.internalBenefits, codingKey: CodingKeys.internalBenefits)
+  var benefits: [BenefitResponseModel]? {
+    get throws { try value(for: \Self.internalBenefits, codingKey: CodingKeys.internalBenefits) }
   }
 
-  func campaignEndTime() throws -> String {
-    try value(for: \Self.internalCampaignEndTime, codingKey: CodingKeys.internalCampaignEndTime)
+  var campaignEndTime: String {
+    get throws { try value(for: \Self.internalCampaignEndTime, codingKey: CodingKeys.internalCampaignEndTime) }
   }
 
-  func campaignType() throws -> CampaignTypeEnumResponseModel {
-    try value(for: \Self.internalCampaignType, codingKey: CodingKeys.internalCampaignType)
+  var campaignType: CampaignTypeEnumResponseModel {
+    get throws { try value(for: \Self.internalCampaignType, codingKey: CodingKeys.internalCampaignType) }
   }
 
-  func description() throws -> String {
-    try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription)
+  var description: String {
+    get throws { try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription) }
   }
 
-  func discountType() throws -> DiscountTypeEnumResponseModel? {
-    try value(for: \Self.internalDiscountType, codingKey: CodingKeys.internalDiscountType)
+  var discountType: DiscountTypeEnumResponseModel? {
+    get throws { try value(for: \Self.internalDiscountType, codingKey: CodingKeys.internalDiscountType) }
   }
 
-  func discountValue() throws -> Double? {
-    try value(for: \Self.internalDiscountValue, codingKey: CodingKeys.internalDiscountValue)
+  var discountValue: Double? {
+    get throws { try value(for: \Self.internalDiscountValue, codingKey: CodingKeys.internalDiscountValue) }
   }
 
-  func id() throws -> String {
-    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
+  var id: String {
+    get throws { try value(for: \Self.internalId, codingKey: CodingKeys.internalId) }
   }
 
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
+  var name: String {
+    get throws { try value(for: \Self.internalName, codingKey: CodingKeys.internalName) }
   }
 
-  func redemptionLimit() throws -> Double {
-    try value(for: \Self.internalRedemptionLimit, codingKey: CodingKeys.internalRedemptionLimit)
+  var redemptionLimit: Double {
+    get throws { try value(for: \Self.internalRedemptionLimit, codingKey: CodingKeys.internalRedemptionLimit) }
   }
 
-  func source() throws -> CampaignSourceEnumResponseModel {
-    try value(for: \Self.internalSource, codingKey: CodingKeys.internalSource)
+  var source: CampaignSourceEnumResponseModel {
+    get throws { try value(for: \Self.internalSource, codingKey: CodingKeys.internalSource) }
   }
 
   init(from decoder: Decoder) throws {
@@ -486,12 +486,12 @@ struct CampaignsResponseModel: Decodable {
   private let internalCampaignAttributes: Optional<[CampaignAttributeResponseModel]?>
   private let internalProductDeals: Optional<[ProductDealResponseModel]?>
 
-  func campaignAttributes() throws -> [CampaignAttributeResponseModel]? {
-    try value(for: \Self.internalCampaignAttributes, codingKey: CodingKeys.internalCampaignAttributes)
+  var campaignAttributes: [CampaignAttributeResponseModel]? {
+    get throws { try value(for: \Self.internalCampaignAttributes, codingKey: CodingKeys.internalCampaignAttributes) }
   }
 
-  func productDeals() throws -> [ProductDealResponseModel]? {
-    try value(for: \Self.internalProductDeals, codingKey: CodingKeys.internalProductDeals)
+  var productDeals: [ProductDealResponseModel]? {
+    get throws { try value(for: \Self.internalProductDeals, codingKey: CodingKeys.internalProductDeals) }
   }
 
   init(from decoder: Decoder) throws {
@@ -512,16 +512,16 @@ struct CategoryResponseModel: Decodable {
   private let internalImageUrls: Optional<[String]?>
   private let internalName: Optional<String>
 
-  func id() throws -> String {
-    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
+  var id: String {
+    get throws { try value(for: \Self.internalId, codingKey: CodingKeys.internalId) }
   }
 
-  func imageUrls() throws -> [String]? {
-    try value(for: \Self.internalImageUrls, codingKey: CodingKeys.internalImageUrls)
+  var imageUrls: [String]? {
+    get throws { try value(for: \Self.internalImageUrls, codingKey: CodingKeys.internalImageUrls) }
   }
 
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
+  var name: String {
+    get throws { try value(for: \Self.internalName, codingKey: CodingKeys.internalName) }
   }
 
   init(from decoder: Decoder) throws {
@@ -544,16 +544,16 @@ struct CategoryTreeResponseModel: Decodable {
   private let internalProductsCount: Optional<Int>
   private let internalSubCategories: Optional<[SubCategoryResponseModel]?>
 
-  func category() throws -> CategoryResponseModel {
-    try value(for: \Self.internalCategory, codingKey: CodingKeys.internalCategory)
+  var category: CategoryResponseModel {
+    get throws { try value(for: \Self.internalCategory, codingKey: CodingKeys.internalCategory) }
   }
 
-  func productsCount() throws -> Int {
-    try value(for: \Self.internalProductsCount, codingKey: CodingKeys.internalProductsCount)
+  var productsCount: Int {
+    get throws { try value(for: \Self.internalProductsCount, codingKey: CodingKeys.internalProductsCount) }
   }
 
-  func subCategories() throws -> [SubCategoryResponseModel]? {
-    try value(for: \Self.internalSubCategories, codingKey: CodingKeys.internalSubCategories)
+  var subCategories: [SubCategoryResponseModel]? {
+    get throws { try value(for: \Self.internalSubCategories, codingKey: CodingKeys.internalSubCategories) }
   }
 
   init(from decoder: Decoder) throws {
@@ -577,22 +577,22 @@ struct DealResponseModel: Decodable {
   private let internalProgressTeaser: Optional<String?>
   private let internalTriggerQuantity: Optional<Int>
 
-  func campaignId() throws -> String {
-    try value(for: \Self.internalCampaignId, codingKey: CodingKeys.internalCampaignId)
+  var campaignId: String {
+    get throws { try value(for: \Self.internalCampaignId, codingKey: CodingKeys.internalCampaignId) }
   }
 
   /// things that would change across products for a campaign
-  func discountTag() throws -> String {
-    try value(for: \Self.internalDiscountTag, codingKey: CodingKeys.internalDiscountTag)
+  var discountTag: String {
+    get throws { try value(for: \Self.internalDiscountTag, codingKey: CodingKeys.internalDiscountTag) }
   }
 
   /// buy 3 get 1 free
-  func progressTeaser() throws -> String? {
-    try value(for: \Self.internalProgressTeaser, codingKey: CodingKeys.internalProgressTeaser)
+  var progressTeaser: String? {
+    get throws { try value(for: \Self.internalProgressTeaser, codingKey: CodingKeys.internalProgressTeaser) }
   }
 
-  func triggerQuantity() throws -> Int {
-    try value(for: \Self.internalTriggerQuantity, codingKey: CodingKeys.internalTriggerQuantity)
+  var triggerQuantity: Int {
+    get throws { try value(for: \Self.internalTriggerQuantity, codingKey: CodingKeys.internalTriggerQuantity) }
   }
 
   init(from decoder: Decoder) throws {
@@ -620,28 +620,28 @@ struct FoodLabellingResponseModel: Decodable {
   private let internalProductInfos: Optional<[FoodLabellingInfoResponseModel?]?>
   private let internalWarnings: Optional<FoodLabellingInfoResponseModel?>
 
-  func additives() throws -> FoodLabellingInfoResponseModel? {
-    try value(for: \Self.internalAdditives, codingKey: CodingKeys.internalAdditives)
+  var additives: FoodLabellingInfoResponseModel? {
+    get throws { try value(for: \Self.internalAdditives, codingKey: CodingKeys.internalAdditives) }
   }
 
-  func allergens() throws -> FoodLabellingInfoResponseModel? {
-    try value(for: \Self.internalAllergens, codingKey: CodingKeys.internalAllergens)
+  var allergens: FoodLabellingInfoResponseModel? {
+    get throws { try value(for: \Self.internalAllergens, codingKey: CodingKeys.internalAllergens) }
   }
 
-  func nutritionFacts() throws -> [FoodLabellingInfoResponseModel?]? {
-    try value(for: \Self.internalNutritionFacts, codingKey: CodingKeys.internalNutritionFacts)
+  var nutritionFacts: [FoodLabellingInfoResponseModel?]? {
+    get throws { try value(for: \Self.internalNutritionFacts, codingKey: CodingKeys.internalNutritionFacts) }
   }
 
-  func productClaims() throws -> [FoodLabellingInfoResponseModel?]? {
-    try value(for: \Self.internalProductClaims, codingKey: CodingKeys.internalProductClaims)
+  var productClaims: [FoodLabellingInfoResponseModel?]? {
+    get throws { try value(for: \Self.internalProductClaims, codingKey: CodingKeys.internalProductClaims) }
   }
 
-  func productInfos() throws -> [FoodLabellingInfoResponseModel?]? {
-    try value(for: \Self.internalProductInfos, codingKey: CodingKeys.internalProductInfos)
+  var productInfos: [FoodLabellingInfoResponseModel?]? {
+    get throws { try value(for: \Self.internalProductInfos, codingKey: CodingKeys.internalProductInfos) }
   }
 
-  func warnings() throws -> FoodLabellingInfoResponseModel? {
-    try value(for: \Self.internalWarnings, codingKey: CodingKeys.internalWarnings)
+  var warnings: FoodLabellingInfoResponseModel? {
+    get throws { try value(for: \Self.internalWarnings, codingKey: CodingKeys.internalWarnings) }
   }
 
   init(from decoder: Decoder) throws {
@@ -669,12 +669,12 @@ struct FoodLabellingInfoResponseModel: Decodable {
   private let internalLabelTitle: Optional<String>
   private let internalLabelValues: Optional<[String]?>
 
-  func labelTitle() throws -> String {
-    try value(for: \Self.internalLabelTitle, codingKey: CodingKeys.internalLabelTitle)
+  var labelTitle: String {
+    get throws { try value(for: \Self.internalLabelTitle, codingKey: CodingKeys.internalLabelTitle) }
   }
 
-  func labelValues() throws -> [String]? {
-    try value(for: \Self.internalLabelValues, codingKey: CodingKeys.internalLabelValues)
+  var labelValues: [String]? {
+    get throws { try value(for: \Self.internalLabelValues, codingKey: CodingKeys.internalLabelValues) }
   }
 
   init(from decoder: Decoder) throws {
@@ -694,12 +694,12 @@ struct PageInfoResponseModel: Decodable {
   private let internalIsLast: Optional<Bool>
   private let internalPageNumber: Optional<Int>
 
-  func isLast() throws -> Bool {
-    try value(for: \Self.internalIsLast, codingKey: CodingKeys.internalIsLast)
+  var isLast: Bool {
+    get throws { try value(for: \Self.internalIsLast, codingKey: CodingKeys.internalIsLast) }
   }
 
-  func pageNumber() throws -> Int {
-    try value(for: \Self.internalPageNumber, codingKey: CodingKeys.internalPageNumber)
+  var pageNumber: Int {
+    get throws { try value(for: \Self.internalPageNumber, codingKey: CodingKeys.internalPageNumber) }
   }
 
   init(from decoder: Decoder) throws {
@@ -733,68 +733,68 @@ struct ProductResponseModel: Decodable {
   private let internalTags: Optional<[String]>
   private let internalUrls: Optional<[String]>
 
-  func attributes() throws -> [ProductAttributeResponseModel]? {
-    try value(for: \Self.internalAttributes, codingKey: CodingKeys.internalAttributes)
+  var attributes: [ProductAttributeResponseModel]? {
+    get throws { try value(for: \Self.internalAttributes, codingKey: CodingKeys.internalAttributes) }
   }
 
-  func description() throws -> String {
-    try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription)
+  var description: String {
+    get throws { try value(for: \Self.internalDescription, codingKey: CodingKeys.internalDescription) }
   }
 
-  func favourite() throws -> Bool {
-    try value(for: \Self.internalFavourite, codingKey: CodingKeys.internalFavourite)
+  var favourite: Bool {
+    get throws { try value(for: \Self.internalFavourite, codingKey: CodingKeys.internalFavourite) }
   }
 
-  func foodLabelling() throws -> FoodLabellingResponseModel? {
-    try value(for: \Self.internalFoodLabelling, codingKey: CodingKeys.internalFoodLabelling)
+  var foodLabelling: FoodLabellingResponseModel? {
+    get throws { try value(for: \Self.internalFoodLabelling, codingKey: CodingKeys.internalFoodLabelling) }
   }
 
-  func globalCatalogId() throws -> String {
-    try value(for: \Self.internalGlobalCatalogId, codingKey: CodingKeys.internalGlobalCatalogId)
+  var globalCatalogId: String {
+    get throws { try value(for: \Self.internalGlobalCatalogId, codingKey: CodingKeys.internalGlobalCatalogId) }
   }
 
-  func globalCatalogVendorId() throws -> String {
-    try value(for: \Self.internalGlobalCatalogVendorId, codingKey: CodingKeys.internalGlobalCatalogVendorId)
+  var globalCatalogVendorId: String {
+    get throws { try value(for: \Self.internalGlobalCatalogVendorId, codingKey: CodingKeys.internalGlobalCatalogVendorId) }
   }
 
-  func isAvailable() throws -> Bool {
-    try value(for: \Self.internalIsAvailable, codingKey: CodingKeys.internalIsAvailable)
+  var isAvailable: Bool {
+    get throws { try value(for: \Self.internalIsAvailable, codingKey: CodingKeys.internalIsAvailable) }
   }
 
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
+  var name: String {
+    get throws { try value(for: \Self.internalName, codingKey: CodingKeys.internalName) }
   }
 
-  func originalPrice() throws -> Double {
-    try value(for: \Self.internalOriginalPrice, codingKey: CodingKeys.internalOriginalPrice)
+  var originalPrice: Double {
+    get throws { try value(for: \Self.internalOriginalPrice, codingKey: CodingKeys.internalOriginalPrice) }
   }
 
-  func packagingCharge() throws -> Double {
-    try value(for: \Self.internalPackagingCharge, codingKey: CodingKeys.internalPackagingCharge)
+  var packagingCharge: Double {
+    get throws { try value(for: \Self.internalPackagingCharge, codingKey: CodingKeys.internalPackagingCharge) }
   }
 
-  func parentId() throws -> String {
-    try value(for: \Self.internalParentId, codingKey: CodingKeys.internalParentId)
+  var parentId: String {
+    get throws { try value(for: \Self.internalParentId, codingKey: CodingKeys.internalParentId) }
   }
 
-  func price() throws -> Double {
-    try value(for: \Self.internalPrice, codingKey: CodingKeys.internalPrice)
+  var price: Double {
+    get throws { try value(for: \Self.internalPrice, codingKey: CodingKeys.internalPrice) }
   }
 
-  func productId() throws -> String {
-    try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId)
+  var productId: String {
+    get throws { try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId) }
   }
 
-  func stockAmount() throws -> Int {
-    try value(for: \Self.internalStockAmount, codingKey: CodingKeys.internalStockAmount)
+  var stockAmount: Int {
+    get throws { try value(for: \Self.internalStockAmount, codingKey: CodingKeys.internalStockAmount) }
   }
 
-  func tags() throws -> [String] {
-    try value(for: \Self.internalTags, codingKey: CodingKeys.internalTags)
+  var tags: [String] {
+    get throws { try value(for: \Self.internalTags, codingKey: CodingKeys.internalTags) }
   }
 
-  func urls() throws -> [String] {
-    try value(for: \Self.internalUrls, codingKey: CodingKeys.internalUrls)
+  var urls: [String] {
+    get throws { try value(for: \Self.internalUrls, codingKey: CodingKeys.internalUrls) }
   }
 
   init(from decoder: Decoder) throws {
@@ -842,12 +842,12 @@ struct ProductAttributeResponseModel: Decodable {
   private let internalKey: Optional<String>
   private let internalValue: Optional<String>
 
-  func key() throws -> String {
-    try value(for: \Self.internalKey, codingKey: CodingKeys.internalKey)
+  var key: String {
+    get throws { try value(for: \Self.internalKey, codingKey: CodingKeys.internalKey) }
   }
 
-  func value() throws -> String {
-    try value(for: \Self.internalValue, codingKey: CodingKeys.internalValue)
+  var value: String {
+    get throws { try value(for: \Self.internalValue, codingKey: CodingKeys.internalValue) }
   }
 
   init(from decoder: Decoder) throws {
@@ -867,12 +867,12 @@ struct ProductDealResponseModel: Decodable {
   private let internalDeals: Optional<[DealResponseModel]?>
   private let internalProductId: Optional<String>
 
-  func deals() throws -> [DealResponseModel]? {
-    try value(for: \Self.internalDeals, codingKey: CodingKeys.internalDeals)
+  var deals: [DealResponseModel]? {
+    get throws { try value(for: \Self.internalDeals, codingKey: CodingKeys.internalDeals) }
   }
 
-  func productId() throws -> String {
-    try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId)
+  var productId: String {
+    get throws { try value(for: \Self.internalProductId, codingKey: CodingKeys.internalProductId) }
   }
 
   init(from decoder: Decoder) throws {
@@ -892,12 +892,12 @@ struct ProductFilterResultResponseModel: Decodable {
   private let internalItems: Optional<[ProductResponseModel]?>
   private let internalPageInfo: Optional<PageInfoResponseModel?>
 
-  func items() throws -> [ProductResponseModel]? {
-    try value(for: \Self.internalItems, codingKey: CodingKeys.internalItems)
+  var items: [ProductResponseModel]? {
+    get throws { try value(for: \Self.internalItems, codingKey: CodingKeys.internalItems) }
   }
 
-  func pageInfo() throws -> PageInfoResponseModel? {
-    try value(for: \Self.internalPageInfo, codingKey: CodingKeys.internalPageInfo)
+  var pageInfo: PageInfoResponseModel? {
+    get throws { try value(for: \Self.internalPageInfo, codingKey: CodingKeys.internalPageInfo) }
   }
 
   init(from decoder: Decoder) throws {
@@ -929,12 +929,12 @@ struct ShopDetailsResponseModel: Decodable {
   private let internalCategories: Optional<[CategoryTreeResponseModel]?>
   private let internalShopItemsResponse: Optional<ShopItemsResponseResponseModel?>
 
-  func categories() throws -> [CategoryTreeResponseModel]? {
-    try value(for: \Self.internalCategories, codingKey: CodingKeys.internalCategories)
+  var categories: [CategoryTreeResponseModel]? {
+    get throws { try value(for: \Self.internalCategories, codingKey: CodingKeys.internalCategories) }
   }
 
-  func shopItemsResponse() throws -> ShopItemsResponseResponseModel? {
-    try value(for: \Self.internalShopItemsResponse, codingKey: CodingKeys.internalShopItemsResponse)
+  var shopItemsResponse: ShopItemsResponseResponseModel? {
+    get throws { try value(for: \Self.internalShopItemsResponse, codingKey: CodingKeys.internalShopItemsResponse) }
   }
 
   init(from decoder: Decoder) throws {
@@ -958,28 +958,28 @@ struct ShopItemsListResponseModel: Decodable {
   private let internalSwimlaneFilterType: Optional<ProductFilterTypeEnumResponseModel>
   private let internalTrackingId: Optional<String>
 
-  func headline() throws -> String {
-    try value(for: \Self.internalHeadline, codingKey: CodingKeys.internalHeadline)
+  var headline: String {
+    get throws { try value(for: \Self.internalHeadline, codingKey: CodingKeys.internalHeadline) }
   }
 
-  func shopItemId() throws -> String {
-    try value(for: \Self.internalShopItemId, codingKey: CodingKeys.internalShopItemId)
+  var shopItemId: String {
+    get throws { try value(for: \Self.internalShopItemId, codingKey: CodingKeys.internalShopItemId) }
   }
 
-  func shopItemType() throws -> ShopItemTypeEnumResponseModel {
-    try value(for: \Self.internalShopItemType, codingKey: CodingKeys.internalShopItemType)
+  var shopItemType: ShopItemTypeEnumResponseModel {
+    get throws { try value(for: \Self.internalShopItemType, codingKey: CodingKeys.internalShopItemType) }
   }
 
-  func shopItems() throws -> [ShopItemInterfaceResponseModel]? {
-    try value(for: \Self.internalShopItems, codingKey: CodingKeys.internalShopItems)
+  var shopItems: [ShopItemInterfaceResponseModel]? {
+    get throws { try value(for: \Self.internalShopItems, codingKey: CodingKeys.internalShopItems) }
   }
 
-  func swimlaneFilterType() throws -> ProductFilterTypeEnumResponseModel {
-    try value(for: \Self.internalSwimlaneFilterType, codingKey: CodingKeys.internalSwimlaneFilterType)
+  var swimlaneFilterType: ProductFilterTypeEnumResponseModel {
+    get throws { try value(for: \Self.internalSwimlaneFilterType, codingKey: CodingKeys.internalSwimlaneFilterType) }
   }
 
-  func trackingId() throws -> String {
-    try value(for: \Self.internalTrackingId, codingKey: CodingKeys.internalTrackingId)
+  var trackingId: String {
+    get throws { try value(for: \Self.internalTrackingId, codingKey: CodingKeys.internalTrackingId) }
   }
 
   init(from decoder: Decoder) throws {
@@ -1007,12 +1007,12 @@ struct ShopItemsResponseResponseModel: Decodable {
   private let internalPageInfo: Optional<PageInfoResponseModel?>
   private let internalShopItemsList: Optional<[ShopItemsListResponseModel]?>
 
-  func pageInfo() throws -> PageInfoResponseModel? {
-    try value(for: \Self.internalPageInfo, codingKey: CodingKeys.internalPageInfo)
+  var pageInfo: PageInfoResponseModel? {
+    get throws { try value(for: \Self.internalPageInfo, codingKey: CodingKeys.internalPageInfo) }
   }
 
-  func shopItemsList() throws -> [ShopItemsListResponseModel]? {
-    try value(for: \Self.internalShopItemsList, codingKey: CodingKeys.internalShopItemsList)
+  var shopItemsList: [ShopItemsListResponseModel]? {
+    get throws { try value(for: \Self.internalShopItemsList, codingKey: CodingKeys.internalShopItemsList) }
   }
 
   init(from decoder: Decoder) throws {
@@ -1033,16 +1033,16 @@ struct SubCategoryResponseModel: Decodable {
   private let internalName: Optional<String>
   private let internalSubCategories: Optional<[SubCategoryResponseModel]?>
 
-  func id() throws -> String {
-    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
+  var id: String {
+    get throws { try value(for: \Self.internalId, codingKey: CodingKeys.internalId) }
   }
 
-  func name() throws -> String {
-    try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
+  var name: String {
+    get throws { try value(for: \Self.internalName, codingKey: CodingKeys.internalName) }
   }
 
-  func subCategories() throws -> [SubCategoryResponseModel]? {
-    try value(for: \Self.internalSubCategories, codingKey: CodingKeys.internalSubCategories)
+  var subCategories: [SubCategoryResponseModel]? {
+    get throws { try value(for: \Self.internalSubCategories, codingKey: CodingKeys.internalSubCategories) }
   }
 
   init(from decoder: Decoder) throws {

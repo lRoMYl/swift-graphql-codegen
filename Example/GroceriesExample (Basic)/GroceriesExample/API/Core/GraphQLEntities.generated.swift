@@ -79,7 +79,7 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
 
 // MARK: - GraphQLResponse
 
-struct GraphQLResponse<ResponseData: Codable>: Codable {
+struct GraphQLResponse<ResponseData: Decodable>: Decodable {
   let data: ResponseData?
   let errors: [GraphQLResponseError]?
 }
