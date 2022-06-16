@@ -136,10 +136,11 @@ struct EntityGenerator: GraphQLCodeGenerating {
         let values = count == 0
           ? Element.allCases.map { $0 as Element }
           : map { $0 as Element }
+        let sortedValeus = values.sorted(by: { $0.rawValue < $1.rawValue })
 
         let variablePrefix = "$\\(requestName.prefix(1).lowercased() + requestName.dropFirst())"
 
-        return values.reduce(into: "") {
+        return sortedValeus.reduce(into: "") {
           let formatted = String(
             format: $1.rawValue.replacingOccurrences(of: "$%@", with: variablePrefix),
             requestName
