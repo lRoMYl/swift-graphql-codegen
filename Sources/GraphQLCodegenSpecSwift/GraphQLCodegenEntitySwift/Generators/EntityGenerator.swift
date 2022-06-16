@@ -125,14 +125,14 @@ struct EntityGenerator: GraphQLCodeGenerating {
         let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
         let value = \"\"\"
         fragment \\(key) on \\(\(Variables.typeName)) {
-          \\(requestFragments(\(Variables.requestName): \(Variables.requestName)))
+          \\(\(entityNameProvider.requestFragmentFields)(\(Variables.requestName): \(Variables.requestName)))
         }
         \"\"\"
 
         return (key: key, value: value)
       }
 
-      func \(entityNameProvider.requestFragmentsName)(requestName: String) -> String {
+      func \(entityNameProvider.requestFragmentFields)(requestName: String) -> String {
         let values = count == 0
           ? Element.allCases.map { $0 as Element }
           : map { $0 as Element }
@@ -148,24 +148,6 @@ struct EntityGenerator: GraphQLCodeGenerating {
           $0 += "\\n  \\(formatted)"
         }
       }
-
-      func \(entityNameProvider.requestFragmentName)(
-        \(Variables.requestName): String,
-        \(Variables.typeName): String,
-        possibleTypeNames: [String]
-      ) -> (key: String, value: String) {
-        let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
-
-        return (
-          key: key,
-          value: \"\"\"
-            fragment \\(key) on \\(\(Variables.requestName)) {
-              __typename
-              \\(possibleTypeNames.map { "...\\(\(Variables.requestName))\\($0)Fragment" }.joined(separator: "\\n"))
-            }
-            \"\"\"
-        )
-      }
     }
 
     extension Set where Element: \(entityNameMap.selection) {
@@ -177,7 +159,22 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // MARK: - \(entityNameMap.selections)+fragments
 
     extension \(entityNameMap.selections) {
-      func \(entityNameProvider.requestFragmentsName)(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
+      func \(entityNameProvider.nestedRequestFragmentsName)(selectionDeclarationMap: [String: String], rootSelectionKeys: Set<String>) -> [String] {
+        rootSelectionKeys
+          .map {
+            nestedRequestFragments(
+              selectionDeclarationMap: selectionDeclarationMap,
+              rootSelectionKey: $0
+            )
+          }
+          .reduce([String: String]()) { old, new in
+            old.merging(new, uniquingKeysWith: { _, new in new })
+          }
+          .sorted(by: { $0.0 < $1.0 })
+          .map { $0.1 }
+      }
+
+      func \(entityNameProvider.nestedRequestFragmentsName)(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
         var dictionary = [String: String]()
         dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
@@ -203,6 +200,24 @@ struct EntityGenerator: GraphQLCodeGenerating {
         }
 
         return dictionary
+      }
+
+      func \(entityNameProvider.requestFragmentName)(
+        \(Variables.requestName): String,
+        \(Variables.typeName): String,
+        possibleTypeNames: [String]
+      ) -> (key: String, value: String) {
+        let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
+    
+        return (
+          key: key,
+          value: \"\"\"
+            fragment \\(key) on \\(\(Variables.requestName)) {
+              __typename
+              \\(possibleTypeNames.map { "...\\(\(Variables.requestName))\\($0)Fragment" }.joined(separator: "\\n"))
+            }
+            \"\"\"
+        )
       }
     }
 

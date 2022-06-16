@@ -39,6 +39,8 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     static let requestName = "requestName"
     static let capitalizedRequestName = "requestName"
     static let typeName = "typeName"
+    static let selectionDeclarationMap = "selectionDeclarationMap"
+    static let rootSelectionKeys = "rootSelectionKeys"
   }
 
   init(
@@ -79,6 +81,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
 
     return """
     // MARK: - Selections
+
     \(codes.lines)
     """
   }
@@ -400,7 +403,7 @@ extension SelectionsGenerator {
     }.joined(separator: ",\n")
 
     return try """
-    let selectionDeclarationMap = Dictionary(
+    let \(Variables.selectionDeclarationMap) = Dictionary(
       uniqueKeysWithValues: [
         \(test)
       ].map { ($0.key, $0.value) }
@@ -437,7 +440,6 @@ extension SelectionsGenerator {
       guard let selectionName = try entityNameProvider.selectionName(for: $0) else { return nil }
       return "\(selectionName.camelCase)s: Set<\(selectionName)> = .allFields"
     }.joined(separator: ",\n")
-
     let assignments = try filteredElements.compactMap {
       guard
         let argumentName = try entityNameProvider.selectionsVariableName(
@@ -458,7 +460,7 @@ extension SelectionsGenerator {
   }
 
   func selectionsFuncDeclaration() -> String {
-    "func requestFragments(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String"
+    "func requestFragments(for \(Variables.requestName): String, \(Variables.rootSelectionKeys): Set<String>) -> String"
   }
 
   func capitalizedRequestNameDeclaration() -> String {
@@ -467,18 +469,12 @@ extension SelectionsGenerator {
 
   func fragmentMapDeclaration() -> String {
     """
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\\n\\n")
+    let fragments = \(entityNameProvider.nestedRequestFragmentsName)(
+      \(Variables.selectionDeclarationMap): \(Variables.selectionDeclarationMap),
+      \(Variables.rootSelectionKeys): \(Variables.rootSelectionKeys)
+    )
+    
+    return fragments.joined(separator: "\\n\\n")
     """
   }
 }

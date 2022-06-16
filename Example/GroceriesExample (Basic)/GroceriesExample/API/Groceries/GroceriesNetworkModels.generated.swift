@@ -1861,18 +1861,12 @@ struct QueryRequestSelections: GraphQLSelections {
       ].map { ($0.key, $0.value) }
     )
 
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    return fragmentMaps.values.joined(separator: "\n\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
 
@@ -1910,18 +1904,12 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
       ].map { ($0.key, $0.value) }
     )
 
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    return fragmentMaps.values.joined(separator: "\n\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
 
@@ -1963,18 +1951,12 @@ struct ProductsQueryRequestSelections: GraphQLSelections {
       ].map { ($0.key, $0.value) }
     )
 
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    return fragmentMaps.values.joined(separator: "\n\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
 
@@ -2050,17 +2032,11 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
       ].map { ($0.key, $0.value) }
     )
 
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    return fragmentMaps.values.joined(separator: "\n\n")
+    return fragments.joined(separator: "\n\n")
   }
 }

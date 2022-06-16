@@ -61,4 +61,6 @@ public extension EntityNameProviding {
   var requestArgumentsName: String { "requestArguments" }
   var requestFragmentsName: String { "requestFragments" }
   var requestFragmentName: String { "requestFragment" }
+  var requestFragmentFields: String { "requestFragmentFields" }
+  var nestedRequestFragmentsName: String { "nestedRequestFragments" }
 }

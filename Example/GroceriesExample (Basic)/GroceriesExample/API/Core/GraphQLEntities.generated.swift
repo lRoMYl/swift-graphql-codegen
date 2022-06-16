@@ -96,14 +96,14 @@ extension Collection where Element: GraphQLSelection & RawRepresentable, Element
     let key = "\(requestName)\(typeName)Fragment"
     let value = """
     fragment \(key) on \(typeName) {
-      \(requestFragments(requestName: requestName))
+      \(requestFragmentFields(requestName: requestName))
     }
     """
 
     return (key: key, value: value)
   }
 
-  func requestFragments(requestName: String) -> String {
+  func requestFragmentFields(requestName: String) -> String {
     let values = count == 0
       ? Element.allCases.map { $0 as Element }
       : map { $0 as Element }
@@ -119,24 +119,6 @@ extension Collection where Element: GraphQLSelection & RawRepresentable, Element
       $0 += "\n  \(formatted)"
     }
   }
-
-  func requestFragment(
-    requestName: String,
-    typeName: String,
-    possibleTypeNames: [String]
-  ) -> (key: String, value: String) {
-    let key = "\(requestName)\(typeName)Fragment"
-
-    return (
-      key: key,
-      value: """
-        fragment \(key) on \(requestName) {
-          __typename
-          \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
-        }
-        """
-    )
-  }
 }
 
 extension Set where Element: GraphQLSelection {
@@ -148,7 +130,22 @@ extension Set where Element: GraphQLSelection {
 // MARK: - GraphQLSelections+fragments
 
 extension GraphQLSelections {
-  func requestFragments(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
+  func nestedRequestFragments(selectionDeclarationMap: [String: String], rootSelectionKeys: Set<String>) -> [String] {
+    rootSelectionKeys
+      .map {
+        nestedRequestFragments(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKey: $0
+        )
+      }
+      .reduce([String: String]()) { old, new in
+        old.merging(new, uniquingKeysWith: { _, new in new })
+      }
+      .sorted(by: { $0.0 < $1.0 })
+      .map { $0.1 }
+  }
+
+  func nestedRequestFragments(selectionDeclarationMap: [String: String], rootSelectionKey: String) -> [String: String] {
     var dictionary = [String: String]()
     dictionary[rootSelectionKey] = selectionDeclarationMap[rootSelectionKey]
 
@@ -174,6 +171,24 @@ extension GraphQLSelections {
     }
 
     return dictionary
+  }
+
+  func requestFragment(
+    requestName: String,
+    typeName: String,
+    possibleTypeNames: [String]
+  ) -> (key: String, value: String) {
+    let key = "\(requestName)\(typeName)Fragment"
+
+    return (
+      key: key,
+      value: """
+        fragment \(key) on \(requestName) {
+          __typename
+          \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
+        }
+        """
+    )
   }
 }
 

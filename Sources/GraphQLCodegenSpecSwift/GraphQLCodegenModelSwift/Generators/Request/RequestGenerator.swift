@@ -291,7 +291,7 @@ private extension RequestGenerator {
   var requestArgumentCode: String {
     """
     func \(entityNameProvider.requestArgumentsName)(with selections: \(entityNameMap.selections)) -> String {
-      let requestFragments = self.requestFragments(with: selections)
+      let requestFragments = self.\(entityNameProvider.requestFragmentsName)(with: selections)
       var selectedSubRequestArguments = [(key: String, value: String)]()
       subRequestArguments.forEach {
         if requestFragments.contains($0.key) {
