@@ -12,19 +12,19 @@ protocol GroceriesApiClientProtocol {
   func query(
     with request: QueryRequest,
     selections: QueryRequestSelections
-  ) -> Single<ApiResponse<QueryResponseModel>>
+  ) -> Single<ApiResponse<GraphQLResponse<QueryResponseModel>>>
   func campaigns(
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestSelections
-  ) -> Single<ApiResponse<CampaignsQueryResponse>>
+  ) -> Single<ApiResponse<GraphQLResponse<CampaignsQueryResponse>>>
   func products(
     with request: ProductsQueryRequest,
     selections: ProductsQueryRequestSelections
-  ) -> Single<ApiResponse<ProductsQueryResponse>>
+  ) -> Single<ApiResponse<GraphQLResponse<ProductsQueryResponse>>>
   func shopDetails(
     with request: ShopDetailsQueryRequest,
     selections: ShopDetailsQueryRequestSelections
-  ) -> Single<ApiResponse<ShopDetailsQueryResponse>>
+  ) -> Single<ApiResponse<GraphQLResponse<ShopDetailsQueryResponse>>>
 }
 
 enum GroceriesApiClientError: Error, LocalizedError {
@@ -56,7 +56,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   func campaigns(
     with request: CampaignsQueryRequest,
     selections: CampaignsQueryRequestSelections
-  ) -> Single<ApiResponse<CampaignsQueryResponse>> {
+  ) -> Single<ApiResponse<GraphQLResponse<CampaignsQueryResponse>>> {
     let resource = GroceriesResourceParametersProvider(
       resourceParametersConfigurator: resourceParametersConfigurator,
       resourceBodyParameters: .queryCampaigns(request: request, selections: selections)
@@ -70,7 +70,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   func products(
     with request: ProductsQueryRequest,
     selections: ProductsQueryRequestSelections
-  ) -> Single<ApiResponse<ProductsQueryResponse>> {
+  ) -> Single<ApiResponse<GraphQLResponse<ProductsQueryResponse>>> {
     let resource = GroceriesResourceParametersProvider(
       resourceParametersConfigurator: resourceParametersConfigurator,
       resourceBodyParameters: .queryProducts(request: request, selections: selections)
@@ -84,7 +84,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   func shopDetails(
     with request: ShopDetailsQueryRequest,
     selections: ShopDetailsQueryRequestSelections
-  ) -> Single<ApiResponse<ShopDetailsQueryResponse>> {
+  ) -> Single<ApiResponse<GraphQLResponse<ShopDetailsQueryResponse>>> {
     let resource = GroceriesResourceParametersProvider(
       resourceParametersConfigurator: resourceParametersConfigurator,
       resourceBodyParameters: .queryShopDetails(request: request, selections: selections)
@@ -98,20 +98,20 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
   func query(
     with request: QueryRequest,
     selections: QueryRequestSelections
-  ) -> Single<ApiResponse<QueryResponseModel>> {
+  ) -> Single<ApiResponse<GraphQLResponse<QueryResponseModel>>> {
     let resource = GroceriesResourceParametersProvider(
       resourceParametersConfigurator: resourceParametersConfigurator,
       resourceBodyParameters: .query(request: request, selections: selections)
     )
 
-    let response: Single<ApiResponse<QueryResponseModel>> = executeGraphQLQuery(resource: resource)
+    let response: Single<ApiResponse<GraphQLResponse<QueryResponseModel>>> = executeGraphQLQuery(resource: resource)
 
     return response
       .map { result in
         let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
-          (request.campaigns, result.data?.campaigns),
-          (request.products, result.data?.products),
-          (request.shopDetails, result.data?.shopDetails)
+          (request.campaigns, result.data?.data?.campaigns),
+          (request.products, result.data?.data?.products),
+          (request.shopDetails, result.data?.data?.shopDetails)
         ]
 
         try responseExpectations.forEach {
@@ -130,14 +130,14 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 private extension GroceriesApiClient {
   func executeGraphQLQuery<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: Codable {
+  ) -> Single<ApiResponse<GraphQLResponse<Response>>> where Response: Codable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 
     return request
       .map { apiResponse in
         ApiResponse(
-          data: apiResponse.data?.data,
+          data: apiResponse.data,
           httpURLResponse: apiResponse.httpURLResponse,
           metaData: apiResponse.metaData
         )

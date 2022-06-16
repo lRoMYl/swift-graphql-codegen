@@ -101,10 +101,18 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // MARK: - \(entityNameMap.response)
 
     struct \(entityNameMap.response)<ResponseData: Codable>: Codable {
-      let data: ResponseData
+      let data: ResponseData?
+      let errors: [\(entityNameMap.responseError)]?
     }
 
-    enum GraphQLResponseError: Error, LocalizedError {
+    struct \(entityNameMap.responseError): \(entityNameProvider.responseType) {
+      let message: String?
+      let locations: [[String: Int]]?
+      let path: [String]?
+      \(entityNameMap.responseErrorExtension.map { "let extensions: \($0)?" } ?? "")
+    }
+
+    enum \(entityNameProvider.graphQLError): Error, LocalizedError {
       case missingSelection(key: CodingKey, type: String)
 
       var errorDescription: String? {
@@ -227,7 +235,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
         guard let upperRange = text.range(of: delimiter, range: searchIndex..<text.endIndex) else {
           return nil
         }
-    
+
         return lowerIndex..<text.index(after: upperRange.upperBound)
       }
     }
@@ -322,7 +330,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
           let model = self as? Model,
           let value = model[keyPath: keyPath]
         else {
-          throw GraphQLResponseError.missingSelection(key: codingKey, type: String(describing: Model.self))
+          throw \(entityNameProvider.graphQLError).missingSelection(key: codingKey, type: String(describing: Model.self))
         }
 
         return value

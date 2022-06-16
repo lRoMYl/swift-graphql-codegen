@@ -142,7 +142,8 @@ extension ApiClientGenerator {
     }
 
     // Root operation
-    let responseDataText = try entityNameProvider.responseDataName(with: operation)
+    let responseText = try entityNameProvider.responseDataName(with: operation)
+    let responseDataText = "\(entityNameMap.response)<\(responseText)>"
     let requestQueryName = entityNameProvider.requestQueryName
 
     codes.append("""
@@ -159,7 +160,7 @@ extension ApiClientGenerator {
           let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
             \(
               operation.type.selectableFields(selectionMap: selectionMap).map {
-                "(request.\($0.name), result.data?.\($0.name))"
+                "(request.\($0.name), result.data?.data?.\($0.name))"
               }.joined(separator: ",\n")
             )
           ]
@@ -181,7 +182,8 @@ extension ApiClientGenerator {
   }
 
   func funcSignatureCode(field: Field, operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = try entityNameProvider.responseDataName(for: field, with: operation)
+    let responseText = try entityNameProvider.responseDataName(for: field, with: operation)
+    let responseDataText = "\(entityNameMap.response)<\(responseText)>"
 
     let parametersName = try entityNameProvider.requestParameterName(for: field, with: operation)
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
@@ -195,7 +197,8 @@ extension ApiClientGenerator {
   }
 
   func funcSignatureCode(operation: GraphQLAST.Operation) throws -> String {
-    let responseDataText = try entityNameProvider.responseDataName(with: operation)
+    let responseText = try entityNameProvider.responseDataName(with: operation)
+    let responseDataText = "\(entityNameMap.response)<\(responseText)>"
 
     let parametersName = try entityNameProvider.requestParameterName(with: operation)
     let selectionsName = try entityNameProvider.selectionsName(with: operation)
@@ -214,7 +217,7 @@ extension ApiClientGenerator {
     let operationName = operation.type.name.pascalCase
     let genericResponse = "Response"
     let responseDataText = "\(entityNameMap.response)<\(genericResponse)>"
-    let responseGenericCode = self.responseGenericCode(text: genericResponse)
+    let responseGenericCode = self.responseGenericCode(text: responseDataText)
     let responseDataGenericCode = self.responseGenericCode(text: responseDataText)
 
     return """
@@ -227,7 +230,7 @@ extension ApiClientGenerator {
       return request
         .map { apiResponse in
           return ApiResponse(
-            data: apiResponse.data?.data,
+            data: apiResponse.data,
             httpURLResponse: apiResponse.httpURLResponse,
             metaData: apiResponse.metaData
           )

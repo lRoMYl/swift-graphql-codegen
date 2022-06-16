@@ -29,6 +29,9 @@ public struct EntityNameMap {
   public let requestParameter: String
 
   public let response: String
+  public let responseError: String
+  // Optional, provide this with your own Swift type to decode error extension
+  public let responseErrorExtension: String?
 
   public let selection: String
   public let selections: String
@@ -54,6 +57,8 @@ public struct EntityNameMap {
     case requestType
     case requestParameter
     case response
+    case responseError
+    case responseErrorExtension
     case selection
     case selections
     case query
@@ -73,6 +78,8 @@ public struct EntityNameMap {
     requestType: String,
     requestParameter: String,
     response: String,
+    responseError: String,
+    responseErrorExtension: String?,
     selection: String,
     selections: String,
     query: String,
@@ -88,6 +95,8 @@ public struct EntityNameMap {
     self.requestType = requestType
     self.requestParameter = requestParameter
     self.response = response
+    self.responseError = responseError
+    self.responseErrorExtension = responseErrorExtension
     self.selection = selection
     self.selections = selections
     self.query = query
@@ -108,6 +117,8 @@ public struct EntityNameMap {
       requestType: response.requestType ?? defaultValue.requestType,
       requestParameter: response.requestParameter ?? defaultValue.requestParameter,
       response: response.response ?? defaultValue.response,
+      responseError: response.responseError ?? defaultValue.responseError,
+      responseErrorExtension: response.responseErrorExtension ?? defaultValue.responseErrorExtension,
       selection: response.selection ?? defaultValue.selection,
       selections: response.selections ?? defaultValue.selections,
       query: response.query ?? defaultValue.query,
@@ -131,6 +142,8 @@ public extension EntityNameMap {
       requestType: "GraphQLRequestType",
       requestParameter: "GraphQLRequestParameter",
       response: "GraphQLResponse",
+      responseError: "GraphQLResponseError",
+      responseErrorExtension: nil,
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
       query: "GraphQLQuery",
@@ -143,6 +156,10 @@ public extension EntityNameMap {
       enum: "GraphQLEnumObject"
     )
   }()
+
+  static let excludeValidation = [
+    EntityNameMap.CodingKeys.responseErrorExtension.rawValue
+  ]
 }
 
 // MARK: - Validation
@@ -155,6 +172,7 @@ public extension EntityNameMap {
       let label = child.label ?? ""
 
       guard let stringValue = child.value as? String else {
+        guard !Self.excludeValidation.contains(label) else { continue }
         throw EntityNameMapError.missingValue(context: "value for \(label) must be String")
       }
 

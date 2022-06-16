@@ -72,10 +72,18 @@ struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
 // MARK: - GraphQLResponse
 
 struct GraphQLResponse<ResponseData: Codable>: Codable {
-  let data: ResponseData
+  let data: ResponseData?
+  let errors: [GraphQLResponseError]?
 }
 
-enum GraphQLResponseError: Error, LocalizedError {
+struct GraphQLResponseError: Decodable {
+  let message: String?
+  let locations: [[String: Int]]?
+  let path: [String]?
+  
+}
+
+enum GraphQLError: Error, LocalizedError {
   case missingSelection(key: CodingKey, type: String)
 
   var errorDescription: String? {
@@ -293,7 +301,7 @@ extension Decodable {
       let model = self as? Model,
       let value = model[keyPath: keyPath]
     else {
-      throw GraphQLResponseError.missingSelection(key: codingKey, type: String(describing: Model.self))
+      throw GraphQLError.missingSelection(key: codingKey, type: String(describing: Model.self))
     }
 
     return value

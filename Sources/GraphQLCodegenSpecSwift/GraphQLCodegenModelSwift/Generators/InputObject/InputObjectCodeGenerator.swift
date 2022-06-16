@@ -59,10 +59,8 @@ private extension InputObjectCodeGenerator {
       .map { objectFieldCodeGenerator.codingKeyDeclaration(input: $0) }
       .lines
 
-    // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
-    // with Decodable conformance
     return """
-    struct \(name): Codable {
+    struct \(name): \(entityNameProvider.requestType) {
       \(fieldsVariable)
 
       private enum CodingKeys: String, CodingKey {

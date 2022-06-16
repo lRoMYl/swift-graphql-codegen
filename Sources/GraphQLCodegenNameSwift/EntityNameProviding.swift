@@ -63,4 +63,10 @@ public extension EntityNameProviding {
   var requestFragmentName: String { "requestFragment" }
   var requestFragmentFields: String { "requestFragmentFields" }
   var nestedRequestFragmentsName: String { "nestedRequestFragments" }
+
+  var requestType: String { "Codable" }
+  var responseType: String { "Decodable" }
+
+  var graphQLResponseError: String { "GraphQLResponseError" }
+  var graphQLError: String { "GraphQLError" }
 }

@@ -15,6 +15,8 @@ public struct EntityNameMapResponse: Decodable {
   public let requestParameter: String?
 
   public let response: String?
+  public let responseError: String?
+  public let responseErrorExtension: String?
 
   public let selection: String?
   public let selections: String?
@@ -40,6 +42,8 @@ public struct EntityNameMapResponse: Decodable {
     case requestType
     case requestParameter
     case response
+    case responseError
+    case responseErrorExtension
     case selection
     case selections
     case query
@@ -57,6 +61,8 @@ public struct EntityNameMapResponse: Decodable {
     requestType: String? = nil,
     requestParameter: String? = nil,
     response: String? = nil,
+    responseError: String? = nil,
+    responseErrorExtension: String? = nil,
     selection: String? = nil,
     selections: String? = nil,
     query: String? = nil,
@@ -72,6 +78,8 @@ public struct EntityNameMapResponse: Decodable {
     self.requestType = requestType
     self.requestParameter = requestParameter
     self.response = response
+    self.responseError = responseError
+    self.responseErrorExtension = responseErrorExtension
     self.selection = selection
     self.selections = selections
     self.query = query
@@ -93,6 +101,8 @@ extension EntityNameMapResponse {
       requestType: entityNameMapResponse.requestType ?? requestType,
       requestParameter: entityNameMapResponse.requestParameter ?? requestParameter,
       response: entityNameMapResponse.response ?? response,
+      responseError: entityNameMapResponse.responseError ?? responseError,
+      responseErrorExtension: entityNameMapResponse.responseErrorExtension ?? responseErrorExtension,
       selection: entityNameMapResponse.selection ?? selection,
       selections: entityNameMapResponse.selections ?? selections,
       query: entityNameMapResponse.query ?? query,
