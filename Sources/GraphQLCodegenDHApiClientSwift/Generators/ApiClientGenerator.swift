@@ -157,7 +157,7 @@ extension ApiClientGenerator {
 
       return response
         .map { result in
-          let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+          let responseExpectations: [(GraphQLRequesting?, \(entityNameProvider.responseType)?)] = [
             \(
               operation.type.selectableFields(selectionMap: selectionMap).map {
                 "(request.\($0.name), result.data?.data?.\($0.name))"
@@ -223,7 +223,7 @@ extension ApiClientGenerator {
     return """
     func executeGraphQL\(operationName)<\(genericResponse)>(
       resource: ResourceParameters
-    ) -> \(responseGenericCode) where \(genericResponse): Codable {
+    ) -> \(responseGenericCode) where \(genericResponse): \(entityNameProvider.responseType) {
       let request: \(responseDataGenericCode) = restClient
         .executeRequest(resource: resource)
 

@@ -34,7 +34,6 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
 
   func code(schema: Schema) throws -> String {
     let objectTypeMap = ObjectTypeMap(schema: schema)
-
     let schemaMap = try SchemaMap(schema: schema)
 
     let unions = try schema.operations.map {
@@ -61,7 +60,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
       enum \(try entityNameProvider.name(for: union)): Codable {
         \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
 
-        enum Typename: String, Decodable {
+        enum Typename: String, \(entityNameProvider.responseType) {
           \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
         }
 

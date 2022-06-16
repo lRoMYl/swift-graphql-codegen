@@ -111,10 +111,8 @@ extension ObjectCodeGenerator {
 
     let responseName = try entityNameProvider.name(for: objectType)
 
-    // Due to a PD-Kami requiring the ApiModel to be Codable, we cannot generate an object
-    // with Decodable conformance
     return """
-    struct \(responseName): Codable {
+    struct \(responseName): \(entityNameProvider.responseType) {
       \(fieldsVariable)
 
       \(fieldsVariableFunction)

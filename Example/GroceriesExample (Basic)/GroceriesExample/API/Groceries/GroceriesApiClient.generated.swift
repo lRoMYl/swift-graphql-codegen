@@ -108,7 +108,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 
     return response
       .map { result in
-        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
+        let responseExpectations: [(GraphQLRequesting?, Decodable?)] = [
           (request.campaigns, result.data?.data?.campaigns),
           (request.products, result.data?.data?.products),
           (request.shopDetails, result.data?.data?.shopDetails)
@@ -130,7 +130,7 @@ final class GroceriesApiClient: GroceriesApiClientProtocol {
 private extension GroceriesApiClient {
   func executeGraphQLQuery<Response>(
     resource: ResourceParameters
-  ) -> Single<ApiResponse<GraphQLResponse<Response>>> where Response: Codable {
+  ) -> Single<ApiResponse<GraphQLResponse<Response>>> where Response: Decodable {
     let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
       .executeRequest(resource: resource)
 

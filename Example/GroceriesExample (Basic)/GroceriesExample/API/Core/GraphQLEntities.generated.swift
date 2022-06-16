@@ -28,7 +28,7 @@ protocol GraphQLSelections {
 
 // MARK: - Enum
 
-enum GraphQLRequestType: String, Codable {
+enum GraphQLRequestType: String, Decodable {
   case query
   case mutation
   case subscription

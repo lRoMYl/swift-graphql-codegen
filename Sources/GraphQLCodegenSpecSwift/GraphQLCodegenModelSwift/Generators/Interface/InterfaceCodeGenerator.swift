@@ -78,7 +78,7 @@ extension InterfaceCodeGenerator {
     enum \(try entityNameProvider.name(for: interface)): Codable {
       \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
 
-      enum Typename: String, Decodable {
+      enum Typename: String, \(entityNameProvider.responseType) {
         \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
       }
 

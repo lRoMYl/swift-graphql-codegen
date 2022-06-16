@@ -316,7 +316,7 @@ enum CampaignSourceEnumResponseModel: RawRepresentable, Codable {
 
 // MARK: - ResponseModel
 
-struct BannerResponseModel: Codable {
+struct BannerResponseModel: Decodable {
   private let internalBannerUrl: Optional<String>
   private let internalGlobalId: Optional<String>
   private let internalIsStatic: Optional<Bool>
@@ -369,7 +369,7 @@ struct BannerResponseModel: Codable {
   }
 }
 
-struct BenefitResponseModel: Codable {
+struct BenefitResponseModel: Decodable {
   private let internalProductId: Optional<String>
   private let internalQuantity: Optional<Int>
 
@@ -394,7 +394,7 @@ struct BenefitResponseModel: Codable {
   }
 }
 
-struct CampaignAttributeResponseModel: Codable {
+struct CampaignAttributeResponseModel: Decodable {
   private let internalAutoApplied: Optional<Bool>
   private let internalBenefits: Optional<[BenefitResponseModel]?>
   private let internalCampaignEndTime: Optional<String>
@@ -482,7 +482,7 @@ struct CampaignAttributeResponseModel: Codable {
   }
 }
 
-struct CampaignsResponseModel: Codable {
+struct CampaignsResponseModel: Decodable {
   private let internalCampaignAttributes: Optional<[CampaignAttributeResponseModel]?>
   private let internalProductDeals: Optional<[ProductDealResponseModel]?>
 
@@ -507,7 +507,7 @@ struct CampaignsResponseModel: Codable {
   }
 }
 
-struct CategoryResponseModel: Codable {
+struct CategoryResponseModel: Decodable {
   private let internalId: Optional<String>
   private let internalImageUrls: Optional<[String]?>
   private let internalName: Optional<String>
@@ -539,7 +539,7 @@ struct CategoryResponseModel: Codable {
   }
 }
 
-struct CategoryTreeResponseModel: Codable {
+struct CategoryTreeResponseModel: Decodable {
   private let internalCategory: Optional<CategoryResponseModel>
   private let internalProductsCount: Optional<Int>
   private let internalSubCategories: Optional<[SubCategoryResponseModel]?>
@@ -571,7 +571,7 @@ struct CategoryTreeResponseModel: Codable {
   }
 }
 
-struct DealResponseModel: Codable {
+struct DealResponseModel: Decodable {
   private let internalCampaignId: Optional<String>
   private let internalDiscountTag: Optional<String>
   private let internalProgressTeaser: Optional<String?>
@@ -612,7 +612,7 @@ struct DealResponseModel: Codable {
   }
 }
 
-struct FoodLabellingResponseModel: Codable {
+struct FoodLabellingResponseModel: Decodable {
   private let internalAdditives: Optional<FoodLabellingInfoResponseModel?>
   private let internalAllergens: Optional<FoodLabellingInfoResponseModel?>
   private let internalNutritionFacts: Optional<[FoodLabellingInfoResponseModel?]?>
@@ -665,7 +665,7 @@ struct FoodLabellingResponseModel: Codable {
   }
 }
 
-struct FoodLabellingInfoResponseModel: Codable {
+struct FoodLabellingInfoResponseModel: Decodable {
   private let internalLabelTitle: Optional<String>
   private let internalLabelValues: Optional<[String]?>
 
@@ -690,7 +690,7 @@ struct FoodLabellingInfoResponseModel: Codable {
   }
 }
 
-struct PageInfoResponseModel: Codable {
+struct PageInfoResponseModel: Decodable {
   private let internalIsLast: Optional<Bool>
   private let internalPageNumber: Optional<Int>
 
@@ -715,7 +715,7 @@ struct PageInfoResponseModel: Codable {
   }
 }
 
-struct ProductResponseModel: Codable {
+struct ProductResponseModel: Decodable {
   private let internalAttributes: Optional<[ProductAttributeResponseModel]?>
   private let internalDescription: Optional<String>
   private let internalFavourite: Optional<Bool>
@@ -838,7 +838,7 @@ struct ProductResponseModel: Codable {
   }
 }
 
-struct ProductAttributeResponseModel: Codable {
+struct ProductAttributeResponseModel: Decodable {
   private let internalKey: Optional<String>
   private let internalValue: Optional<String>
 
@@ -863,7 +863,7 @@ struct ProductAttributeResponseModel: Codable {
   }
 }
 
-struct ProductDealResponseModel: Codable {
+struct ProductDealResponseModel: Decodable {
   private let internalDeals: Optional<[DealResponseModel]?>
   private let internalProductId: Optional<String>
 
@@ -888,7 +888,7 @@ struct ProductDealResponseModel: Codable {
   }
 }
 
-struct ProductFilterResultResponseModel: Codable {
+struct ProductFilterResultResponseModel: Decodable {
   private let internalItems: Optional<[ProductResponseModel]?>
   private let internalPageInfo: Optional<PageInfoResponseModel?>
 
@@ -913,7 +913,7 @@ struct ProductFilterResultResponseModel: Codable {
   }
 }
 
-struct QueryResponseModel: Codable {
+struct QueryResponseModel: Decodable {
   let campaigns: Optional<CampaignsResponseModel?>
   let products: Optional<ProductFilterResultResponseModel>
   let shopDetails: Optional<ShopDetailsResponseModel?>
@@ -925,7 +925,7 @@ struct QueryResponseModel: Codable {
   }
 }
 
-struct ShopDetailsResponseModel: Codable {
+struct ShopDetailsResponseModel: Decodable {
   private let internalCategories: Optional<[CategoryTreeResponseModel]?>
   private let internalShopItemsResponse: Optional<ShopItemsResponseResponseModel?>
 
@@ -950,7 +950,7 @@ struct ShopDetailsResponseModel: Codable {
   }
 }
 
-struct ShopItemsListResponseModel: Codable {
+struct ShopItemsListResponseModel: Decodable {
   private let internalHeadline: Optional<String>
   private let internalShopItemId: Optional<String>
   private let internalShopItemType: Optional<ShopItemTypeEnumResponseModel>
@@ -1003,7 +1003,7 @@ struct ShopItemsListResponseModel: Codable {
   }
 }
 
-struct ShopItemsResponseResponseModel: Codable {
+struct ShopItemsResponseResponseModel: Decodable {
   private let internalPageInfo: Optional<PageInfoResponseModel?>
   private let internalShopItemsList: Optional<[ShopItemsListResponseModel]?>
 
@@ -1028,7 +1028,7 @@ struct ShopItemsResponseResponseModel: Codable {
   }
 }
 
-struct SubCategoryResponseModel: Codable {
+struct SubCategoryResponseModel: Decodable {
   private let internalId: Optional<String>
   private let internalName: Optional<String>
   private let internalSubCategories: Optional<[SubCategoryResponseModel]?>
@@ -1483,15 +1483,15 @@ struct QueryRequest: GraphQLRequesting {
   }
 }
 
-struct CampaignsQueryResponse: Codable {
+struct CampaignsQueryResponse: Decodable {
   let campaigns: CampaignsResponseModel?
 }
 
-struct ProductsQueryResponse: Codable {
+struct ProductsQueryResponse: Decodable {
   let products: ProductFilterResultResponseModel
 }
 
-struct ShopDetailsQueryResponse: Codable {
+struct ShopDetailsQueryResponse: Decodable {
   let shopDetails: ShopDetailsResponseModel?
 }
 
