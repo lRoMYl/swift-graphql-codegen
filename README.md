@@ -154,30 +154,6 @@ swift-graphql-codegen dh-swift "schema.json" --config-path "config.json" --outpu
 ```
 ---
 
-# Troubleshooting
-
-```
-Xcode Swift Package Manager error - The repository could not be found
-```
-
-HTTPS connection failed due to proxy configuration, check your `~/.gitconfig` and remove the following statement temporarily
-
-```
-[url "git@github.com:"]
-insteadOf = https://github.com/
-```
-
----
-```
-Failed to create file at /API/Core/GraphQLEntities.generated.swift
-```
-Make sure the directory path exist, if not create it manually and retry again.
-
-If this is the first time you're running the codegen, do note that you would need to manually create two directories in the directory you've provided.
-- Core
-- A second folder, following the name provided in `--api-client-prefix`.
-- You can refer to the path in the errors as reference on what folders are missing.
-
 # Alternatives
 
 ## [apollo-ios](https://github.com/apollographql/apollo-ios)
