@@ -91,12 +91,18 @@ enum GraphQLResponseError: Error, LocalizedError {
 extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
   func requestFragment(
     requestName: String,
-    typeName: String
+    typeName: String,
+    depth: UInt = 5
   ) -> (key: String, value: String) {
     let key = "\(requestName)\(typeName)Fragment"
+    let fragmentFields = implodeRecursiveFragment(
+      text: requestFragmentFields(requestName: requestName),
+      fragmentKey: key,
+      depth: depth
+    )
     let value = """
     fragment \(key) on \(typeName) {
-      \(requestFragmentFields(requestName: requestName))
+      \(fragmentFields)
     }
     """
 
@@ -119,6 +125,81 @@ extension Collection where Element: GraphQLSelection & RawRepresentable, Element
 
       $0 += "\n  \(formatted)"
     }
+  }
+
+  /**
+    GraphQL query doesn't support recursive fragment, internally GraphQL will simply implode all fragment
+    and if there is a recursive fragment it will just be stuck in infinite loop.
+
+    Thus it is necessary to detect if recursive fragment exist and try to resolve it by providing
+    a fixed depth for the recursion.
+    - parameter depth: Define how many time the recursive fragment should be imploded, 0 would terminate the recursion
+    */
+  func implodeRecursiveFragment(text: String, fragmentKey: String, depth: UInt) -> String {
+    guard let range = text.range(of: "...\(fragmentKey)") else {
+      return text
+    }
+
+    var formattedText = text
+
+    if depth == 1 {
+      var fieldsWithoutFragment = text
+
+      if let fragmentFieldRange = self.fragmentFieldRange(text: text, fragmentRange: range) {
+        fieldsWithoutFragment.replaceSubrange(fragmentFieldRange, with: "")
+      } else {
+        fieldsWithoutFragment.replaceSubrange(range, with: "")
+      }
+
+      formattedText.replaceSubrange(range, with: fieldsWithoutFragment)
+    } else if depth == 0 {
+      if let fragmentFieldRange = self.fragmentFieldRange(text: text, fragmentRange: range) {
+        formattedText.replaceSubrange(fragmentFieldRange, with: "")
+      } else {
+        formattedText.replaceSubrange(range, with: "")
+      }
+    } else {
+      formattedText.replaceSubrange(range, with: implodeRecursiveFragment(text: text, fragmentKey: fragmentKey, depth: (depth - 1)))
+    }
+
+    return formattedText
+  }
+
+  func fragmentFieldRange(text: String, fragmentRange: Range<String.Index>) -> Range<String.Index>? {
+    let lowerOffset = 1
+    let delimiter = "\n"
+
+    let lowerIndex: String.Index
+
+    var searchIndex = fragmentRange.lowerBound
+    var counter = 0
+
+    while text.startIndex < searchIndex {
+      if let foundRange = text.range(of: delimiter, options: .backwards, range: text.startIndex..<searchIndex) {
+        counter += 1
+        searchIndex = foundRange.lowerBound
+
+        if counter > lowerOffset {
+          break
+        }
+      } else {
+        searchIndex = text.startIndex
+      }
+    }
+
+    if counter > lowerOffset {
+      lowerIndex = searchIndex
+    } else {
+      return nil
+    }
+
+    searchIndex = fragmentRange.upperBound
+
+    guard let upperRange = text.range(of: delimiter, range: searchIndex..<text.endIndex) else {
+      return nil
+    }
+
+    return lowerIndex..<text.index(after: upperRange.upperBound)
   }
 }
 
