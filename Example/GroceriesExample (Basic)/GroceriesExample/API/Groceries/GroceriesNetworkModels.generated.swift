@@ -374,8 +374,6 @@ struct BannerResponseModel: Codable {
     internalTargetAudience = try container.decodeOptionalIfPresent(String.self, forKey: .internalTargetAudience)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalBannerUrl = "bannerUrl"
     case internalGlobalId = "globalID"
@@ -404,8 +402,6 @@ struct BenefitResponseModel: Codable {
     internalProductId = try container.decodeOptionalIfPresent(String.self, forKey: .internalProductId)
     internalQuantity = try container.decodeOptionalIfPresent(Int.self, forKey: .internalQuantity)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalProductId = "productID"
@@ -486,8 +482,6 @@ struct CampaignAttributeResponseModel: Codable {
     internalSource = try container.decodeOptionalIfPresent(CampaignSourceEnumResponseModel.self, forKey: .internalSource)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalAutoApplied = "autoApplied"
     case internalBenefits = "benefits"
@@ -522,8 +516,6 @@ struct CampaignsResponseModel: Codable {
     internalProductDeals = try container.decodeOptionalIfPresent([ProductDealResponseModel]?.self, forKey: .internalProductDeals)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalCampaignAttributes = "campaignAttributes"
     case internalProductDeals = "productDeals"
@@ -554,8 +546,6 @@ struct CategoryResponseModel: Codable {
     internalImageUrls = try container.decodeOptionalIfPresent([String]?.self, forKey: .internalImageUrls)
     internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
@@ -588,8 +578,6 @@ struct CategoryTreeResponseModel: Codable {
     internalProductsCount = try container.decodeOptionalIfPresent(Int.self, forKey: .internalProductsCount)
     internalSubCategories = try container.decodeOptionalIfPresent([SubCategoryResponseModel]?.self, forKey: .internalSubCategories)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalCategory = "category"
@@ -630,8 +618,6 @@ struct DealResponseModel: Codable {
     internalProgressTeaser = try container.decodeOptionalIfPresent(String?.self, forKey: .internalProgressTeaser)
     internalTriggerQuantity = try container.decodeOptionalIfPresent(Int.self, forKey: .internalTriggerQuantity)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalCampaignId = "campaignID"
@@ -684,8 +670,6 @@ struct FoodLabellingResponseModel: Codable {
     internalWarnings = try container.decodeOptionalIfPresent(FoodLabellingInfoResponseModel?.self, forKey: .internalWarnings)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalAdditives = "additives"
     case internalAllergens = "allergens"
@@ -715,8 +699,6 @@ struct FoodLabellingInfoResponseModel: Codable {
     internalLabelValues = try container.decodeOptionalIfPresent([String]?.self, forKey: .internalLabelValues)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalLabelTitle = "labelTitle"
     case internalLabelValues = "labelValues"
@@ -741,8 +723,6 @@ struct PageInfoResponseModel: Codable {
     internalIsLast = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalIsLast)
     internalPageNumber = try container.decodeOptionalIfPresent(Int.self, forKey: .internalPageNumber)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalIsLast = "isLast"
@@ -853,8 +833,6 @@ struct ProductResponseModel: Codable {
     internalUrls = try container.decodeOptionalIfPresent([String].self, forKey: .internalUrls)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalAttributes = "attributes"
     case internalDescription = "description"
@@ -894,8 +872,6 @@ struct ProductAttributeResponseModel: Codable {
     internalValue = try container.decodeOptionalIfPresent(String.self, forKey: .internalValue)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalKey = "key"
     case internalValue = "value"
@@ -920,8 +896,6 @@ struct ProductDealResponseModel: Codable {
     internalDeals = try container.decodeOptionalIfPresent([DealResponseModel]?.self, forKey: .internalDeals)
     internalProductId = try container.decodeOptionalIfPresent(String.self, forKey: .internalProductId)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalDeals = "deals"
@@ -948,8 +922,6 @@ struct ProductFilterResultResponseModel: Codable {
     internalPageInfo = try container.decodeOptionalIfPresent(PageInfoResponseModel?.self, forKey: .internalPageInfo)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalItems = "items"
     case internalPageInfo = "pageInfo"
@@ -960,8 +932,6 @@ struct QueryResponseModel: Codable {
   let campaigns: Optional<CampaignsResponseModel?>
   let products: Optional<ProductFilterResultResponseModel>
   let shopDetails: Optional<ShopDetailsResponseModel?>
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case campaigns
@@ -988,8 +958,6 @@ struct ShopDetailsResponseModel: Codable {
     internalCategories = try container.decodeOptionalIfPresent([CategoryTreeResponseModel]?.self, forKey: .internalCategories)
     internalShopItemsResponse = try container.decodeOptionalIfPresent(ShopItemsResponseResponseModel?.self, forKey: .internalShopItemsResponse)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalCategories = "categories"
@@ -1040,8 +1008,6 @@ struct ShopItemsListResponseModel: Codable {
     internalTrackingId = try container.decodeOptionalIfPresent(String.self, forKey: .internalTrackingId)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalHeadline = "headline"
     case internalShopItemId = "shopItemID"
@@ -1071,8 +1037,6 @@ struct ShopItemsResponseResponseModel: Codable {
     internalShopItemsList = try container.decodeOptionalIfPresent([ShopItemsListResponseModel]?.self, forKey: .internalShopItemsList)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalPageInfo = "pageInfo"
     case internalShopItemsList = "shopItemsList"
@@ -1082,6 +1046,7 @@ struct ShopItemsResponseResponseModel: Codable {
 struct SubCategoryResponseModel: Codable {
   private let internalId: Optional<String>
   private let internalName: Optional<String>
+  private let internalSubCategories: Optional<[SubCategoryResponseModel]?>
 
   func id() throws -> String {
     try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
@@ -1091,18 +1056,22 @@ struct SubCategoryResponseModel: Codable {
     try value(for: \Self.internalName, codingKey: CodingKeys.internalName)
   }
 
+  func subCategories() throws -> [SubCategoryResponseModel]? {
+    try value(for: \Self.internalSubCategories, codingKey: CodingKeys.internalSubCategories)
+  }
+
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
     internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
+    internalSubCategories = try container.decodeOptionalIfPresent([SubCategoryResponseModel]?.self, forKey: .internalSubCategories)
   }
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
     case internalName = "name"
+    case internalSubCategories = "subCategories"
   }
 }
 
@@ -1122,8 +1091,6 @@ struct ShopDetailsRequestRequestModel: Codable {
   let platform: String
 
   let pastOrderStrategy: PastOrderStrategyEnumResponseModel?
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case vendorId = "vendorID"
@@ -1146,8 +1113,6 @@ struct RequestParamsRequestModel: Codable {
   let globalEntityId: String
 
   let openingType: OpeningTypeEnumResponseModel
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case locale
@@ -1175,8 +1140,6 @@ struct ProductsFilterRequestRequestModel: Codable {
 
   let isDarkstore: Bool
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case vendorId = "vendorID"
     case globalEntityId = "globalEntityID"
@@ -1200,8 +1163,6 @@ struct ProductRequestRequestModel: Codable {
 
   let customerId: String?
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case vendorId = "vendorID"
     case globalEntityId = "globalEntityID"
@@ -1216,8 +1177,6 @@ struct ProductIdentifierRequestModel: Codable {
 
   let value: String
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case type
     case value
@@ -1229,8 +1188,6 @@ struct ProductFilterInputRequestModel: Codable {
 
   let id: String
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case type
     case id
@@ -1241,8 +1198,6 @@ struct LocationRequestModel: Codable {
   let latitude: Double
 
   let longitude: Double
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case latitude
@@ -1295,13 +1250,9 @@ enum ShopItemInterfaceResponseModel: Codable {
 
 /// CampaignsQueryRequest
 struct CampaignsQueryRequest: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
   let requestType: GraphQLRequestType = .query
   let requestName: String = "campaigns"
   let rootSelectionKeys: Set<String> = ["CampaignsCampaignsFragment"]
-
-  // MARK: - Arguments
 
   let vendorId: String
 
@@ -1369,13 +1320,9 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 
 /// ProductsQueryRequest
 struct ProductsQueryRequest: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
   let requestType: GraphQLRequestType = .query
   let requestName: String = "products"
   let rootSelectionKeys: Set<String> = ["ProductsProductFilterResultFragment"]
-
-  // MARK: - Arguments
 
   let productsAttributesKeys: [String]?
 
@@ -1434,13 +1381,9 @@ struct ProductsQueryRequest: GraphQLRequesting {
 
 /// ShopDetailsQueryRequest
 struct ShopDetailsQueryRequest: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
   let requestType: GraphQLRequestType = .query
   let requestName: String = "shopDetails"
   let rootSelectionKeys: Set<String> = ["ShopDetailsShopDetailsFragment"]
-
-  // MARK: - Arguments
 
   let shopDetailsAttributesKeys: [String]?
 
@@ -1813,7 +1756,14 @@ enum ShopItemsResponseSelection: String, GraphQLSelection {
 enum SubCategorySelection: String, GraphQLSelection {
   case id
   case name
+  case subCategories = """
+  subCategories {
+    ...%@SubCategoryFragment
+  }
+  """
 }
+
+// MARK: - Selections
 
 struct QueryRequestSelections: GraphQLSelections {
   let bannerSelections: Set<BannerSelection>
@@ -1877,146 +1827,39 @@ struct QueryRequestSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let bannerSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)BannerFragment on Banner {
-    	\(bannerSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let benefitSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)BenefitFragment on Benefit {
-    	\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let campaignAttributeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-    	\(campaignAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let campaignsSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CampaignsFragment on Campaigns {
-    	\(campaignsSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let categorySelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CategoryFragment on Category {
-    	\(categorySelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let categoryTreeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CategoryTreeFragment on CategoryTree {
-    	\(categoryTreeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let dealSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DealFragment on Deal {
-    	\(dealSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let foodLabellingSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
-    	\(foodLabellingSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let foodLabellingInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingInfoFragment on FoodLabellingInfo {
-    	\(foodLabellingInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let pageInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
-    	\(pageInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductFragment on Product {
-    	\(productSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productAttributeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
-    	\(productAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productDealSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductDealFragment on ProductDeal {
-    	\(productDealSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productFilterResultSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductFilterResultFragment on ProductFilterResult {
-    	\(productFilterResultSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopDetailsSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopDetailsFragment on ShopDetails {
-    	\(shopDetailsSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopItemSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemFragment on ShopItem {
-    	__typename
-    	...\(capitalizedRequestName)BannerFragment
-    	...\(capitalizedRequestName)CategoryFragment
-    	...\(capitalizedRequestName)ProductFragment
-    }
-    """
-
-    let shopItemsListSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemsListFragment on ShopItemsList {
-    	\(shopItemsListSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopItemsResponseSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemsResponseFragment on ShopItemsResponse {
-    	\(shopItemsResponseSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let subCategorySelectionsDeclaration = """
-    fragment \(capitalizedRequestName)SubCategoryFragment on SubCategory {
-    	\(subCategorySelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)BannerFragment": bannerSelectionsDeclaration,
-      "\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
-      "\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
-      "\(capitalizedRequestName)CampaignsFragment": campaignsSelectionsDeclaration,
-      "\(capitalizedRequestName)CategoryFragment": categorySelectionsDeclaration,
-      "\(capitalizedRequestName)CategoryTreeFragment": categoryTreeSelectionsDeclaration,
-      "\(capitalizedRequestName)DealFragment": dealSelectionsDeclaration,
-      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingSelectionsDeclaration,
-      "\(capitalizedRequestName)FoodLabellingInfoFragment": foodLabellingInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)PageInfoFragment": pageInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductFragment": productSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductDealFragment": productDealSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductFilterResultFragment": productFilterResultSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopDetailsFragment": shopDetailsSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemFragment": shopItemSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemsListFragment": shopItemsListSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemsResponseFragment": shopItemsResponseSelectionsDeclaration,
-      "\(capitalizedRequestName)SubCategoryFragment": subCategorySelectionsDeclaration
-    ]
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        bannerSelections.requestFragment(requestName: requestName, typeName: "Banner"),
+        benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
+        campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute"),
+        campaignsSelections.requestFragment(requestName: requestName, typeName: "Campaigns"),
+        categorySelections.requestFragment(requestName: requestName, typeName: "Category"),
+        categoryTreeSelections.requestFragment(requestName: requestName, typeName: "CategoryTree"),
+        dealSelections.requestFragment(requestName: requestName, typeName: "Deal"),
+        foodLabellingSelections.requestFragment(requestName: requestName, typeName: "FoodLabelling"),
+        foodLabellingInfoSelections.requestFragment(requestName: requestName, typeName: "FoodLabellingInfo"),
+        pageInfoSelections.requestFragment(requestName: requestName, typeName: "PageInfo"),
+        productSelections.requestFragment(requestName: requestName, typeName: "Product"),
+        productAttributeSelections.requestFragment(requestName: requestName, typeName: "ProductAttribute"),
+        productDealSelections.requestFragment(requestName: requestName, typeName: "ProductDeal"),
+        productFilterResultSelections.requestFragment(requestName: requestName, typeName: "ProductFilterResult"),
+        shopDetailsSelections.requestFragment(requestName: requestName, typeName: "ShopDetails"),
+        requestFragment(
+          requestName: requestName,
+          typeName: "ShopItem",
+          possibleTypeNames: [
+            "Banner",
+            "Category",
+            "Product"
+          ]
+        ),
+        shopItemsListSelections.requestFragment(requestName: requestName, typeName: "ShopItemsList"),
+        shopItemsResponseSelections.requestFragment(requestName: requestName, typeName: "ShopItemsResponse"),
+        subCategorySelections.requestFragment(requestName: requestName, typeName: "SubCategory")
+      ].map { ($0.key, $0.value) }
+    )
 
     let fragmentMaps = rootSelectionKeys
       .map {
@@ -2029,11 +1872,9 @@ struct QueryRequestSelections: GraphQLSelections {
         old.merging(new, uniquingKeysWith: { _, new in new })
       }
 
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragmentMaps.values.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct CampaignsQueryRequestSelections: GraphQLSelections {
   let benefitSelections: Set<BenefitSelection>
@@ -2057,45 +1898,17 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let benefitSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)BenefitFragment on Benefit {
-    	\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let campaignAttributeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-    	\(campaignAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let campaignsSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CampaignsFragment on Campaigns {
-    	\(campaignsSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let dealSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DealFragment on Deal {
-    	\(dealSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productDealSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductDealFragment on ProductDeal {
-    	\(productDealSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
-      "\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
-      "\(capitalizedRequestName)CampaignsFragment": campaignsSelectionsDeclaration,
-      "\(capitalizedRequestName)DealFragment": dealSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductDealFragment": productDealSelectionsDeclaration
-    ]
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
+        campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute"),
+        campaignsSelections.requestFragment(requestName: requestName, typeName: "Campaigns"),
+        dealSelections.requestFragment(requestName: requestName, typeName: "Deal"),
+        productDealSelections.requestFragment(requestName: requestName, typeName: "ProductDeal")
+      ].map { ($0.key, $0.value) }
+    )
 
     let fragmentMaps = rootSelectionKeys
       .map {
@@ -2108,11 +1921,9 @@ struct CampaignsQueryRequestSelections: GraphQLSelections {
         old.merging(new, uniquingKeysWith: { _, new in new })
       }
 
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragmentMaps.values.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct ProductsQueryRequestSelections: GraphQLSelections {
   let foodLabellingSelections: Set<FoodLabellingSelection>
@@ -2139,52 +1950,18 @@ struct ProductsQueryRequestSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let foodLabellingSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
-    	\(foodLabellingSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let foodLabellingInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingInfoFragment on FoodLabellingInfo {
-    	\(foodLabellingInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let pageInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
-    	\(pageInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductFragment on Product {
-    	\(productSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productAttributeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
-    	\(productAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productFilterResultSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductFilterResultFragment on ProductFilterResult {
-    	\(productFilterResultSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingSelectionsDeclaration,
-      "\(capitalizedRequestName)FoodLabellingInfoFragment": foodLabellingInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)PageInfoFragment": pageInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductFragment": productSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductFilterResultFragment": productFilterResultSelectionsDeclaration
-    ]
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        foodLabellingSelections.requestFragment(requestName: requestName, typeName: "FoodLabelling"),
+        foodLabellingInfoSelections.requestFragment(requestName: requestName, typeName: "FoodLabellingInfo"),
+        pageInfoSelections.requestFragment(requestName: requestName, typeName: "PageInfo"),
+        productSelections.requestFragment(requestName: requestName, typeName: "Product"),
+        productAttributeSelections.requestFragment(requestName: requestName, typeName: "ProductAttribute"),
+        productFilterResultSelections.requestFragment(requestName: requestName, typeName: "ProductFilterResult")
+      ].map { ($0.key, $0.value) }
+    )
 
     let fragmentMaps = rootSelectionKeys
       .map {
@@ -2197,11 +1974,9 @@ struct ProductsQueryRequestSelections: GraphQLSelections {
         old.merging(new, uniquingKeysWith: { _, new in new })
       }
 
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragmentMaps.values.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct ShopDetailsQueryRequestSelections: GraphQLSelections {
   let bannerSelections: Set<BannerSelection>
@@ -2247,104 +2022,33 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let bannerSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)BannerFragment on Banner {
-    	\(bannerSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let categorySelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CategoryFragment on Category {
-    	\(categorySelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let categoryTreeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CategoryTreeFragment on CategoryTree {
-    	\(categoryTreeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let foodLabellingSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingFragment on FoodLabelling {
-    	\(foodLabellingSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let foodLabellingInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)FoodLabellingInfoFragment on FoodLabellingInfo {
-    	\(foodLabellingInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let pageInfoSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)PageInfoFragment on PageInfo {
-    	\(pageInfoSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductFragment on Product {
-    	\(productSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let productAttributeSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ProductAttributeFragment on ProductAttribute {
-    	\(productAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopDetailsSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopDetailsFragment on ShopDetails {
-    	\(shopDetailsSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopItemSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemFragment on ShopItem {
-    	__typename
-    	...\(capitalizedRequestName)BannerFragment
-    	...\(capitalizedRequestName)CategoryFragment
-    	...\(capitalizedRequestName)ProductFragment
-    }
-    """
-
-    let shopItemsListSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemsListFragment on ShopItemsList {
-    	\(shopItemsListSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let shopItemsResponseSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)ShopItemsResponseFragment on ShopItemsResponse {
-    	\(shopItemsResponseSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let subCategorySelectionsDeclaration = """
-    fragment \(capitalizedRequestName)SubCategoryFragment on SubCategory {
-    	\(subCategorySelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)BannerFragment": bannerSelectionsDeclaration,
-      "\(capitalizedRequestName)CategoryFragment": categorySelectionsDeclaration,
-      "\(capitalizedRequestName)CategoryTreeFragment": categoryTreeSelectionsDeclaration,
-      "\(capitalizedRequestName)FoodLabellingFragment": foodLabellingSelectionsDeclaration,
-      "\(capitalizedRequestName)FoodLabellingInfoFragment": foodLabellingInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)PageInfoFragment": pageInfoSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductFragment": productSelectionsDeclaration,
-      "\(capitalizedRequestName)ProductAttributeFragment": productAttributeSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopDetailsFragment": shopDetailsSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemFragment": shopItemSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemsListFragment": shopItemsListSelectionsDeclaration,
-      "\(capitalizedRequestName)ShopItemsResponseFragment": shopItemsResponseSelectionsDeclaration,
-      "\(capitalizedRequestName)SubCategoryFragment": subCategorySelectionsDeclaration
-    ]
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        bannerSelections.requestFragment(requestName: requestName, typeName: "Banner"),
+        categorySelections.requestFragment(requestName: requestName, typeName: "Category"),
+        categoryTreeSelections.requestFragment(requestName: requestName, typeName: "CategoryTree"),
+        foodLabellingSelections.requestFragment(requestName: requestName, typeName: "FoodLabelling"),
+        foodLabellingInfoSelections.requestFragment(requestName: requestName, typeName: "FoodLabellingInfo"),
+        pageInfoSelections.requestFragment(requestName: requestName, typeName: "PageInfo"),
+        productSelections.requestFragment(requestName: requestName, typeName: "Product"),
+        productAttributeSelections.requestFragment(requestName: requestName, typeName: "ProductAttribute"),
+        shopDetailsSelections.requestFragment(requestName: requestName, typeName: "ShopDetails"),
+        requestFragment(
+          requestName: requestName,
+          typeName: "ShopItem",
+          possibleTypeNames: [
+            "Banner",
+            "Category",
+            "Product"
+          ]
+        ),
+        shopItemsListSelections.requestFragment(requestName: requestName, typeName: "ShopItemsList"),
+        shopItemsResponseSelections.requestFragment(requestName: requestName, typeName: "ShopItemsResponse"),
+        subCategorySelections.requestFragment(requestName: requestName, typeName: "SubCategory")
+      ].map { ($0.key, $0.value) }
+    )
 
     let fragmentMaps = rootSelectionKeys
       .map {
@@ -2357,6 +2061,6 @@ struct ShopDetailsQueryRequestSelections: GraphQLSelections {
         old.merging(new, uniquingKeysWith: { _, new in new })
       }
 
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragmentMaps.values.joined(separator: "\n\n")
   }
 }

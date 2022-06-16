@@ -160,8 +160,6 @@ private extension RequestGenerator {
     let text = """
     /// \(requestParameterName)
     struct \(requestParameterName): \(entityName) {
-      // MARK: - \(entityNameMap.requestType)
-
       let requestType: \(entityNameMap.requestType) = .\(operation.requestTypeName)
       let requestName: String = "\(field.name)"
       let rootSelectionKeys: Set<String> = [\(rootSelectionKey)]

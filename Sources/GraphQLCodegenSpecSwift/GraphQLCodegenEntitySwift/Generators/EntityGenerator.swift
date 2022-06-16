@@ -14,6 +14,12 @@ struct EntityGenerator: GraphQLCodeGenerating {
   private let entityNameMap: EntityNameMap
   private let entityNameProvider: EntityNameProviding
 
+  private enum Variables {
+    static let requestName = "requestName"
+    static let capitalizedRequestName = "capitalizedRequestName"
+    static let typeName = "typeName"
+  }
+
   init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
     self.entityNameMap = entityNameMap
     self.entityNameProvider = entityNameProvider
@@ -46,7 +52,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
     protocol \(entityNameMap.selection): Hashable, CaseIterable {}
     protocol \(entityNameMap.selections) {
-      func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String
+      func requestFragments(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String
     }
 
     // MARK: - Enum
@@ -112,6 +118,20 @@ struct EntityGenerator: GraphQLCodeGenerating {
     // MARK: - \(entityNameMap.selection)+Fragments
 
     extension Collection where Element: \(entityNameMap.selection) & RawRepresentable, Element.RawValue == String {
+      func \(entityNameProvider.requestFragmentName)(
+        \(Variables.requestName): String,
+        \(Variables.typeName): String
+      ) -> (key: String, value: String) {
+        let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
+        let value = \"\"\"
+        fragment \\(key) on \\(\(Variables.typeName)) {
+          \\(requestFragments(\(Variables.requestName): \(Variables.requestName)))
+        }
+        \"\"\"
+
+        return (key: key, value: value)
+      }
+
       func \(entityNameProvider.requestFragmentsName)(requestName: String) -> String {
         let values = count == 0
           ? Element.allCases.map { $0 as Element }
@@ -127,6 +147,24 @@ struct EntityGenerator: GraphQLCodeGenerating {
 
           $0 += "\\n  \\(formatted)"
         }
+      }
+
+      func \(entityNameProvider.requestFragmentName)(
+        \(Variables.requestName): String,
+        \(Variables.typeName): String,
+        possibleTypeNames: [String]
+      ) -> (key: String, value: String) {
+        let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
+
+        return (
+          key: key,
+          value: \"\"\"
+            fragment \\(key) on \\(\(Variables.requestName)) {
+              __typename
+              \\(possibleTypeNames.map { "...\\(\(Variables.requestName))\\($0)Fragment" }.joined(separator: "\\n"))
+            }
+            \"\"\"
+        )
       }
     }
 

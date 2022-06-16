@@ -150,12 +150,7 @@ struct RequestVariablesGenerator {
       return argumentVariablesDeclaration.lines
     }.lines
 
-    guard !argumentVariables.isEmpty else { return "" }
-
-    return [
-      "// MARK: - Arguments",
-      argumentVariables
-    ].lines
+    return argumentVariables
   }
 }
 

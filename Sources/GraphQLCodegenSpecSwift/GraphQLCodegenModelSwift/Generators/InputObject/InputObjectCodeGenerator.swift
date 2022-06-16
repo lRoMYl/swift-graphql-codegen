@@ -65,8 +65,6 @@ private extension InputObjectCodeGenerator {
     struct \(name): Codable {
       \(fieldsVariable)
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         \(fieldsCodingKey)
       }

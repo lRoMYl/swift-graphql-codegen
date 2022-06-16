@@ -89,6 +89,20 @@ enum GraphQLResponseError: Error, LocalizedError {
 // MARK: - GraphQLSelection+Fragments
 
 extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
+  func requestFragment(
+    requestName: String,
+    typeName: String
+  ) -> (key: String, value: String) {
+    let key = "\(requestName)\(typeName)Fragment"
+    let value = """
+    fragment \(key) on \(typeName) {
+      \(requestFragments(requestName: requestName))
+    }
+    """
+
+    return (key: key, value: value)
+  }
+
   func requestFragments(requestName: String) -> String {
     let values = count == 0
       ? Element.allCases.map { $0 as Element }
@@ -104,6 +118,24 @@ extension Collection where Element: GraphQLSelection & RawRepresentable, Element
 
       $0 += "\n  \(formatted)"
     }
+  }
+
+  func requestFragment(
+    requestName: String,
+    typeName: String,
+    possibleTypeNames: [String]
+  ) -> (key: String, value: String) {
+    let key = "\(requestName)\(typeName)Fragment"
+
+    return (
+      key: key,
+      value: """
+        fragment \(key) on \(requestName) {
+          __typename
+          \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
+        }
+        """
+    )
   }
 }
 

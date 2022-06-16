@@ -121,8 +121,6 @@ extension ObjectCodeGenerator {
 
       \(initializer)
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         \(fieldsCodingKey)
       }
