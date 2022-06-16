@@ -1,6 +1,6 @@
-# Swift GraphQL Codegen Objectives
+# Swift GraphQL Codegen
 
-Swift GraphQL Codegen
+## Objectives
 - Zero GraphQL Query to be written manually
 - Zero library/framework to be included in the main app
 - Plain Swift Types with Type Safety
