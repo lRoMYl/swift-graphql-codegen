@@ -183,7 +183,7 @@ extension GraphQLSelections {
     return (
       key: key,
       value: """
-        fragment \(key) on \(requestName) {
+        fragment \(key) on \(typeName) {
           __typename
           \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
         }

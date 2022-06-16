@@ -208,11 +208,11 @@ struct EntityGenerator: GraphQLCodeGenerating {
         possibleTypeNames: [String]
       ) -> (key: String, value: String) {
         let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
-    
+
         return (
           key: key,
           value: \"\"\"
-            fragment \\(key) on \\(\(Variables.requestName)) {
+            fragment \\(key) on \\(\(Variables.typeName)) {
               __typename
               \\(possibleTypeNames.map { "...\\(\(Variables.requestName))\\($0)Fragment" }.joined(separator: "\\n"))
             }
