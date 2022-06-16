@@ -39,10 +39,12 @@ private extension RequestEncodableGenerator {
       selectionMap: selectionMap,
       schemaMap: SchemaMap(schema: schema)
     )
-    let codingKeyDeclarations = try nestedFields.map { nestedfield in
-      try nestedfield.args.compactMap {
+    let codingKeyDeclarations = try nestedFields.compactMap { nestedfield in
+      let declaration = try nestedfield.args.compactMap {
         try codingKeysDeclaration(with: $0, field: nestedfield, rootField: field)
       }.lines
+
+      return declaration.isEmpty ? nil : declaration
     }.lines
 
     return """

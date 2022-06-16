@@ -45,6 +45,7 @@ struct RequestVariablesGenerator {
    }
    ~~~
    */
+
   func operationVariablesDeclaration(with field: Field, schema: Schema) throws -> [(key: String, value: String)]? {
     var variables = [(String, String)]()
 
@@ -163,10 +164,12 @@ private extension RequestVariablesGenerator {
         // If the variable is a nested query, use rootField and field as prefix to prevent name collision
         : "\(rootField.name.camelCase)\(field.name.pascalCase)\($0.name.pascalCase)"
 
-      return """
-      \($0.docs)
-      let \(variableName): \(typeName)
-      """
+      return [
+        $0.docs,
+        "let \(variableName): \(typeName)"
+      ]
+        .compactMap { $0.isEmpty ? nil : $0 }
+      .lines
     }
   }
 }

@@ -10,9 +10,7 @@ enum ShopItemTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case banner
-
   case product
-
   case category
 
   /// Auto generated constant for unknown enum values
@@ -51,7 +49,6 @@ enum ProductIdentifierTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case sku
-
   case id
 
   /// Auto generated constant for unknown enum values
@@ -87,13 +84,9 @@ enum ProductFilterTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case banner
-
   case campaign
-
   case category
-
   case swimlane
-
   case pastOrder
 
   /// Auto generated constant for unknown enum values
@@ -138,7 +131,6 @@ enum PastOrderStrategyEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case recency
-
   case frequency
 
   /// Auto generated constant for unknown enum values
@@ -174,7 +166,6 @@ enum OpeningTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case delivery
-
   case pickup
 
   /// Auto generated constant for unknown enum values
@@ -210,9 +201,7 @@ enum DiscountTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case free
-
   case absolute
-
   case percentage
 
   /// Auto generated constant for unknown enum values
@@ -251,13 +240,9 @@ enum CampaignTypeEnumResponseModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case strikethrough
-
   case sameItemBundle
-
   case mixAndMatchSame
-
   case mixAndMatchDifferent
-
   case itemBasedDelivery
 
   /// Auto generated constant for unknown enum values
@@ -1079,17 +1064,11 @@ struct SubCategoryResponseModel: Codable {
 
 struct ShopDetailsRequestRequestModel: Codable {
   let vendorId: String
-
   let globalEntityId: String
-
   let isDarkstore: Bool
-
   let customerId: String?
-
   let locale: String
-
   let platform: String
-
   let pastOrderStrategy: PastOrderStrategyEnumResponseModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -1105,13 +1084,9 @@ struct ShopDetailsRequestRequestModel: Codable {
 
 struct RequestParamsRequestModel: Codable {
   let locale: String?
-
   let location: LocationRequestModel
-
   let vendorId: String
-
   let globalEntityId: String
-
   let openingType: OpeningTypeEnumResponseModel
 
   private enum CodingKeys: String, CodingKey {
@@ -1125,19 +1100,12 @@ struct RequestParamsRequestModel: Codable {
 
 struct ProductsFilterRequestRequestModel: Codable {
   let vendorId: String
-
   let globalEntityId: String
-
   let locale: String
-
   let platform: String?
-
   let customerId: String?
-
   let page: Int?
-
   let filters: [ProductFilterInputRequestModel]?
-
   let isDarkstore: Bool
 
   private enum CodingKeys: String, CodingKey {
@@ -1154,13 +1122,9 @@ struct ProductsFilterRequestRequestModel: Codable {
 
 struct ProductRequestRequestModel: Codable {
   let vendorId: String
-
   let globalEntityId: String
-
   let locale: String
-
   let productIdentifier: ProductIdentifierRequestModel
-
   let customerId: String?
 
   private enum CodingKeys: String, CodingKey {
@@ -1174,7 +1138,6 @@ struct ProductRequestRequestModel: Codable {
 
 struct ProductIdentifierRequestModel: Codable {
   let type: ProductIdentifierTypeEnumResponseModel
-
   let value: String
 
   private enum CodingKeys: String, CodingKey {
@@ -1185,7 +1148,6 @@ struct ProductIdentifierRequestModel: Codable {
 
 struct ProductFilterInputRequestModel: Codable {
   let type: ProductFilterTypeEnumResponseModel
-
   let id: String
 
   private enum CodingKeys: String, CodingKey {
@@ -1196,7 +1158,6 @@ struct ProductFilterInputRequestModel: Codable {
 
 struct LocationRequestModel: Codable {
   let latitude: Double
-
   let longitude: Double
 
   private enum CodingKeys: String, CodingKey {
@@ -1255,9 +1216,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
   let rootSelectionKeys: Set<String> = ["CampaignsCampaignsFragment"]
 
   let vendorId: String
-
   let globalEntityId: String
-
   let locale: String
 
   private enum CodingKeys: String, CodingKey {
@@ -1325,7 +1284,6 @@ struct ProductsQueryRequest: GraphQLRequesting {
   let rootSelectionKeys: Set<String> = ["ProductsProductFilterResultFragment"]
 
   let productsAttributesKeys: [String]?
-
   let input: ProductsFilterRequestRequestModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -1386,9 +1344,7 @@ struct ShopDetailsQueryRequest: GraphQLRequesting {
   let rootSelectionKeys: Set<String> = ["ShopDetailsShopDetailsFragment"]
 
   let shopDetailsAttributesKeys: [String]?
-
   let input: ShopDetailsRequestRequestModel?
-
   let shopDetailsShopItemsResponsePage: Int
 
   private enum CodingKeys: String, CodingKey {

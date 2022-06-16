@@ -62,7 +62,7 @@ private extension EnumType {
     \(
       enumValues.map {
         $0.declaration
-      }.joined(separator: "\n\n")
+      }.joined(separator: "\n")
     )
 
     /// Auto generated constant for unknown enum values

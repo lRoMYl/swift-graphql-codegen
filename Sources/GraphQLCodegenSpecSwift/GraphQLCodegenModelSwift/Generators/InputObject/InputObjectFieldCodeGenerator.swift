@@ -24,10 +24,12 @@ struct InputObjectFieldCodeGenerator {
   func variableDeclaration(input: InputValue) throws -> String {
     let type = try entityNameProvider.name(for: input.type)
 
-    return """
-    \(input.docs)
-    let \(input.name.camelCase): \(type)
-    """
+    return [
+      input.docs,
+      "let \(input.name.camelCase): \(type)"
+    ]
+    .filter { !$0.isEmpty }
+    .lines
   }
 
   func codingKeyDeclaration(input: InputValue) -> String {
