@@ -1,6 +1,7 @@
 # Swift GraphQL Codegen
 
 Swift GraphQL Codegen
+- Zero GraphQL Query to be written manually
 - Plain Swift Types without external dependencies
 - Network layer agnostic
 
