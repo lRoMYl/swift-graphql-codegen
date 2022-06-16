@@ -57,13 +57,45 @@ Examples of built-in scalar type supported by GraphQL out of the box are;
 - Boolean: true or false.
 - ID: The ID scalar type represents a unique identifier, often used to refetch an object or as the key for a cache. The ID type is serialized in the same way as a String; however, defining it as an ID signifies that it is not intended to be human‐readable.
 
-The code generation tool will only the default scalar mapping, anything else would need to be defined by the respective squad when generating their code.
+The code generation tool will only handle the default scalar mapping, anything else would need to be defined by the respective squad when generating their code.
+
+```Swift
+public extension ScalarMap {
+  static let `default`: ScalarMap = {
+    [
+      // In GraphQL spec, ID refer to Identifier that are internally using a String type
+      "ID": "String", 
+      "String": "String",
+      "Int": "Int",
+      "Boolean": "Bool",
+      // In GraphQL spec, Double doesn't exist. To cater to our codebase common use cases,
+      // I've mapped Float to Double instead of Float. 
+      // This can however be overwritten using scalarMap field in your config file.
+      "Float": "Double" 
+    ]
+  }()
+}
+```
+
+Examples of common scalar type that are not supported out of the box;
+- Date: Backend would need to define which ISO standard to handle the date such as `ISO8601` or `Epoch`
+- URL
+
+Can be defined as such
+```JSON
+{
+  "scalarMap": [
+    // The values on the left side is the GraphQL Scalar type name, the value on the right is the Swift type name
+    "DateTime": "Date",
+    "URL": "URL",
+    "SomeFancyScalarType": "YourFancySwiftType"
+  ]
+}
+```
 
 If a `scalar type` doesn't have any equivalent mapping defined in the configuration file, an error will be printed with message indicating the exact `scalar type` requires a mapping to be defined.
 
-Examples of common scalar type that are not support out of the box;
-- Date: Backend would need to define which ISO standard to handle the date such as `ISO8601` or `Epoch`
-- File/image: Backend would need to define the format that are supported to upload an image file but are generally uploaded as `binary`
+Please note that the code generation tool doesn't check if the provided `Swift type` exist in your code base, it simply check if you've provided the necessary mapping for the `scalar type`. 
 
 ## Selection Map (selectionMap)
 

@@ -1,20 +1,20 @@
 # Diagram
 ## App Codegen Overview
-This diagram illustrate how the generated code will be integrated into DeliveryHero B2C/Squad application.
+This diagram illustrate how the generated code will be integrated into example application.
 
 ![App Overview](https://user-images.githubusercontent.com/5739692/148887375-c15deced-937e-47f2-9871-97d4fb971b83.png)
 
 ## Codegen Flow
-This diagram is the overview for the simplified code generation flow created specifically for DeliveryHero Swift code.
+This diagram is the overview for the simplified code generation flow created specifically for Swift code.
 
-Sub Command: dh-mob-graphql-codegen dh-swift
+Sub Command: swift-graphql-codegen dh-swift
 
 ![Codegen Flow Diagram](https://user-images.githubusercontent.com/5739692/148887387-ea0b3251-41e2-4de2-ab83-23d6d442762c.png)
 
 ## Introspection Flow
 Introspection is the action to fetch GraphQL Abstract Syntax Tree (AST) to be interpreted locally for codegeneration.
 
-Sub Command: dh-mob-graphql-codegen introspection
+Sub Command: swift-graphql-codegen introspection
 
 ![Introspection Flow Diagram](https://user-images.githubusercontent.com/5739692/148887398-cc723991-f0e6-4df8-8a91-06f73b61a824.png)
 
@@ -46,7 +46,7 @@ These packages contains generators that are specific to organization or platform
 | Name | Description | 
 | - | - |
 | GraphQLCodegenDHApiClientSwift | This package contains the generator for DeliveryHero flavor API Client for swift specifically |
-| GraphQLCodegenSpecSwift | Thus package contains the generator for DeliveryHero flavor `core entities` and `network models` |
+| GraphQLCodegenSpecSwift | Thus package contains the generator for `core entities` and `network models` |
 
 ## TBD
 These packages are either work in progress or doesn't have a timeline yet, thus these packages are not usable

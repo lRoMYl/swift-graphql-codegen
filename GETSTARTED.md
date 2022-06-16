@@ -1,8 +1,42 @@
 # Getting Started
 This document is intended to be a step-by-step tutorial to integrate the code generation tool for the first time.
 
+## Pre-requisite
+- MacOS 10 and above
+- XCode 12.4 and above
+
+## Setup
+
+For this code generation tool, we would need to create a environment variable for github api token, `HOMEBREW_GITHUB_API_TOKEN`.
+
+To configure it, you can follow the steps belows;
+
+**Creating Github API Token**
+- Goto https://github.com/settings/tokens/new
+  - If the link is broken, you can locate it in your `Github Settings -> Developer Settings -> Personal Access Tokens`
+- Tap on `Generate new token` at the top of the page
+- [Optional] Recommended to write in the `Note` field to indicate this access token is exclusively for homebrew
+- [Optional] Change the `Expiration` from the default value of 30 days to something longer or no expiration, you can revoke this access token anytime when necessary
+- [Required] In `Select scopes` field, tick the `repo` checkbox as this would be required for the codegen library, no other scopes are required for this codegen.
+- Tap on `Generate token` at the bottom of the page.
+- [Important] You will be redirected back to `Personal Access Tokens` page and be shown the raw value of the access token you've just created, `copy` it to a temporary notepad as you will only be shown this value once.
+- [Optional] In `Personal Access Tokens` page, you will see a `Configure SSO` button next to your access token, tap on it and authorize your organization SSO for this token.
+
+**Adding Github API Token to Environment Variable**
+- Locate either `~/.bash_profile` or `~/.zshenv` (If you're using zsh) to update environment variables
+  - If it doesn't exist, you can create it by using `touch ~/.bash_profile` or `~/.zshenv` in the terminal
+- Add `export HOMEBREW_GITHUB_API_TOKEN="put your token"` into the file, save it
+- Restart the terminal
+
+## Installation
+```
+install:
+  brew tap lromyl/tap
+	brew install swift-graphql-codegen
+```
+
 # Simple Tutorial (1 GraphQL Schema)
-For this tutorial, the script is written using `Makefile`
+For this tutorial, the script is written using `Makefile` in [TEMPLATES.md](TEMPLATES.md)
 
 ## Step 1: Defining the variable for the script
 ```
@@ -23,35 +57,7 @@ API_CLIENT_PREFIX = "Groceries"
 - `CONFIG`: The file path and name
 - `API_CLIENT_PREFIX`: This is the prefix used for the generated ApiClient file which is only applicable to iOS atm. This variable is meant to be unique per schema to prevent naming collision, so you would need to create multiple `API_CLIENT_PREFIX` if your project have multiple schema.
 
-## Step 2: Defining the environment variable for Terminal
-
-**Creating Github API Token**
-- Goto https://github.com/settings/tokens/new
-  - If the link is broken, you can locate it in your `Github Settings -> Developer Settings -> Personal Access Tokens`
-- Tap on `Generate new token` at the top of the page
-- [Optional] Recommended to write in the `Note` field to indicate this access token is exclusively for homebrew
-- [Optional] Change the `Expiration` from the default value of 30 days to something longer or no expiration, you can revoke this access token anytime when necessary
-- [Required] In `Select scopes` field, tick the `repo` checkbox as this would be required for the codegen library, no other scopes are required for this codegen.
-- Tap on `Generate token` at the bottom of the page.
-- [Important] You will be redirected back to `Personal Access Tokens` page and be shown the raw value of the access token you've just created, `copy` it to a temporary notepad as you will only be shown this value once.
-- [Optional] In `Personal Access Tokens` page, you will see a `Configure SSO` button next to your access token, tap on it and authorize your organization SSO for this token.
-
-**Adding Github API Token to Environment Variable**
-- Locate either `~/.bash_profile` or `~/.zshenv` (If you're using zsh) to update environment variables
-  - If it doesn't exist, you can create it by using `touch ~/.bash_profile` or `~/.zshenv` in the terminal
-- Add `export HOMEBREW_GITHUB_API_TOKEN="put your token"` into the file, save it
-- Restart the terminal
-
-## Step 3: Installing the code generator dependencies
-```
-install:
-  brew tap lromyl/tap
-	brew install swift-graphql-codegen
-```
-
-- Installing the mobile GraphQL code generator using Homebrew
-
-## Step 3: Fetching the latest GraphQL schema using introspection and cache it locally
+## Step 2: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
 introspection:
 	swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
@@ -60,7 +66,7 @@ introspection:
 - The code generator has a built in sub-command to perform introspection conveniently, `swift-graphql-codegen introspection`.
 - This command would fetch the GraphQL schema from the provided URL and then generating the GraphQL Abstract Syntax Tree as `schema.json` in the provided output path.
 
-## Step 4: Generating code using local schema and config
+## Step 3: Generating code using local schema and config
 
 Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
@@ -72,7 +78,7 @@ codegen:
 - Using the sub-command `dh-swift`, it conveniently generate multiple files with default naming convention for classes and file name with a single command.
 - You might be encoutering error when generating file if you do not have a folder `Core` in the output path, if that's the case just create the folder manually and try again.
 
-## Step 5: Execute the script
+## Step 4: Execute the script
 Once you have created the makefile, you can simply execute it with the following commands as example
 
 ```
@@ -115,34 +121,6 @@ INTROSPECTION_OUTPUT_PATH = "GraphQL/"
 ```
 
 It's pretty self-explanatory from the example variables above, the structure of the variables are generally the same but duplicated with a `GROCERIES_` or `STARWARS_` prefix that points to their own respective values.
-
-## Step 2: Defining the environment variable for Terminal
-
-**Creating Github API Token**
-- Goto https://github.com/settings/tokens/new
-  - If the link is broken, you can locate it in your `Github Settings -> Developer Settings -> Personal Access Tokens`
-- Tap on `Generate new token` at the top of the page
-- [Optional] Recommended to write in the `Note` field to indicate this access token is exclusively for homebrew
-- [Optional] Change the `Expiration` from the default value of 30 days to something longer or no expiration, you can revoke this access token anytime when necessary
-- [Required] In `Select scopes` field, tick the `repo` checkbox as this would be required for the codegen library, no other scopes are required for this codegen.
-- Tap on `Generate token` at the bottom of the page.
-- [Important] You will be redirected back to `Personal Access Tokens` page and be shown the raw value of the access token you've just created, `copy` it to a temporary notepad as you will only be shown this value once.
-- [Optional] In `Personal Access Tokens` page, you will see a `Configure SSO` button next to your access token, tap on it and authorize your organization SSO for this token.
-
-**Adding Github API Token to Environment Variable**
-- Locate either `~/.bash_profile` or `~/.zshenv` (If you're using zsh) to update environment variables
-  - If it doesn't exist, you can create it by using `touch ~/.bash_profile` or `~/.zshenv` in the terminal
-- Add `export HOMEBREW_GITHUB_API_TOKEN="put your token"` into the file, save it
-- Restart the terminal
-
-## Step 3: Installing the code generator dependencies
-```
-install:
-  brew tap lromy/tap
-	brew install swift-graphql-codegen
-```
-
-- No difference here from the simple tutorial
 
 ## Step 3: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
