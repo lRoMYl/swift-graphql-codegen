@@ -2,8 +2,10 @@
 
 Swift GraphQL Codegen
 - Zero GraphQL Query to be written manually
-- Plain Swift Types without external dependencies
-- Network layer agnostic
+- Zero library/framework to be included in the main app
+- Plain Swift Types with Type Safety
+- Network Layer agnostic, use whichever networking library you prefer
+- Favor Swift coding convention whenever applicable/possible 
 
 Usage example without writing a single line of GraphQL query
 ```Swift
