@@ -34,6 +34,14 @@ enum GraphQLRequestType: String, Decodable {
   case subscription
 }
 
+enum GraphQLConfiguration {
+  /**
+  GraphQL is unable to resolve recursive fragments as it would lead to inifnite loop. Thus we would
+  need to define a fix depth to resolve the infinite loop issue
+  */
+  static var recursionDepth: UInt = 5
+}
+
 // MARK: GraphQLRequest
 
 struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
@@ -100,7 +108,7 @@ extension Collection where Element: GraphQLSelection & RawRepresentable, Element
   func requestFragment(
     requestName: String,
     typeName: String,
-    depth: UInt = 5
+    depth: UInt = GraphQLConfiguration.recursionDepth
   ) -> (key: String, value: String) {
     let key = "\(requestName)\(typeName)Fragment"
     let fragmentFields = implodeRecursiveFragment(

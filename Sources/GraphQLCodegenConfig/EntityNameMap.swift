@@ -36,6 +36,8 @@ public struct EntityNameMap {
   public let selection: String
   public let selections: String
 
+  public let configuration: String
+
   // MARK: - GraphQL Operation Type Entities
 
   public let query: String
@@ -61,6 +63,7 @@ public struct EntityNameMap {
     case responseErrorExtension
     case selection
     case selections
+    case configuration
     case query
     case mutation
     case subscription
@@ -82,6 +85,7 @@ public struct EntityNameMap {
     responseErrorExtension: String?,
     selection: String,
     selections: String,
+    configuration: String,
     query: String,
     mutation: String,
     subscription: String,
@@ -99,6 +103,7 @@ public struct EntityNameMap {
     self.responseErrorExtension = responseErrorExtension
     self.selection = selection
     self.selections = selections
+    self.configuration = configuration
     self.query = query
     self.mutation = mutation
     self.subscription = subscription
@@ -121,6 +126,7 @@ public struct EntityNameMap {
       responseErrorExtension: response.responseErrorExtension ?? defaultValue.responseErrorExtension,
       selection: response.selection ?? defaultValue.selection,
       selections: response.selections ?? defaultValue.selections,
+      configuration: response.configuration ?? defaultValue.configuration,
       query: response.query ?? defaultValue.query,
       mutation: response.mutation ?? defaultValue.mutation,
       subscription: response.subscription ?? defaultValue.subscription,
@@ -146,6 +152,7 @@ public extension EntityNameMap {
       responseErrorExtension: nil,
       selection: "GraphQLSelection",
       selections: "GraphQLSelections",
+      configuration: "GraphQLConfiguration",
       query: "GraphQLQuery",
       mutation: "GraphQLMutation",
       subscription: "GraphQLSubscription",

@@ -18,6 +18,8 @@ struct EntityGenerator: GraphQLCodeGenerating {
     static let requestName = "requestName"
     static let capitalizedRequestName = "capitalizedRequestName"
     static let typeName = "typeName"
+    static let recursionDepth = "recursionDepth"
+    static let recursionDepthType = "UInt"
   }
 
   init(entityNameMap: EntityNameMap, entityNameProvider: EntityNameProviding) {
@@ -61,6 +63,14 @@ struct EntityGenerator: GraphQLCodeGenerating {
       case query
       case mutation
       case subscription
+    }
+
+    enum \(entityNameMap.configuration) {
+      /**
+      GraphQL is unable to resolve recursive fragments as it would lead to inifnite loop. Thus we would
+      need to define a fix depth to resolve the infinite loop issue
+      */
+      static var \(Variables.recursionDepth): \(Variables.recursionDepthType) = 5
     }
 
     // MARK: \(entityNameMap.request)
@@ -129,7 +139,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
       func \(entityNameProvider.requestFragmentName)(
         \(Variables.requestName): String,
         \(Variables.typeName): String,
-        depth: UInt = 5
+        depth: \(Variables.recursionDepthType) = \(entityNameMap.configuration).\(Variables.recursionDepth)
       ) -> (key: String, value: String) {
         let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
         let fragmentFields = implodeRecursiveFragment(

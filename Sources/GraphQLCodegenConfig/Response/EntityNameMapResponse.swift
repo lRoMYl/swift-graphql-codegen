@@ -21,6 +21,8 @@ public struct EntityNameMapResponse: Decodable {
   public let selection: String?
   public let selections: String?
 
+  public let configuration: String?
+
   // MARK: - GraphQL Operation Type Entities
 
   public let query: String?
@@ -46,6 +48,7 @@ public struct EntityNameMapResponse: Decodable {
     case responseErrorExtension
     case selection
     case selections
+    case configuration
     case query
     case mutation
     case subscription
@@ -65,6 +68,7 @@ public struct EntityNameMapResponse: Decodable {
     responseErrorExtension: String? = nil,
     selection: String? = nil,
     selections: String? = nil,
+    configuration: String? = nil,
     query: String? = nil,
     mutation: String? = nil,
     subscription: String? = nil,
@@ -82,6 +86,7 @@ public struct EntityNameMapResponse: Decodable {
     self.responseErrorExtension = responseErrorExtension
     self.selection = selection
     self.selections = selections
+    self.configuration = configuration
     self.query = query
     self.mutation = mutation
     self.subscription = subscription
@@ -105,6 +110,7 @@ extension EntityNameMapResponse {
       responseErrorExtension: entityNameMapResponse.responseErrorExtension ?? responseErrorExtension,
       selection: entityNameMapResponse.selection ?? selection,
       selections: entityNameMapResponse.selections ?? selections,
+      configuration: entityNameMapResponse.configuration ?? configuration,
       query: entityNameMapResponse.query ?? query,
       mutation: entityNameMapResponse.mutation ?? mutation,
       subscription: entityNameMapResponse.subscription ?? subscription,
