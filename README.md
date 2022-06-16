@@ -1,4 +1,4 @@
-# Swift GraphQL Codegen
+# Swift GraphQL Codegen Objectives
 
 Swift GraphQL Codegen
 - Zero GraphQL Query to be written manually
