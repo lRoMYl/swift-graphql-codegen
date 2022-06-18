@@ -27,6 +27,11 @@ protocol GroceriesRepositoring {
     with parameters: CampaignsQueryRequest
   ) -> Single<Campaign>
 
+  func campaigns(
+    with parameters: CampaignsQueryRequest,
+    completion: @escaping ((Result<Campaign, Error>) -> Void)
+  )
+
   func shopDetails(
     with parameters: ShopDetailsQueryRequest
   ) -> Single<ShopDetailsResponseModel>
@@ -72,6 +77,33 @@ final class GroceriesRepository: GroceriesRepositoring {
 
       return try self.campaignMapper.map(response: responseModel)
     }
+  }
+
+  func campaigns(
+    with parameters: CampaignsQueryRequest,
+    completion: @escaping ((Result<Campaign, Error>) -> Void)
+  ) {
+    apiClient.campaigns(
+      with: parameters,
+      selections: CampaignsQueryRequestSelections(),
+      completion: { (result: Result<GraphQLResponse<CampaignsQueryResponse>, Error>) in
+        switch result {
+        case let .success(response):
+          do {
+            guard let campaignResponse = response.data?.campaigns else {
+              throw GroceriesRepositoryError.missingData
+            }
+
+            let campaign = try self.campaignMapper.map(response: campaignResponse)
+            completion(.success(campaign))
+          } catch {
+            completion(.failure(error))
+          }
+        case let .failure(error):
+          completion(.failure(error))
+        }
+      }
+    ).resume()
   }
 
   func shopDetails(

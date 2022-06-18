@@ -41,16 +41,30 @@ struct GroceriesExampleApp: App {
       .campaigns(with: parameters)
       .subscribe(
         onSuccess: { campaigns in
-          print("Groceries campaign query request success")
+          print("Groceries campaign query request success (RxSwift)")
           print("Product Deals Count: \(campaigns.productDeals?.count ?? -1)")
           print("Campaign Attributes Count: \(campaigns.attributes?.count ?? -1)")
         },
         onFailure: { error in
-          print("TEST: testGroceriesGraphQL fail")
+          print("TEST: testGroceriesGraphQL fail (RxSwift)")
           print(error.localizedDescription)
         }
       )
       .disposed(by: disposeBag)
+
+    groceriesRepository.campaigns(
+      with: parameters
+    ) { result in
+      switch result {
+      case let .success(campaign):
+        print("Groceries campaign query request success")
+        print("Product Deals Count: \(campaign.productDeals?.count ?? -1)")
+        print("Campaign Attributes Count: \(campaign.attributes?.count ?? -1)")
+      case let .failure(error):
+        print("TEST: testGroceriesGraphQL fail")
+        print(error.localizedDescription)
+      }
+    }
   }
 
   func testShopDetailsGraphQL() {
