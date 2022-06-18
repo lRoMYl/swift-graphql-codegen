@@ -12,7 +12,7 @@ public struct GraphQLCodegenSpecSwiftConfig {
   public static var defaultConfigResponse: ConfigResponse {
     let entityNameMap = EntityNameMapResponse(
       request: "GraphQLRequest",
-      requestParameter: "GraphQLRequesting",
+      requestParameter: "GraphQLRequestParameter",
       query: "QueryRequest",
       mutation: "MutationRequest",
       subscription: "SubscriptionRequest",

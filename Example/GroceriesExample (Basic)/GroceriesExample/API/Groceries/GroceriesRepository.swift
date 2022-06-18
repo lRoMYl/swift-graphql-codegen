@@ -8,26 +8,32 @@
 import Foundation
 import RxSwift
 
+typealias GroceriesRepositoryApi = GroceriesApi & GroceriesRxApi
+
 enum GroceriesRepositoryError: Error {
   case missingData
 }
 
-struct GraphQLResponseErrorExtension: Decodable {
-  let selectionSet: String?
-}
+// Define your own repository and decide how you wanted to return data to your app
+// Example given belows demonstrate you can either
+// - return Response Model as is
+// - return a Domain Model by mapping the Response Model to it
+// 
+// Or you can simply not use a repository and just call the apiClient directly,
+// so its entirely up to you to decide the pattern/architecture you prefer
 
 protocol GroceriesRepositoring {
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<Campaign?>
+  ) -> Single<Campaign>
 
   func shopDetails(
     with parameters: ShopDetailsQueryRequest
-  ) -> Single<ShopDetailsResponseModel?>
+  ) -> Single<ShopDetailsResponseModel>
 
   func products(
     with parameters: ProductsQueryRequest
-  ) -> Single<ProductFilterResultResponseModel?>
+  ) -> Single<ProductFilterResultResponseModel>
 
   func query(
     campaignQueryRequest: CampaignsQueryRequest,
@@ -36,11 +42,11 @@ protocol GroceriesRepositoring {
 }
 
 final class GroceriesRepository: GroceriesRepositoring {
-  let apiClient: GroceriesApiClientProtocol
+  let apiClient: GroceriesRepositoryApi
   let campaignMapper: CampaignMapping
 
   init(
-    apiClient: GroceriesApiClientProtocol,
+    apiClient: GroceriesRepositoryApi,
     campaignMapper: CampaignMapping
   ) {
     self.apiClient = apiClient
@@ -49,7 +55,7 @@ final class GroceriesRepository: GroceriesRepositoring {
 
   func campaigns(
     with parameters: CampaignsQueryRequest
-  ) -> Single<Campaign?> {
+  ) -> Single<Campaign> {
     let selections = CampaignsQueryRequestSelections(
       campaignAttributeSelections: [.id, .name, .source, .benefits],
       campaignsSelections: .allFields
@@ -59,18 +65,18 @@ final class GroceriesRepository: GroceriesRepositoring {
       with: parameters,
       selections: selections
     )
-      .map {
-        guard let responseModel = $0.data?.data?.campaigns else {
-          throw GroceriesRepositoryError.missingData
-        }
-
-        return try self.campaignMapper.map(response: responseModel)
+    .map {
+      guard let responseModel = $0.data?.campaigns else {
+        throw GroceriesRepositoryError.missingData
       }
+
+      return try self.campaignMapper.map(response: responseModel)
+    }
   }
 
   func shopDetails(
     with parameters: ShopDetailsQueryRequest
-  ) -> Single<ShopDetailsResponseModel?> {
+  ) -> Single<ShopDetailsResponseModel> {
     let selections = ShopDetailsQueryRequestSelections(
       shopDetailsSelections: .allFields,
       shopItemsListSelections: .allFields
@@ -80,18 +86,18 @@ final class GroceriesRepository: GroceriesRepositoring {
       with: parameters,
       selections: selections
     )
-      .map {
-        guard let responseModel = $0.data?.data?.shopDetails else {
-          throw GroceriesRepositoryError.missingData
-        }
-
-        return responseModel
+    .map {
+      guard let responseModel = $0.data?.shopDetails else {
+        throw GroceriesRepositoryError.missingData
       }
+
+      return responseModel
+    }
   }
 
   func products(
     with parameters: ProductsQueryRequest
-  ) -> Single<ProductFilterResultResponseModel?> {
+  ) -> Single<ProductFilterResultResponseModel> {
     let selections = ProductsQueryRequestSelections(
       pageInfoSelections: .allFields,
       productSelections: .allFields,
@@ -102,13 +108,13 @@ final class GroceriesRepository: GroceriesRepositoring {
       with: parameters,
       selections: selections
     )
-      .map {
-        guard let responseModel = $0.data?.data?.products else {
-          throw GroceriesRepositoryError.missingData
-        }
-
-        return responseModel
+    .map {
+      guard let responseModel = $0.data?.products else {
+        throw GroceriesRepositoryError.missingData
       }
+
+      return responseModel
+    }
   }
 
   func query(
@@ -121,8 +127,9 @@ final class GroceriesRepository: GroceriesRepositoring {
         shopDetails: shopDetailsQueryRequest
       ),
       selections: QueryRequestSelections()
-    ).map {
-      guard let responseModel = $0.data?.data else {
+    )
+    .map {
+      guard let responseModel = $0.data else {
         throw GroceriesRepositoryError.missingData
       }
 

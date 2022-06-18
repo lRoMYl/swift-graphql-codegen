@@ -123,7 +123,7 @@ private extension ResponseSpecGeneratorTests {
     return ResponseCodeGenerator(
       entityNameMap: .default,
       selectionMap: nil,
-      entityNameProvider: DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: scalarMap, entityNameMap: .default)
     )
   }
 }

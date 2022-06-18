@@ -5,23 +5,15 @@
 //  Created by Romy Cheah on 25/10/21.
 //
 
-import ApiClient
 import Foundation
 
 class DIContainer {
   static let shared = DIContainer()
 
-//  lazy var groceryBuilderGenerated: GroceriesBuilder = {
-//    GroceriesBuilder(
-//      apiClient: groceriesApiClient,
-//      campaignMapper: campaignSelectionsMapperGenerated
-//    )
-//  }()
-
-  lazy var groceryBuilderManual: GroceriesBuilder = {
+  lazy var groceryBuilder: GroceriesBuilder = {
     GroceriesBuilder(
       apiClient: groceriesApiClient,
-      campaignMapper: campaignSelectionsMapperManual
+      campaignMapper: campaignSelectionsMapper
     )
   }()
 }
@@ -30,13 +22,8 @@ class DIContainer {
 
 extension DIContainer {
   var groceriesApiClient: GroceriesApiClient {
-    let restClient = RestClientImpl(
-      webService: GroceriesWebService(),
-      authProvider: nil
-    )
-
-    return GroceriesApiClient(
-      restClient: restClient
+    GroceriesApiClient(
+      baseURL: URL(string: "https://sg-st.fd-api.com/groceries-product-service/query")!
     )
   }
 }
@@ -44,7 +31,7 @@ extension DIContainer {
 // MARK: - Mappers
 
 extension DIContainer {
-  var campaignSelectionsMapperManual: CampaignMapping {
+  var campaignSelectionsMapper: CampaignMapping {
     CampaignSelectionsMapper()
   }
 }

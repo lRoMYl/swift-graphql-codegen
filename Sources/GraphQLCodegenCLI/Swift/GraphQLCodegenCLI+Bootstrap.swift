@@ -7,9 +7,10 @@
 
 import ArgumentParser
 import Foundation
+import GraphQLCodegenApiClientSwift
 
 extension GraphQLCodegenCLI {
-  struct DHSwift: ParsableCommand {
+  struct Bootstrap: ParsableCommand {
     @Argument(
       help: """
       Location of the introspection file, it can be local or remote path.
@@ -53,13 +54,16 @@ extension GraphQLCodegenCLI {
     var mapperOutput: String = "Mappers.generated.swift"
 
     @Option
-    var targets: [CodegenTarget] = [.entity, .specification, .dhApiClient]
+    var targets: [CodegenTarget] = [.entity, .specification, .apiClient]
 
     @Option(help: "Path and name of the config file")
     var configPath: String?
 
     @Option
     var apiClientPrefix: String
+
+    @Option
+    var apiClientStrategy: ApiClientStrategy = .default
 
     @Flag(help: "Specify if the generated code could use throwable getter introduced in Swift 5.5")
     var isThrowableGetterEnabled: Bool = false
@@ -77,6 +81,7 @@ extension GraphQLCodegenCLI {
         arguments.append(contentsOf: ["--is-throwable-getter-enabled"])
       }
 
+      arguments.append(contentsOf: ["--api-client-strategy", apiClientStrategy.rawValue])
       arguments.append(contentsOf: ["--api-client-prefix", apiClientPrefix])
 
       // If target type is introspection, ignore the schema source and use remote only
@@ -105,18 +110,18 @@ extension GraphQLCodegenCLI {
 
         GraphQLCodegenCLI.Codegen.main(arguments)
       case .introspection:
-        print("Warning, introspection target is not valid for `dh-swift` subcommand")
+        print("Warning, introspection target is not valid for `swift` subcommand")
         break
       case .specification:
         let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
 
-        let dhApiClientArguments = arguments + [
-          "--target", CodegenTarget.dhApiClient.rawValue,
+        let apiClientArguments = arguments + [
+          "--target", CodegenTarget.apiClient.rawValue,
           "--output", "\(basePath)\(apiClientOutput)"
         ]
 
-        GraphQLCodegenCLI.Codegen.main(dhApiClientArguments)
-      case .dhApiClient:
+        GraphQLCodegenCLI.Codegen.main(apiClientArguments)
+      case .apiClient:
         let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
 
         let specificiationArguments = arguments + [

@@ -5,6 +5,8 @@
 //  Created by Romy Cheah on 6/10/21.
 //
 
+import GraphQLCodegenApiClientSwift
+
 func mockBasicExample() {
   let examplePath = "/Users/r.cheah/Repos/lRoMYl/swift-graphql-codegen/Example/GroceriesExample (Basic)"
 
@@ -22,12 +24,13 @@ func mockBasicExample() {
   let groceriesConfig = "\(examplePath)/GraphQL/config.json"
   let outputPath = "\(examplePath)/GroceriesExample/API/"
 
-  GraphQLCodegenCLI.DHSwift.main([
+  GraphQLCodegenCLI.Bootstrap.main([
     groceriesSchema,
     "--config-path", groceriesConfig,
     "--output-path", outputPath,
     "--api-client-prefix", "Groceries",
-    "--is-throwable-getter-enabled"
+    "--is-throwable-getter-enabled",
+    "--api-client-strategy", ApiClientStrategy.rxSwift.rawValue
   ])
 }
 
@@ -59,7 +62,7 @@ func mockBasicCoreExample() throws {
   GraphQLCodegenCLI.Codegen.main(
     [
       groceriesSchema,
-      "--target", CodegenTarget.dhApiClient.rawValue,
+      "--target", CodegenTarget.apiClient.rawValue,
       "--output", "\(groceriesOutputPath)ApiClient.swift",
       "--config-path", groceriesConfig
     ]
@@ -106,7 +109,7 @@ func mockAdvancedCoreExample() {
   GraphQLCodegenCLI.Codegen.main(
     [
       groceriesSchema,
-      "--target", CodegenTarget.dhApiClient.rawValue,
+      "--target", CodegenTarget.apiClient.rawValue,
       "--output", "\(groceriesOutputPath)ApiClient.generated.swift",
       "--config-path", groceriesConfig,
       "--api-client-prefix", "Groceries"
@@ -138,7 +141,7 @@ func mockAdvancedCoreExample() {
   GraphQLCodegenCLI.Codegen.main(
     [
       starwarsSchema,
-      "--target", CodegenTarget.dhApiClient.rawValue,
+      "--target", CodegenTarget.apiClient.rawValue,
       "--output", "\(starwarsOutputPath)GraphQLApiClient.generated.swift",
       "--config-path", starwarsConfig,
       "--api-client-prefix", "StarWars"
@@ -181,7 +184,7 @@ func mockAdvancedCoreExample() {
   GraphQLCodegenCLI.Codegen.main(
     [
       apolloSchema,
-      "--target", CodegenTarget.dhApiClient.rawValue,
+      "--target", CodegenTarget.apiClient.rawValue,
       "--output", "\(apolloOutputPath)GraphQLApiClient.generated.swift",
       "--config-path", apolloConfig,
       "--api-client-prefix", "Apollo"

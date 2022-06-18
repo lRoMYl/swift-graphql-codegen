@@ -11,7 +11,7 @@ import GraphQLCodegenConfig
 import GraphQLCodegenNameSwift
 import SwiftFormat
 
-enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
+enum GraphQLCodegenApiClientSwiftError: Error, LocalizedError {
   case formatError(context: String)
 
   var errorDescription: String? {
@@ -22,12 +22,18 @@ enum GraphQLCodegenDHApiClientSwiftError: Error, LocalizedError {
   }
 }
 
-public struct GraphQLCodegenDHApiClientSwift {
+public enum ApiClientStrategy: String {
+  case `default`
+  case rxSwift
+}
+
+public struct GraphQLCodegenApiClientSwift {
   private let selectionMap: SelectionMap?
   private let entityNameMap: EntityNameMap
   private let scalarMap: ScalarMap
   private let entityNameProvider: EntityNameProviding
   private let apiClientPrefix: String
+  private let apiClientStrategy: ApiClientStrategy
 
   /// Generators
   private let generators: [Generating]
@@ -37,31 +43,44 @@ public struct GraphQLCodegenDHApiClientSwift {
     entityNameMap: EntityNameMap,
     scalarMap: ScalarMap,
     entityNameProvider: EntityNameProviding,
-    apiClientPrefix: String
+    apiClientPrefix: String,
+    apiClientStrategy: ApiClientStrategy
   ) throws {
     self.selectionMap = selectionMap
     self.entityNameMap = entityNameMap
     self.scalarMap = scalarMap
     self.entityNameProvider = entityNameProvider
     self.apiClientPrefix = apiClientPrefix
+    self.apiClientStrategy = apiClientStrategy
 
-    self.generators = [
-      HeaderGenerator(),
+    var generators: [Generating] = [
+      HeaderGenerator(apiClientStrategy: self.apiClientStrategy),
       ApiClientGenerator(
         selectionMap: selectionMap,
         entityNameMap: self.entityNameMap,
         scalarMap: self.scalarMap,
         entityNameProvider: self.entityNameProvider,
-        apiClientPrefix: self.apiClientPrefix
-      ),
-      ResourceParametersGenerator(
-        selectionMap: selectionMap,
-        entityNameMap: self.entityNameMap,
-        scalarMap: self.scalarMap,
-        entityNameProvider: entityNameProvider,
-        apiClientPrefix: self.apiClientPrefix
+        apiClientPrefix: self.apiClientPrefix,
+        apiClientStrategy: self.apiClientStrategy
       )
     ]
+
+    switch apiClientStrategy {
+    case .default:
+      break
+    case .rxSwift:
+      generators.append(
+        ApiClientRxGenerator(
+          selectionMap: selectionMap,
+          entityNameMap: self.entityNameMap,
+          scalarMap: self.scalarMap,
+          entityNameProvider: self.entityNameProvider,
+          apiClientPrefix: self.apiClientPrefix
+        )
+      )
+    }
+
+    self.generators = generators
   }
 
   public func code(schema: Schema) throws -> String {
@@ -72,7 +91,7 @@ public struct GraphQLCodegenDHApiClientSwift {
     do {
       formattedCode = try code.format()
     } catch {
-      throw GraphQLCodegenDHApiClientSwiftError
+      throw GraphQLCodegenApiClientSwiftError
         .formatError(
           context: """
           \(error)

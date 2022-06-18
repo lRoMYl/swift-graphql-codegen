@@ -16,7 +16,7 @@ final class InterfaceSpecGeneratorTests: XCTestCase {
     let scalarMap = ScalarMap.default
     let selectionMap: SelectionMap? = nil
     let entityNameMap = EntityNameMap.default
-    let entityNameProvider = DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
+    let entityNameProvider = EntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     let interfaceCodeGenerator = InterfaceCodeGenerator(
       scalarMap: scalarMap,

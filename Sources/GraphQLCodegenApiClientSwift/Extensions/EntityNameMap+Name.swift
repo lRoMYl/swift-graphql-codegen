@@ -39,7 +39,11 @@ extension EntityNameMap {
   }
 
   func apiClientProtocolName(apiClientPrefix: String) -> String {
-    apiClientPrefix + "ApiClientProtocol"
+    apiClientPrefix + "Api"
+  }
+
+  func apiClientRxProtocolName(apiClientPrefix: String) -> String {
+    apiClientPrefix + "RxApi"
   }
 
   func apiClientName(apiClientPrefix: String) -> String {

@@ -16,7 +16,7 @@ extension Field {
     return enumPrefix.isEmpty ? name.camelCase : "\(enumPrefix)\(name.pascalCase)"
   }
 
-  func funcName() -> String {
-    return name.camelCase
+  var funcName: String {
+    name.camelCase
   }
 }

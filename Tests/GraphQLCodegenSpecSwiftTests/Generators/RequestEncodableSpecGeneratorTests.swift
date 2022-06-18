@@ -16,7 +16,7 @@ final class RequestEncodableSpecGeneratorTests: XCTestCase {
     let generator = RequestEncodableGenerator(
       selectionMap: nil,
       scalarMap: .default,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")

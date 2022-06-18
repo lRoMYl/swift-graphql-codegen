@@ -16,7 +16,7 @@ final class InputObjectSpecGeneratorTests: XCTestCase {
     let generator = InputObjectCodeGenerator(
       scalarMap: .default,
       entityNameMap: .default,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")

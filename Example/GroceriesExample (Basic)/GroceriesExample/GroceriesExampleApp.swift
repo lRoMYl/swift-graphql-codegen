@@ -5,7 +5,6 @@
 //  Created by Romy Cheah on 6/10/21.
 //
 
-import ApiClient
 import RxSwift
 import SwiftUI
 
@@ -15,7 +14,7 @@ struct GroceriesExampleApp: App {
   private let groceriesRepository: GroceriesRepositoring = {
     return DIContainer
       .shared
-      .groceryBuilderManual
+      .groceryBuilder
       .repository()
   }()
 
@@ -42,12 +41,6 @@ struct GroceriesExampleApp: App {
       .campaigns(with: parameters)
       .subscribe(
         onSuccess: { campaigns in
-          print("TEST: testGroceriesGraphQL success")
-          guard let campaigns = campaigns else {
-            print("Groceries campaign query request fail, no campaigns founds")
-            return
-          }
-
           print("Groceries campaign query request success")
           print("Product Deals Count: \(campaigns.productDeals?.count ?? -1)")
           print("Campaign Attributes Count: \(campaigns.attributes?.count ?? -1)")
@@ -80,25 +73,17 @@ struct GroceriesExampleApp: App {
       .subscribe(
         onSuccess: { shopDetails in
           print("TEST: testShopDetailsGraphQL success")
-          if let shopItemList = try? shopDetails?.shopItemsResponse?.shopItemsList {
-            shopItemList.forEach { shopItem in
-              if let shopItemItem = try? shopItem.shopItems {
-                shopItemItem.enumerated().forEach {
-                  switch $1 {
-                  case let .banner(banner):
-                    print("Test: \($0)) Banner: \(banner)")
-                  case let .category(category):
-                    print("Test: \($0)) Category: \(category)")
-                  case let .product(product):
-                    print("TEST: \($0)) Product: \(product)")
-                  }
-                }
-              } else {
-
+          try? shopDetails.shopItemsResponse?.shopItemsList?.forEach {
+            try? $0.shopItems?.enumerated().forEach {
+              switch $1 {
+              case let .banner(banner):
+                print("Test: \($0)) Banner: \(banner)")
+              case let .category(category):
+                print("Test: \($0)) Category: \(category)")
+              case let .product(product):
+                print("TEST: \($0)) Product: \(product)")
               }
             }
-          } else {
-            print("TEST Empty")
           }
         },
         onFailure: { error in
@@ -128,10 +113,8 @@ struct GroceriesExampleApp: App {
       .products(with: productsRequest)
       .subscribe(
         onSuccess: { response in
-          print("TEST: testProductsGraphQL success")
-
           do {
-            let items = try response?.items
+            let items = try response.items
             print("TEST: testProductsGraphQL response: \(String(describing: items))")
           } catch {
             print("\(error.localizedDescription)")

@@ -7,6 +7,7 @@
 
 import ArgumentParser
 import Foundation
+import GraphQLCodegenApiClientSwift
 
 public enum Platform: String, ExpressibleByArgument {
   case swift
@@ -17,11 +18,14 @@ public enum SchemaSource: String, ExpressibleByArgument {
   case remote
 }
 
+extension ApiClientStrategy: ExpressibleByArgument {
+}
+
 public enum CodegenTarget: String, ExpressibleByArgument {
   /**
-   implementation of proprietary DH flavor API Client
+   implementation of default API Client
    */
-  case dhApiClient = "dh-apiclient"
+  case apiClient = "api-client"
   /**
    Convenient mapper classes to ensure build-time safe mapping from network models to application models by
    automatically infering the GraphQL query selections based on the fields that are accesed in mapper
@@ -55,6 +59,6 @@ struct GraphQLCodegenCLI: ParsableCommand {
     commandName: "swift-graphql-codegen",
     abstract: "Swift GraphQL Codegeneration Tool",
     version: "0.8.0",
-    subcommands: [Codegen.self, Introspection.self, DHSwift.self]
+    subcommands: [Codegen.self, Introspection.self, Bootstrap.self]
   )
 }

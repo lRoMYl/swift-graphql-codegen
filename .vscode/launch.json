@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug swift-graphql-codegen",
+            "program": "${workspaceFolder:swift-graphql-codegen}/.build/debug/swift-graphql-codegen",
+            "args": [],
+            "cwd": "${workspaceFolder:swift-graphql-codegen}",
+            "preLaunchTask": "swift: Build Debug swift-graphql-codegen"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release swift-graphql-codegen",
+            "program": "${workspaceFolder:swift-graphql-codegen}/.build/release/swift-graphql-codegen",
+            "args": [],
+            "cwd": "${workspaceFolder:swift-graphql-codegen}",
+            "preLaunchTask": "swift: Build Release swift-graphql-codegen"
+        }
+    ]
+}

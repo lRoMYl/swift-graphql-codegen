@@ -15,7 +15,7 @@ import XCTest
 
 final class SelectionsSpecGeneratorTests: XCTestCase {
   private lazy var entityNameStrategy: EntityNameProviding = {
-    DHEntityNameProvider(
+    EntityNameProvider(
       scalarMap: .default,
       entityNameMap: .default
     )

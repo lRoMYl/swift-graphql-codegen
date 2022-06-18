@@ -5,7 +5,7 @@
     },
     "entityNameMap": {
         "request":          "GraphQLRequest",
-        "requestParameter": "GraphQLRequesting",
+        "requestParameter": "GraphQLRequestParameter",
         "query":            "StarWarsQuery",
         "mutation":         "StarWarsMutation",
         "subscription":     "StarWarsSubscription",

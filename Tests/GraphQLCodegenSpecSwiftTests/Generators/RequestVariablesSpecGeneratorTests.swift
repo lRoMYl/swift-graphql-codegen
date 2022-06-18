@@ -16,7 +16,7 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
     scalarMap: .default,
     entityNameMap: .default,
     selectionMap: nil,
-    entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+    entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
   )
 
   func testCampaignsArgumentVariables() throws {

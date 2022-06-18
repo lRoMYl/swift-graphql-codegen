@@ -72,10 +72,10 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	swift-graphql-codegen dh-swift $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
+	swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
 ```
 
-- Using the sub-command `dh-swift`, it conveniently generate multiple files with default naming convention for classes and file name with a single command.
+- Using the sub-command `bootstrap`, it conveniently generate multiple files with default naming convention for classes and file name with a single command.
 - You might be encoutering error when generating file if you do not have a folder `Core` in the output path, if that's the case just create the folder manually and try again.
 
 ## Step 4: Execute the script
@@ -140,8 +140,8 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	swift-graphql-codegen dh-swift $(GROCERIES_SCHEMA) --output-path $(GROCERIES_CODEGEN_OUTPUT_PATH) --config-path $(GROCERIES_CONFIG) --api-client-prefix $(GROCERIES_API_CLIENT_PREFIX)
-  swift-graphql-codegen dh-swift $(STARWARS_SCHEMA) --output-path $(STARWARS_CODEGEN_OUTPUT_PATH) --config-path $(STARWARS_CONFIG) --api-client-prefix $(STARWARS_API_CLIENT_PREFIX)
+	swift-graphql-codegen bootstrap $(GROCERIES_SCHEMA) --output-path $(GROCERIES_CODEGEN_OUTPUT_PATH) --config-path $(GROCERIES_CONFIG) --api-client-prefix $(GROCERIES_API_CLIENT_PREFIX)
+  swift-graphql-codegen bootstrap $(STARWARS_SCHEMA) --output-path $(STARWARS_CODEGEN_OUTPUT_PATH) --config-path $(STARWARS_CONFIG) --api-client-prefix $(STARWARS_API_CLIENT_PREFIX)
 ```
 
 - Similar to introspection, we're executing the same command twice with respective project variables

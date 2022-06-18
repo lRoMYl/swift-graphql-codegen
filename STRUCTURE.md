@@ -7,7 +7,7 @@ This diagram illustrate how the generated code will be integrated into example a
 ## Codegen Flow
 This diagram is the overview for the simplified code generation flow created specifically for Swift code.
 
-Sub Command: swift-graphql-codegen dh-swift
+Sub Command: swift-graphql-codegen bootstrap
 
 ![Codegen Flow Diagram](https://user-images.githubusercontent.com/5739692/148887387-ea0b3251-41e2-4de2-ab83-23d6d442762c.png)
 
@@ -24,7 +24,7 @@ The project is broken down into multiple folder in which each folder should be r
 Each generator should be generating exactly 1 file, if the generated files logic are tightly coupled, thus making code separation into multiple module difficult, do consider creating subfolder in a single parent folder.
 
 E.g. 
-- GraphQLCodegenDHApiClientSwift: Generate ApiClient.swift
+- GraphQLCodegenApiClientSwift: Generate ApiClient.swift
 - GraphQLCodegenSpecSwift: Parent doesn't generate file
     - GraphQLCodegenEntitySwift: Subfolder, Generate Entity.swift
     - GraphQLCodegenModelSwift: Subfolder, Generate Model.swift
@@ -45,7 +45,7 @@ These packages contains generators that are specific to organization or platform
 
 | Name | Description | 
 | - | - |
-| GraphQLCodegenDHApiClientSwift | This package contains the generator for DeliveryHero flavor API Client for swift specifically |
+| GraphQLCodegenApiClientSwift | This package contains the generator for DeliveryHero flavor API Client for swift specifically |
 | GraphQLCodegenSpecSwift | Thus package contains the generator for `core entities` and `network models` |
 
 ## TBD

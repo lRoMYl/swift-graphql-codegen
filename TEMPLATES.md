@@ -46,7 +46,7 @@ graphql-introspection:
 ## -------
 
 graphql-codegen:
-	swift-graphql-codegen dh-swift $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX) --is-throwable-getter-enabled
+	swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX) --is-throwable-getter-enabled
 ```
 
 ## config.json

@@ -9,7 +9,7 @@ import GraphQLAST
 import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
-public final class DHEntityNameProvider: EntityNameProviding {
+public final class EntityNameProvider: EntityNameProviding {
   private enum Constants {
     static let selectionPostFix = "Selection"
     static let selectionsPostFix = "Selections"

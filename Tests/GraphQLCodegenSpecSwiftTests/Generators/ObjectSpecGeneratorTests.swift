@@ -12,7 +12,7 @@
 import XCTest
 
 final class ObjectSpecGeneratorTests: XCTestCase {
-  private let entityNameProvider = DHEntityNameProvider(
+  private let entityNameProvider = EntityNameProvider(
     scalarMap: ScalarMap.default.merging(["Date": "String"], uniquingKeysWith: { _, new in new }),
     entityNameMap: .default
   )

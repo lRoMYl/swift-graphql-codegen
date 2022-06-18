@@ -5,7 +5,7 @@
     },
     "entityNameMap": {
         "request":          "GraphQLRequest",
-        "requestParameter": "GraphQLRequesting",
+        "requestParameter": "GraphQLRequestParameter",
         "query":            "ApolloQuery",
         "mutation":         "ApolloMutation",
         "subscription":     "ApolloSubscription",

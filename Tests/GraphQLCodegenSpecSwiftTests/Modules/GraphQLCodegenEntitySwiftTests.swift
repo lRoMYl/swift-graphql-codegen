@@ -14,7 +14,7 @@ final class GraphQLCodegenEntitySwiftTests: XCTestCase {
   func testEntityCodegen() throws {
     let generator = GraphQLCodegenEntitySwift(
       entityNameMap: .default,
-      entityNameProvider: DHEntityNameProvider(
+      entityNameProvider: EntityNameProvider(
         scalarMap: .default,
         entityNameMap: .default
       )

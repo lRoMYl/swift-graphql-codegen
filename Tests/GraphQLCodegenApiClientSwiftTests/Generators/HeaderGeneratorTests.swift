@@ -6,12 +6,12 @@
 //
 
 @testable import GraphQLAST
-@testable import GraphQLCodegenDHApiClientSwift
+@testable import GraphQLCodegenApiClientSwift
 import XCTest
 
 final class DHApiClientHeaderGeneratorTests: XCTestCase {
   func testHeader() throws {
-    let generator = HeaderGenerator()
+    let generator = HeaderGenerator(apiClientStrategy: .default)
 
     let groceriesSchema = try Schema.schema(from: "CampaignSelectionsTestSchema")
 
@@ -22,7 +22,6 @@ final class DHApiClientHeaderGeneratorTests: XCTestCase {
     // swiftlint:disable all
     // swiftformat:disable all
 
-    import ApiClient
     import Foundation
     import RxSwift
     """.format()

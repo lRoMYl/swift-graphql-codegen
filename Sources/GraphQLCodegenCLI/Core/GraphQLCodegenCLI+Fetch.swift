@@ -77,7 +77,7 @@ extension GraphQLCodegenCLI.Codegen {
 
     switch platform {
     case .swift:
-      defaultConfigResponse = DHCodegenSwift.defaultConfigResponse
+      defaultConfigResponse = CodegenSwift.defaultConfigResponse
     }
 
     // Config response from parameter

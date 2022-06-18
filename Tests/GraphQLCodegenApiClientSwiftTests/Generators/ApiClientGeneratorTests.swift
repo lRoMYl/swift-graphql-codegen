@@ -7,7 +7,7 @@
 
 @testable import GraphQLAST
 @testable import GraphQLCodegenNameSwift
-@testable import GraphQLCodegenDHApiClientSwift
+@testable import GraphQLCodegenApiClientSwift
 import XCTest
 
 final class ApiClientGeneratorTests: XCTestCase {
@@ -16,8 +16,9 @@ final class ApiClientGeneratorTests: XCTestCase {
       selectionMap: nil,
       entityNameMap: .default,
       scalarMap: .default,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default),
-      apiClientPrefix: "Groceries"
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default),
+      apiClientPrefix: "Groceries",
+      apiClientStrategy: .default
     )
 
     let groceriesSchema = try Schema.schema(from: "CampaignSelectionsTestSchema")

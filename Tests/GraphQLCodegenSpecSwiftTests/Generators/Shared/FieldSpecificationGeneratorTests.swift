@@ -16,7 +16,7 @@ final class FieldSpecificationGeneratorTests: XCTestCase {
     scalarMap: ScalarMap.default,
     selectionMap: nil,
     entityNameMap: .default,
-    entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+    entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
   )
 
   func testScalar() throws {

@@ -17,7 +17,7 @@ final class RequestInitializerSpecGeneratorTests: XCTestCase {
       scalarMap: .default,
       entityNameMap: .default,
       selectionMap: nil,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
@@ -47,7 +47,7 @@ final class RequestInitializerSpecGeneratorTests: XCTestCase {
       scalarMap: .default,
       entityNameMap: .default,
       selectionMap: nil,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
@@ -73,7 +73,7 @@ final class RequestInitializerSpecGeneratorTests: XCTestCase {
       scalarMap: .default,
       entityNameMap: .default,
       selectionMap: nil,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")

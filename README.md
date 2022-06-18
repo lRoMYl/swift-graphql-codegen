@@ -15,7 +15,7 @@ let request = VendorQueryRequest(
   country: .sg, // Argument2 is code-generated
 )
 
-// Auto generated DH flavor ApiClient
+// Auto generated ApiClient
 let vendor = apiClient.vendor(
   with: request, 
   // Auto generated Selections class, this allows you to select
@@ -51,7 +51,7 @@ Further reading
 - [TEMPLATES.md](TEMPLATES.md) Collections of template to help you get started with the code generation tool.
 - [CONFIG.md](CONFIG.md) Overview on how to setup the config file
 - [STRUCTURE.md](STRUCTURE.md) For overview of the entire code generation implementation structure
-- [ADVANCED.md](ADVANCED.md) For detailed explanation of each sub-commands beyond `dh-swift`
+- [ADVANCED.md](ADVANCED.md) For detailed explanation of each sub-commands beyond `bootstrap`
 - [ISSUES.md](ISSUES.md) List of known issues
 - [CONTRIBUTE.md](CONTRIBUTE.md) How to contribute to this repository
 
@@ -69,7 +69,7 @@ Supports GraphQL Native Feature
 - [x] Union
 - [x] Query
 - [x] Mutation
-- [x] Subscription; Codes are generated except for ApiClient because DH ApiClient have no implementation for WebSocket yet
+- [x] Subscription; Codes are generated except for ApiClient because ApiClient have no implementation for WebSocket yet
 - [x] Introspection
 - [x] Root level query
 - [x] Recursive fragment resolution (Up to 5 recursion)
@@ -89,8 +89,8 @@ Support Custom Requirements
 - [x] Custom query/mutation/subscription whitelisting
 - [x] Support for custom unknown enum, this is necessary to ensure the generated code can work with future unknown enum value
 - [x] Support for optional namespace to avoid naming collision
-- [x] DH flavor APIClient
-- [x] Provide service dependency injection for DH flavor APIClient
+- [x] Default APIClient
+- [x] Provide service dependency injection for APIClient
 - [x] Subcommand to simplify code generation
 
 TODO
@@ -146,11 +146,11 @@ swift-graphql-codegen introspection "https://www.domain.com" --output-path "dire
 | option | `--config-path` | Yes | File path of the configuration |
 | flag | `--is-throwable-getter-enabled` | Yes | Specify if the generated code could use throwable getter introduced in Swift 5.5 |
 
-There are other optional option that can be used to manipulate the generated file names, type `swift-graphql-codegen dh-swift --help` command to see the full list
+There are other optional option that can be used to manipulate the generated file names, type `swift-graphql-codegen bootstrap --help` command to see the full list
 
 Example command
 ```
-swift-graphql-codegen dh-swift "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
+swift-graphql-codegen bootstrap "schema.json" --config-path "config.json" --output-path "API"  --api-client-prefix "Groceries"
 ```
 ---
 

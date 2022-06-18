@@ -243,12 +243,12 @@ static let `default`: EntityNameMap = {
 }()
 ```
 
-As for dh-swift subcommand, there is a custom default naming convention in `GraphQLCodegenSpecSwiftConfig.swift`, static `defaultConfigResponse` variable.
+As for bootstrap subcommand, there is a custom default naming convention in `GraphQLCodegenSpecSwiftConfig.swift`, static `defaultConfigResponse` variable.
 
 ```Swift
 EntityNameMapResponse(
   request: "GraphQLRequest",
-  requestParameter: "GraphQLRequesting",
+  requestParameter: "GraphQLRequestParameter",
   query: "QueryRequest",
   mutation: "MutationRequest",
   subscription: "SubscriptionRequest",

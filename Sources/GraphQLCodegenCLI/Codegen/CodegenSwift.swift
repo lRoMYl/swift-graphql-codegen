@@ -11,14 +11,15 @@ import GraphQLCodegenConfig
 import GraphQLCodegenMapperSwift
 import GraphQLCodegenNameSwift
 import GraphQLCodegenSpecSwift
-import GraphQLCodegenDHApiClientSwift
+import GraphQLCodegenApiClientSwift
 
-struct DHCodegenSwift {
+struct CodegenSwift {
   private let isThrowableGetterEnabled: Bool
   private let scalarMap: ScalarMap
   private let entityNameMap: EntityNameMap
   private let selectionMap: SelectionMap?
   private let apiClientPrefix: String
+  private let apiClientStrategy: ApiClientStrategy
 
   private let entityNameProvider: EntityNameProviding
 
@@ -27,15 +28,17 @@ struct DHCodegenSwift {
     scalarMap: ScalarMap,
     entityNameMap: EntityNameMap,
     selectionMap: SelectionMap?,
-    apiClientPrefix: String
+    apiClientPrefix: String,
+    apiClientStrategy: ApiClientStrategy
   ) {
     self.isThrowableGetterEnabled = isThrowableGetterEnabled
     self.scalarMap = scalarMap
     self.entityNameMap = entityNameMap
     self.selectionMap = selectionMap
     self.apiClientPrefix = apiClientPrefix
+    self.apiClientStrategy = apiClientStrategy
 
-    self.entityNameProvider = DHEntityNameProvider(
+    self.entityNameProvider = EntityNameProvider(
       scalarMap: scalarMap,
       entityNameMap: entityNameMap
     )
@@ -59,12 +62,13 @@ struct DHCodegenSwift {
   func repositoryCode(
     schema: Schema
   ) throws -> String {
-    let generator = try GraphQLCodegenDHApiClientSwift(
+    let generator = try GraphQLCodegenApiClientSwift(
       selectionMap: selectionMap,
       entityNameMap: entityNameMap,
       scalarMap: scalarMap,
       entityNameProvider: entityNameProvider,
-      apiClientPrefix: apiClientPrefix
+      apiClientPrefix: apiClientPrefix,
+      apiClientStrategy: apiClientStrategy
     )
     let generatedCode = try generator.code(schema: schema)
 

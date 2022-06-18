@@ -9,6 +9,7 @@ import ArgumentParser
 import CLISpinner
 import Foundation
 import GraphQLAST
+import GraphQLCodegenApiClientSwift
 import GraphQLCodegenConfig
 import GraphQLCodegenUtil
 
@@ -38,7 +39,7 @@ extension GraphQLCodegenCLI {
     @Option(
       help: """
       Define the codegeneration target
-      - dh-apiclient: Generate ApiClient specific to DH specification
+      - api-client: Generate a default ApiClient
       - mapper: Generate optional mapper classes
       - specification: Generate GraphQL specification
       - introspection: Generate Abstract Syntax Tree from the graphql schema url, local schema source is not supported
@@ -64,6 +65,9 @@ extension GraphQLCodegenCLI {
 
     @Option(help: "API Client Prefix")
     var apiClientPrefix: String = "GraphQL"
+
+    @Option(help: "API Client Strategy")
+    var apiClientStrategy: ApiClientStrategy = .default
 
     @Option(help: "Path and name of the config file")
     var configPath: String?
@@ -120,18 +124,19 @@ private extension GraphQLCodegenCLI.Codegen {
   ) throws -> Data? {
     let generatedCodeData: Data?
 
-    let codegen = DHCodegenSwift(
+    let codegen = CodegenSwift(
       isThrowableGetterEnabled: isThrowableGetterEnabled,
       scalarMap: scalarMap,
       entityNameMap: entityNameMap,
       selectionMap: selectionMap,
-      apiClientPrefix: apiClientPrefix
+      apiClientPrefix: apiClientPrefix,
+      apiClientStrategy: apiClientStrategy
     )
 
     switch target {
     case .introspection:
       generatedCodeData = try fetchRemoteSchema(apiHeaders: config?.schemaApiHeaders).1
-    case .dhApiClient:
+    case .apiClient:
       let schema = try fetchSchema(with: config)
       let generatedCode = try codegen.repositoryCode(schema: schema)
       generatedCodeData = generatedCode.data(using: .utf8)

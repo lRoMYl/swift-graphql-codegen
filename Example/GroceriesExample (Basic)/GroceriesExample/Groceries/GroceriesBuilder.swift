@@ -11,11 +11,11 @@ import Foundation
 // but create a repository instead
 
 struct GroceriesBuilder {
-  let apiClient: GroceriesApiClientProtocol
+  let apiClient: GroceriesApiClient
   let campaignMapper: CampaignMapping
 
   init(
-    apiClient: GroceriesApiClientProtocol,
+    apiClient: GroceriesApiClient,
     campaignMapper: CampaignMapping
   ) {
     self.apiClient = apiClient

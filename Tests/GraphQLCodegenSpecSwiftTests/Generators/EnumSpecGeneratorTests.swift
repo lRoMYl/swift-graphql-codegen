@@ -55,7 +55,7 @@ final class EnumSpecGeneratorTests: XCTestCase {
 
     let entityNameMap = EntityNameMap.mock(enum: "Enum")
 
-    let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: entityNameMap)
+    let entityNameProvider = EntityNameProvider(scalarMap: .default, entityNameMap: entityNameMap)
 
     let generator = EnumCodeGenerator(scalarMap: [:], entityNameMap: entityNameMap, entityNameProvider: entityNameProvider)
     let declaration = try generator.code(schema: schema).format()
@@ -179,7 +179,7 @@ final class EnumSpecGeneratorTests: XCTestCase {
       query: "Query"
     )
 
-    let entityNameProvider = DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+    let entityNameProvider = EntityNameProvider(scalarMap: .default, entityNameMap: .default)
 
     let generator = EnumCodeGenerator(scalarMap: [:], entityNameMap: .default, entityNameProvider: entityNameProvider)
     let declaration = try generator.code(schema: schema).format()

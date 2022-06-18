@@ -9,7 +9,7 @@
 @testable import GraphQLCodegenNameSwift
 import XCTest
 
-final class DHEntityNameProviderTests: XCTestCase {
+final class EntityNameProviderTests: XCTestCase {
   func testSelectionNameForField() throws {
     let unionField = Field(
       name: "test",
@@ -56,7 +56,7 @@ final class DHEntityNameProviderTests: XCTestCase {
       deprecationReason: nil
     )
 
-    let entityNameProvider = DHEntityNameProvider(
+    let entityNameProvider = EntityNameProvider(
       scalarMap: .default,
       entityNameMap: .default
     )
@@ -91,7 +91,7 @@ final class DHEntityNameProviderTests: XCTestCase {
       interfaces: []
     )
 
-    let entityNameProvider = DHEntityNameProvider(
+    let entityNameProvider = EntityNameProvider(
       scalarMap: .default,
       entityNameMap: .default
     )

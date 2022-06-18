@@ -7,7 +7,7 @@ import Foundation
 
 // MARK: - Interfaces
 
-protocol GraphQLRequesting: Encodable {
+protocol GraphQLRequestParameter: Encodable {
   var requestType: GraphQLRequestType { get }
   var requestName: String { get }
   var rootSelectionKeys: Set<String> { get }
@@ -44,7 +44,7 @@ enum GraphQLConfiguration {
 
 // MARK: GraphQLRequest
 
-struct GraphQLRequest<RequestParameters: GraphQLRequesting>: Encodable {
+struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
   let parameters: RequestParameters
   let selections: GraphQLSelections
 

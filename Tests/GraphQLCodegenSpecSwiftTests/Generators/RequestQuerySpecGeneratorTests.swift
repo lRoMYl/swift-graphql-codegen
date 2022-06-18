@@ -98,7 +98,7 @@ private extension RequestQuerySpecGeneratorTests {
   var generator: RequestQueryCodeGenerator {
     let scalarMap = ScalarMap.default
     let entityNameMap = EntityNameMap.default
-    let entityNameProvider = DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
+    let entityNameProvider = EntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
 
     return RequestQueryCodeGenerator(
       variablesGenerator: RequestVariablesGenerator(
@@ -107,7 +107,7 @@ private extension RequestQuerySpecGeneratorTests {
         selectionMap: nil,
         entityNameProvider: entityNameProvider
       ),
-      entityNameProvider: DHEntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
+      entityNameProvider: EntityNameProvider(scalarMap: scalarMap, entityNameMap: entityNameMap)
     )
   }
 }

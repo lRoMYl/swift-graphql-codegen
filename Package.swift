@@ -36,7 +36,7 @@ let package = Package(
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
-      name: "GraphQLCodegenDHApiClientSwift",
+      name: "GraphQLCodegenApiClientSwift",
       dependencies: ["SwiftFormat", "GraphQLAST", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLCodegenNameSwift"]
     ),
     .target(
@@ -47,7 +47,7 @@ let package = Package(
       name: "GraphQLCodegenCLI",
       dependencies: [
         "GraphQLCodegenSpecSwift",
-        "GraphQLCodegenDHApiClientSwift",
+        "GraphQLCodegenApiClientSwift",
         "GraphQLCodegenMapperSwift",
         "GraphQLDownloader",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
@@ -73,15 +73,15 @@ let package = Package(
     ),
     .testTarget(
       name: "GraphQLCodegenNameSwiftTests",
-      dependencies: ["GraphQLCodegenNameSwift", "GraphQLDownloader", "GraphQLCodegenDHApiClientSwift"]
+      dependencies: ["GraphQLCodegenNameSwift", "GraphQLDownloader", "GraphQLCodegenApiClientSwift"]
     ),
     .testTarget(
       name: "GraphQLStringCaseTests",
       dependencies: ["SwiftFormat", "GraphQLCodegenConfig", "GraphQLCodegenUtil", "GraphQLDownloader"]
     ),
     .testTarget(
-      name: "GraphQLCodegenDHApiClientSwiftTests",
-      dependencies: ["GraphQLCodegenDHApiClientSwift", "GraphQLDownloader"],
+      name: "GraphQLCodegenApiClientSwiftTests",
+      dependencies: ["GraphQLCodegenApiClientSwift", "GraphQLDownloader"],
       resources: [
         .process("Resources")
       ]

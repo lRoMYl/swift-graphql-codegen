@@ -14,7 +14,7 @@ final class EntitySpecGeneratorTests: XCTestCase {
   func testEntity() throws {
     let generator = EntityGenerator(
       entityNameMap: .default,
-      entityNameProvider: DHEntityNameProvider(scalarMap: .default, entityNameMap: .default)
+      entityNameProvider: EntityNameProvider(scalarMap: .default, entityNameMap: .default)
     )
 
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")

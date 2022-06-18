@@ -1207,10 +1207,10 @@ enum ShopItemInterfaceResponseModel: Codable {
 }
 
 
-// MARK: - GraphQLRequesting
+// MARK: - GraphQLRequestParameter
 
 /// CampaignsQueryRequest
-struct CampaignsQueryRequest: GraphQLRequesting {
+struct CampaignsQueryRequest: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "campaigns"
   let rootSelectionKeys: Set<String> = ["CampaignsCampaignsFragment"]
@@ -1278,7 +1278,7 @@ struct CampaignsQueryRequest: GraphQLRequesting {
 }
 
 /// ProductsQueryRequest
-struct ProductsQueryRequest: GraphQLRequesting {
+struct ProductsQueryRequest: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "products"
   let rootSelectionKeys: Set<String> = ["ProductsProductFilterResultFragment"]
@@ -1338,7 +1338,7 @@ struct ProductsQueryRequest: GraphQLRequesting {
 }
 
 /// ShopDetailsQueryRequest
-struct ShopDetailsQueryRequest: GraphQLRequesting {
+struct ShopDetailsQueryRequest: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "shopDetails"
   let rootSelectionKeys: Set<String> = ["ShopDetailsShopDetailsFragment"]
@@ -1403,7 +1403,7 @@ struct ShopDetailsQueryRequest: GraphQLRequesting {
   }
 }
 
-struct QueryRequest: GraphQLRequesting {
+struct QueryRequest: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -1418,8 +1418,8 @@ struct QueryRequest: GraphQLRequesting {
   let products: ProductsQueryRequest?
   let shopDetails: ShopDetailsQueryRequest?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       campaigns,
       products,
       shopDetails

@@ -16,7 +16,7 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
 
     let process = Process()
 
-    // TODO add test argument for `dh-swift`, `codegen` and `introspection`
+    // TODO add test argument for `bootstrap`, `codegen` and `introspection`
     //process.arguments = [""]
 
     process.executableURL = fooBinary
@@ -33,7 +33,7 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
     XCTAssertEqual(
       output,
       """
-      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: swift-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  dh-swift\n\n  See \'swift-graphql-codegen help <subcommand>\' for detailed help.\n
+      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: swift-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  bootstrap\n\n  See \'swift-graphql-codegen help <subcommand>\' for detailed help.\n
       """
     )
   }

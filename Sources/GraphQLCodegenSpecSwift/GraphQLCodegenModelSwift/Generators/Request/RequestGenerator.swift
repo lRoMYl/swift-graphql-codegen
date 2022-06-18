@@ -220,8 +220,8 @@ private extension RequestGenerator {
     }.lines
 
     let privateFieldsCode = """
-    private var requests: [GraphQLRequesting] {
-      let requests: [GraphQLRequesting?] = [
+    private var requests: [\(entityNameMap.requestParameter)] {
+      let requests: [\(entityNameMap.requestParameter)?] = [
         \(fields.map { $0.name }.joined(separator: ",\n"))
       ]
 
