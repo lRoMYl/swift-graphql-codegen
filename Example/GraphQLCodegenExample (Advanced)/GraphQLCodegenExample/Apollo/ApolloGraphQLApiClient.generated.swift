@@ -3,164 +3,538 @@
 // swiftlint:disable all
 // swiftformat:disable all
 
-import ApiClient
 import Foundation
 import RxSwift
-// MARK: - ApolloApiClientProtocol
-
-protocol ApolloApiClientProtocol {
-  func query(
-    with request: ApolloQuery,
-    selections: ApolloQuerySelections
-  ) -> Single<ApiResponse<QueryApolloModel>>
-  func launches(
-    with request: LaunchesApolloQuery,
-    selections: LaunchesApolloQuerySelections
-  ) -> Single<ApiResponse<LaunchesQueryResponse>>
-  func launch(
-    with request: LaunchApolloQuery,
-    selections: LaunchApolloQuerySelections
-  ) -> Single<ApiResponse<LaunchQueryResponse>>
-  func me(
-    with request: MeApolloQuery,
-    selections: MeApolloQuerySelections
-  ) -> Single<ApiResponse<MeQueryResponse>>
-  func totalTripsBooked(
-    with request: TotalTripsBookedApolloQuery,
-    selections: TotalTripsBookedApolloQuerySelections
-  ) -> Single<ApiResponse<TotalTripsBookedQueryResponse>>
-  func update(
-    with request: ApolloMutation,
-    selections: ApolloMutationSelections
-  ) -> Single<ApiResponse<MutationApolloModel>>
-  func bookTrips(
-    with request: BookTripsApolloMutation,
-    selections: BookTripsApolloMutationSelections
-  ) -> Single<ApiResponse<BookTripsMutationResponse>>
-  func cancelTrip(
-    with request: CancelTripApolloMutation,
-    selections: CancelTripApolloMutationSelections
-  ) -> Single<ApiResponse<CancelTripMutationResponse>>
-  func login(
-    with request: LoginApolloMutation,
-    selections: LoginApolloMutationSelections
-  ) -> Single<ApiResponse<LoginMutationResponse>>
-  func uploadProfileImage(
-    with request: UploadProfileImageApolloMutation,
-    selections: UploadProfileImageApolloMutationSelections
-  ) -> Single<ApiResponse<UploadProfileImageMutationResponse>>
-  func subscribe(
-    with request: ApolloSubscription,
-    selections: ApolloSubscriptionSelections
-  ) -> Single<ApiResponse<SubscriptionApolloModel>>
-  func tripsBooked(
-    with request: TripsBookedApolloSubscription,
-    selections: TripsBookedApolloSubscriptionSelections
-  ) -> Single<ApiResponse<TripsBookedSubscriptionResponse>>
-}
+// MARK: - ApolloApiClientError
 
 enum ApolloApiClientError: Error, LocalizedError {
+  case missingSelf
   case missingData(context: String)
+  case error(Error)
+  case unknown(context: String)
 
   var errorDescription: String? {
     switch self {
+    case .missingSelf:
+      return "\(Self.self): self is dequeued"
     case let .missingData(context):
+      return "\(Self.self): \(context)"
+    case let .error(error):
+      return "\(Self.self): \(error.localizedDescription)"
+    case let .unknown(context):
       return "\(Self.self): \(context)"
     }
   }
 }
 
-final class ApolloApiClient: ApolloApiClientProtocol {
-  private let restClient: RestClient
+protocol ApolloApiClientIntercepting {
+  func headers(urlRequest: URLRequest, requestParameter: GraphQLRequestParameter) -> [String: String]?
+}
+
+// MARK: - ApolloApiClient
+
+final class ApolloApiClient {
+  private let baseURL: URL
+  private let urlSession: URLSession
+  private let jsonEncoder: JSONEncoder
+  private let jsonDecoder: JSONDecoder
+
+  private let interceptor: GroceriesApiClientIntercepting?
   private let scheduler: SchedulerType
-  private let resourceParametersConfigurator: ApolloResourceParametersConfigurating?
 
   init(
-    restClient: RestClient,
-    scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background),
-    resourceParametersConfigurator: ApolloResourceParametersConfigurating? = nil
+    baseURL: URL,
+    urlSession: URLSession = .shared,
+    jsonEncoder: JSONEncoder = JSONEncoder(),
+    jsonDecoder: JSONDecoder = JSONDecoder(),
+    interceptor: GroceriesApiClientIntercepting? = nil,
+    scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)
   ) {
-    self.restClient = restClient
+    self.baseURL = baseURL
+    self.urlSession = urlSession
+    self.jsonEncoder = jsonEncoder
+    self.jsonDecoder = jsonDecoder
+    self.interceptor = interceptor
     self.scheduler = scheduler
-    self.resourceParametersConfigurator = resourceParametersConfigurator
+  }
+}
+
+// MARK: - Private URLSession Convenient funcs
+
+private extension ApolloApiClient {
+  func dataTask<RequestParameter, Response>(
+    requestParameter: RequestParameter,
+    selections: GraphQLSelections,
+    completion: @escaping ((Result<Response, Error>) -> Void)
+  ) -> URLSessionTask where RequestParameter: GraphQLRequestParameter, Response: Decodable {
+    let task = urlSession
+      .dataTask(
+        with: urlRequest(with: requestParameter, selections: selections),
+        completionHandler: { [weak self] responseData, _, error in
+          guard let self = self else {
+            completion(.failure(ApolloApiClientError.missingSelf))
+            return
+          }
+
+          guard error == nil else {
+            completion(.failure(ApolloApiClientError.error(error!)))
+            return
+          }
+
+          guard let responseData = responseData else {
+            completion(.failure(ApolloApiClientError.missingData(context: "Empty response")))
+            return
+          }
+
+          do {
+            let response = try self.jsonDecoder.decode(Response.self, from: responseData)
+            completion(.success(response))
+          } catch {
+            completion(.failure(ApolloApiClientError.error(error)))
+          }
+        }
+      )
+
+    return task
+  }
+
+  func urlRequest<RequestParameter>(
+    with requestParameter: RequestParameter,
+    selections: GraphQLSelections
+  ) -> URLRequest where RequestParameter: GraphQLRequestParameter {
+    var urlRequest = URLRequest(
+      url: baseURL,
+      cachePolicy: urlSession.configuration.requestCachePolicy,
+      timeoutInterval: urlSession.configuration.timeoutIntervalForRequest
+    )
+    urlRequest.httpMethod = "POST"
+    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    urlRequest.httpBody = try? jsonEncoder.encode(
+      GraphQLRequest(parameters: requestParameter, selections: selections)
+    )
+
+    if let interceptor = interceptor {
+      urlRequest.allHTTPHeaderFields = interceptor.headers(
+        urlRequest: urlRequest,
+        requestParameter: requestParameter
+      )
+    }
+
+    return urlRequest
+  }
+}
+
+// MARK: - ApolloApi
+
+protocol ApolloApi {
+  @discardableResult
+  func query(
+    with requestParameter: ApolloQuery,
+    selections: ApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<QueryApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func launch(
+    with requestParameter: LaunchApolloQuery,
+    selections: LaunchApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<LaunchQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func launches(
+    with requestParameter: LaunchesApolloQuery,
+    selections: LaunchesApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<LaunchesQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func me(
+    with requestParameter: MeApolloQuery,
+    selections: MeApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<MeQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func totalTripsBooked(
+    with requestParameter: TotalTripsBookedApolloQuery,
+    selections: TotalTripsBookedApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<TotalTripsBookedQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func update(
+    with requestParameter: ApolloMutation,
+    selections: ApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<MutationApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func bookTrips(
+    with requestParameter: BookTripsApolloMutation,
+    selections: BookTripsApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<BookTripsMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func cancelTrip(
+    with requestParameter: CancelTripApolloMutation,
+    selections: CancelTripApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<CancelTripMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func login(
+    with requestParameter: LoginApolloMutation,
+    selections: LoginApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<LoginMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func subscribe(
+    with requestParameter: ApolloSubscription,
+    selections: ApolloSubscriptionSelections,
+    completion: @escaping ((Result<GraphQLResponse<SubscriptionApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask
+  @discardableResult
+  func tripsBooked(
+    with requestParameter: TripsBookedApolloSubscription,
+    selections: TripsBookedApolloSubscriptionSelections,
+    completion: @escaping ((Result<GraphQLResponse<TripsBookedSubscriptionResponse>, Error>) -> Void)
+  ) -> URLSessionTask
+}
+
+extension ApolloApiClient: ApolloApi {
+  @discardableResult
+  func launch(
+    with requestParameter: LaunchApolloQuery,
+    selections: LaunchApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<LaunchQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func launches(
+    with requestParameter: LaunchesApolloQuery,
+    selections: LaunchesApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<LaunchesQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func me(
+    with requestParameter: MeApolloQuery,
+    selections: MeApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<MeQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func totalTripsBooked(
+    with requestParameter: TotalTripsBookedApolloQuery,
+    selections: TotalTripsBookedApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<TotalTripsBookedQueryResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func query(
+    with requestParameter: ApolloQuery,
+    selections: ApolloQuerySelections,
+    completion: @escaping ((Result<GraphQLResponse<QueryApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask {
+    let completion = { (result: Result<GraphQLResponse<QueryApolloModel>, Error>) in
+      switch result {
+      case let .success(result):
+        do {
+          let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+            (requestParameter.launch, result.data?.launch),
+            (requestParameter.launches, result.data?.launches),
+            (requestParameter.me, result.data?.me),
+            (requestParameter.totalTripsBooked, result.data?.totalTripsBooked)
+          ]
+
+          // Validate response to ensure all selected queries are returned
+          try responseExpectations.forEach {
+            if let request = $0.0, $0.1 == nil {
+              throw ApolloApiClientError.missingData(
+                context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
+              )
+            }
+          }
+        } catch {
+          completion(.failure(error))
+        }
+      case .failure:
+        completion(result)
+      }
+    }
+
+    return dataTask(
+      requestParameter: requestParameter,
+      selections: selections,
+      completion: completion
+    )
+  }
+
+  @discardableResult
+  func bookTrips(
+    with requestParameter: BookTripsApolloMutation,
+    selections: BookTripsApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<BookTripsMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func cancelTrip(
+    with requestParameter: CancelTripApolloMutation,
+    selections: CancelTripApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<CancelTripMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func login(
+    with requestParameter: LoginApolloMutation,
+    selections: LoginApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<LoginMutationResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func update(
+    with requestParameter: ApolloMutation,
+    selections: ApolloMutationSelections,
+    completion: @escaping ((Result<GraphQLResponse<MutationApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask {
+    let completion = { (result: Result<GraphQLResponse<MutationApolloModel>, Error>) in
+      switch result {
+      case let .success(result):
+        do {
+          let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+            (requestParameter.bookTrips, result.data?.bookTrips),
+            (requestParameter.cancelTrip, result.data?.cancelTrip),
+            (requestParameter.login, result.data?.login)
+          ]
+
+          // Validate response to ensure all selected queries are returned
+          try responseExpectations.forEach {
+            if let request = $0.0, $0.1 == nil {
+              throw ApolloApiClientError.missingData(
+                context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
+              )
+            }
+          }
+        } catch {
+          completion(.failure(error))
+        }
+      case .failure:
+        completion(result)
+      }
+    }
+
+    return dataTask(
+      requestParameter: requestParameter,
+      selections: selections,
+      completion: completion
+    )
+  }
+
+  @discardableResult
+  func tripsBooked(
+    with requestParameter: TripsBookedApolloSubscription,
+    selections: TripsBookedApolloSubscriptionSelections,
+    completion: @escaping ((Result<GraphQLResponse<TripsBookedSubscriptionResponse>, Error>) -> Void)
+  ) -> URLSessionTask {
+    dataTask(requestParameter: requestParameter, selections: selections, completion: completion)
+  }
+
+  @discardableResult
+  func subscribe(
+    with requestParameter: ApolloSubscription,
+    selections: ApolloSubscriptionSelections,
+    completion: @escaping ((Result<GraphQLResponse<SubscriptionApolloModel>, Error>) -> Void)
+  ) -> URLSessionTask {
+    let completion = { (result: Result<GraphQLResponse<SubscriptionApolloModel>, Error>) in
+      switch result {
+      case let .success(result):
+        do {
+          let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+            (requestParameter.tripsBooked, result.data?.tripsBooked)
+          ]
+
+          // Validate response to ensure all selected queries are returned
+          try responseExpectations.forEach {
+            if let request = $0.0, $0.1 == nil {
+              throw ApolloApiClientError.missingData(
+                context: "Missing data for \(request.requestType.rawValue) { \(request.requestQuery) }"
+              )
+            }
+          }
+        } catch {
+          completion(.failure(error))
+        }
+      case .failure:
+        completion(result)
+      }
+    }
+
+    return dataTask(
+      requestParameter: requestParameter,
+      selections: selections,
+      completion: completion
+    )
+  }
+}
+
+// MARK: - Private RxSwift Convenient funcs
+
+private extension ApolloApiClient {
+  func singleDataTask<RequestParameter, Response>(
+    with requestParameter: RequestParameter,
+    selections: GraphQLSelections
+  ) -> Single<Response> where RequestParameter: GraphQLRequestParameter, Response: Decodable {
+    Single.create { single in
+      let task = self.dataTask(
+        requestParameter: requestParameter,
+        selections: selections
+      ) { (result: Result<Response, Error>) in
+        switch result {
+        case let .success(response):
+          single(.success(response))
+        case let .failure(error):
+          single(.failure(error))
+        }
+      }
+
+      task.resume()
+
+      return Disposables.create {
+        task.cancel()
+      }
+    }
+  }
+
+  func observableDataTask<RequestParameter, Response>(
+    with requestParameter: RequestParameter,
+    selections: GraphQLSelections
+  ) -> Observable<Response> where RequestParameter: GraphQLRequestParameter, Response: Decodable {
+    Observable.create { observer in
+      let task = self.dataTask(
+        requestParameter: requestParameter,
+        selections: selections
+      ) { (result: Result<Response, Error>) in
+        switch result {
+        case let .success(response):
+          observer.onNext(response)
+        case let .failure(error):
+          observer.onError(error)
+        }
+
+        observer.onCompleted()
+      }
+
+      task.resume()
+
+      return Disposables.create {
+        task.cancel()
+      }
+    }
+  }
+}
+
+// MARK: - ApolloRxApi
+
+protocol ApolloRxApi {
+  func query(
+    with requestParameter: ApolloQuery,
+    selections: ApolloQuerySelections
+  ) -> Single<GraphQLResponse<QueryApolloModel>>
+  func launch(
+    with requestParameter: LaunchApolloQuery,
+    selections: LaunchApolloQuerySelections
+  ) -> Single<GraphQLResponse<LaunchQueryResponse>>
+  func launches(
+    with requestParameter: LaunchesApolloQuery,
+    selections: LaunchesApolloQuerySelections
+  ) -> Single<GraphQLResponse<LaunchesQueryResponse>>
+  func me(
+    with requestParameter: MeApolloQuery,
+    selections: MeApolloQuerySelections
+  ) -> Single<GraphQLResponse<MeQueryResponse>>
+  func totalTripsBooked(
+    with requestParameter: TotalTripsBookedApolloQuery,
+    selections: TotalTripsBookedApolloQuerySelections
+  ) -> Single<GraphQLResponse<TotalTripsBookedQueryResponse>>
+  func update(
+    with requestParameter: ApolloMutation,
+    selections: ApolloMutationSelections
+  ) -> Single<GraphQLResponse<MutationApolloModel>>
+  func bookTrips(
+    with requestParameter: BookTripsApolloMutation,
+    selections: BookTripsApolloMutationSelections
+  ) -> Single<GraphQLResponse<BookTripsMutationResponse>>
+  func cancelTrip(
+    with requestParameter: CancelTripApolloMutation,
+    selections: CancelTripApolloMutationSelections
+  ) -> Single<GraphQLResponse<CancelTripMutationResponse>>
+  func login(
+    with requestParameter: LoginApolloMutation,
+    selections: LoginApolloMutationSelections
+  ) -> Single<GraphQLResponse<LoginMutationResponse>>
+  func subscribe(
+    with requestParameter: ApolloSubscription,
+    selections: ApolloSubscriptionSelections
+  ) -> Observable<GraphQLResponse<SubscriptionApolloModel>>
+  func tripsBooked(
+    with requestParameter: TripsBookedApolloSubscription,
+    selections: TripsBookedApolloSubscriptionSelections
+  ) -> Observable<GraphQLResponse<TripsBookedSubscriptionResponse>>
+}
+
+extension ApolloApiClient: ApolloRxApi {
+  func launch(
+    with requestParameter: LaunchApolloQuery,
+    selections: LaunchApolloQuerySelections
+  ) -> Single<GraphQLResponse<LaunchQueryResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func launches(
-    with request: LaunchesApolloQuery,
+    with requestParameter: LaunchesApolloQuery,
     selections: LaunchesApolloQuerySelections
-  ) -> Single<ApiResponse<LaunchesQueryResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .queryLaunches(request: request, selections: selections)
-    )
-
-    return executeGraphQLQuery(
-      resource: resource
-    )
-  }
-
-  func launch(
-    with request: LaunchApolloQuery,
-    selections: LaunchApolloQuerySelections
-  ) -> Single<ApiResponse<LaunchQueryResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .queryLaunch(request: request, selections: selections)
-    )
-
-    return executeGraphQLQuery(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<LaunchesQueryResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func me(
-    with request: MeApolloQuery,
+    with requestParameter: MeApolloQuery,
     selections: MeApolloQuerySelections
-  ) -> Single<ApiResponse<MeQueryResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .queryMe(request: request, selections: selections)
-    )
-
-    return executeGraphQLQuery(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<MeQueryResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func totalTripsBooked(
-    with request: TotalTripsBookedApolloQuery,
+    with requestParameter: TotalTripsBookedApolloQuery,
     selections: TotalTripsBookedApolloQuerySelections
-  ) -> Single<ApiResponse<TotalTripsBookedQueryResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .queryTotalTripsBooked(request: request, selections: selections)
-    )
-
-    return executeGraphQLQuery(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<TotalTripsBookedQueryResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func query(
-    with request: ApolloQuery,
+    with requestParameter: ApolloQuery,
     selections: ApolloQuerySelections
-  ) -> Single<ApiResponse<QueryApolloModel>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .query(request: request, selections: selections)
-    )
+  ) -> Single<GraphQLResponse<QueryApolloModel>> {
+    let task: Single<GraphQLResponse<QueryApolloModel>> = singleDataTask(with: requestParameter, selections: selections)
 
-    let response: Single<ApiResponse<QueryApolloModel>> = executeGraphQLQuery(resource: resource)
-
-    return response
+    return task
       .map { result in
-        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
-          (request.launches, result.data?.launches),
-          (request.launch, result.data?.launch),
-          (request.me, result.data?.me),
-          (request.totalTripsBooked, result.data?.totalTripsBooked)
+        let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+          (requestParameter.launch, result.data?.launch),
+          (requestParameter.launches, result.data?.launches),
+          (requestParameter.me, result.data?.me),
+          (requestParameter.totalTripsBooked, result.data?.totalTripsBooked)
         ]
 
+        // Validate response to ensure all selected queries are returned
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
@@ -174,81 +548,41 @@ final class ApolloApiClient: ApolloApiClientProtocol {
   }
 
   func bookTrips(
-    with request: BookTripsApolloMutation,
+    with requestParameter: BookTripsApolloMutation,
     selections: BookTripsApolloMutationSelections
-  ) -> Single<ApiResponse<BookTripsMutationResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .updateBookTrips(request: request, selections: selections)
-    )
-
-    return executeGraphQLMutation(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<BookTripsMutationResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func cancelTrip(
-    with request: CancelTripApolloMutation,
+    with requestParameter: CancelTripApolloMutation,
     selections: CancelTripApolloMutationSelections
-  ) -> Single<ApiResponse<CancelTripMutationResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .updateCancelTrip(request: request, selections: selections)
-    )
-
-    return executeGraphQLMutation(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<CancelTripMutationResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func login(
-    with request: LoginApolloMutation,
+    with requestParameter: LoginApolloMutation,
     selections: LoginApolloMutationSelections
-  ) -> Single<ApiResponse<LoginMutationResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .updateLogin(request: request, selections: selections)
-    )
-
-    return executeGraphQLMutation(
-      resource: resource
-    )
-  }
-
-  func uploadProfileImage(
-    with request: UploadProfileImageApolloMutation,
-    selections: UploadProfileImageApolloMutationSelections
-  ) -> Single<ApiResponse<UploadProfileImageMutationResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .updateUploadProfileImage(request: request, selections: selections)
-    )
-
-    return executeGraphQLMutation(
-      resource: resource
-    )
+  ) -> Single<GraphQLResponse<LoginMutationResponse>> {
+    singleDataTask(with: requestParameter, selections: selections)
   }
 
   func update(
-    with request: ApolloMutation,
+    with requestParameter: ApolloMutation,
     selections: ApolloMutationSelections
-  ) -> Single<ApiResponse<MutationApolloModel>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .update(request: request, selections: selections)
-    )
+  ) -> Single<GraphQLResponse<MutationApolloModel>> {
+    let task: Single<GraphQLResponse<MutationApolloModel>> = singleDataTask(with: requestParameter, selections: selections)
 
-    let response: Single<ApiResponse<MutationApolloModel>> = executeGraphQLQuery(resource: resource)
-
-    return response
+    return task
       .map { result in
-        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
-          (request.bookTrips, result.data?.bookTrips),
-          (request.cancelTrip, result.data?.cancelTrip),
-          (request.login, result.data?.login),
-          (request.uploadProfileImage, result.data?.uploadProfileImage)
+        let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+          (requestParameter.bookTrips, result.data?.bookTrips),
+          (requestParameter.cancelTrip, result.data?.cancelTrip),
+          (requestParameter.login, result.data?.login)
         ]
 
+        // Validate response to ensure all selected queries are returned
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
@@ -262,36 +596,25 @@ final class ApolloApiClient: ApolloApiClientProtocol {
   }
 
   func tripsBooked(
-    with request: TripsBookedApolloSubscription,
+    with requestParameter: TripsBookedApolloSubscription,
     selections: TripsBookedApolloSubscriptionSelections
-  ) -> Single<ApiResponse<TripsBookedSubscriptionResponse>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .subscribeTripsBooked(request: request, selections: selections)
-    )
-
-    return executeGraphQLSubscription(
-      resource: resource
-    )
+  ) -> Observable<GraphQLResponse<TripsBookedSubscriptionResponse>> {
+    observableDataTask(with: requestParameter, selections: selections)
   }
 
   func subscribe(
-    with request: ApolloSubscription,
+    with requestParameter: ApolloSubscription,
     selections: ApolloSubscriptionSelections
-  ) -> Single<ApiResponse<SubscriptionApolloModel>> {
-    let resource = ApolloResourceParametersProvider(
-      resourceParametersConfigurator: resourceParametersConfigurator,
-      resourceBodyParameters: .subscribe(request: request, selections: selections)
-    )
+  ) -> Observable<GraphQLResponse<SubscriptionApolloModel>> {
+    let task: Observable<GraphQLResponse<SubscriptionApolloModel>> = observableDataTask(with: requestParameter, selections: selections)
 
-    let response: Single<ApiResponse<SubscriptionApolloModel>> = executeGraphQLQuery(resource: resource)
-
-    return response
+    return task
       .map { result in
-        let responseExpectations: [(GraphQLRequesting?, Codable?)] = [
-          (request.tripsBooked, result.data?.tripsBooked)
+        let responseExpectations: [(GraphQLRequestParameter?, Decodable?)] = [
+          (requestParameter.tripsBooked, result.data?.tripsBooked)
         ]
 
+        // Validate response to ensure all selected queries are returned
         try responseExpectations.forEach {
           if let request = $0.0, $0.1 == nil {
             throw ApolloApiClientError.missingData(
@@ -302,168 +625,5 @@ final class ApolloApiClient: ApolloApiClientProtocol {
 
         return result
       }
-  }
-}
-
-private extension ApolloApiClient {
-  func executeGraphQLQuery<Response>(
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
-      .executeRequest(resource: resource)
-
-    return request
-      .map { apiResponse in
-        ApiResponse(
-          data: apiResponse.data?.data,
-          httpURLResponse: apiResponse.httpURLResponse,
-          metaData: apiResponse.metaData
-        )
-      }
-      .subscribe(on: scheduler)
-  }
-
-  func executeGraphQLMutation<Response>(
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
-      .executeRequest(resource: resource)
-
-    return request
-      .map { apiResponse in
-        ApiResponse(
-          data: apiResponse.data?.data,
-          httpURLResponse: apiResponse.httpURLResponse,
-          metaData: apiResponse.metaData
-        )
-      }
-      .subscribe(on: scheduler)
-  }
-
-  func executeGraphQLSubscription<Response>(
-    resource: ResourceParameters
-  ) -> Single<ApiResponse<Response>> where Response: Codable {
-    let request: Single<ApiResponse<GraphQLResponse<Response>>> = restClient
-      .executeRequest(resource: resource)
-
-    return request
-      .map { apiResponse in
-        ApiResponse(
-          data: apiResponse.data?.data,
-          httpURLResponse: apiResponse.httpURLResponse,
-          metaData: apiResponse.metaData
-        )
-      }
-      .subscribe(on: scheduler)
-  }
-}
-
-// MARK: - ApolloResourceParametersProvider
-
-protocol ApolloResourceParametersConfigurating {
-  func servicePath(with bodyParameters: ApolloResourceParametersProvider.BodyParameters) -> String
-  func headers(with bodyParameters: ApolloResourceParametersProvider.BodyParameters) -> [String: String]?
-  func timeoutInterval(with bodyParameters: ApolloResourceParametersProvider.BodyParameters) -> TimeInterval?
-  func preventRetry(with bodyParameters: ApolloResourceParametersProvider.BodyParameters) -> Bool
-  func preventAddingLanguageParameters(with bodyParameters: ApolloResourceParametersProvider.BodyParameters) -> Bool
-}
-
-struct ApolloResourceParametersProvider: ResourceParameters {
-  enum BodyParameters {
-    case queryLaunches(request: LaunchesApolloQuery, selections: LaunchesApolloQuerySelections)
-    case queryLaunch(request: LaunchApolloQuery, selections: LaunchApolloQuerySelections)
-    case queryMe(request: MeApolloQuery, selections: MeApolloQuerySelections)
-    case queryTotalTripsBooked(request: TotalTripsBookedApolloQuery, selections: TotalTripsBookedApolloQuerySelections)
-    case query(request: ApolloQuery, selections: ApolloQuerySelections)
-    case updateBookTrips(request: BookTripsApolloMutation, selections: BookTripsApolloMutationSelections)
-    case updateCancelTrip(request: CancelTripApolloMutation, selections: CancelTripApolloMutationSelections)
-    case updateLogin(request: LoginApolloMutation, selections: LoginApolloMutationSelections)
-    case updateUploadProfileImage(request: UploadProfileImageApolloMutation, selections: UploadProfileImageApolloMutationSelections)
-    case update(request: ApolloMutation, selections: ApolloMutationSelections)
-    case subscribeTripsBooked(request: TripsBookedApolloSubscription, selections: TripsBookedApolloSubscriptionSelections)
-    case subscribe(request: ApolloSubscription, selections: ApolloSubscriptionSelections)
-
-    func bodyParameters() -> Any? {
-      switch self {
-      case let .queryLaunches(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .queryLaunch(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .queryMe(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .queryTotalTripsBooked(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .query(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .updateBookTrips(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .updateCancelTrip(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .updateLogin(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .updateUploadProfileImage(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .update(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .subscribeTripsBooked(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      case let .subscribe(request, selections):
-        return bodyParameters(request: request, selections: selections as GraphQLSelections)
-      }
-    }
-
-    private func bodyParameters<T>(request: T, selections: GraphQLSelections) -> [String: Any] where T: GraphQLRequesting {
-      guard
-        let data = try? JSONEncoder().encode(GraphQLRequest(parameters: request, selections: selections))
-      else { return [:] }
-
-      return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-        .flatMap {
-          $0 as? [String: Any]
-        } ?? [:]
-    }
-  }
-
-  private let resourceParametersConfigurator: ApolloResourceParametersConfigurating?
-  private let resourceBodyParameters: BodyParameters
-
-  init(
-    resourceParametersConfigurator: ApolloResourceParametersConfigurating?,
-    resourceBodyParameters: BodyParameters
-  ) {
-    self.resourceParametersConfigurator = resourceParametersConfigurator
-    self.resourceBodyParameters = resourceBodyParameters
-  }
-
-  func bodyFormat() -> HttpBodyFormat {
-    .JSON
-  }
-
-  func httpMethod() -> RequestHttpMethod {
-    .post
-  }
-
-  func servicePath() -> String {
-    resourceParametersConfigurator?.servicePath(with: resourceBodyParameters) ?? ""
-  }
-
-  func headers() -> [String: String]? {
-    resourceParametersConfigurator?.headers(with: resourceBodyParameters) ?? nil
-  }
-
-  func timeoutInterval() -> TimeInterval? {
-    resourceParametersConfigurator?.timeoutInterval(with: resourceBodyParameters) ?? nil
-  }
-
-  func preventRetry() -> Bool {
-    resourceParametersConfigurator?.preventRetry(with: resourceBodyParameters) ?? false
-  }
-
-  func preventAddingLanguageParameters() -> Bool {
-    resourceParametersConfigurator?.preventAddingLanguageParameters(with: resourceBodyParameters) ?? false
-  }
-
-  func bodyParameters() -> Any? {
-    return resourceBodyParameters.bodyParameters()
   }
 }

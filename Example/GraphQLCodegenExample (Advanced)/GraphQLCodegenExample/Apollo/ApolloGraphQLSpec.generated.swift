@@ -6,11 +6,11 @@
 import Foundation
 // MARK: - ApolloEnumModel
 
+/// PatchSize
 enum PatchSizeApolloEnumModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   case small
-
   case large
 
   /// Auto generated constant for unknown enum values
@@ -42,95 +42,9 @@ enum PatchSizeApolloEnumModel: RawRepresentable, Codable {
   }
 }
 
-enum CacheControlScopeApolloEnumModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case `public`
-
-  case `private`
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "PUBLIC": self = .public
-    case "PRIVATE": self = .private
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .public: return "PUBLIC"
-    case .private: return "PRIVATE"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: CacheControlScopeApolloEnumModel, rhs: CacheControlScopeApolloEnumModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.public, .public): return true
-    case (.private, .private): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
 // MARK: - ApolloModel
 
-struct QueryApolloModel: Codable {
-  let launch: Optional<LaunchApolloModel?>
-  let launches: Optional<LaunchConnectionApolloModel>
-  let me: Optional<UserApolloModel?>
-  let totalTripsBooked: Optional<Int?>
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case launch
-    case launches
-    case me
-    case totalTripsBooked
-  }
-}
-
-struct LaunchConnectionApolloModel: Codable {
-  private let internalCursor: Optional<String>
-  private let internalHasMore: Optional<Bool>
-  private let internalLaunches: Optional<[LaunchApolloModel?]>
-
-  func cursor() throws -> String {
-    try value(for: \Self.internalCursor, codingKey: CodingKeys.internalCursor)
-  }
-
-  func hasMore() throws -> Bool {
-    try value(for: \Self.internalHasMore, codingKey: CodingKeys.internalHasMore)
-  }
-
-  func launches() throws -> [LaunchApolloModel?] {
-    try value(for: \Self.internalLaunches, codingKey: CodingKeys.internalLaunches)
-  }
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    internalCursor = try container.decodeOptionalIfPresent(String.self, forKey: .internalCursor)
-    internalHasMore = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalHasMore)
-    internalLaunches = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalLaunches)
-  }
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case internalCursor = "cursor"
-    case internalHasMore = "hasMore"
-    case internalLaunches = "launches"
-  }
-}
-
-struct LaunchApolloModel: Codable {
+struct LaunchApolloModel: Decodable {
   private let internalId: Optional<String>
   private let internalIsBooked: Optional<Bool>
   private let internalMission: Optional<MissionApolloModel?>
@@ -167,8 +81,6 @@ struct LaunchApolloModel: Codable {
     internalSite = try container.decodeOptionalIfPresent(String?.self, forKey: .internalSite)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
     case internalIsBooked = "isBooked"
@@ -178,7 +90,39 @@ struct LaunchApolloModel: Codable {
   }
 }
 
-struct MissionApolloModel: Codable {
+struct LaunchConnectionApolloModel: Decodable {
+  private let internalCursor: Optional<String>
+  private let internalHasMore: Optional<Bool>
+  private let internalLaunches: Optional<[LaunchApolloModel?]>
+
+  func cursor() throws -> String {
+    try value(for: \Self.internalCursor, codingKey: CodingKeys.internalCursor)
+  }
+
+  func hasMore() throws -> Bool {
+    try value(for: \Self.internalHasMore, codingKey: CodingKeys.internalHasMore)
+  }
+
+  func launches() throws -> [LaunchApolloModel?] {
+    try value(for: \Self.internalLaunches, codingKey: CodingKeys.internalLaunches)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalCursor = try container.decodeOptionalIfPresent(String.self, forKey: .internalCursor)
+    internalHasMore = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalHasMore)
+    internalLaunches = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalLaunches)
+  }
+
+  private enum CodingKeys: String, CodingKey {
+    case internalCursor = "cursor"
+    case internalHasMore = "hasMore"
+    case internalLaunches = "launches"
+  }
+}
+
+struct MissionApolloModel: Decodable {
   private let internalMissionPatch: Optional<String?>
   private let internalName: Optional<String?>
 
@@ -197,15 +141,39 @@ struct MissionApolloModel: Codable {
     internalName = try container.decodeOptionalIfPresent(String?.self, forKey: .internalName)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalMissionPatch = "missionPatch"
     case internalName = "name"
   }
 }
 
-struct RocketApolloModel: Codable {
+struct MutationApolloModel: Decodable {
+  let bookTrips: Optional<TripUpdateResponseApolloModel>
+  let cancelTrip: Optional<TripUpdateResponseApolloModel>
+  let login: Optional<UserApolloModel?>
+
+  private enum CodingKeys: String, CodingKey {
+    case bookTrips
+    case cancelTrip
+    case login
+  }
+}
+
+struct QueryApolloModel: Decodable {
+  let launch: Optional<LaunchApolloModel?>
+  let launches: Optional<LaunchConnectionApolloModel>
+  let me: Optional<UserApolloModel?>
+  let totalTripsBooked: Optional<Int?>
+
+  private enum CodingKeys: String, CodingKey {
+    case launch
+    case launches
+    case me
+    case totalTripsBooked
+  }
+}
+
+struct RocketApolloModel: Decodable {
   private let internalId: Optional<String>
   private let internalName: Optional<String?>
   private let internalType: Optional<String?>
@@ -230,8 +198,6 @@ struct RocketApolloModel: Codable {
     internalType = try container.decodeOptionalIfPresent(String?.self, forKey: .internalType)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
     case internalName = "name"
@@ -239,64 +205,15 @@ struct RocketApolloModel: Codable {
   }
 }
 
-struct UserApolloModel: Codable {
-  private let internalEmail: Optional<String>
-  private let internalId: Optional<String>
-  private let internalProfileImage: Optional<String?>
-  private let internalTrips: Optional<[LaunchApolloModel?]>
-
-  func email() throws -> String {
-    try value(for: \Self.internalEmail, codingKey: CodingKeys.internalEmail)
-  }
-
-  func id() throws -> String {
-    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
-  }
-
-  func profileImage() throws -> String? {
-    try value(for: \Self.internalProfileImage, codingKey: CodingKeys.internalProfileImage)
-  }
-
-  func trips() throws -> [LaunchApolloModel?] {
-    try value(for: \Self.internalTrips, codingKey: CodingKeys.internalTrips)
-  }
-
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    internalEmail = try container.decodeOptionalIfPresent(String.self, forKey: .internalEmail)
-    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
-    internalProfileImage = try container.decodeOptionalIfPresent(String?.self, forKey: .internalProfileImage)
-    internalTrips = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalTrips)
-  }
-
-  // MARK: - CodingKeys
+struct SubscriptionApolloModel: Decodable {
+  let tripsBooked: Optional<Int?>
 
   private enum CodingKeys: String, CodingKey {
-    case internalEmail = "email"
-    case internalId = "id"
-    case internalProfileImage = "profileImage"
-    case internalTrips = "trips"
+    case tripsBooked
   }
 }
 
-struct MutationApolloModel: Codable {
-  let bookTrips: Optional<TripUpdateResponseApolloModel>
-  let cancelTrip: Optional<TripUpdateResponseApolloModel>
-  let login: Optional<String?>
-  let uploadProfileImage: Optional<UserApolloModel?>
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case bookTrips
-    case cancelTrip
-    case login
-    case uploadProfileImage
-  }
-}
-
-struct TripUpdateResponseApolloModel: Codable {
+struct TripUpdateResponseApolloModel: Decodable {
   private let internalLaunches: Optional<[LaunchApolloModel?]?>
   private let internalMessage: Optional<String?>
   private let internalSuccess: Optional<Bool>
@@ -321,8 +238,6 @@ struct TripUpdateResponseApolloModel: Codable {
     internalSuccess = try container.decodeOptionalIfPresent(Bool.self, forKey: .internalSuccess)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalLaunches = "launches"
     case internalMessage = "message"
@@ -330,33 +245,106 @@ struct TripUpdateResponseApolloModel: Codable {
   }
 }
 
-struct SubscriptionApolloModel: Codable {
-  let tripsBooked: Optional<Int?>
+struct UserApolloModel: Decodable {
+  private let internalEmail: Optional<String>
+  private let internalId: Optional<String>
+  private let internalProfileImage: Optional<String?>
+  private let internalToken: Optional<String?>
+  private let internalTrips: Optional<[LaunchApolloModel?]>
 
-  // MARK: - CodingKeys
+  func email() throws -> String {
+    try value(for: \Self.internalEmail, codingKey: CodingKeys.internalEmail)
+  }
+
+  func id() throws -> String {
+    try value(for: \Self.internalId, codingKey: CodingKeys.internalId)
+  }
+
+  func profileImage() throws -> String? {
+    try value(for: \Self.internalProfileImage, codingKey: CodingKeys.internalProfileImage)
+  }
+
+  func token() throws -> String? {
+    try value(for: \Self.internalToken, codingKey: CodingKeys.internalToken)
+  }
+
+  func trips() throws -> [LaunchApolloModel?] {
+    try value(for: \Self.internalTrips, codingKey: CodingKeys.internalTrips)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    internalEmail = try container.decodeOptionalIfPresent(String.self, forKey: .internalEmail)
+    internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
+    internalProfileImage = try container.decodeOptionalIfPresent(String?.self, forKey: .internalProfileImage)
+    internalToken = try container.decodeOptionalIfPresent(String?.self, forKey: .internalToken)
+    internalTrips = try container.decodeOptionalIfPresent([LaunchApolloModel?].self, forKey: .internalTrips)
+  }
 
   private enum CodingKeys: String, CodingKey {
-    case tripsBooked
+    case internalEmail = "email"
+    case internalId = "id"
+    case internalProfileImage = "profileImage"
+    case internalToken = "token"
+    case internalTrips = "trips"
   }
 }
 
 
 
 
-// MARK: - GraphQLRequesting
+// MARK: - GraphQLRequestParameter
+
+/// TotalTripsBookedApolloQuery
+struct TotalTripsBookedApolloQuery: GraphQLRequestParameter {
+  let requestType: GraphQLRequestType = .query
+  let requestName: String = "totalTripsBooked"
+  let rootSelectionKeys: Set<String> = []
+
+  func encode(to _: Encoder) throws {}
+
+  init(
+  ) {}
+
+  let requestQuery: String = {
+    """
+    totalTripsBooked
+    """
+  }()
+
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
+
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  }
+}
 
 /// LaunchApolloQuery
-struct LaunchApolloQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct LaunchApolloQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "launch"
   let rootSelectionKeys: Set<String> = ["LaunchLaunchFragment"]
 
-  // MARK: - Arguments
-
   let id: String
-
   let launchMissionPatchSize: PatchSizeApolloEnumModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -373,8 +361,6 @@ struct LaunchApolloQuery: GraphQLRequesting {
     self.launchMissionPatchSize = launchMissionPatchSize
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     launch(
@@ -385,12 +371,27 @@ struct LaunchApolloQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $launchId: ID!,
-    $launchMissionPatchSize: PatchSize
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$launchId", "$launchId: ID!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$launchMissionPatchSize", "$launchMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -398,20 +399,15 @@ struct LaunchApolloQuery: GraphQLRequesting {
 }
 
 /// LaunchesApolloQuery
-struct LaunchesApolloQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct LaunchesApolloQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "launches"
   let rootSelectionKeys: Set<String> = ["LaunchesLaunchConnectionFragment"]
-
-  // MARK: - Arguments
 
   /// The number of results to show. Must be >= 1. Default = 20
   let pageSize: Int?
   /// If you add a cursor here, it will only return results _after_ this cursor
   let after: String?
-
   let launchesMissionPatchSize: PatchSizeApolloEnumModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -433,8 +429,6 @@ struct LaunchesApolloQuery: GraphQLRequesting {
     self.pageSize = pageSize
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     launches(
@@ -446,13 +440,28 @@ struct LaunchesApolloQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $launchesAfter: String,
-    $launchesMissionPatchSize: PatchSize,
-    $launchesPageSize: Int
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$launchesPageSize", "$launchesPageSize: Int"),
+    ("$launchesAfter", "$launchesAfter: String")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$launchesMissionPatchSize", "$launchesMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -460,14 +469,10 @@ struct LaunchesApolloQuery: GraphQLRequesting {
 }
 
 /// MeApolloQuery
-struct MeApolloQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct MeApolloQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "me"
   let rootSelectionKeys: Set<String> = ["MeUserFragment"]
-
-  // MARK: - Arguments
 
   let meMissionPatchSize: PatchSizeApolloEnumModel?
 
@@ -479,8 +484,6 @@ struct MeApolloQuery: GraphQLRequesting {
     self.meMissionPatchSize = meMissionPatchSize
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     me {
@@ -489,49 +492,33 @@ struct MeApolloQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $meMissionPatchSize: PatchSize
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$meMissionPatchSize", "$meMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-/// TotalTripsBookedApolloQuery
-struct TotalTripsBookedApolloQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
-  let requestType: GraphQLRequestType = .query
-  let requestName: String = "totalTripsBooked"
-  let rootSelectionKeys: Set<String> = []
-
-  func encode(to _: Encoder) throws {}
-
-  init(
-  ) {}
-
-  // MARK: - Operation Definition
-
-  let requestQuery: String = {
-    """
-    totalTripsBooked
-    """
-  }()
-
-  let requestArguments: String = {
-    """
-    """
-  }()
-
-  func requestFragments(with selections: GraphQLSelections) -> String {
-    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
-  }
-}
-
-struct ApolloQuery: GraphQLRequesting {
+struct ApolloQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -547,8 +534,8 @@ struct ApolloQuery: GraphQLRequesting {
   let me: MeApolloQuery?
   let totalTripsBooked: TotalTripsBookedApolloQuery?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       launch,
       launches,
       me,
@@ -582,10 +569,30 @@ struct ApolloQuery: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -596,17 +603,12 @@ struct ApolloQuery: GraphQLRequesting {
 }
 
 /// BookTripsApolloMutation
-struct BookTripsApolloMutation: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct BookTripsApolloMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = "bookTrips"
   let rootSelectionKeys: Set<String> = ["BookTripsTripUpdateResponseFragment"]
 
-  // MARK: - Arguments
-
   let launchIds: [String?]
-
   let bookTripsMissionPatchSize: PatchSizeApolloEnumModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -623,8 +625,6 @@ struct BookTripsApolloMutation: GraphQLRequesting {
     self.launchIds = launchIds
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     bookTrips(
@@ -635,12 +635,27 @@ struct BookTripsApolloMutation: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $bookTripsLaunchIds: [ID]!,
-    $bookTripsMissionPatchSize: PatchSize
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$bookTripsLaunchIds", "$bookTripsLaunchIds: [ID]!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$bookTripsMissionPatchSize", "$bookTripsMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -648,17 +663,12 @@ struct BookTripsApolloMutation: GraphQLRequesting {
 }
 
 /// CancelTripApolloMutation
-struct CancelTripApolloMutation: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct CancelTripApolloMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = "cancelTrip"
   let rootSelectionKeys: Set<String> = ["CancelTripTripUpdateResponseFragment"]
 
-  // MARK: - Arguments
-
   let launchId: String
-
   let cancelTripMissionPatchSize: PatchSizeApolloEnumModel?
 
   private enum CodingKeys: String, CodingKey {
@@ -675,8 +685,6 @@ struct CancelTripApolloMutation: GraphQLRequesting {
     self.launchId = launchId
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     cancelTrip(
@@ -687,12 +695,27 @@ struct CancelTripApolloMutation: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $cancelTripLaunchId: ID!,
-    $cancelTripMissionPatchSize: PatchSize
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$cancelTripLaunchId", "$cancelTripLaunchId: ID!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$cancelTripMissionPatchSize", "$cancelTripMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -700,101 +723,66 @@ struct CancelTripApolloMutation: GraphQLRequesting {
 }
 
 /// LoginApolloMutation
-struct LoginApolloMutation: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct LoginApolloMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = "login"
-  let rootSelectionKeys: Set<String> = []
-
-  // MARK: - Arguments
+  let rootSelectionKeys: Set<String> = ["LoginUserFragment"]
 
   let email: String?
+  let loginMissionPatchSize: PatchSizeApolloEnumModel?
 
   private enum CodingKeys: String, CodingKey {
     case email = "loginEmail"
+
+    case loginMissionPatchSize
   }
 
   init(
-    email: String?
+    email: String?,
+    loginMissionPatchSize: PatchSizeApolloEnumModel?
   ) {
     self.email = email
+    self.loginMissionPatchSize = loginMissionPatchSize
   }
-
-  // MARK: - Operation Definition
 
   let requestQuery: String = {
     """
     login(
       email: $loginEmail
-    )
-    """
-  }()
-
-  let requestArguments: String = {
-    """
-    $loginEmail: String
-    """
-  }()
-
-  func requestFragments(with selections: GraphQLSelections) -> String {
-    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
-  }
-}
-
-/// UploadProfileImageApolloMutation
-struct UploadProfileImageApolloMutation: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
-  let requestType: GraphQLRequestType = .mutation
-  let requestName: String = "uploadProfileImage"
-  let rootSelectionKeys: Set<String> = ["UploadProfileImageUserFragment"]
-
-  // MARK: - Arguments
-
-  let uploadProfileImageMissionPatchSize: PatchSizeApolloEnumModel?
-
-  let file: String
-
-  private enum CodingKeys: String, CodingKey {
-    case uploadProfileImageMissionPatchSize
-
-    case file = "uploadProfileImageFile"
-  }
-
-  init(
-    file: String,
-    uploadProfileImageMissionPatchSize: PatchSizeApolloEnumModel?
-  ) {
-    self.file = file
-    self.uploadProfileImageMissionPatchSize = uploadProfileImageMissionPatchSize
-  }
-
-  // MARK: - Operation Definition
-
-  let requestQuery: String = {
-    """
-    uploadProfileImage(
-      file: $uploadProfileImageFile
     ) {
-       ...UploadProfileImageUserFragment
+       ...LoginUserFragment
     }
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $uploadProfileImageFile: Upload!,
-    $uploadProfileImageMissionPatchSize: PatchSize
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$loginEmail", "$loginEmail: String")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+    ("$loginMissionPatchSize", "$loginMissionPatchSize: PatchSize")
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-struct ApolloMutation: GraphQLRequesting {
+struct ApolloMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -808,14 +796,12 @@ struct ApolloMutation: GraphQLRequesting {
   let bookTrips: BookTripsApolloMutation?
   let cancelTrip: CancelTripApolloMutation?
   let login: LoginApolloMutation?
-  let uploadProfileImage: UploadProfileImageApolloMutation?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       bookTrips,
       cancelTrip,
-      login,
-      uploadProfileImage
+      login
     ]
 
     return requests.compactMap { $0 }
@@ -824,13 +810,11 @@ struct ApolloMutation: GraphQLRequesting {
   init(
     bookTrips: BookTripsApolloMutation? = nil,
     cancelTrip: CancelTripApolloMutation? = nil,
-    login: LoginApolloMutation? = nil,
-    uploadProfileImage: UploadProfileImageApolloMutation? = nil
+    login: LoginApolloMutation? = nil
   ) {
     self.bookTrips = bookTrips
     self.cancelTrip = cancelTrip
     self.login = login
-    self.uploadProfileImage = uploadProfileImage
   }
 
   func encode(to encoder: Encoder) throws {
@@ -845,10 +829,30 @@ struct ApolloMutation: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -859,9 +863,7 @@ struct ApolloMutation: GraphQLRequesting {
 }
 
 /// TripsBookedApolloSubscription
-struct TripsBookedApolloSubscription: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct TripsBookedApolloSubscription: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .subscription
   let requestName: String = "tripsBooked"
   let rootSelectionKeys: Set<String> = []
@@ -871,25 +873,38 @@ struct TripsBookedApolloSubscription: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     tripsBooked
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-struct ApolloSubscription: GraphQLRequesting {
+struct ApolloSubscription: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .subscription
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -902,8 +917,8 @@ struct ApolloSubscription: GraphQLRequesting {
 
   let tripsBooked: TripsBookedApolloSubscription?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       tripsBooked
     ]
 
@@ -928,10 +943,30 @@ struct ApolloSubscription: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -941,53 +976,39 @@ struct ApolloSubscription: GraphQLRequesting {
   }
 }
 
-struct LaunchQueryResponse: Codable {
+struct LaunchQueryResponse: Decodable {
   let launch: LaunchApolloModel?
 }
 
-struct LaunchesQueryResponse: Codable {
+struct LaunchesQueryResponse: Decodable {
   let launches: LaunchConnectionApolloModel
 }
 
-struct MeQueryResponse: Codable {
+struct MeQueryResponse: Decodable {
   let me: UserApolloModel?
 }
 
-struct TotalTripsBookedQueryResponse: Codable {
+struct TotalTripsBookedQueryResponse: Decodable {
   let totalTripsBooked: Int?
 }
 
-struct BookTripsMutationResponse: Codable {
+struct BookTripsMutationResponse: Decodable {
   let bookTrips: TripUpdateResponseApolloModel
 }
 
-struct CancelTripMutationResponse: Codable {
+struct CancelTripMutationResponse: Decodable {
   let cancelTrip: TripUpdateResponseApolloModel
 }
 
-struct LoginMutationResponse: Codable {
-  let login: String?
+struct LoginMutationResponse: Decodable {
+  let login: UserApolloModel?
 }
 
-struct UploadProfileImageMutationResponse: Codable {
-  let uploadProfileImage: UserApolloModel?
-}
-
-struct TripsBookedSubscriptionResponse: Codable {
+struct TripsBookedSubscriptionResponse: Decodable {
   let tripsBooked: Int?
 }
 
 // MARK: - GraphQLSelection
-
-enum LaunchConnectionSelection: String, GraphQLSelection {
-  case cursor
-  case hasMore
-  case launches = """
-  launches {
-    ...%@LaunchFragment
-  }
-  """
-}
 
 enum LaunchSelection: String, GraphQLSelection {
   case id
@@ -1005,6 +1026,16 @@ enum LaunchSelection: String, GraphQLSelection {
   case site
 }
 
+enum LaunchConnectionSelection: String, GraphQLSelection {
+  case cursor
+  case hasMore
+  case launches = """
+  launches {
+    ...%@LaunchFragment
+  }
+  """
+}
+
 enum MissionSelection: String, GraphQLSelection {
   case missionPatch = """
   missionPatch(
@@ -1020,17 +1051,6 @@ enum RocketSelection: String, GraphQLSelection {
   case type
 }
 
-enum UserSelection: String, GraphQLSelection {
-  case email
-  case id
-  case profileImage
-  case trips = """
-  trips {
-    ...%@LaunchFragment
-  }
-  """
-}
-
 enum TripUpdateResponseSelection: String, GraphQLSelection {
   case launches = """
   launches {
@@ -1041,94 +1061,101 @@ enum TripUpdateResponseSelection: String, GraphQLSelection {
   case success
 }
 
-struct ApolloQuerySelections: GraphQLSelections {
-  let launch: Set<LaunchSelection>
-  let launchConnection: Set<LaunchConnectionSelection>
-  let mission: Set<MissionSelection>
-  let rocket: Set<RocketSelection>
-  let tripUpdateResponse: Set<TripUpdateResponseSelection>
-  let user: Set<UserSelection>
-
-  init(
-    launch: Set<LaunchSelection> = .allFields,
-    launchConnection: Set<LaunchConnectionSelection> = .allFields,
-    mission: Set<MissionSelection> = .allFields,
-    rocket: Set<RocketSelection> = .allFields,
-    tripUpdateResponse: Set<TripUpdateResponseSelection> = .allFields,
-    user: Set<UserSelection> = .allFields
-  ) {
-    self.launch = launch
-    self.launchConnection = launchConnection
-    self.mission = mission
-    self.rocket = rocket
-    self.tripUpdateResponse = tripUpdateResponse
-    self.user = user
+enum UserSelection: String, GraphQLSelection {
+  case email
+  case id
+  case profileImage
+  case token
+  case trips = """
+  trips {
+    ...%@LaunchFragment
   }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let launchConnectionDeclaration = """
-    fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let launchDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let missionDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let rocketDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let userDeclaration = """
-    fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let tripUpdateResponseDeclaration = """
-    fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchConnectionFragment": launchConnectionDeclaration,
-      "\(capitalizedRequestName)LaunchFragment": launchDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketDeclaration,
-      "\(capitalizedRequestName)UserFragment": userDeclaration,
-      "\(capitalizedRequestName)TripUpdateResponseFragment": tripUpdateResponseDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
+  """
 }
 
 // MARK: - Selections
+
+struct ApolloQuerySelections: GraphQLSelections {
+  let launchSelections: Set<LaunchSelection>
+  let launchConnectionSelections: Set<LaunchConnectionSelection>
+  let missionSelections: Set<MissionSelection>
+  let rocketSelections: Set<RocketSelection>
+  let tripUpdateResponseSelections: Set<TripUpdateResponseSelection>
+  let userSelections: Set<UserSelection>
+
+  init(
+    launchSelections: Set<LaunchSelection> = .allFields,
+    launchConnectionSelections: Set<LaunchConnectionSelection> = .allFields,
+    missionSelections: Set<MissionSelection> = .allFields,
+    rocketSelections: Set<RocketSelection> = .allFields,
+    tripUpdateResponseSelections: Set<TripUpdateResponseSelection> = .allFields,
+    userSelections: Set<UserSelection> = .allFields
+  ) {
+    self.launchSelections = launchSelections
+    self.launchConnectionSelections = launchConnectionSelections
+    self.missionSelections = missionSelections
+    self.rocketSelections = rocketSelections
+    self.tripUpdateResponseSelections = tripUpdateResponseSelections
+    self.userSelections = userSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        launchConnectionSelections.requestFragment(requestName: requestName, typeName: "LaunchConnection"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        tripUpdateResponseSelections.requestFragment(requestName: requestName, typeName: "TripUpdateResponse"),
+        userSelections.requestFragment(requestName: requestName, typeName: "User")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
+
+struct LaunchApolloQuerySelections: GraphQLSelections {
+  let launchSelections: Set<LaunchSelection>
+  let missionSelections: Set<MissionSelection>
+  let rocketSelections: Set<RocketSelection>
+
+  init(
+    launchSelections: Set<LaunchSelection> = .allFields,
+    missionSelections: Set<MissionSelection> = .allFields,
+    rocketSelections: Set<RocketSelection> = .allFields
+  ) {
+    self.launchSelections = launchSelections
+    self.missionSelections = missionSelections
+    self.rocketSelections = rocketSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
 
 struct LaunchesApolloQuerySelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
@@ -1149,114 +1176,25 @@ struct LaunchesApolloQuerySelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        launchConnectionSelections.requestFragment(requestName: requestName, typeName: "LaunchConnection"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let launchConnectionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnectionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)LaunchConnectionFragment": launchConnectionSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
-
-struct LaunchApolloQuerySelections: GraphQLSelections {
-  let launchSelections: Set<LaunchSelection>
-  let missionSelections: Set<MissionSelection>
-  let rocketSelections: Set<RocketSelection>
-
-  init(
-    launchSelections: Set<LaunchSelection> = .allFields,
-    missionSelections: Set<MissionSelection> = .allFields,
-    rocketSelections: Set<RocketSelection> = .allFields
-  ) {
-    self.launchSelections = launchSelections
-    self.missionSelections = missionSelections
-    self.rocketSelections = rocketSelections
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
-// MARK: - Selections
 
 struct MeApolloQuerySelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
@@ -1277,55 +1215,25 @@ struct MeApolloQuerySelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        userSelections.requestFragment(requestName: requestName, typeName: "User")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let userSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)UserFragment on User {
-    	\(userSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration,
-      "\(capitalizedRequestName)UserFragment": userSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct TotalTripsBookedApolloQuerySelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
@@ -1334,93 +1242,51 @@ struct TotalTripsBookedApolloQuerySelections: GraphQLSelections {
 }
 
 struct ApolloMutationSelections: GraphQLSelections {
-  let launch: Set<LaunchSelection>
-  let launchConnection: Set<LaunchConnectionSelection>
-  let mission: Set<MissionSelection>
-  let rocket: Set<RocketSelection>
-  let tripUpdateResponse: Set<TripUpdateResponseSelection>
-  let user: Set<UserSelection>
+  let launchSelections: Set<LaunchSelection>
+  let launchConnectionSelections: Set<LaunchConnectionSelection>
+  let missionSelections: Set<MissionSelection>
+  let rocketSelections: Set<RocketSelection>
+  let tripUpdateResponseSelections: Set<TripUpdateResponseSelection>
+  let userSelections: Set<UserSelection>
 
   init(
-    launch: Set<LaunchSelection> = .allFields,
-    launchConnection: Set<LaunchConnectionSelection> = .allFields,
-    mission: Set<MissionSelection> = .allFields,
-    rocket: Set<RocketSelection> = .allFields,
-    tripUpdateResponse: Set<TripUpdateResponseSelection> = .allFields,
-    user: Set<UserSelection> = .allFields
+    launchSelections: Set<LaunchSelection> = .allFields,
+    launchConnectionSelections: Set<LaunchConnectionSelection> = .allFields,
+    missionSelections: Set<MissionSelection> = .allFields,
+    rocketSelections: Set<RocketSelection> = .allFields,
+    tripUpdateResponseSelections: Set<TripUpdateResponseSelection> = .allFields,
+    userSelections: Set<UserSelection> = .allFields
   ) {
-    self.launch = launch
-    self.launchConnection = launchConnection
-    self.mission = mission
-    self.rocket = rocket
-    self.tripUpdateResponse = tripUpdateResponse
-    self.user = user
+    self.launchSelections = launchSelections
+    self.launchConnectionSelections = launchConnectionSelections
+    self.missionSelections = missionSelections
+    self.rocketSelections = rocketSelections
+    self.tripUpdateResponseSelections = tripUpdateResponseSelections
+    self.userSelections = userSelections
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchConnectionDeclaration = """
-    fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        launchConnectionSelections.requestFragment(requestName: requestName, typeName: "LaunchConnection"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        tripUpdateResponseSelections.requestFragment(requestName: requestName, typeName: "TripUpdateResponse"),
+        userSelections.requestFragment(requestName: requestName, typeName: "User")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let launchDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let missionDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let rocketDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let userDeclaration = """
-    fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let tripUpdateResponseDeclaration = """
-    fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchConnectionFragment": launchConnectionDeclaration,
-      "\(capitalizedRequestName)LaunchFragment": launchDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketDeclaration,
-      "\(capitalizedRequestName)UserFragment": userDeclaration,
-      "\(capitalizedRequestName)TripUpdateResponseFragment": tripUpdateResponseDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct BookTripsApolloMutationSelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
@@ -1441,55 +1307,25 @@ struct BookTripsApolloMutationSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        tripUpdateResponseSelections.requestFragment(requestName: requestName, typeName: "TripUpdateResponse")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let tripUpdateResponseSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponseSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration,
-      "\(capitalizedRequestName)TripUpdateResponseFragment": tripUpdateResponseSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct CancelTripApolloMutationSelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
@@ -1510,65 +1346,27 @@ struct CancelTripApolloMutationSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        tripUpdateResponseSelections.requestFragment(requestName: requestName, typeName: "TripUpdateResponse")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let tripUpdateResponseSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponseSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration,
-      "\(capitalizedRequestName)TripUpdateResponseFragment": tripUpdateResponseSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct LoginApolloMutationSelections: GraphQLSelections {
-  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
-    ""
-  }
-}
-
-// MARK: - Selections
-
-struct UploadProfileImageApolloMutationSelections: GraphQLSelections {
   let launchSelections: Set<LaunchSelection>
   let missionSelections: Set<MissionSelection>
   let rocketSelections: Set<RocketSelection>
@@ -1587,142 +1385,72 @@ struct UploadProfileImageApolloMutationSelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launchSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        userSelections.requestFragment(requestName: requestName, typeName: "User")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let missionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(missionSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let rocketSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocketSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let userSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)UserFragment on User {
-    	\(userSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchFragment": launchSelectionsDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionSelectionsDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketSelectionsDeclaration,
-      "\(capitalizedRequestName)UserFragment": userSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
 
 struct ApolloSubscriptionSelections: GraphQLSelections {
-  let launch: Set<LaunchSelection>
-  let launchConnection: Set<LaunchConnectionSelection>
-  let mission: Set<MissionSelection>
-  let rocket: Set<RocketSelection>
-  let tripUpdateResponse: Set<TripUpdateResponseSelection>
-  let user: Set<UserSelection>
+  let launchSelections: Set<LaunchSelection>
+  let launchConnectionSelections: Set<LaunchConnectionSelection>
+  let missionSelections: Set<MissionSelection>
+  let rocketSelections: Set<RocketSelection>
+  let tripUpdateResponseSelections: Set<TripUpdateResponseSelection>
+  let userSelections: Set<UserSelection>
 
   init(
-    launch: Set<LaunchSelection> = .allFields,
-    launchConnection: Set<LaunchConnectionSelection> = .allFields,
-    mission: Set<MissionSelection> = .allFields,
-    rocket: Set<RocketSelection> = .allFields,
-    tripUpdateResponse: Set<TripUpdateResponseSelection> = .allFields,
-    user: Set<UserSelection> = .allFields
+    launchSelections: Set<LaunchSelection> = .allFields,
+    launchConnectionSelections: Set<LaunchConnectionSelection> = .allFields,
+    missionSelections: Set<MissionSelection> = .allFields,
+    rocketSelections: Set<RocketSelection> = .allFields,
+    tripUpdateResponseSelections: Set<TripUpdateResponseSelection> = .allFields,
+    userSelections: Set<UserSelection> = .allFields
   ) {
-    self.launch = launch
-    self.launchConnection = launchConnection
-    self.mission = mission
-    self.rocket = rocket
-    self.tripUpdateResponse = tripUpdateResponse
-    self.user = user
+    self.launchSelections = launchSelections
+    self.launchConnectionSelections = launchConnectionSelections
+    self.missionSelections = missionSelections
+    self.rocketSelections = rocketSelections
+    self.tripUpdateResponseSelections = tripUpdateResponseSelections
+    self.userSelections = userSelections
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let launchConnectionDeclaration = """
-    fragment \(capitalizedRequestName)LaunchConnectionFragment on LaunchConnection {
-    	\(launchConnection.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        launchSelections.requestFragment(requestName: requestName, typeName: "Launch"),
+        launchConnectionSelections.requestFragment(requestName: requestName, typeName: "LaunchConnection"),
+        missionSelections.requestFragment(requestName: requestName, typeName: "Mission"),
+        rocketSelections.requestFragment(requestName: requestName, typeName: "Rocket"),
+        tripUpdateResponseSelections.requestFragment(requestName: requestName, typeName: "TripUpdateResponse"),
+        userSelections.requestFragment(requestName: requestName, typeName: "User")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let launchDeclaration = """
-    fragment \(capitalizedRequestName)LaunchFragment on Launch {
-    	\(launch.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let missionDeclaration = """
-    fragment \(capitalizedRequestName)MissionFragment on Mission {
-    	\(mission.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let rocketDeclaration = """
-    fragment \(capitalizedRequestName)RocketFragment on Rocket {
-    	\(rocket.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let userDeclaration = """
-    fragment \(capitalizedRequestName)UserFragment on User {
-    	\(user.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let tripUpdateResponseDeclaration = """
-    fragment \(capitalizedRequestName)TripUpdateResponseFragment on TripUpdateResponse {
-    	\(tripUpdateResponse.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)LaunchConnectionFragment": launchConnectionDeclaration,
-      "\(capitalizedRequestName)LaunchFragment": launchDeclaration,
-      "\(capitalizedRequestName)MissionFragment": missionDeclaration,
-      "\(capitalizedRequestName)RocketFragment": rocketDeclaration,
-      "\(capitalizedRequestName)UserFragment": userDeclaration,
-      "\(capitalizedRequestName)TripUpdateResponseFragment": tripUpdateResponseDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct TripsBookedApolloSubscriptionSelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {

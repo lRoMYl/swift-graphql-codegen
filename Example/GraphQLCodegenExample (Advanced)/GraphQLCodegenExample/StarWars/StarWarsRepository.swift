@@ -13,9 +13,9 @@ enum StarWarsRepositoryError: Error {
 }
 
 final class StarWarsRepository {
-  private let apiClient: StarWarsApiClientProtocol
+  private let apiClient: StarWarsApiClient
 
-  init(apiClient: StarWarsApiClientProtocol) {
+  init(apiClient: StarWarsApiClient) {
     self.apiClient = apiClient
   }
 
@@ -68,8 +68,8 @@ final class StarWarsRepository {
     )
 
     let selections = StarWarsQuerySelections(
-      droid: .allFields,
-      human: .allFields
+      droidSelections: .allFields,
+      humanSelections: .allFields
     )
 
     return apiClient.query(with: request, selections: selections)

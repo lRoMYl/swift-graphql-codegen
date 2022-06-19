@@ -8,7 +8,7 @@ STARWARS_SCHEMA = "GraphQL/starwars-schema.json"
 STARWARS_CONFIG = "GraphQL/starwars-config.json"
 STARWARS_OUTPUT_PREFIX = "GraphQLCodegenExample/StarWars/StarWars"
 
-APOLLO_URL = "https://apollo-fullstack-tutorial.herokuapp.com/"
+APOLLO_URL = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
 APOLLO_SCHEMA = "GraphQL/apollo-schema.json"
 APOLLO_CONFIG = "GraphQL/apollo-config.json"
 APOLLO_OUTPUT_PREFIX = "GraphQLCodegenExample/Apollo/Apollo"
@@ -31,7 +31,7 @@ codegen-groceries:
 	swift-graphql-codegen codegen $(GROCERIES_SCHEMA) --target "specification" --output "$(GROCERIES_OUTPUT_PREFIX)NetworkModels.generated.swift" --config-path $(GROCERIES_CONFIG)
 
 	# Generate groceries ApiClient file from local schema
-	swift-graphql-codegen codegen $(GROCERIES_SCHEMA) --target "api-client" --output "$(GROCERIES_OUTPUT_PREFIX)ApiClient.generated.swift" --config-path $(GROCERIES_CONFIG)
+	swift-graphql-codegen codegen $(GROCERIES_SCHEMA) --target "api-client" --output "$(GROCERIES_OUTPUT_PREFIX)ApiClient.generated.swift" --config-path $(GROCERIES_CONFIG) --api-client-prefix "Groceries" --api-client-strategy "rxSwift" --is-throwable-getter-enabled
 
 	# Generate groceries Mappers file from local scehma
 	# swift-graphql-codegen codegen $(GROCERIES_SCHEMA) --target "mapper" --output "$(GROCERIES_OUTPUT_PREFIX)Mappers.generated.swift" --config-path $(GROCERIES_CONFIG)
@@ -44,7 +44,7 @@ codegen-starwars:
 	swift-graphql-codegen codegen $(STARWARS_SCHEMA) --target "specification" --output "$(STARWARS_OUTPUT_PREFIX)GraphQLSpec.generated.swift" --config-path $(STARWARS_CONFIG)
 
 	# Generate StarWars ApiClient file from local schema
-	swift-graphql-codegen codegen $(STARWARS_SCHEMA) --target "api-client" --output "$(STARWARS_OUTPUT_PREFIX)GraphQLApiClient.generated.swift" --config-path $(STARWARS_CONFIG)
+	swift-graphql-codegen codegen $(STARWARS_SCHEMA) --target "api-client" --output "$(STARWARS_OUTPUT_PREFIX)GraphQLApiClient.generated.swift" --config-path $(STARWARS_CONFIG) --api-client-prefix "StarWars" --api-client-strategy "rxSwift" --is-throwable-getter-enabled
 
 	# Generate StarWars Mappers file from local scehma
 	# swift-graphql-codegen codegen $(STARWARS_SCHEMA) --target "mapper" --output "$(STARWARS_OUTPUT_PREFIX)Mappers.generated.swift" --config-path $(STARWARS_CONFIG)
@@ -57,7 +57,7 @@ codegen-apollo:
 	swift-graphql-codegen codegen $(APOLLO_SCHEMA) --target "specification" --output "$(APOLLO_OUTPUT_PREFIX)GraphQLSpec.generated.swift" --config-path $(APOLLO_CONFIG)
 
 	# Generate Apollo ApiClient file from local schema
-	swift-graphql-codegen codegen $(APOLLO_SCHEMA) --target "api-client" --output "$(APOLLO_OUTPUT_PREFIX)GraphQLApiClient.generated.swift" --config-path $(APOLLO_CONFIG)
+	swift-graphql-codegen codegen $(APOLLO_SCHEMA) --target "api-client" --output "$(APOLLO_OUTPUT_PREFIX)GraphQLApiClient.generated.swift" --config-path $(APOLLO_CONFIG) --api-client-prefix "Apollo" --api-client-strategy "rxSwift" --is-throwable-getter-enabled
 
 	# Generate Apollo Mappers file from local scehma
 	# swift-graphql-codegen codegen $(APOLLO_SCHEMA) --target "mapper" --output "$(APOLLO_OUTPUT_PREFIX)Mappers.generated.swift" --config-path $(APOLLO_CONFIG)

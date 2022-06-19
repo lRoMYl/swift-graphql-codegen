@@ -6,16 +6,50 @@
 import Foundation
 // MARK: - StarWarsEnumModel
 
+/// Language
+enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
+  typealias RawValue = String
+
+  case en
+  case sl
+
+  /// Auto generated constant for unknown enum values
+  case _unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+    case "EN": self = .en
+    case "SL": self = .sl
+    default: self = ._unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+    case .en: return "EN"
+    case .sl: return "SL"
+    case let ._unknown(value): return value
+    }
+  }
+
+  static func == (lhs: LanguageStarWarsEnumModel, rhs: LanguageStarWarsEnumModel) -> Bool {
+    switch (lhs, rhs) {
+    case (.en, .en): return true
+    case (.sl, .sl): return true
+    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
+    default: return false
+    }
+  }
+}
+
 /// One of the films in the Star Wars Trilogy
 enum EpisodeStarWarsEnumModel: RawRepresentable, Codable {
   typealias RawValue = String
 
   /// Released in 1977.
   case newhope
-
   /// Released in 1980.
   case empire
-
   /// Released in 1983
   case jedi
 
@@ -51,56 +85,9 @@ enum EpisodeStarWarsEnumModel: RawRepresentable, Codable {
   }
 }
 
-/// Language
-enum LanguageStarWarsEnumModel: RawRepresentable, Codable {
-  typealias RawValue = String
-
-  case en
-
-  case sl
-
-  /// Auto generated constant for unknown enum values
-  case _unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-    case "EN": self = .en
-    case "SL": self = .sl
-    default: self = ._unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-    case .en: return "EN"
-    case .sl: return "SL"
-    case let ._unknown(value): return value
-    }
-  }
-
-  static func == (lhs: LanguageStarWarsEnumModel, rhs: LanguageStarWarsEnumModel) -> Bool {
-    switch (lhs, rhs) {
-    case (.en, .en): return true
-    case (.sl, .sl): return true
-    case let (._unknown(lhsValue), ._unknown(rhsValue)): return lhsValue == rhsValue
-    default: return false
-    }
-  }
-}
-
 // MARK: - StarWarsModel
 
-struct MutationStarWarsModel: Codable {
-  let mutate: Optional<Bool>
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case mutate
-  }
-}
-
-struct DroidStarWarsModel: Codable {
+struct DroidStarWarsModel: Decodable {
   private let internalId: Optional<String>
   private let internalName: Optional<String>
 
@@ -119,15 +106,13 @@ struct DroidStarWarsModel: Codable {
     internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
     case internalName = "name"
   }
 }
 
-struct HumanStarWarsModel: Codable {
+struct HumanStarWarsModel: Decodable {
   private let internalId: Optional<String>
 
   func id() throws -> String {
@@ -140,14 +125,12 @@ struct HumanStarWarsModel: Codable {
     internalId = try container.decodeOptionalIfPresent(String.self, forKey: .internalId)
   }
 
-  // MARK: - CodingKeys
-
   private enum CodingKeys: String, CodingKey {
     case internalId = "id"
   }
 }
 
-struct QueryStarWarsModel: Codable {
+struct QueryStarWarsModel: Decodable {
   let character: Optional<CharacterUnionStarWarsUnionModel?>
   let characters: Optional<[CharacterStarWarsInterfaceModel]>
   let droid: Optional<DroidStarWarsModel?>
@@ -158,8 +141,6 @@ struct QueryStarWarsModel: Codable {
   let luke: Optional<HumanStarWarsModel?>
   let time: Optional<DateTimeInterval>
   let whoami: Optional<String>
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case character
@@ -175,10 +156,16 @@ struct QueryStarWarsModel: Codable {
   }
 }
 
-struct SubscriptionStarWarsModel: Codable {
-  let number: Optional<Int>
+struct MutationStarWarsModel: Decodable {
+  let mutate: Optional<Bool>
 
-  // MARK: - CodingKeys
+  private enum CodingKeys: String, CodingKey {
+    case mutate
+  }
+}
+
+struct SubscriptionStarWarsModel: Decodable {
+  let number: Optional<Int>
 
   private enum CodingKeys: String, CodingKey {
     case number
@@ -187,26 +174,21 @@ struct SubscriptionStarWarsModel: Codable {
 
 // MARK: - Input Objects
 
+struct GreetingOptionsStarWarsInputModel: Codable {
+  let prefix: String?
+
+  private enum CodingKeys: String, CodingKey {
+    case prefix
+  }
+}
+
 struct GreetingStarWarsInputModel: Codable {
   let language: LanguageStarWarsEnumModel?
-
   let name: String
-
-  // MARK: - CodingKeys
 
   private enum CodingKeys: String, CodingKey {
     case language
     case name
-  }
-}
-
-struct GreetingOptionsStarWarsInputModel: Codable {
-  let prefix: String?
-
-  // MARK: - CodingKeys
-
-  private enum CodingKeys: String, CodingKey {
-    case prefix
   }
 }
 
@@ -282,17 +264,57 @@ enum CharacterUnionStarWarsUnionModel: Codable {
   }
 }
 
-// MARK: - GraphQLRequesting
+// MARK: - GraphQLRequestParameter
+
+/// CharactersStarWarsQuery
+struct CharactersStarWarsQuery: GraphQLRequestParameter {
+  let requestType: GraphQLRequestType = .query
+  let requestName: String = "characters"
+  let rootSelectionKeys: Set<String> = ["CharactersCharacterFragment"]
+
+  func encode(to _: Encoder) throws {}
+
+  init(
+  ) {}
+
+  let requestQuery: String = {
+    """
+    characters {
+       ...CharactersCharacterFragment
+    }
+    """
+  }()
+
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
+
+  func requestFragments(with selections: GraphQLSelections) -> String {
+    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  }
+}
 
 /// CharacterStarWarsQuery
-struct CharacterStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct CharacterStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "character"
   let rootSelectionKeys: Set<String> = ["CharacterCharacterUnionFragment"]
-
-  // MARK: - Arguments
 
   /// id of the character
   let id: String
@@ -308,8 +330,6 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
     self.id = id
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     character(
@@ -320,44 +340,68 @@ struct CharacterStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $characterId: ID!
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$characterId", "$characterId: ID!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-/// CharactersStarWarsQuery
-struct CharactersStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+/// TimeStarWarsQuery
+struct TimeStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
-  let requestName: String = "characters"
-  let rootSelectionKeys: Set<String> = ["CharactersCharacterFragment"]
+  let requestName: String = "time"
+  let rootSelectionKeys: Set<String> = []
 
   func encode(to _: Encoder) throws {}
 
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
-    characters {
-       ...CharactersCharacterFragment
-    }
+    time
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -365,14 +409,10 @@ struct CharactersStarWarsQuery: GraphQLRequesting {
 }
 
 /// DroidStarWarsQuery
-struct DroidStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct DroidStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "droid"
   let rootSelectionKeys: Set<String> = ["DroidDroidFragment"]
-
-  // MARK: - Arguments
 
   /// id of the character
   let id: String
@@ -388,8 +428,6 @@ struct DroidStarWarsQuery: GraphQLRequesting {
     self.id = id
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     droid(
@@ -400,11 +438,26 @@ struct DroidStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $droidId: ID!
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$droidId", "$droidId: ID!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -412,9 +465,7 @@ struct DroidStarWarsQuery: GraphQLRequesting {
 }
 
 /// DroidsStarWarsQuery
-struct DroidsStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct DroidsStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "droids"
   let rootSelectionKeys: Set<String> = ["DroidsDroidFragment"]
@@ -424,8 +475,6 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     droids {
@@ -434,53 +483,25 @@ struct DroidsStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
 
-  func requestFragments(with selections: GraphQLSelections) -> String {
-    selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
-}
-
-/// GreetingStarWarsQuery
-struct GreetingStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
-  let requestType: GraphQLRequestType = .query
-  let requestName: String = "greeting"
-  let rootSelectionKeys: Set<String> = []
-
-  // MARK: - Arguments
-
-  let input: GreetingStarWarsInputModel?
-
-  private enum CodingKeys: String, CodingKey {
-    case input = "greetingInput"
-  }
-
-  init(
-    input: GreetingStarWarsInputModel?
-  ) {
-    self.input = input
-  }
-
-  // MARK: - Operation Definition
-
-  let requestQuery: String = {
-    """
-    greeting(
-      input: $greetingInput
-    )
-    """
-  }()
-
-  let requestArguments: String = {
-    """
-    $greetingInput: Greeting
-    """
-  }()
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -488,14 +509,10 @@ struct GreetingStarWarsQuery: GraphQLRequesting {
 }
 
 /// HumanStarWarsQuery
-struct HumanStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct HumanStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "human"
   let rootSelectionKeys: Set<String> = ["HumanHumanFragment"]
-
-  // MARK: - Arguments
 
   /// id of the character
   let id: String
@@ -511,8 +528,6 @@ struct HumanStarWarsQuery: GraphQLRequesting {
     self.id = id
   }
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     human(
@@ -523,11 +538,26 @@ struct HumanStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    $humanId: ID!
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$humanId", "$humanId: ID!")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -535,9 +565,7 @@ struct HumanStarWarsQuery: GraphQLRequesting {
 }
 
 /// HumansStarWarsQuery
-struct HumansStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct HumansStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "humans"
   let rootSelectionKeys: Set<String> = ["HumansHumanFragment"]
@@ -547,8 +575,6 @@ struct HumansStarWarsQuery: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     humans {
@@ -557,10 +583,25 @@ struct HumansStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -568,9 +609,7 @@ struct HumansStarWarsQuery: GraphQLRequesting {
 }
 
 /// LukeStarWarsQuery
-struct LukeStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct LukeStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "luke"
   let rootSelectionKeys: Set<String> = ["LukeHumanFragment"]
@@ -580,8 +619,6 @@ struct LukeStarWarsQuery: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     luke {
@@ -590,41 +627,77 @@ struct LukeStarWarsQuery: GraphQLRequesting {
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-/// TimeStarWarsQuery
-struct TimeStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+/// GreetingStarWarsQuery
+struct GreetingStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
-  let requestName: String = "time"
+  let requestName: String = "greeting"
   let rootSelectionKeys: Set<String> = []
 
-  func encode(to _: Encoder) throws {}
+  let input: GreetingStarWarsInputModel?
+
+  private enum CodingKeys: String, CodingKey {
+    case input = "greetingInput"
+  }
 
   init(
-  ) {}
-
-  // MARK: - Operation Definition
+    input: GreetingStarWarsInputModel?
+  ) {
+    self.input = input
+  }
 
   let requestQuery: String = {
     """
-    time
+    greeting(
+      input: $greetingInput
+    )
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+    ("$greetingInput", "$greetingInput: Greeting")
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
@@ -632,9 +705,7 @@ struct TimeStarWarsQuery: GraphQLRequesting {
 }
 
 /// WhoamiStarWarsQuery
-struct WhoamiStarWarsQuery: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct WhoamiStarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = "whoami"
   let rootSelectionKeys: Set<String> = []
@@ -644,25 +715,38 @@ struct WhoamiStarWarsQuery: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     whoami
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-struct StarWarsQuery: GraphQLRequesting {
+struct StarWarsQuery: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .query
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -684,8 +768,8 @@ struct StarWarsQuery: GraphQLRequesting {
   let time: TimeStarWarsQuery?
   let whoami: WhoamiStarWarsQuery?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       character,
       characters,
       droid,
@@ -737,10 +821,30 @@ struct StarWarsQuery: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -751,9 +855,7 @@ struct StarWarsQuery: GraphQLRequesting {
 }
 
 /// MutateStarWarsMutation
-struct MutateStarWarsMutation: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct MutateStarWarsMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = "mutate"
   let rootSelectionKeys: Set<String> = []
@@ -763,25 +865,38 @@ struct MutateStarWarsMutation: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     mutate
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-struct StarWarsMutation: GraphQLRequesting {
+struct StarWarsMutation: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .mutation
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -794,8 +909,8 @@ struct StarWarsMutation: GraphQLRequesting {
 
   let mutate: MutateStarWarsMutation?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       mutate
     ]
 
@@ -820,10 +935,30 @@ struct StarWarsMutation: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -834,9 +969,7 @@ struct StarWarsMutation: GraphQLRequesting {
 }
 
 /// NumberStarWarsSubscription
-struct NumberStarWarsSubscription: GraphQLRequesting {
-  // MARK: - GraphQLRequestType
-
+struct NumberStarWarsSubscription: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .subscription
   let requestName: String = "number"
   let rootSelectionKeys: Set<String> = []
@@ -846,25 +979,38 @@ struct NumberStarWarsSubscription: GraphQLRequesting {
   init(
   ) {}
 
-  // MARK: - Operation Definition
-
   let requestQuery: String = {
     """
     number
     """
   }()
 
-  let requestArguments: String = {
-    """
-    """
-  }()
+  let requestArguments: [(key: String, value: String)] = [
+  ]
+
+  let subRequestArguments: [(key: String, value: String)] = [
+  ]
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
+  }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
     selections.requestFragments(for: requestName, rootSelectionKeys: rootSelectionKeys)
   }
 }
 
-struct StarWarsSubscription: GraphQLRequesting {
+struct StarWarsSubscription: GraphQLRequestParameter {
   let requestType: GraphQLRequestType = .subscription
   let requestName: String = ""
   var rootSelectionKeys: Set<String> {
@@ -877,8 +1023,8 @@ struct StarWarsSubscription: GraphQLRequesting {
 
   let number: NumberStarWarsSubscription?
 
-  private var requests: [GraphQLRequesting] {
-    let requests: [GraphQLRequesting?] = [
+  private var requests: [GraphQLRequestParameter] {
+    let requests: [GraphQLRequestParameter?] = [
       number
     ]
 
@@ -903,10 +1049,30 @@ struct StarWarsSubscription: GraphQLRequesting {
       .joined(separator: "\n")
   }
 
-  var requestArguments: String {
-    requests
-      .map { $0.requestArguments }
-      .joined(separator: "\n")
+  var requestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.requestArguments)
+    }
+  }
+
+  var subRequestArguments: [(key: String, value: String)] {
+    requests.reduce(into: [(key: String, value: String)]()) { result, element in
+      result.append(contentsOf: element.subRequestArguments)
+    }
+  }
+
+  func requestArguments(with selections: GraphQLSelections) -> String {
+    let requestFragments = self.requestFragments(with: selections)
+    var selectedSubRequestArguments = [(key: String, value: String)]()
+    subRequestArguments.forEach {
+      if requestFragments.contains($0.key) {
+        selectedSubRequestArguments.append($0)
+      }
+    }
+    let arguments = requestArguments + selectedSubRequestArguments
+    return arguments.isEmpty
+      ? ""
+      : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
   }
 
   func requestFragments(with selections: GraphQLSelections) -> String {
@@ -916,51 +1082,51 @@ struct StarWarsSubscription: GraphQLRequesting {
   }
 }
 
-struct CharacterQueryResponse: Codable {
+struct CharacterQueryResponse: Decodable {
   let character: CharacterUnionStarWarsUnionModel?
 }
 
-struct CharactersQueryResponse: Codable {
+struct CharactersQueryResponse: Decodable {
   let characters: [CharacterStarWarsInterfaceModel]
 }
 
-struct DroidQueryResponse: Codable {
+struct DroidQueryResponse: Decodable {
   let droid: DroidStarWarsModel?
 }
 
-struct DroidsQueryResponse: Codable {
+struct DroidsQueryResponse: Decodable {
   let droids: [DroidStarWarsModel]
 }
 
-struct GreetingQueryResponse: Codable {
+struct GreetingQueryResponse: Decodable {
   let greeting: String
 }
 
-struct HumanQueryResponse: Codable {
+struct HumanQueryResponse: Decodable {
   let human: HumanStarWarsModel?
 }
 
-struct HumansQueryResponse: Codable {
+struct HumansQueryResponse: Decodable {
   let humans: [HumanStarWarsModel]
 }
 
-struct LukeQueryResponse: Codable {
+struct LukeQueryResponse: Decodable {
   let luke: HumanStarWarsModel?
 }
 
-struct TimeQueryResponse: Codable {
+struct TimeQueryResponse: Decodable {
   let time: DateTimeInterval
 }
 
-struct WhoamiQueryResponse: Codable {
+struct WhoamiQueryResponse: Decodable {
   let whoami: String
 }
 
-struct MutateMutationResponse: Codable {
+struct MutateMutationResponse: Decodable {
   let mutate: Bool
 }
 
-struct NumberSubscriptionResponse: Codable {
+struct NumberSubscriptionResponse: Decodable {
   let number: Int
 }
 
@@ -975,150 +1141,54 @@ enum HumanSelection: String, GraphQLSelection {
   case id
 }
 
-struct StarWarsQuerySelections: GraphQLSelections {
-  let droid: Set<DroidSelection>
-  let human: Set<HumanSelection>
-
-  init(
-    droid: Set<DroidSelection> = .allFields,
-    human: Set<HumanSelection> = .allFields
-  ) {
-    self.droid = droid
-    self.human = human
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let droidDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droid.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let humanDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(human.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let characterDeclaration = """
-    fragment \(capitalizedRequestName)CharacterFragment on Character {
-    	__typename
-    	...\(capitalizedRequestName)DroidFragment
-    	...\(capitalizedRequestName)HumanFragment
-    }
-    """
-
-    let characterUnionDeclaration = """
-    fragment \(capitalizedRequestName)CharacterUnionFragment on CharacterUnion {
-    	__typename
-    	...\(capitalizedRequestName)HumanFragment
-    	...\(capitalizedRequestName)DroidFragment
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)DroidFragment": droidDeclaration,
-      "\(capitalizedRequestName)HumanFragment": humanDeclaration,
-      "\(capitalizedRequestName)CharacterFragment": characterDeclaration,
-      "\(capitalizedRequestName)CharacterUnionFragment": characterUnionDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
 // MARK: - Selections
 
-struct HumanStarWarsQuerySelections: GraphQLSelections {
+struct StarWarsQuerySelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
   let humanSelections: Set<HumanSelection>
 
   init(
+    droidSelections: Set<DroidSelection> = .allFields,
     humanSelections: Set<HumanSelection> = .allFields
   ) {
+    self.droidSelections = droidSelections
     self.humanSelections = humanSelections
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let humanSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        requestFragment(
+          requestName: requestName,
+          typeName: "Character",
+          possibleTypeNames: [
+            "Droid",
+            "Human"
+          ]
+        ),
+        requestFragment(
+          requestName: requestName,
+          typeName: "CharacterUnion",
+          possibleTypeNames: [
+            "Human",
+            "Droid"
+          ]
+        ),
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-    ]
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
-
-struct DroidStarWarsQuerySelections: GraphQLSelections {
-  let droidSelections: Set<DroidSelection>
-
-  init(
-    droidSelections: Set<DroidSelection> = .allFields
-  ) {
-    self.droidSelections = droidSelections
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let droidSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droidSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)DroidFragment": droidSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
-// MARK: - Selections
 
 struct CharacterStarWarsQuerySelections: GraphQLSelections {
   let droidSelections: Set<DroidSelection>
@@ -1133,167 +1203,31 @@ struct CharacterStarWarsQuerySelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let characterUnionSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CharacterUnionFragment on CharacterUnion {
-    	__typename
-    	...\(capitalizedRequestName)HumanFragment
-    	...\(capitalizedRequestName)DroidFragment
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        requestFragment(
+          requestName: requestName,
+          typeName: "CharacterUnion",
+          possibleTypeNames: [
+            "Human",
+            "Droid"
+          ]
+        ),
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let droidSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droidSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let humanSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)CharacterUnionFragment": characterUnionSelectionsDeclaration,
-      "\(capitalizedRequestName)DroidFragment": droidSelectionsDeclaration,
-      "\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
-
-struct LukeStarWarsQuerySelections: GraphQLSelections {
-  let humanSelections: Set<HumanSelection>
-
-  init(
-    humanSelections: Set<HumanSelection> = .allFields
-  ) {
-    self.humanSelections = humanSelections
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let humanSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
-// MARK: - Selections
-
-struct HumansStarWarsQuerySelections: GraphQLSelections {
-  let humanSelections: Set<HumanSelection>
-
-  init(
-    humanSelections: Set<HumanSelection> = .allFields
-  ) {
-    self.humanSelections = humanSelections
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let humanSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
-// MARK: - Selections
-
-struct DroidsStarWarsQuerySelections: GraphQLSelections {
-  let droidSelections: Set<DroidSelection>
-
-  init(
-    droidSelections: Set<DroidSelection> = .allFields
-  ) {
-    self.droidSelections = droidSelections
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let droidSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droidSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)DroidFragment": droidSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
-  }
-}
-
-// MARK: - Selections
 
 struct CharactersStarWarsQuerySelections: GraphQLSelections {
   let droidSelections: Set<DroidSelection>
@@ -1308,50 +1242,85 @@ struct CharactersStarWarsQuerySelections: GraphQLSelections {
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let characterSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)CharacterFragment on Character {
-    	__typename
-    	...\(capitalizedRequestName)DroidFragment
-    	...\(capitalizedRequestName)HumanFragment
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        requestFragment(
+          requestName: requestName,
+          typeName: "Character",
+          possibleTypeNames: [
+            "Droid",
+            "Human"
+          ]
+        ),
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let droidSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droidSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let humanSelectionsDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)CharacterFragment": characterSelectionsDeclaration,
-      "\(capitalizedRequestName)DroidFragment": droidSelectionsDeclaration,
-      "\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
 
-// MARK: - Selections
+struct DroidStarWarsQuerySelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
+
+  init(
+    droidSelections: Set<DroidSelection> = .allFields
+  ) {
+    self.droidSelections = droidSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
+
+struct DroidsStarWarsQuerySelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
+
+  init(
+    droidSelections: Set<DroidSelection> = .allFields
+  ) {
+    self.droidSelections = droidSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
 
 struct GreetingStarWarsQuerySelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
@@ -1359,15 +1328,86 @@ struct GreetingStarWarsQuerySelections: GraphQLSelections {
   }
 }
 
-// MARK: - Selections
+struct HumanStarWarsQuerySelections: GraphQLSelections {
+  let humanSelections: Set<HumanSelection>
 
-struct WhoamiStarWarsQuerySelections: GraphQLSelections {
-  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
-    ""
+  init(
+    humanSelections: Set<HumanSelection> = .allFields
+  ) {
+    self.humanSelections = humanSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
   }
 }
 
-// MARK: - Selections
+struct HumansStarWarsQuerySelections: GraphQLSelections {
+  let humanSelections: Set<HumanSelection>
+
+  init(
+    humanSelections: Set<HumanSelection> = .allFields
+  ) {
+    self.humanSelections = humanSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
+
+struct LukeStarWarsQuerySelections: GraphQLSelections {
+  let humanSelections: Set<HumanSelection>
+
+  init(
+    humanSelections: Set<HumanSelection> = .allFields
+  ) {
+    self.humanSelections = humanSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
 
 struct TimeStarWarsQuerySelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
@@ -1375,72 +1415,58 @@ struct TimeStarWarsQuerySelections: GraphQLSelections {
   }
 }
 
-struct StarWarsMutationSelections: GraphQLSelections {
-  let droid: Set<DroidSelection>
-  let human: Set<HumanSelection>
-
-  init(
-    droid: Set<DroidSelection> = .allFields,
-    human: Set<HumanSelection> = .allFields
-  ) {
-    self.droid = droid
-    self.human = human
-  }
-
-  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
-
-    let droidDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droid.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let humanDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(human.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
-
-    let characterDeclaration = """
-    fragment \(capitalizedRequestName)CharacterFragment on Character {
-    	__typename
-    	...\(capitalizedRequestName)DroidFragment
-    	...\(capitalizedRequestName)HumanFragment
-    }
-    """
-
-    let characterUnionDeclaration = """
-    fragment \(capitalizedRequestName)CharacterUnionFragment on CharacterUnion {
-    	__typename
-    	...\(capitalizedRequestName)HumanFragment
-    	...\(capitalizedRequestName)DroidFragment
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)DroidFragment": droidDeclaration,
-      "\(capitalizedRequestName)HumanFragment": humanDeclaration,
-      "\(capitalizedRequestName)CharacterFragment": characterDeclaration,
-      "\(capitalizedRequestName)CharacterUnionFragment": characterUnionDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+struct WhoamiStarWarsQuerySelections: GraphQLSelections {
+  func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
+    ""
   }
 }
 
-// MARK: - Selections
+struct StarWarsMutationSelections: GraphQLSelections {
+  let droidSelections: Set<DroidSelection>
+  let humanSelections: Set<HumanSelection>
+
+  init(
+    droidSelections: Set<DroidSelection> = .allFields,
+    humanSelections: Set<HumanSelection> = .allFields
+  ) {
+    self.droidSelections = droidSelections
+    self.humanSelections = humanSelections
+  }
+
+  func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        requestFragment(
+          requestName: requestName,
+          typeName: "Character",
+          possibleTypeNames: [
+            "Droid",
+            "Human"
+          ]
+        ),
+        requestFragment(
+          requestName: requestName,
+          typeName: "CharacterUnion",
+          possibleTypeNames: [
+            "Human",
+            "Droid"
+          ]
+        ),
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
+
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
+
+    return fragments.joined(separator: "\n\n")
+  }
+}
 
 struct MutateStarWarsMutationSelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {
@@ -1449,71 +1475,51 @@ struct MutateStarWarsMutationSelections: GraphQLSelections {
 }
 
 struct StarWarsSubscriptionSelections: GraphQLSelections {
-  let droid: Set<DroidSelection>
-  let human: Set<HumanSelection>
+  let droidSelections: Set<DroidSelection>
+  let humanSelections: Set<HumanSelection>
 
   init(
-    droid: Set<DroidSelection> = .allFields,
-    human: Set<HumanSelection> = .allFields
+    droidSelections: Set<DroidSelection> = .allFields,
+    humanSelections: Set<HumanSelection> = .allFields
   ) {
-    self.droid = droid
-    self.human = human
+    self.droidSelections = droidSelections
+    self.humanSelections = humanSelections
   }
 
   func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-    let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+    let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-    let droidDeclaration = """
-    fragment \(capitalizedRequestName)DroidFragment on Droid {
-    	\(droid.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let selectionDeclarationMap = Dictionary(
+      uniqueKeysWithValues: [
+        requestFragment(
+          requestName: requestName,
+          typeName: "Character",
+          possibleTypeNames: [
+            "Droid",
+            "Human"
+          ]
+        ),
+        requestFragment(
+          requestName: requestName,
+          typeName: "CharacterUnion",
+          possibleTypeNames: [
+            "Human",
+            "Droid"
+          ]
+        ),
+        droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+        humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+      ].map { ($0.key, $0.value) }
+    )
 
-    let humanDeclaration = """
-    fragment \(capitalizedRequestName)HumanFragment on Human {
-    	\(human.requestFragments(requestName: capitalizedRequestName))
-    }
-    """
+    let fragments = nestedRequestFragments(
+      selectionDeclarationMap: selectionDeclarationMap,
+      rootSelectionKeys: rootSelectionKeys
+    )
 
-    let characterDeclaration = """
-    fragment \(capitalizedRequestName)CharacterFragment on Character {
-    	__typename
-    	...\(capitalizedRequestName)DroidFragment
-    	...\(capitalizedRequestName)HumanFragment
-    }
-    """
-
-    let characterUnionDeclaration = """
-    fragment \(capitalizedRequestName)CharacterUnionFragment on CharacterUnion {
-    	__typename
-    	...\(capitalizedRequestName)HumanFragment
-    	...\(capitalizedRequestName)DroidFragment
-    }
-    """
-
-    let selectionDeclarationMap = [
-      "\(capitalizedRequestName)DroidFragment": droidDeclaration,
-      "\(capitalizedRequestName)HumanFragment": humanDeclaration,
-      "\(capitalizedRequestName)CharacterFragment": characterDeclaration,
-      "\(capitalizedRequestName)CharacterUnionFragment": characterUnionDeclaration
-    ]
-
-    let fragmentMaps = rootSelectionKeys
-      .map {
-        requestFragments(
-          selectionDeclarationMap: selectionDeclarationMap,
-          rootSelectionKey: $0
-        )
-      }
-      .reduce([String: String]()) { old, new in
-        old.merging(new, uniquingKeysWith: { _, new in new })
-      }
-
-    return fragmentMaps.values.joined(separator: "\n")
+    return fragments.joined(separator: "\n\n")
   }
 }
-
-// MARK: - Selections
 
 struct NumberStarWarsSubscriptionSelections: GraphQLSelections {
   func requestFragments(for _: String, rootSelectionKeys _: Set<String>) -> String {

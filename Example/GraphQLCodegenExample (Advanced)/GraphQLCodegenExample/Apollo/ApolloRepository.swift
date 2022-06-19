@@ -13,9 +13,9 @@ enum ApolloRepositoryError: Error {
 }
 
 final class ApolloRepository {
-  private let apiClient: ApolloApiClientProtocol
+  private let apiClient: ApolloApiClient
 
-  init(apiClient: ApolloApiClientProtocol) {
+  init(apiClient: ApolloApiClient) {
     self.apiClient = apiClient
   }
 
@@ -24,9 +24,7 @@ final class ApolloRepository {
   ) -> Single<MutationApolloModel> {
     apiClient.update(
       with: parameters,
-      selections: ApolloMutationSelections(
-        mission: [.missionPatch, .name]
-      )
+      selections: ApolloMutationSelections()
     )
     .map {
       guard let data = $0.data else {

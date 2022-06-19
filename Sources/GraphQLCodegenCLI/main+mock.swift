@@ -31,7 +31,7 @@ func mockBasicExample() {
     "--api-client-prefix", "",
     "--is-throwable-getter-enabled",
     "--api-client-strategy", ApiClientStrategy.rxSwift.rawValue,
-    "--api-client-output", "Groceries/ApiClient.generated.swift"
+    "--api-client-prefix", "Groceries"
   ])
 }
 

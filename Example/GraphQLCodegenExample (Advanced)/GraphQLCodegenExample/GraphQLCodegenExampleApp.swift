@@ -5,7 +5,6 @@
 //  Created by Romy Cheah on 23/9/21.
 //
 
-import ApiClient
 import RxSwift
 import SwiftUI
 
@@ -13,41 +12,24 @@ import SwiftUI
 struct GraphQLCodegenExampleApp: App {
   private let disposeBag = DisposeBag()
   private let groceriesRepository: GroceriesRepository = {
-    let restClient = RestClientImpl(
-      webService: GroceriesWebService(),
-      authProvider: nil
-    )
-
-    let apiClient = GroceriesApiClient(
-      restClient: restClient,
-      resourceParametersConfigurator: GroceriesResourceParametersConfigurator()
-    )
+    let url = URL(string: "https://sg-st.fd-api.com/groceries-product-service/query")!
+    let apiClient = GroceriesApiClient(baseURL: url)
     let repository = GroceriesRepository(apiClient: apiClient)
 
     return repository
   }()
 
   private let starWarsRepository: StarWarsRepository = {
-    let restClient = RestClientImpl(
-      webService: StarWarsWebService(),
-      authProvider: nil
-    )
-
-    let apiClient = StarWarsApiClient(
-      restClient: restClient
-    )
+    let url = URL(string: "https://swift-swapi.herokuapp.com/")!
+    let apiClient = StarWarsApiClient(baseURL: url)
     let repository = StarWarsRepository(apiClient: apiClient)
 
     return repository
   }()
 
   private let apolloRepository: ApolloRepository = {
-    let restClient = RestClientImpl(
-      webService: ApolloWebService(),
-      authProvider: nil
-    )
-
-    let apiClient = ApolloApiClient(restClient: restClient)
+    let url = URL(string: "https://apollo-fullstack-tutorial.herokuapp.com/graphql")!
+    let apiClient = ApolloApiClient(baseURL: url)
     let repository = ApolloRepository(apiClient: apiClient)
 
     return repository
@@ -267,7 +249,7 @@ extension GraphQLCodegenExampleApp {
       .update(
         with: ApolloMutation(
           cancelTrip: .init(cancelTripMissionPatchSize: .small, launchId: "101"),
-          login: .init(email: "test@test.com")
+          login: .init(email: "test@test.com", loginMissionPatchSize: .small)
         )
       )
       .subscribe(

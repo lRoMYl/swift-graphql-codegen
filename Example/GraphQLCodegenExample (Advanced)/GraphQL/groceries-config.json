@@ -1,4 +1,7 @@
 {
+  "selectionMap": {
+    "Query": ["campaigns", "shopDetails", "products", "productDetails"]
+  },
   "entityNameMap": {
     "apiClientPrefix":  "Groceries"
   }
