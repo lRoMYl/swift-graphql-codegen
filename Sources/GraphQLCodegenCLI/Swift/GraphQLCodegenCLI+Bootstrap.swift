@@ -31,9 +31,9 @@ extension GraphQLCodegenCLI {
       help: """
       Location of the output files
       e.g. outputPath = "root/"
-      - entity will be generated in `Core` directory "root/Core/GraphhQLEntities.swift"
-      - ApiClient will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixApiClient.generated.swift"
-      - NetworkModesl will be generated in `ApiPrefix` directory "root/ApiPrefix/ApiPrefixNetworkModels.generated.swift"
+      - entity will be generated in the given directory "root/GraphhQLEntities.swift"
+      - ApiClient will be generated in the given directory "root/ApiPrefixApiClient.generated.swift"
+      - NetworkModesl will be generated in the given directory "root/ApiPrefixNetworkModels.generated.swift"
       """
     )
     var outputPath: String
@@ -42,7 +42,7 @@ extension GraphQLCodegenCLI {
     var introspectionOutput: String = "schema.json"
 
     @Option
-    var entityOutput: String = "Core/GraphQLEntities.generated.swift"
+    var entityOutput: String = "GraphQLEntities.generated.swift"
 
     @Option
     var specificationOutput: String = "NetworkModels.generated.swift"
@@ -113,29 +113,23 @@ extension GraphQLCodegenCLI {
         print("Warning, introspection target is not valid for `swift` subcommand")
         break
       case .specification:
-        let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
-
         let apiClientArguments = arguments + [
           "--target", CodegenTarget.apiClient.rawValue,
-          "--output", "\(basePath)\(apiClientOutput)"
+          "--output", "\(outputPath)\(apiClientPrefix)\(apiClientOutput)"
         ]
 
         GraphQLCodegenCLI.Codegen.main(apiClientArguments)
       case .apiClient:
-        let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
-
         let specificiationArguments = arguments + [
           "--target", CodegenTarget.specification.rawValue,
-          "--output", "\(basePath)\(specificationOutput)"
+          "--output", "\(outputPath)\(apiClientPrefix)\(specificationOutput)"
         ]
 
         GraphQLCodegenCLI.Codegen.main(specificiationArguments)
       case .mapper:
-        let basePath = "\(outputPath)\(apiClientPrefix)/\(apiClientPrefix)"
-
         let mapperArguments = arguments + [
           "--target", CodegenTarget.mapper.rawValue,
-          "--output", "\(basePath)\(mapperOutput)"
+          "--output", "\(outputPath)\(apiClientPrefix)\(mapperOutput)"
         ]
 
         GraphQLCodegenCLI.Codegen.main(mapperArguments)

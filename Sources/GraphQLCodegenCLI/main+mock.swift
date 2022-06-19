@@ -28,9 +28,10 @@ func mockBasicExample() {
     groceriesSchema,
     "--config-path", groceriesConfig,
     "--output-path", outputPath,
-    "--api-client-prefix", "Groceries",
+    "--api-client-prefix", "",
     "--is-throwable-getter-enabled",
-    "--api-client-strategy", ApiClientStrategy.rxSwift.rawValue
+    "--api-client-strategy", ApiClientStrategy.rxSwift.rawValue,
+    "--api-client-output", "Groceries/ApiClient.generated.swift"
   ])
 }
 
