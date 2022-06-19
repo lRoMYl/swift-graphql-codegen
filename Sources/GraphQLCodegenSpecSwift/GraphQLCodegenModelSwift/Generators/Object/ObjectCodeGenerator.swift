@@ -55,7 +55,7 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
   func code(schema: Schema) throws -> String {
     let schemaMap = try SchemaMap(schema: schema)
 
-    let objects = try schema.operations.map {
+    let objects: [ObjectType] = try schema.operations.map {
       try $0.returnObject()
         .nestedFields(schema: schema, scalarMap: scalarMap, selectionMap: selectionMap)
         .unique(by: { $0.type.namedType.name })
@@ -64,7 +64,9 @@ struct ObjectCodeGenerator: GraphQLCodeGenerating {
           try $0.returnObjectType(schemaMap: schemaMap)
         }
     }
-      .reduce([], +)
+    .reduce([], +)
+    .unique(by: { $0.name })
+    .sorted()
 
     let code = try objects.map {
       try declaration($0)
