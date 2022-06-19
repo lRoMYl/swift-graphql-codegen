@@ -40,6 +40,9 @@ Pods/
 # AppCode
 .idea/
 
+# VSCode
+.vscode/
+
 
 ### OSX ###
 .DS_Store
