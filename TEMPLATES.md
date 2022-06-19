@@ -24,8 +24,8 @@ API_CLIENT_PREFIX = "Groceries"
 ## Install codegen
 ## -------
 install:
-	brew tap lromyl/tap
-	brew install swift-graphql-codegen
+  brew tap lromyl/tap
+  brew install swift-graphql-codegen
 
 ## -------
 ## Update and re-install codegen
@@ -39,14 +39,14 @@ update:
 ## -------
 
 graphql-introspection:
-	swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
+  swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
 
 ## -------
 ## Generate code using local schema and config
 ## -------
 
 graphql-codegen:
-	swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX) --is-throwable-getter-enabled
+  swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX) --is-throwable-getter-enabled
 ```
 
 ## config.json
