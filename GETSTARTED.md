@@ -32,7 +32,7 @@ To configure it, you can follow the steps belows;
 ```
 install:
   brew tap lromyl/tap
-	brew install swift-graphql-codegen
+  brew install swift-graphql-codegen
 ```
 
 # Simple Tutorial (1 GraphQL Schema)
