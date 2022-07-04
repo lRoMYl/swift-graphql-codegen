@@ -22,9 +22,7 @@ struct RequestEncodableGenerator {
   }
 
   func encodingDeclaration(field: Field, schema: Schema) throws -> String {
-    field.args.isEmpty
-      ? emptyEncoder()
-      : try codingKeys(with: field, objects: schema.objects, schema: schema)
+    try codingKeys(with: field, objects: schema.objects, schema: schema)
   }
 }
 
@@ -46,6 +44,10 @@ private extension RequestEncodableGenerator {
 
       return declaration.isEmpty ? nil : declaration
     }.lines
+
+    guard !codingKeyDeclarations.isEmpty else {
+      return emptyEncoder()
+    }
 
     return """
     private enum CodingKeys: String, CodingKey {
