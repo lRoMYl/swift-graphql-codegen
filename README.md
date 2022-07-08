@@ -1,11 +1,14 @@
 # Swift GraphQL Codegen
 
+An opinionated Swift GraphQL Code Generator CLI tool which generate the GraphQL Query and doesn't require any dependencies (Library/Framework) in your app.
+
 ## Objectives
-- Zero GraphQL Query to be written manually
-- Zero library/framework to be included in the main app
-- Plain Swift Types with Type Safety
-- Network Layer agnostic, use whichever networking library you prefer
-- Favor Swift coding convention whenever applicable/possible 
+- 🏖️ Zero GraphQL Query to be written manually
+- ✨ Zero library/framework dependency in the app
+- 🎉 Plain Swift Types with Type Safety
+- 🎊 Network Layer agnostic, use whichever networking library you prefer
+- 🚀 Favor Swift coding convention whenever applicable/possible
+- 🤏 Minimal code to be written to get started
 
 Usage example without writing a single line of GraphQL query
 ```Swift
@@ -96,7 +99,8 @@ Support Custom Requirements
 TODO
 - [x] Nested field selection with arguments is not handled yet
 - [x] ApiClientPrefix needs to be removed from EntityNameMap
-- [ ] Rewrite ApiClient generator to use URLSession
+- [x] Rewrite ApiClient generator to use URLSession
+- [ ] Add support for async await for the generated ApiClient
 - [ ] Ramp up test cases for the generated classes
 - [ ] Ramp up documentation
 - [ ] Setting up CI workflow to run the test for each PR
