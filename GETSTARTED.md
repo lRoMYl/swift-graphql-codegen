@@ -17,14 +17,14 @@ For this tutorial, the script is written using `Makefile` in [TEMPLATES.md](TEMP
 
 ## Step 1: Defining the variable for the script
 ```
-SCHEMA_URL = "https://sg-st.fd-api.com/groceries-product-service/query"
+SCHEMA_URL = "https://swift-swapi.herokuapp.com/"
 SCHEMA = "GraphQL/schema.json"
 CONFIG = "GraphQL/config.json"
 
 INTROSPECTION_OUTPUT_PATH = "GraphQL/"
-CODEGEN_OUTPUT_PATH = "Verticals/API/"
+CODEGEN_OUTPUT_PATH = "MyProject/API/"
 
-API_CLIENT_PREFIX = "Groceries"
+API_CLIENT_PREFIX = "MyCustomPrefix"
 ```
 
 - `SCHEMA_URL`: The URL where the GraphQL schema is hosted at, for the purpose of this tutorial we're using the URL for groceries schema so do remember changing this.
@@ -37,7 +37,7 @@ API_CLIENT_PREFIX = "Groceries"
 ## Step 2: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
 introspection:
-	swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
+  swift-graphql-codegen introspection $(SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH)
 ```
 
 - The code generator has a built in sub-command to perform introspection conveniently, `swift-graphql-codegen introspection`.
@@ -49,7 +49,7 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
+  swift-graphql-codegen bootstrap $(SCHEMA) --output-path $(CODEGEN_OUTPUT_PATH) --config-path $(CONFIG) --api-client-prefix $(API_CLIENT_PREFIX)
 ```
 
 - Using the sub-command `bootstrap`, it conveniently generate multiple files with default naming convention for classes and file name with a single command.
@@ -80,17 +80,17 @@ This advance tutorial is very similar to the simple tutorial above but demonstra
 ## Step 1: Defining the variable for the script
 ```shell
 # Groceries specific variables
-GROCERIES_SCHEMA_URL = "https://sg-st.fd-api.com/groceries-product-service/query"
-GROCERIES_SCHEMA = "GraphQL/groceries-schema.json"
-GROCERIES_CONFIG = "GraphQL/groceries-config.json"
-GROCERIES_CODEGEN_OUTPUT_PREFIX = "GraphQLCodegenExample/Groceries/Groceries"
-GROCERIES_API_CLIENT_PREFIX = "Groceries"
+APOLLO_SCHEMA_URL = "https://apollo-fullstack-tutorial.herokuapp.com/"
+APOLLO_SCHEMA = "GraphQL/apollo-schema.json"
+APOLLO_CONFIG = "GraphQL/apollo-config.json"
+APOLLO_CODEGEN_OUTPUT_PREFIX = "GraphQLCodegenExample/Apollo/API"
+APOLLO_API_CLIENT_PREFIX = "Apollo"
 
 # StarWars specific variables
 STARWARS_SCHEMA_URL = "https://swift-swapi.herokuapp.com/"
 STARWARS_SCHEMA = "GraphQL/starwars-schema.json"
 STARWARS_CONFIG = "GraphQL/starwars-config.json"
-STARWARS_CODEGEN_OUTPUT_PATH = "GraphQLCodegenExample/StarWars/StarWars"
+STARWARS_CODEGEN_OUTPUT_PATH = "GraphQLCodegenExample/StarWars/API"
 STARWARS_API_CLIENT_PREFIX = "StarWars"
 
 # Common variables
@@ -102,13 +102,13 @@ It's pretty self-explanatory from the example variables above, the structure of 
 ## Step 3: Fetching the latest GraphQL schema using introspection and cache it locally
 ```
 introspection:
-	swift-graphql-codegen introspection $(GROCERIES_SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH) --output $(GROCERIES_SCHEMA)
-  swift-graphql-codegen introspection $(STARWARS_SCHEMA_URL) --output $(STARWARS_SCHEMA)
+  swift-graphql-codegen introspection $(APOLLO_SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH) --output $(APOLLO_SCHEMA)
+  swift-graphql-codegen introspection $(STARWARS_SCHEMA_URL) --output-path $(INTROSPECTION_OUTPUT_PATH) --output $(STARWARS_SCHEMA)
 ```
 
 - 2 key differences from the simple tutorials;
     - Instead of executing only 1 sub-commands, we're now repeating it twice or as many times as needed accordingly to the number of endpoint we need to fetch the schema from.
-    - Additional `--output` parameter to override the output file name, we would have `groceries-schema.json` and `starwars-schema.json` instead of a single file named `schema.json`.
+    - Additional `--output` parameter to override the output file name, we would have `apollo-schema.json` and `starwars-schema.json` instead of a single file named `schema.json`.
 - In the example above, we're grouping both introspection execution in a single Make command but it's really up to you to decide if executing it in a group or sepearetely makes more sense for your project.
 
 ## Step 4: Generating code using local schema and config
@@ -117,7 +117,7 @@ Read [CONFIG.md](CONFIG.md) for more info on how to create the config file
 
 ```
 codegen:
-	swift-graphql-codegen bootstrap $(GROCERIES_SCHEMA) --output-path $(GROCERIES_CODEGEN_OUTPUT_PATH) --config-path $(GROCERIES_CONFIG) --api-client-prefix $(GROCERIES_API_CLIENT_PREFIX)
+  swift-graphql-codegen bootstrap $(APOLLO_SCHEMA) --output-path $(APOLLO_CODEGEN_OUTPUT_PATH) --config-path $(APOLLO_CONFIG) --api-client-prefix $(APOLLO_API_CLIENT_PREFIX)
   swift-graphql-codegen bootstrap $(STARWARS_SCHEMA) --output-path $(STARWARS_CODEGEN_OUTPUT_PATH) --config-path $(STARWARS_CONFIG) --api-client-prefix $(STARWARS_API_CLIENT_PREFIX)
 ```
 
