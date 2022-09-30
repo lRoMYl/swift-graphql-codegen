@@ -7,27 +7,6 @@ This document is intended to be a step-by-step tutorial to integrate the code ge
 
 ## Setup
 
-For this code generation tool, we would need to create a environment variable for github api token, `HOMEBREW_GITHUB_API_TOKEN`.
-
-To configure it, you can follow the steps belows;
-
-**Creating Github API Token**
-- Goto https://github.com/settings/tokens/new
-  - If the link is broken, you can locate it in your `Github Settings -> Developer Settings -> Personal Access Tokens`
-- Tap on `Generate new token` at the top of the page
-- [Optional] Recommended to write in the `Note` field to indicate this access token is exclusively for homebrew
-- [Optional] Change the `Expiration` from the default value of 30 days to something longer or no expiration, you can revoke this access token anytime when necessary
-- [Required] In `Select scopes` field, tick the `repo` checkbox as this would be required for the codegen library, no other scopes are required for this codegen.
-- Tap on `Generate token` at the bottom of the page.
-- [Important] You will be redirected back to `Personal Access Tokens` page and be shown the raw value of the access token you've just created, `copy` it to a temporary notepad as you will only be shown this value once.
-- [Optional] In `Personal Access Tokens` page, you will see a `Configure SSO` button next to your access token, tap on it and authorize your organization SSO for this token.
-
-**Adding Github API Token to Environment Variable**
-- Locate either `~/.bash_profile` or `~/.zshenv` (If you're using zsh) to update environment variables
-  - If it doesn't exist, you can create it by using `touch ~/.bash_profile` or `~/.zshenv` in the terminal
-- Add `export HOMEBREW_GITHUB_API_TOKEN="put your token"` into the file, save it
-- Restart the terminal
-
 ## Installation
 ```
 install:
