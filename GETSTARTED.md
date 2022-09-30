@@ -5,8 +5,6 @@ This document is intended to be a step-by-step tutorial to integrate the code ge
 - MacOS 10 and above
 - XCode 12.4 and above
 
-## Setup
-
 ## Installation
 ```
 install:
