@@ -27,18 +27,12 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// CampaignsGraphQLQuery
     struct CampaignsGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "campaigns"
       let rootSelectionKeys: Set<String> = ["CampaignsCampaignsFragment"]
 
-      // MARK: - Arguments
-
       let vendorId: String
-
       let globalEntityId: String
-
       let locale: String
 
       private enum CodingKeys: String, CodingKey {
@@ -101,22 +95,14 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// ProductDetailsGraphQLQuery
     struct ProductDetailsGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "productDetails"
       let rootSelectionKeys: Set<String> = ["ProductDetailsProductDetailsFragment"]
 
-      // MARK: - Arguments
-
       let productDetailsAttributesKeys: [String]?
-
       let productDetailsCrossSellProductsPlatform: String
-
       let productDetailsCrossSellProductsConfig: String
-
       let productDetailsCrossSellProductsIsDarkstore: Bool
-
       let input: ProductRequestGraphQLInputObject?
 
       private enum CodingKeys: String, CodingKey {
@@ -187,16 +173,11 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// ProductsGraphQLQuery
     struct ProductsGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "products"
       let rootSelectionKeys: Set<String> = ["ProductsProductFilterResultFragment"]
 
-      // MARK: - Arguments
-
       let productsAttributesKeys: [String]?
-
       let input: ProductsFilterRequestGraphQLInputObject?
 
       private enum CodingKeys: String, CodingKey {
@@ -252,8 +233,6 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// ServiceGraphQLQuery
     struct ServiceGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "service"
       let rootSelectionKeys: Set<String> = ["ServiceServiceFragment"]
@@ -298,18 +277,12 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// ShopDetailsGraphQLQuery
     struct ShopDetailsGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "shopDetails"
       let rootSelectionKeys: Set<String> = ["ShopDetailsShopDetailsFragment"]
 
-      // MARK: - Arguments
-
       let shopDetailsAttributesKeys: [String]?
-
       let input: ShopDetailsRequestGraphQLInputObject?
-
       let shopDetailsShopItemsResponsePage: Int
 
       private enum CodingKeys: String, CodingKey {
@@ -370,8 +343,6 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
     /// ServiceGraphQLQuery
     struct ServiceGraphQLQuery: GraphQLRequestParameter {
-      // MARK: - GraphQLRequestType
-
       let requestType: GraphQLRequestType = .query
       let requestName: String = "_service"
       let rootSelectionKeys: Set<String> = ["_service_ServiceFragment"]
@@ -432,8 +403,8 @@ final class RequestSpecGeneratorTests: XCTestCase {
       let service: ServiceGraphQLQuery?
       let shopDetails: ShopDetailsGraphQLQuery?
 
-      private var requests: [GraphQLRequesting] {
-        let requests: [GraphQLRequesting?] = [
+      private var requests: [GraphQLRequestParameter] {
+        let requests: [GraphQLRequestParameter?] = [
           _service,
           campaigns,
           productDetails,

@@ -28,8 +28,6 @@ final class InputObjectSpecGeneratorTests: XCTestCase {
     struct GreetingOptionsGraphQLInputObject: Codable {
       let prefix: String?
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         case prefix
       }
@@ -37,10 +35,7 @@ final class InputObjectSpecGeneratorTests: XCTestCase {
 
     struct GreetingGraphQLInputObject: Codable {
       let language: LanguageGraphQLEnumObject?
-
       let name: String
-
-      // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
         case language

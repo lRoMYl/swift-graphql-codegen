@@ -68,7 +68,6 @@ final class EnumSpecGeneratorTests: XCTestCase {
       typealias RawValue = String
 
       case free
-
       /// Absolute price discount
       @available(*, deprecated, message: "Deprecated")
       case absolute
@@ -192,7 +191,6 @@ final class EnumSpecGeneratorTests: XCTestCase {
       typealias RawValue = String
 
       case free
-
       /// Absolute price discount
       @available(*, deprecated, message: "Deprecated")
       case absolute

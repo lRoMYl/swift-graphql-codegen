@@ -62,7 +62,7 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - GraphQLObject
 
-    struct DiscountGraphQLObject: Codable {
+    struct DiscountGraphQLObject: Decodable {
       private let internalType: Optional<DiscountTypeGraphQLObject>
       private let internalValue: Optional<Double>
 
@@ -81,18 +81,14 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         internalValue = try container.decodeOptionalIfPresent(Double.self, forKey: .internalValue)
       }
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         case internalType = "type"
         case internalValue = "value"
       }
     }
 
-    struct QueryGraphQLObject: Codable {
+    struct QueryGraphQLObject: Decodable {
       let test: Optional<DiscountGraphQLObject>
-
-      // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
         case test
@@ -126,7 +122,7 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - GraphQLObject
 
-    struct DroidGraphQLObject: Codable {
+    struct DroidGraphQLObject: Decodable {
       private let internalAppearsIn: Optional<[EpisodeGraphQLEnumObject]>
       private let internalId: Optional<String>
       private let internalName: Optional<String>
@@ -157,8 +153,6 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         internalPrimaryFunction = try container.decodeOptionalIfPresent(String.self, forKey: .internalPrimaryFunction)
       }
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         case internalAppearsIn = "appearsIn"
         case internalId = "id"
@@ -167,10 +161,8 @@ final class ObjectSpecGeneratorTests: XCTestCase {
       }
     }
 
-    struct QueryGraphQLObject: Codable {
+    struct QueryGraphQLObject: Decodable {
       let droid: Optional<DroidGraphQLObject?>
-
-      // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
         case droid
@@ -204,7 +196,7 @@ final class ObjectSpecGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - GraphQLObject
 
-    struct HumanGraphQLObject: Codable {
+    struct HumanGraphQLObject: Decodable {
       private let internalAppearsIn: Optional<[EpisodeGraphQLEnumObject]>
       private let internalHomePlanet: Optional<String?>
       private let internalId: Optional<String>
@@ -242,8 +234,6 @@ final class ObjectSpecGeneratorTests: XCTestCase {
         internalName = try container.decodeOptionalIfPresent(String.self, forKey: .internalName)
       }
 
-      // MARK: - CodingKeys
-
       private enum CodingKeys: String, CodingKey {
         case internalAppearsIn = "appearsIn"
         case internalHomePlanet = "homePlanet"
@@ -253,10 +243,8 @@ final class ObjectSpecGeneratorTests: XCTestCase {
       }
     }
 
-    struct QueryGraphQLObject: Codable {
+    struct QueryGraphQLObject: Decodable {
       let human: Optional<HumanGraphQLObject?>
-
-      // MARK: - CodingKeys
 
       private enum CodingKeys: String, CodingKey {
         case human

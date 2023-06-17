@@ -23,7 +23,6 @@ final class DHApiClientHeaderGeneratorTests: XCTestCase {
     // swiftformat:disable all
 
     import Foundation
-    import RxSwift
     """.format()
 
     XCTAssertEqual(declaration, expectedDeclaration)

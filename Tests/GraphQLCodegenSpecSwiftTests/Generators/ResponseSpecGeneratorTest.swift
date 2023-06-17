@@ -28,7 +28,7 @@ final class ResponseSpecGeneratorTests: XCTestCase {
 
     let declaration = try generator.code(field: lukeQueryResponse, operation: queryOperation).format()
     let expectedDeclaration = try """
-    struct LukeQueryResponse: Codable {
+    struct LukeQueryResponse: Decodable {
       let luke: HumanGraphQLObject?
     }
     """.format()
@@ -47,7 +47,7 @@ final class ResponseSpecGeneratorTests: XCTestCase {
 
     let declaration = try generator.code(operation: mutationOperation).format()
     let expectedDeclaration = try """
-    struct MutateMutationResponse: Codable {
+    struct MutateMutationResponse: Decodable {
       let mutate: Bool
     }
     """.format()
@@ -61,51 +61,51 @@ final class ResponseSpecGeneratorTests: XCTestCase {
     let starWarsSchema = try Schema.schema(from: "StarWarsTestSchema")
     let declaration = try generator.code(schema: starWarsSchema).format()
     let expectedDeclaration = try """
-    struct CharacterQueryResponse: Codable {
+    struct CharacterQueryResponse: Decodable {
       let character: CharacterUnionGraphQLUnionObject?
     }
 
-    struct CharactersQueryResponse: Codable {
+    struct CharactersQueryResponse: Decodable {
       let characters: [CharacterGraphQLInterfaceObject]
     }
 
-    struct DroidQueryResponse: Codable {
+    struct DroidQueryResponse: Decodable {
       let droid: DroidGraphQLObject?
     }
 
-    struct DroidsQueryResponse: Codable {
+    struct DroidsQueryResponse: Decodable {
       let droids: [DroidGraphQLObject]
     }
 
-    struct GreetingQueryResponse: Codable {
+    struct GreetingQueryResponse: Decodable {
       let greeting: String
     }
 
-    struct HumanQueryResponse: Codable {
+    struct HumanQueryResponse: Decodable {
       let human: HumanGraphQLObject?
     }
 
-    struct HumansQueryResponse: Codable {
+    struct HumansQueryResponse: Decodable {
       let humans: [HumanGraphQLObject]
     }
 
-    struct LukeQueryResponse: Codable {
+    struct LukeQueryResponse: Decodable {
       let luke: HumanGraphQLObject?
     }
 
-    struct TimeQueryResponse: Codable {
+    struct TimeQueryResponse: Decodable {
       let time: Date
     }
 
-    struct WhoamiQueryResponse: Codable {
+    struct WhoamiQueryResponse: Decodable {
       let whoami: String
     }
 
-    struct MutateMutationResponse: Codable {
+    struct MutateMutationResponse: Decodable {
       let mutate: Bool
     }
 
-    struct NumberSubscriptionResponse: Codable {
+    struct NumberSubscriptionResponse: Decodable {
       let number: Int
     }
     """.format()

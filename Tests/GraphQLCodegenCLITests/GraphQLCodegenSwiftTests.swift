@@ -33,7 +33,7 @@ final class DHGraphQLCodegenCLITests: XCTestCase {
     XCTAssertEqual(
       output,
       """
-      OVERVIEW: DH GraphQL Codegeneration Tool\n\nUSAGE: swift-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  bootstrap\n\n  See \'swift-graphql-codegen help <subcommand>\' for detailed help.\n
+      OVERVIEW: Swift GraphQL Codegeneration Tool\n\nUSAGE: swift-graphql-codegen <subcommand>\n\nOPTIONS:\n  --version               Show the version.\n  -h, --help              Show help information.\n\nSUBCOMMANDS:\n  codegen\n  introspection\n  bootstrap\n\n  See \'swift-graphql-codegen help <subcommand>\' for detailed help.\n
       """
     )
   }

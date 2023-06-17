@@ -53,8 +53,6 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
     ).format()
 
     let expected = try """
-    // MARK: - Selections
-
     struct CampaignsGraphQLQuerySelections: GraphQLSelections {
       let benefitSelections: Set<BenefitSelection>
       let campaignAttributeSelections: Set<CampaignAttributeSelection>
@@ -77,58 +75,24 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
       }
 
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-        let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+        let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-        let benefitSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)BenefitFragment on Benefit {
-        \t\\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
+        let selectionDeclarationMap = Dictionary(
+          uniqueKeysWithValues: [
+            benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
+            campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute"),
+            campaignsSelections.requestFragment(requestName: requestName, typeName: "Campaigns"),
+            dealSelections.requestFragment(requestName: requestName, typeName: "Deal"),
+            productDealSelections.requestFragment(requestName: requestName, typeName: "ProductDeal")
+          ].map { ($0.key, $0.value) }
+        )
 
-        let campaignAttributeSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-        \t\\(campaignAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
+        let fragments = nestedRequestFragments(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKeys: rootSelectionKeys
+        )
 
-        let campaignsSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)CampaignsFragment on Campaigns {
-        \t\\(campaignsSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
-        let dealSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)DealFragment on Deal {
-        \t\\(dealSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
-        let productDealSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)ProductDealFragment on ProductDeal {
-        \t\\(productDealSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
-        let selectionDeclarationMap = [
-          "\\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
-          "\\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration,
-          "\\(capitalizedRequestName)CampaignsFragment": campaignsSelectionsDeclaration,
-          "\\(capitalizedRequestName)DealFragment": dealSelectionsDeclaration,
-          "\\(capitalizedRequestName)ProductDealFragment": productDealSelectionsDeclaration
-        ]
-
-        let fragmentMaps = rootSelectionKeys
-          .map {
-            requestFragments(
-              selectionDeclarationMap: selectionDeclarationMap,
-              rootSelectionKey: $0
-            )
-          }
-          .reduce([String: String]()) { old, new in
-            old.merging(new, uniquingKeysWith: { _, new in new })
-          }
-
-        return fragmentMaps.values.joined(separator: "\\n")
+        return fragments.joined(separator: "\\n\\n")
       }
     }
     """.format()
@@ -159,8 +123,6 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
     )
 
     let expected = try """
-    // MARK: - Selections
-
     struct CampaignAttributeGraphQLQuerySelections: GraphQLSelections {
       let benefitSelections: Set<BenefitSelection>
       let campaignAttributeSelections: Set<CampaignAttributeSelection>
@@ -174,37 +136,21 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
       }
 
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-        let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+        let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-        let benefitSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)BenefitFragment on Benefit {
-        \t\\(benefitSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
+        let selectionDeclarationMap = Dictionary(
+          uniqueKeysWithValues: [
+            benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
+            campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute")
+          ].map { ($0.key, $0.value) }
+        )
 
-        let campaignAttributeSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)CampaignAttributeFragment on CampaignAttribute {
-        \t\\(campaignAttributeSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
+        let fragments = nestedRequestFragments(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKeys: rootSelectionKeys
+        )
 
-        let selectionDeclarationMap = [
-          "\\(capitalizedRequestName)BenefitFragment": benefitSelectionsDeclaration,
-          "\\(capitalizedRequestName)CampaignAttributeFragment": campaignAttributeSelectionsDeclaration
-        ]
-
-        let fragmentMaps = rootSelectionKeys
-          .map {
-            requestFragments(
-              selectionDeclarationMap: selectionDeclarationMap,
-              rootSelectionKey: $0
-            )
-          }
-          .reduce([String: String]()) { old, new in
-            old.merging(new, uniquingKeysWith: { _, new in new })
-          }
-
-        return fragmentMaps.values.joined(separator: "\\n")
+        return fragments.joined(separator: "\\n\\n")
       }
     }
     """.format()
@@ -230,8 +176,6 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
     let formattedCode = try code.format()
 
     let expected = try """
-    // MARK: - Selections
-
     struct CharactersGraphQLQuerySelections: GraphQLSelections {
       let droidSelections: Set<DroidSelection>
       let humanSelections: Set<HumanSelection>
@@ -245,46 +189,29 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
       }
 
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String {
-        let capitalizedRequestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
+        let requestName = requestName.prefix(1).uppercased() + requestName.dropFirst()
 
-        let characterSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)CharacterFragment on Character {
-        \t__typename
-        \t...\\(capitalizedRequestName)DroidFragment
-        \t...\\(capitalizedRequestName)HumanFragment
-        }
-        \"\"\"
+        let selectionDeclarationMap = Dictionary(
+          uniqueKeysWithValues: [
+            requestFragment(
+              requestName: requestName,
+              typeName: "Character",
+              possibleTypeNames: [
+                "Droid",
+                "Human"
+              ]
+            ),
+            droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
+            humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+          ].map { ($0.key, $0.value) }
+        )
 
-        let droidSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)DroidFragment on Droid {
-        \t\\(droidSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
+        let fragments = nestedRequestFragments(
+          selectionDeclarationMap: selectionDeclarationMap,
+          rootSelectionKeys: rootSelectionKeys
+        )
 
-        let humanSelectionsDeclaration = \"\"\"
-        fragment \\(capitalizedRequestName)HumanFragment on Human {
-        \t\\(humanSelections.requestFragments(requestName: capitalizedRequestName))
-        }
-        \"\"\"
-
-        let selectionDeclarationMap = [
-          "\\(capitalizedRequestName)CharacterFragment": characterSelectionsDeclaration,
-          "\\(capitalizedRequestName)DroidFragment": droidSelectionsDeclaration,
-          "\\(capitalizedRequestName)HumanFragment": humanSelectionsDeclaration
-        ]
-
-        let fragmentMaps = rootSelectionKeys
-          .map {
-            requestFragments(
-              selectionDeclarationMap: selectionDeclarationMap,
-              rootSelectionKey: $0
-            )
-          }
-          .reduce([String: String]()) { old, new in
-            old.merging(new, uniquingKeysWith: { _, new in new })
-          }
-
-        return fragmentMaps.values.joined(separator: "\\n")
+        return fragments.joined(separator: "\\n\\n")
       }
     }
     """.format()

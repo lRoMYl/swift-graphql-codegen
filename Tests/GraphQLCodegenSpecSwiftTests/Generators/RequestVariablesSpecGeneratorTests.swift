@@ -35,12 +35,8 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
       .argumentVariablesDeclaration(field: campaignsQuery, schema: groceriesSchema)
       .format()
     let expectedDeclaration = try """
-    // MARK: - Arguments
-
     let vendorId: String
-
     let globalEntityId: String
-
     let locale: String
     """.format()
 
@@ -116,8 +112,6 @@ final class RequestVariablesSpecGeneratorTests: XCTestCase {
       .argumentVariablesDeclaration(field: greetingQuery, schema: starWarsSchema)
       .format()
     let expectedDeclaration = try """
-    // MARK: - Arguments
-
     let input: GreetingGraphQLInputObject?
     """.format()
 
