@@ -112,7 +112,9 @@ extension ApiClientRxGenerator {
           let responseExpectations: [(\(entityNameMap.requestParameter)?, \(entityNameProvider.responseType)?)] = [
             \(
               operation.type.selectableFields(selectionMap: selectionMap).map {
-                "(\(Variables.requestParameter).\($0.name), result.data?.\($0.name))"
+                let fieldFuncName = $0.funcName
+
+                return "(request.\(fieldFuncName), result.data?.data?.\(fieldFuncName))"
               }.joined(separator: ",\n")
             )
           ]
