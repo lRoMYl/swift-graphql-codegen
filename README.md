@@ -95,6 +95,8 @@ Support Custom Requirements
 - [x] Default APIClient
 - [x] Provide service dependency injection for APIClient
 - [x] Subcommand to simplify code generation
+- [ ] Support for Apollo Automated Persisted Queries (APM)
+- [ ] Cache
 
 TODO
 - [x] Nested field selection with arguments is not handled yet
