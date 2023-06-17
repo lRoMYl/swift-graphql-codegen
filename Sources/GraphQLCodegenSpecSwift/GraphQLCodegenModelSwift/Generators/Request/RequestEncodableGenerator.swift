@@ -72,10 +72,12 @@ private extension RequestEncodableGenerator {
       rootField: rootField
     )
 
-    return """
-    \(inputValue.docs)
-    case \(codingKeyName) = \"\(operationVariableName)\"
-    """
+    return [
+      inputValue.docs,
+      "case \(codingKeyName) = \"\(operationVariableName)\""
+    ]
+    .filter { !$0.isEmpty }
+    .lines
   }
 
   func emptyEncoder() -> String {

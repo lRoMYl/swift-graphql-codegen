@@ -79,11 +79,11 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
 
         let selectionDeclarationMap = Dictionary(
           uniqueKeysWithValues: [
-            benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
-            campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute"),
-            campaignsSelections.requestFragment(requestName: requestName, typeName: "Campaigns"),
-            dealSelections.requestFragment(requestName: requestName, typeName: "Deal"),
-            productDealSelections.requestFragment(requestName: requestName, typeName: "ProductDeal")
+            benefitSelections.requestFragment(requestName: requestName),
+            campaignAttributeSelections.requestFragment(requestName: requestName),
+            campaignsSelections.requestFragment(requestName: requestName),
+            dealSelections.requestFragment(requestName: requestName),
+            productDealSelections.requestFragment(requestName: requestName)
           ].map { ($0.key, $0.value) }
         )
 
@@ -140,8 +140,8 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
 
         let selectionDeclarationMap = Dictionary(
           uniqueKeysWithValues: [
-            benefitSelections.requestFragment(requestName: requestName, typeName: "Benefit"),
-            campaignAttributeSelections.requestFragment(requestName: requestName, typeName: "CampaignAttribute")
+            benefitSelections.requestFragment(requestName: requestName),
+            campaignAttributeSelections.requestFragment(requestName: requestName)
           ].map { ($0.key, $0.value) }
         )
 
@@ -196,13 +196,12 @@ final class SelectionsSpecGeneratorTests: XCTestCase {
             requestFragment(
               requestName: requestName,
               typeName: "Character",
-              possibleTypeNames: [
-                "Droid",
-                "Human"
-              ]
+              possibleTypeNames: CharacterGraphQLInterfaceObject.TypeName.allCases.map {
+                $0.rawValue
+              }
             ),
-            droidSelections.requestFragment(requestName: requestName, typeName: "Droid"),
-            humanSelections.requestFragment(requestName: requestName, typeName: "Human")
+            droidSelections.requestFragment(requestName: requestName),
+            humanSelections.requestFragment(requestName: requestName)
           ].map { ($0.key, $0.value) }
         )
 

@@ -18,6 +18,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
     static let requestName = "requestName"
     static let capitalizedRequestName = "capitalizedRequestName"
     static let typeName = "typeName"
+    static let staticTypeName = "TypeName"
     static let recursionDepth = "recursionDepth"
     static let recursionDepthType = "UInt"
   }
@@ -52,7 +53,9 @@ struct EntityGenerator: GraphQLCodeGenerating {
       func \(entityNameProvider.requestFragmentsName)(with selections: \(entityNameMap.selections)) -> String
     }
 
-    protocol \(entityNameMap.selection): Hashable, CaseIterable {}
+    protocol \(entityNameMap.selection): Hashable, CaseIterable {
+      static var \(Variables.staticTypeName): String { get }
+    }
     protocol \(entityNameMap.selections) {
       func requestFragments(for \(Variables.requestName): String, rootSelectionKeys: Set<String>) -> String
     }
@@ -73,7 +76,7 @@ struct EntityGenerator: GraphQLCodeGenerating {
       static var \(Variables.recursionDepth): \(Variables.recursionDepthType) = 5
     }
 
-    // MARK: \(entityNameMap.request)
+    // MARK: - \(entityNameMap.request)
 
     struct \(entityNameMap.request)<RequestParameters: \(entityNameMap.requestParameter)>: Encodable {
       let parameters: RequestParameters
@@ -116,10 +119,16 @@ struct EntityGenerator: GraphQLCodeGenerating {
     }
 
     struct \(entityNameMap.responseError): \(entityNameProvider.responseType) {
-      let message: String?
-      let locations: [[String: Int]]?
-      let path: [String]?
-      \(entityNameMap.responseErrorExtension.map { "let extensions: \($0)?" } ?? "")
+      \(
+        [
+          "let message: String?",
+          "let locations: [[String: Int]]?",
+          "let path: [String]?",
+          "\(entityNameMap.responseErrorExtension.map { "let extensions: \($0)?" } ?? "")"
+        ]
+        .filter { !$0.isEmpty }
+        .joined(separator: "\n  ")
+      )
     }
 
     enum \(entityNameProvider.graphQLError): Error, LocalizedError {
@@ -138,17 +147,16 @@ struct EntityGenerator: GraphQLCodeGenerating {
     extension Collection where Element: \(entityNameMap.selection) & RawRepresentable, Element.RawValue == String {
       func \(entityNameProvider.requestFragmentName)(
         \(Variables.requestName): String,
-        \(Variables.typeName): String,
         depth: \(Variables.recursionDepthType) = \(entityNameMap.configuration).\(Variables.recursionDepth)
       ) -> (key: String, value: String) {
-        let key = "\\(\(Variables.requestName))\\(\(Variables.typeName))Fragment"
+        let key = "\\(\(Variables.requestName))\\(\("Element.\(Variables.staticTypeName)"))Fragment"
         let fragmentFields = implodeRecursiveFragment(
           text: \(entityNameProvider.requestFragmentFields)(\(Variables.requestName): \(Variables.requestName)),
           fragmentKey: key,
           depth: depth
         )
         let value = \"\"\"
-        fragment \\(key) on \\(\(Variables.typeName)) {
+        fragment \\(key) on \\(\(Variables.staticTypeName)) {
           \\(fragmentFields)
         }
         \"\"\"
@@ -175,13 +183,13 @@ struct EntityGenerator: GraphQLCodeGenerating {
       }
 
       /**
-        GraphQL query doesn't support recursive fragment, internally GraphQL will simply implode all fragment
-        and if there is a recursive fragment it will just be stuck in infinite loop.
+      GraphQL query doesn't support recursive fragment, internally GraphQL will simply implode all fragment
+      and if there is a recursive fragment it will just be stuck in infinite loop.
 
-        Thus it is necessary to detect if recursive fragment exist and try to resolve it by providing
-        a fixed depth for the recursion.
-        - parameter depth: Define how many time the recursive fragment should be imploded, 0 would terminate the recursion
-        */
+      Thus it is necessary to detect if recursive fragment exist and try to resolve it by providing
+      a fixed depth for the recursion.
+      - parameter depth: Define how many time the recursive fragment should be imploded, 0 would terminate the recursion
+      */
       func implodeRecursiveFragment(text: String, fragmentKey: String, depth: UInt) -> String {
         guard let range = text.range(of: "...\\(fragmentKey)") else {
           return text

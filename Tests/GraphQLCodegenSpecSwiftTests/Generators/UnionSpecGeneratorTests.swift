@@ -28,7 +28,7 @@ final class UnionSpecGeneratorTests: XCTestCase {
     let expectedDeclaration = try """
     // MARK: - GraphQLUnionObject
 
-    enum CharacterUnionGraphQLUnionObject: Codable {
+    enum CharacterUnionGraphQLUnionObject: Decodable {
       case human(HumanGraphQLObject)
       case droid(DroidGraphQLObject)
 

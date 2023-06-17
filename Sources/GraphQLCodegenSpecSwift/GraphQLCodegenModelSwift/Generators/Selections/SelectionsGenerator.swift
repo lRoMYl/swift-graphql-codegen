@@ -39,6 +39,7 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
     static let requestName = "requestName"
     static let capitalizedRequestName = "requestName"
     static let typeName = "typeName"
+    static let staticTypeName = "TypeName"
     static let selectionDeclarationMap = "selectionDeclarationMap"
     static let rootSelectionKeys = "rootSelectionKeys"
   }
@@ -142,7 +143,11 @@ struct SelectionsGenerator: GraphQLCodeGenerating {
       operation: operation,
       schemaMap: schemaMap
     )
-    let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fields, schemaMap: schemaMap)
+    let selectionFragmentMap = try self.selectionFragmentMap(
+      fieldMaps: fields,
+      operation: operation,
+      schemaMap: schemaMap
+    )
 
     return """
     struct \(try entityNameProvider.selectionsName(with: operation)): \(entityNameMap.selections) {
@@ -282,7 +287,11 @@ extension SelectionsGenerator {
     let fieldMaps = fieldMaps.sorted(by: { $0.type.namedType.name < $1.type.namedType.name })
     let selectionsName = try entityNameProvider.selectionsName(for: field, operation: operation)
     let selectionDeclarations = try self.selectionDeclarations(fieldMaps: fieldMaps, schemaMap: schemaMap)
-    let selectionFragmentMap = try self.selectionFragmentMap(fieldMaps: fieldMaps, schemaMap: schemaMap)
+    let selectionFragmentMap = try self.selectionFragmentMap(
+      fieldMaps: fieldMaps,
+      operation: operation,
+      schemaMap: schemaMap
+    )
     let memberwiseInitializerDeclaration = try self.memberwiseInitializerDeclaration(
       fieldMaps: fieldMaps,
       operation: operation,
@@ -362,6 +371,7 @@ extension SelectionsGenerator {
 
   func selectionFragmentMap(
     fieldMaps: [Field],
+    operation: GraphQLAST.Operation,
     schemaMap: SchemaMap
   ) throws -> String {
     let test = try fieldMaps.map {
@@ -373,20 +383,16 @@ extension SelectionsGenerator {
 
       if let possibleObjectTypes = try $0.possibleObjectTypes(
         schemaMap: schemaMap
-      ) {
+      ), !possibleObjectTypes.isEmpty {
+        let responseName = try entityNameProvider.name(for: $0.type.namedType)
+
         return """
         \(entityNameProvider.requestFragmentName)(
           \(Variables.requestName): \(Variables.capitalizedRequestName),
           \(Variables.typeName): "\(fieldTypeName)",
-          possibleTypeNames: [
-            \t\(
-              possibleObjectTypes.compactMap {
-                return """
-                "\($0.name)"
-                """
-              }.joined(separator: ",\n\t")
-            )
-          ]
+          possibleTypeNames: \(responseName).\(Variables.staticTypeName).allCases.map {
+            $0.rawValue
+          }
         )
         """
       } else {
@@ -395,9 +401,8 @@ extension SelectionsGenerator {
         } else {
           let funcDeclaration = "\(fieldTypeName.camelCase)Selections.\(entityNameProvider.requestFragmentName)"
           let requestNameDeclaration = "\(Variables.requestName): \(Variables.capitalizedRequestName)"
-          let typeNameDeclaration = "\(Variables.typeName): \"\(fieldTypeName)\""
 
-          return "\(funcDeclaration)(\(requestNameDeclaration), \(typeNameDeclaration))"
+          return "\(funcDeclaration)(\(requestNameDeclaration))"
         }
       }
     }.joined(separator: ",\n")

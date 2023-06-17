@@ -33,11 +33,11 @@ final class InterfaceSpecGeneratorTests: XCTestCase {
     let expected = try """
     // MARK: - GraphQLInterfaceObject
 
-    enum CharacterGraphQLInterfaceObject: Codable {
+    enum CharacterGraphQLInterfaceObject: Decodable {
       case droid(DroidGraphQLObject)
       case human(HumanGraphQLObject)
 
-      enum Typename: String, Decodable {
+      enum TypeName: String, Decodable, CaseIterable {
         case droid = "Droid"
         case human = "Human"
       }
@@ -49,7 +49,7 @@ final class InterfaceSpecGeneratorTests: XCTestCase {
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let singleValueContainer = try decoder.singleValueContainer()
-        let type = try container.decode(Typename.self, forKey: .__typename)
+        let type = try container.decode(TypeName.self, forKey: .__typename)
 
         switch type {
         case .droid:

@@ -44,7 +44,9 @@ final class EntitySpecGeneratorTests: XCTestCase {
       func requestFragments(with selections: GraphQLSelections) -> String
     }
 
-    protocol GraphQLSelection: Hashable, CaseIterable {}
+    protocol GraphQLSelection: Hashable, CaseIterable {
+      static var TypeName: String { get }
+    }
     protocol GraphQLSelections {
       func requestFragments(for requestName: String, rootSelectionKeys: Set<String>) -> String
     }
@@ -59,13 +61,13 @@ final class EntitySpecGeneratorTests: XCTestCase {
 
     enum GraphQLConfiguration {
       /**
-       GraphQL is unable to resolve recursive fragments as it would lead to inifnite loop. Thus we would
-       need to define a fix depth to resolve the infinite loop issue
-       */
+      GraphQL is unable to resolve recursive fragments as it would lead to inifnite loop. Thus we would
+      need to define a fix depth to resolve the infinite loop issue
+      */
       static var recursionDepth: UInt = 5
     }
 
-    // MARK: GraphQLRequest
+    // MARK: - GraphQLRequest
 
     struct GraphQLRequest<RequestParameters: GraphQLRequestParameter>: Encodable {
       let parameters: RequestParameters
@@ -88,12 +90,12 @@ final class EntitySpecGeneratorTests: XCTestCase {
         let requestArguments = parameters.requestArguments(with: selections)
 
         let requestQuery = """
-    \(requestTypeCode)\(requestArguments) {
-      \(parameters.requestQuery)
-    }
+        \(requestTypeCode)\(requestArguments) {
+          \(parameters.requestQuery)
+        }
 
-    \(parameters.requestFragments(with: selections))
-    """
+        \(parameters.requestFragments(with: selections))
+        """
 
         try container.encode(parameters, forKey: .parameters)
         try container.encode(requestQuery, forKey: .query)
@@ -111,7 +113,6 @@ final class EntitySpecGeneratorTests: XCTestCase {
       let message: String?
       let locations: [[String: Int]]?
       let path: [String]?
-
     }
 
     enum GraphQLError: Error, LocalizedError {
@@ -130,28 +131,27 @@ final class EntitySpecGeneratorTests: XCTestCase {
     extension Collection where Element: GraphQLSelection & RawRepresentable, Element.RawValue == String {
       func requestFragment(
         requestName: String,
-        typeName: String,
         depth: UInt = GraphQLConfiguration.recursionDepth
       ) -> (key: String, value: String) {
-        let key = "\(requestName)\(typeName)Fragment"
+        let key = "\(requestName)\(Element.TypeName)Fragment"
         let fragmentFields = implodeRecursiveFragment(
           text: requestFragmentFields(requestName: requestName),
           fragmentKey: key,
           depth: depth
         )
         let value = """
-    fragment \(key) on \(typeName) {
-      \(fragmentFields)
-    }
-    """
+        fragment \(key) on \(TypeName) {
+          \(fragmentFields)
+        }
+        """
 
         return (key: key, value: value)
       }
 
       func requestFragmentFields(requestName: String) -> String {
         let values = count == 0
-        ? Element.allCases.map { $0 as Element }
-        : map { $0 as Element }
+          ? Element.allCases.map { $0 as Element }
+          : map { $0 as Element }
         let sortedValeus = values.sorted(by: { $0.rawValue < $1.rawValue })
 
         let variablePrefix = "$\(requestName.prefix(1).lowercased() + requestName.dropFirst())"
@@ -167,13 +167,13 @@ final class EntitySpecGeneratorTests: XCTestCase {
       }
 
       /**
-       GraphQL query doesn't support recursive fragment, internally GraphQL will simply implode all fragment
-       and if there is a recursive fragment it will just be stuck in infinite loop.
+      GraphQL query doesn't support recursive fragment, internally GraphQL will simply implode all fragment
+      and if there is a recursive fragment it will just be stuck in infinite loop.
 
-       Thus it is necessary to detect if recursive fragment exist and try to resolve it by providing
-       a fixed depth for the recursion.
-       - parameter depth: Define how many time the recursive fragment should be imploded, 0 would terminate the recursion
-       */
+      Thus it is necessary to detect if recursive fragment exist and try to resolve it by providing
+      a fixed depth for the recursion.
+      - parameter depth: Define how many time the recursive fragment should be imploded, 0 would terminate the recursion
+      */
       func implodeRecursiveFragment(text: String, fragmentKey: String, depth: UInt) -> String {
         guard let range = text.range(of: "...\(fragmentKey)") else {
           return text
@@ -304,11 +304,11 @@ final class EntitySpecGeneratorTests: XCTestCase {
         return (
           key: key,
           value: """
-        fragment \(key) on \(typeName) {
-          __typename
-          \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
-        }
-        """
+            fragment \(key) on \(typeName) {
+              __typename
+              \(possibleTypeNames.map { "...\(requestName)\($0)Fragment" }.joined(separator: "\n"))
+            }
+            """
         )
       }
     }

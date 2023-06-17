@@ -33,6 +33,8 @@ final class SelectionSpecGeneratorTests: XCTestCase {
     let declaration = try generator.selectionDeclaration(objectType: droidObject, schemaMap: schemaMap).format()
     let expectedDeclaration = try #"""
     enum CampaignAttributeSelection: String, GraphQLSelection {
+      static let TypeName: String = "CampaignAttribute"
+
       case autoApplied
       case benefits = """
       benefits {
@@ -87,6 +89,8 @@ final class SelectionSpecGeneratorTests: XCTestCase {
     // MARK: - GraphQLSelection
 
     enum DroidSelection: String, GraphQLSelection {
+      static let TypeName: String = "Droid"
+
       case appearsIn
       case id
       case name
@@ -94,6 +98,8 @@ final class SelectionSpecGeneratorTests: XCTestCase {
     }
 
     enum HumanSelection: String, GraphQLSelection {
+      static let TypeName: String = "Human"
+
       case appearsIn
       case homePlanet
       case id

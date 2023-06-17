@@ -18,6 +18,10 @@ struct InterfaceCodeGenerator: GraphQLCodeGenerating {
 
   private let fieldSpecificationGenerator: FieldCodeGenerator
 
+  private enum Variables {
+    static let staticTypeName = "TypeName"
+  }
+
   init(
     scalarMap: ScalarMap,
     selectionMap: SelectionMap?,
@@ -75,10 +79,10 @@ extension InterfaceCodeGenerator {
       .lines
 
     return """
-    enum \(try entityNameProvider.name(for: interface).pascalCase): \(entityNameProvider.responseType) {
+    enum \(try entityNameProvider.name(for: interface)): \(entityNameProvider.responseType) {
       \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
 
-      enum Typename: String, \(entityNameProvider.responseType) {
+      enum \(Variables.staticTypeName): String, \(entityNameProvider.responseType), CaseIterable {
         \(possibleObjectTypes.map { "case \($0.name.camelCase) = \"\($0.name)\"" }.lines)
       }
 
@@ -90,7 +94,7 @@ extension InterfaceCodeGenerator {
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let singleValueContainer = try decoder.singleValueContainer()
-        let type = try container.decode(Typename.self, forKey: .__typename)
+        let type = try container.decode(\(Variables.staticTypeName).self, forKey: .__typename)
 
         switch type {
         \(

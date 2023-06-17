@@ -116,6 +116,8 @@ extension SelectionGenerator {
 
     return try """
     enum \(selectionName):\(rawRepresentableCode)\(entityNameMap.selection) {
+      static let TypeName: String = "\(objectType.name.uppercasedFirstLetter())"
+
       \(enumCasesCode)
     }
     """.format()

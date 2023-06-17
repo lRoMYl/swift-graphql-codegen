@@ -37,9 +37,7 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       private enum CodingKeys: String, CodingKey {
         case vendorId = "campaignsVendorId"
-
         case globalEntityId = "campaignsGlobalEntityId"
-
         case locale = "campaignsLocale"
       }
 
@@ -77,12 +75,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -107,13 +108,9 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       private enum CodingKeys: String, CodingKey {
         case productDetailsAttributesKeys
-
         case productDetailsCrossSellProductsPlatform
-
         case productDetailsCrossSellProductsConfig
-
         case productDetailsCrossSellProductsIsDarkstore
-
         case input = "productDetailsInput"
       }
 
@@ -155,12 +152,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -182,7 +182,6 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       private enum CodingKeys: String, CodingKey {
         case productsAttributesKeys
-
         case input = "productsInput"
       }
 
@@ -215,12 +214,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -259,12 +261,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -287,9 +292,7 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       private enum CodingKeys: String, CodingKey {
         case shopDetailsAttributesKeys
-
         case input = "shopDetailsInput"
-
         case shopDetailsShopItemsResponsePage
       }
 
@@ -325,12 +328,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -369,12 +375,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
@@ -396,7 +405,7 @@ final class RequestSpecGeneratorTests: XCTestCase {
         }
       }
 
-      let _service: ServiceGraphQLQuery?
+      let service: ServiceGraphQLQuery?
       let campaigns: CampaignsGraphQLQuery?
       let productDetails: ProductDetailsGraphQLQuery?
       let products: ProductsGraphQLQuery?
@@ -405,7 +414,7 @@ final class RequestSpecGeneratorTests: XCTestCase {
 
       private var requests: [GraphQLRequestParameter] {
         let requests: [GraphQLRequestParameter?] = [
-          _service,
+          service,
           campaigns,
           productDetails,
           products,
@@ -459,12 +468,15 @@ final class RequestSpecGeneratorTests: XCTestCase {
       func requestArguments(with selections: GraphQLSelections) -> String {
         let requestFragments = self.requestFragments(with: selections)
         var selectedSubRequestArguments = [(key: String, value: String)]()
+
         subRequestArguments.forEach {
           if requestFragments.contains($0.key) {
             selectedSubRequestArguments.append($0)
           }
         }
+
         let arguments = requestArguments + selectedSubRequestArguments
+
         return arguments.isEmpty
           ? ""
           : " (\(arguments.map { $0.value }.joined(separator: ",\n")))"
