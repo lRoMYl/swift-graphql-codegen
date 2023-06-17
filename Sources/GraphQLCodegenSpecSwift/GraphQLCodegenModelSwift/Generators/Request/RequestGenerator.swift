@@ -127,7 +127,7 @@ private extension RequestGenerator {
     schema: Schema,
     field: Field
   ) throws -> String {
-    let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
+    let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation).pascalCase
     let rootSelectionKey = try entityNameProvider
       .fragmentName(for: field.type.namedType)
       .map { "\"\(field.name.uppercasedFirstLetter())\($0)\"" } ?? ""
@@ -214,15 +214,15 @@ private extension RequestGenerator {
 
     let requestParameterName = "\(try entityNameProvider.requestParameterName(with: operation))"
     let fieldsCode: String = try fields.map { field in
-      let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation)
+      let requestParameterName = try entityNameProvider.requestParameterName(for: field, with: operation).pascalCase
 
-      return "let \(field.name): \(requestParameterName)?"
+      return "let \(field.name.camelCase): \(requestParameterName)?"
     }.lines
 
     let privateFieldsCode = """
     private var requests: [\(entityNameMap.requestParameter)] {
       let requests: [\(entityNameMap.requestParameter)?] = [
-        \(fields.map { $0.name }.joined(separator: ",\n"))
+        \(fields.map { $0.name.camelCase }.joined(separator: ",\n"))
       ]
 
       return requests.compactMap { $0 }

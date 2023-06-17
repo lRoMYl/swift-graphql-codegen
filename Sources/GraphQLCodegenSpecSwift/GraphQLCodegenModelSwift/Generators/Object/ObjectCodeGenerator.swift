@@ -111,7 +111,7 @@ extension ObjectCodeGenerator {
       throw ObjectCodeGeneratorError.emptyFields(name: objectType.name)
     }
 
-    let responseName = try entityNameProvider.name(for: objectType)
+    let responseName = try entityNameProvider.name(for: objectType).pascalCase
 
     return """
     struct \(responseName): \(entityNameProvider.responseType) {

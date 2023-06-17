@@ -50,7 +50,7 @@ private extension InputObjectCodeGenerator {
   func declaration(
     inputObjectType: InputObjectType
   ) throws -> String {
-    let name = try entityNameProvider.name(for: inputObjectType)
+    let name = try entityNameProvider.name(for: inputObjectType).pascalCase
 
     let fieldsVariable = try inputObjectType.inputFields
       .map { try objectFieldCodeGenerator.variableDeclaration(input: $0) }

@@ -35,9 +35,12 @@ extension ResponseCodeGenerator {
   }
 
   func code(field: Field, operation: GraphQLAST.Operation) throws -> String {
+    let responseName = try entityNameProvider.responseDataName(for: field, with: operation).pascalCase
+    let fieldName = field.name.camelCase
+
     return """
-    struct \(try entityNameProvider.responseDataName(for: field, with: operation)): \(entityNameProvider.responseType) {
-      let \(field.name): \(try entityNameProvider.name(for: field.type))
+    struct \(responseName): \(entityNameProvider.responseType) {
+      let \(fieldName): \(try entityNameProvider.name(for: field.type))
     }
     """
   }

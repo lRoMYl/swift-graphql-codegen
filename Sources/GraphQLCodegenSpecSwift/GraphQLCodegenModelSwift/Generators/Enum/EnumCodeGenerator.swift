@@ -42,7 +42,7 @@ private extension EnumType {
   func declaration(entityNameProvider: EntityNameProviding) throws -> String {
     """
     \(docs)
-    enum \(try entityNameProvider.name(for: self)): RawRepresentable, \(entityNameProvider.requestType) {
+    enum \(try entityNameProvider.name(for: self).pascalCase): RawRepresentable, \(entityNameProvider.requestType) {
       typealias RawValue = String
 
       \(valueDeclaration)

@@ -57,7 +57,7 @@ struct UnionCodeGenerator: GraphQLCodeGenerating {
         .lines
 
       return """
-      enum \(try entityNameProvider.name(for: union)): Codable {
+      enum \(try entityNameProvider.name(for: union).pascalCase): \(entityNameProvider.responseType) {
         \(try possibleObjectTypes.map { "case \($0.name.camelCase)(\(try entityNameProvider.name(for: $0)))" }.lines)
 
         enum Typename: String, \(entityNameProvider.responseType) {
